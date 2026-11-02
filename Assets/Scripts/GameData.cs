@@ -15,13 +15,22 @@ namespace ReversalTower
         public Pattern(string id, string name, AttackKind kind, float windup, float recovery, float damage, float range, int count, bool parryable)
         { this.id=id; this.name=name; this.kind=kind; this.windup=windup; this.recovery=recovery; this.damage=damage; this.range=range; this.count=count; this.parryable=parryable; }
     }
-    public class BossSpec
+    [Serializable] public class BossSpec
     {
         public string id, name, title, lesson, ultimate;
         public float hp, speed;
+        public float phaseThreshold=.6f,phaseSpeedScale=1.12f,dashSpeed=18,projectileSpeed=8,minionSpeed=1;
+        public int minionHp=24;
+        public bool airborne,hasPillars,echoBoss,afterSlashHazard;
         public Pattern[] patterns;
         public BossSpec(string id,string name,string title,string lesson,string ultimate,float hp,float speed,params Pattern[] patterns)
-        {this.id=id;this.name=name;this.title=title;this.lesson=lesson;this.ultimate=ultimate;this.hp=hp;this.speed=speed;this.patterns=patterns;}
+        {
+            this.id=id;this.name=name;this.title=title;this.lesson=lesson;this.ultimate=ultimate;this.hp=hp;this.speed=speed;this.patterns=patterns;
+            airborne=id=="phanes";hasPillars=id=="arakus";echoBoss=id=="kharos";afterSlashHazard=id=="aethelos";
+            dashSpeed=hasPillars?13:18;projectileSpeed=hasPillars?7:8;
+            minionHp=id=="adicus"?32:id=="kharos"?40:24;
+            minionSpeed=echoBoss?1.5f:1;
+        }
     }
     public static class Catalog
     {

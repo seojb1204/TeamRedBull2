@@ -15,21 +15,24 @@ namespace ReversalTower
         public float horizontalSpeed,pvY,playerInv,stun,parryAge=99,parryLock,dashTime,dashRecharge,actionTime,actionTotal;
         public float attackAnim,hitFlash,bossFlash,shake,flash,phaseFlash,healing,skillQ,skillW,skillE;
         public string playerAction="",bossState="",notice="";public float noticeTime;
-        public bool phaseTwo,paused,showHelp,showHistory,showSettings,seal;
-        public Pattern current;public float patternAge,windup,recovery,rest,patternDamage;
-        public float targetX,safeSide;public int patternCount,attackStep;public float nextHit;
-        public Vector2 origin;public float bossStagger;
-        public bool pillarLeft=true,pillarRight=true,barrier;public float barrierHp,barrierTime;
+        public bool paused,showHelp,showHistory,showSettings,seal;
         public readonly List<Hazard> hazards=new List<Hazard>();
         public readonly List<Shot> shots=new List<Shot>();
         public readonly List<Minion> minions=new List<Minion>();
         public readonly List<Mote> motes=new List<Mote>();
-        public List<PatternStats> stats=new List<PatternStats>();
-        public Dictionary<string,double[]> contexts=new Dictionary<string,double[]>();
         public HistoryEntry result;public bool wasFirstClear;public float realClock;
         float comboGap;int combo;bool skillFired,ended;float dodgeBuffer,coyote;
+        readonly DdaBattleSession dda=new DdaBattleSession();
+        readonly RewardLedger rewards=new RewardLedger();
+        public List<PatternStats> stats => dda.Stats;
+        public Dictionary<string,double[]> contexts => dda.Contexts;
+        bool battleDda => dda.Enabled;
         Soundscape sound;WorldArtist artist;Camera cam;
-        bool demo,battleDda;float demoAction;string capturePath;bool captureDone;
+#if !HEADLESS && !DESKTOP_PREVIEW
+        public ScenePresentation scenePresentation;
+        public NativeGameUI nativeUI;
+#endif
+        bool demo;float demoAction;string capturePath;bool captureDone;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap(){if(FindAnyObjectByType<TowerGame>()==null)new GameObject("Reversal Tower").AddComponent<TowerGame>();}
         void Awake()
@@ -41,6 +44,10 @@ namespace ReversalTower
             if(AutoRunArgs.ForcedFrameRate>0){QualitySettings.vSyncCount=0;Application.targetFrameRate=AutoRunArgs.ForcedFrameRate;}
             else{QualitySettings.vSyncCount=1;Application.targetFrameRate=-1;}
             save=SaveStore.Load();AudioListener.volume=save.masterVolume;
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(!scenePresentation)scenePresentation=FindAnyObjectByType<ScenePresentation>();
+            if(!nativeUI)nativeUI=FindAnyObjectByType<NativeGameUI>();
+#endif
             cam=Camera.main;if(!cam){cam=new GameObject("Main Camera").AddComponent<Camera>();cam.tag="MainCamera";}
             cam.orthographic=true;cam.orthographicSize=8.2f;cam.transform.position=new Vector3(0,5,-20);cam.backgroundColor=new Color(.025f,.035f,.055f);
             if(!FindAnyObjectByType<AudioListener>())cam.gameObject.AddComponent<AudioListener>();
@@ -79,6 +86,10 @@ namespace ReversalTower
             float aspect=(float)Screen.width/Mathf.Max(1,Screen.height);cam.orthographicSize=Mathf.Max(8.2f,14.3f/aspect);
             cam.transform.position=new Vector3(Mathf.Sin(realClock*93)*shake*.025f,5+Mathf.Cos(realClock*87)*shake*.018f,-20);
             artist.Render();
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(scenePresentation)scenePresentation.Render(this);
+            if(nativeUI)nativeUI.Refresh();
+#endif
         }
         void Capture(){string path=System.IO.Path.Combine(SaveStore.Root,"Screenshot_"+DateTime.Now.ToString("yyyyMMdd_HHmmss")+".png");ScreenCapture.CaptureScreenshot(path);Say("스크린샷을 저장했습니다",2);}
         public void Say(string text,float duration=2.5f){notice=text;noticeTime=duration;}
@@ -93,20 +104,16 @@ namespace ReversalTower
         {
             if(index<0||index>save.unlockedBoss)return;
             bossIndex=index;spec=Catalog.Bosses[index];mode=ScreenMode.Battle;paused=false;showHelp=false;showSettings=false;showHistory=false;showCards=false;ended=false;
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(scenePresentation&&scenePresentation.bosses!=null&&index<scenePresentation.bosses.Length&&scenePresentation.bosses[index])spec=scenePresentation.bosses[index].CreateRuntime();
+#endif
             player=new Vector2(-6,0);boss=new Vector2(5,index==1?1.1f:0);face=1;bossFace=-1;
             maxHp=LobbyCards.Health(save);playerHp=maxHp;bossHp=spec.hp;ult=0;seconds=0;hits=parries=sealParries=0;
             horizontalSpeed=0;pvY=0;playerInv=stun=parryLock=dashTime=dashRecharge=actionTime=attackAnim=healing=skillQ=skillW=skillE=0;parryAge=99;
             phaseTwo=false;thirdPhase=false;seal=index==4;dashes=2;potions=3;combo=0;comboGap=0;bossStagger=0;rest=1.8f;current=null;bossState="입장";
-            cooldowns.Clear();previousPattern="";playerAction="";healing=0;
+            BossPatterns.Reset();rewards.Reset();playerAction="";healing=0;
             barrier=false;barrierTime=0;pillarLeft=pillarRight=index==0;hazards.Clear();shots.Clear();minions.Clear();motes.Clear();
-            stats=new List<PatternStats>();contexts.Clear();
-            battleDda=save.dda&&!AutoRunArgs.DisableDda;var learn=save.Learning(spec.id);
-            foreach(var p in spec.patterns)
-            {
-                var memory=learn.Pattern(p.id);var x=learn.model.Context(memory.success,learn.globalSuccess,memory.level,LobbyCards.Power(save),learn.lossStreak);
-                int level=battleDda?learn.model.Choose(x,memory.level,learn.battles,memory.success,learn.lossStreak):0;
-                stats.Add(new PatternStats{id=p.id,level=level});contexts[p.id]=x;
-            }
+            dda.Prepare(save,spec,AutoRunArgs.DisableDda);
             Say(spec.name+" — "+spec.lesson,5);sound.Play("confirm");
             if(!save.tutorialSeen&&!demo)showHelp=true;
         }
@@ -155,6 +162,7 @@ namespace ReversalTower
             if(playerHp<=0)EndBattle(false);
         }
         int potions=3;
+        public int PotionCount=>potions;
         void BeginAction(string name,float duration)
         {
             playerAction=name;actionTime=actionTotal=duration;skillFired=false;attackAnim=duration;
@@ -222,21 +230,10 @@ namespace ReversalTower
         {for(int i=0;i<count;i++){float a=UnityEngine.Random.value*Mathf.PI*2;motes.Add(new Mote{pos=position,velocity=new Vector2(Mathf.Cos(a),Mathf.Sin(a))*UnityEngine.Random.Range(.4f,3f)*force,life=UnityEngine.Random.Range(.18f,.6f),color=color,size=UnityEngine.Random.Range(.035f,.12f)});}if(motes.Count>350)motes.RemoveRange(0,motes.Count-350);}
         void EndBattle(bool clear)
         {
-            if(ended)return;ended=true;wasFirstClear=clear&&!save.cleared[bossIndex];
-            int gold=clear?130+bossIndex*50+Mathf.Min(80,parries*3):Mathf.RoundToInt((1-bossHp/spec.hp)*65);
-            result=new HistoryEntry{date=DateTime.Now.ToString("yyyy-MM-dd HH:mm"),boss=spec.id,clear=clear,seconds=seconds,hits=hits,parries=parries,gold=gold,dda=battleDda};
-            save.gold+=gold;save.cardChosen=false;save.cardOffer=new string[0];save.history.Insert(0,result);if(save.history.Count>30)save.history.RemoveAt(30);
-            if(clear){save.cleared[bossIndex]=true;save.unlockedBoss=Mathf.Max(save.unlockedBoss,Mathf.Min(4,bossIndex+1));if(wasFirstClear)save.equippedUltimate=bossIndex;}
-            var learn=save.Learning(spec.id);float sum=0;int observed=0;
-            foreach(var s in stats)
-            {
-                if(s.opportunities<1)continue;
-                var m=learn.Pattern(s.id);
-                // The control group records identical statistics without changing a learned policy.
-                if(battleDda){learn.model.Update(s.level,contexts[s.id],BanditModel.Reward(s.Success));m.success=m.observations==0?s.Success:Mathf.Lerp(m.success,s.Success,.5f);m.level=s.level;m.observations++;}
-                sum+=s.Success;observed++;
-            }
-            if(battleDda){learn.battles++;learn.lossStreak=clear?0:learn.lossStreak+1;if(observed>0)learn.globalSuccess=sum/observed;}
+            if(ended)return;
+            if(!rewards.TrySettle(save,spec,bossIndex,clear,bossHp,seconds,hits,parries,battleDda,out result,out wasFirstClear))return;
+            ended=true;
+            dda.Complete(save,spec,clear);
             SaveStore.Log(result,stats,save);SaveStore.Save(save);mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;
             sound.Play(clear?"parry":"death");
         }

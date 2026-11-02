@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150706bf5853351468d95f039e2c1ac8, type: 3}
+  m_Name: arakus
+  m_EditorClassIdentifier: Assembly-CSharp::ReversalTower.BossDefinition
+  template:
+    id: arakus
+    name: "\uC544\uB77C\uCFE0\uC2A4"
+    title: "\uCCAB \uBC88\uC9F8 \uBB38 \xB7 \uCCA0\uC758 \uB9F9\uC138"
+    lesson: "\uAE08\uBE5B \uACF5\uACA9\uC740 K\uB85C \uD328\uB9C1. \uB3CC\uC9C4\uC740
+      \uAE30\uB465 \uB4A4\uB85C \uC720\uB3C4\uD558\uC138\uC694."
+    ultimate: "\uCCA0\uC655\uC758 \uD729\uC4F8\uAE30"
+    hp: 780
+    speed: 2.1
+    phaseThreshold: 0.6
+    phaseSpeedScale: 1.12
+    dashSpeed: 13
+    projectileSpeed: 7
+    minionSpeed: 1
+    minionHp: 24
+    airborne: 0
+    hasPillars: 1
+    echoBoss: 0
+    afterSlashHazard: 0
+    patterns:
+    - id: cleave
+      name: "\uAC70\uAC80 \uD718\uB450\uB974\uAE30"
+      kind: 0
+      windup: 0.85
+      recovery: 0.85
+      damage: 18
+      range: 3.2
+      count: 1
+      parryable: 1
+    - id: shield
+      name: "\uBC29\uD328 \uC5F0\uACA9"
+      kind: 0
+      windup: 0.65
+      recovery: 0.85
+      damage: 9
+      range: 2.5
+      count: 3
+      parryable: 1
+    - id: kick
+      name: "\uAC11\uC8FC\uC758 \uBC1C\uCC28\uAE30"
+      kind: 0
+      windup: 0.55
+      recovery: 0.6
+      damage: 13
+      range: 1.9
+      count: 1
+      parryable: 0
+    - id: charge
+      name: "\uCCA0\uBCBD \uB3CC\uC9C4"
+      kind: 1
+      windup: 1.1
+      recovery: 1.2
+      damage: 23
+      range: 16
+      count: 1
+      parryable: 0
+    - id: throw
+      name: "\uB3CC\uC544\uC624\uB294 \uBC29\uD328"
+      kind: 4
+      windup: 0.95
+      recovery: 0.75
+      damage: 15
+      range: 18
+      count: 1
+      parryable: 1
+    - id: quake
+      name: "\uB300\uC9C0 \uAC00\uB974\uAE30"
+      kind: 2
+      windup: 1.1
+      recovery: 0.9
+      damage: 20
+      range: 18
+      count: 2
+      parryable: 0

@@ -1,4 +1,26 @@
-# 역전의 탑 0.4 — 로비 강화 기능판
+# 역전의 탑 0.5 — 아라쿠스 제작 기반
+
+Unity **6000.4.0f1**. 기존 0.4의 성장·저장·전투를 보존하며 에디터 기반 제작 환경으로 이행하는 브랜치입니다. 기존 팀 저장소는 변경하지 않습니다.
+
+실행 씬: `Assets/Scenes/TowerProduction.unity`. 플레이어/아라쿠스 Prefab·Animator, 팀 제공 아라쿠스 시트, 보스5종 ScriptableObject, 핵심 화면 uGUI가 연결되어 있습니다. 신규 보스 패턴을 모두 구현한 버전은 아닙니다.
+
+- [진단](Docs/M0/01_Diagnosis.md)
+- [보스 기획 현황·충돌](Docs/M0/02_BossSpecMatrix.md)
+- [구조·로드맵](Docs/M0/03_ArchitectureRoadmap.md)
+- [자료 요청](Docs/M0/04_AssetRequest.md)
+- [검증과 미완료](Docs/VALIDATION.md)
+- [아트 출처](Docs/Art/TEAM_ASSETS.md)
+
+로컬 검사: `Verify-Logic.ps1`. Unity 배치빌드 진입점: `FoundationSetup.Build`.
+로비 → 세 카드 중 한 장 영구 강화 또는 건너뛰기 → 보스전 → 정산 → 로비 흐름을 유지합니다.
+
+실제 0.5 Windows 캡처(디자인 최종 승인 전):
+
+![아라쿠스 도트 적용](Docs/Proof/arakus.png)
+
+![로비 카드 선택](Docs/Proof/lobby.png)
+
+## 아래는 0.4/0.3의 이전 이력
 
 현재 버전은 상위 폴더의 `먼저읽기.md`, `변경보고서.md`를 기준으로 한다. 로직 검사 114개, 실제 Unity 6000.4.0f1 Windows 빌드, 플레이어 로비 통합검사 14개를 확인했다. 이번 아트 교체는 하지 않았다. 아래 내용은 수정 전 0.3의 이력이며 현재 버전의 실행 실패를 뜻하지 않는다.
 

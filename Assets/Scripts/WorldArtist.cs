@@ -125,6 +125,9 @@ namespace ReversalTower
         }
         void Character(Vector2 pos,float scale,int face,string action,bool enemy,float t,Color accent)
         {
+#if !DESKTOP_PREVIEW
+            if(g.scenePresentation&&(!enemy?g.scenePresentation.player!=null:g.bossIndex==0&&g.scenePresentation.arakus!=null))return;
+#endif
             int frame=action=="run"?(int)(t*9)%4:(int)(t*3)%2;
             bool attack=action=="attack"||action=="J"||action=="Q"||action=="W"||action=="E"||action=="R";
             if(attack)frame=enemy?(int)(t*10)%4:Mathf.Clamp((int)((1-g.actionTime/Mathf.Max(.01f,g.actionTotal))*4),0,3);

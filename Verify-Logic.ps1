@@ -13,9 +13,9 @@ $frameworkRoot=Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
 $testWork=Join-Path $PSScriptRoot 'TestResults'
 New-Item -ItemType Directory -Force -Path $testWork | Out-Null
 $testExe=Join-Path $testWork 'Tower.HeadlessTests.exe'
-$testArgs=@('-nologo','-noconfig','-nostdlib+','-target:exe',('-out:'+$testExe))
+$testArgs=@('-nologo','-noconfig','-nostdlib+','-define:HEADLESS','-target:exe',('-out:'+$testExe))
 foreach($assembly in @('mscorlib.dll','System.dll','System.Core.dll','System.Runtime.Serialization.dll','System.Xml.dll')) {$testArgs+='-r:'+(Join-Path $frameworkRoot $assembly)}
-foreach($file in @('GameData.cs','TowerGame.cs','BossCombat.cs','SaveStore.cs','LobbyCards.cs','AutoRun.cs','LobbySmoke.cs')) {$testArgs+=(Join-Path $PSScriptRoot ('Assets\Scripts\'+$file))}
+foreach($file in @('GameData.cs','TowerGame.cs','BossCombat.cs','SaveStore.cs','LobbyCards.cs','AutoRun.cs','LobbySmoke.cs','BossPatternSystem.cs','GameServices.cs')) {$testArgs+=(Join-Path $PSScriptRoot ('Assets\Scripts\'+$file))}
 $testArgs+=(Join-Path $PSScriptRoot 'Tests\UnityShim.cs');$testArgs+=(Join-Path $PSScriptRoot 'Tests\HeadlessTests.cs')
 & (Join-Path $runtimeRoot 'NetCoreRuntime\dotnet.exe') (Join-Path $runtimeRoot 'DotNetSdkRoslyn\csc.dll') @testArgs
 if($LASTEXITCODE -ne 0){throw 'Headless test compilation failed.'}

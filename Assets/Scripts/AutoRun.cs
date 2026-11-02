@@ -178,7 +178,7 @@ namespace ReversalTower
             line("battle.hitsTaken", hits.ToString(ci));
             line("battle.parries", parries.ToString(ci));
             line("battle.ddaEnabled", battleDda ? "true" : "false");
-            line("build.version", "0.4-lobby-cards");
+            line("build.version", "0.5-arakus-editor-foundation");
             line("progression.cardPurchases", save.cardPurchases.ToString(ci));
             line("progression.effectiveAttack", LobbyCards.Attack(save).ToString("F2",ci));
             line("progression.effectiveMaxHp", LobbyCards.Health(save).ToString("F1",ci));

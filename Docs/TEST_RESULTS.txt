@@ -1,0 +1,13 @@
+2026-11-02 / Windows / Unity 6000.4.0f1 / Windows64 Mono / Built-in
+
+HEADLESS_TESTS_PASSED 114 assertions
+FOUNDATION_CHECKS_PASSED: cloned boss definitions, controllers, prefabs, production scene
+TOWER_BUILD_SUCCESS size=107033608
+
+ReleaseLobby: exit=0, LOBBY_SMOKE_PASSED, checks=19
+Native serialized uGUI card event invoked; saveRootIsolated=true
+ReleaseBattle: exit=0, demo ran for 10 second limit; capture file exists
+
+Lobby fixture uses Gold=1000, fixed offers and forced battle settlement.
+Demo uses automated inputs; no hidden healing. Neither is a human playtest.
+Actual screenshots inspected at 1600x900. Audio listening and full boss clear not performed.

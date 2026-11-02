@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Tower.unity
-    guid: b07012d54d224834be79964bb369aa31
+    path: Assets/Scenes/TowerProduction.unity
+    guid: 55815f81b5d796342acbef0ac00fe0f7
   m_configObjects: {}

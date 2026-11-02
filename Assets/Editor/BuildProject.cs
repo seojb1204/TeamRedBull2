@@ -15,7 +15,7 @@ public static class BuildProject
     }
     static void PrepareScene()
     {
-        string path="Assets/Scenes/Tower.unity";
+        string path="Assets/Scenes/TowerProduction.unity";
         if(File.Exists(path)){EditorSceneManager.OpenScene(path);return;}
         var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
         Directory.CreateDirectory("Assets/Scenes");EditorSceneManager.SaveScene(scene,path);
@@ -27,15 +27,15 @@ public static class BuildProject
         {
             RunChecks();
             PlayerSettings.companyName="IndependentTower";PlayerSettings.productName="Reversal Tower";
-            PlayerSettings.bundleVersion="0.4.0";
+            PlayerSettings.bundleVersion="0.5.0";
             PlayerSettings.defaultScreenWidth=1600;PlayerSettings.defaultScreenHeight=900;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;
             PlayerSettings.resizableWindow=true;PlayerSettings.runInBackground=true;PlayerSettings.colorSpace=ColorSpace.Gamma;
             PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone,ScriptingImplementation.Mono2x);
             PrepareScene();
-            EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene("Assets/Scenes/Tower.unity",true)};
+            EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene("Assets/Scenes/TowerProduction.unity",true)};
             AssetDatabase.SaveAssets();
             string dest=Path.GetFullPath(Path.Combine(Application.dataPath,"../../Windows/ReversalTower.exe"));Directory.CreateDirectory(Path.GetDirectoryName(dest));
-            var options=new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/Tower.unity"},locationPathName=dest,target=BuildTarget.StandaloneWindows64,options=BuildOptions.None};
+            var options=new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/TowerProduction.unity"},locationPathName=dest,target=BuildTarget.StandaloneWindows64,options=BuildOptions.None};
             var report=BuildPipeline.BuildPlayer(options);
             if(report.summary.result!=BuildResult.Succeeded)throw new Exception("Build failed: "+report.summary.result);
             Debug.Log("TOWER_BUILD_SUCCESS "+dest+" size="+report.summary.totalSize);
@@ -64,3 +64,4 @@ public static class BuildProject
     }
     static void Assert(bool value,string message){if(!value)throw new Exception("Tower check failed: "+message);}
 }
+

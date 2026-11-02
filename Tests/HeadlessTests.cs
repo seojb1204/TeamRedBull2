@@ -105,7 +105,7 @@ public static class HeadlessTests
         game.StartBattle(0);Check(!game.showCards&&game.maxHp==130,"Battle entry hides cards and uses accumulated health");
         Call("EndBattle",false);Check(!game.save.cardChosen&&game.save.cardOffer.Length==0,"Battle settlement unlocks next lobby offer");
         Check(LobbyCards.Count(game.save,"blade")==1,"Death preserves permanent cards");
-        int goldAfterEnd=game.save.gold;Call("EndBattle",false);Check(game.save.gold==goldAfterEnd,"Repeated settlement grants no extra gold");
+        int goldAfterEnd=game.save.gold;Call("EndBattle",false);Check(game.save.gold==goldAfterEnd&&game.result!=null,"Repeated settlement preserves result and grants no extra gold");
         game.ReturnLobby();game.OpenCards();Check(game.showCards&&game.save.cardOffer.Length==3,"Next lobby offers three cards");
         game.save.cardOffer=new[]{"blade","vitality","remedy"};
         Input.down.Add(KeyCode.Return);Call("Update");Input.Clear();Check(game.mode==ScreenMode.Lobby&&game.showCards,"Enter behind card modal does not start battle");

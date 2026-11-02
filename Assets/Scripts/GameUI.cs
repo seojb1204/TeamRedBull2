@@ -37,6 +37,16 @@ namespace ReversalTower
         {
             EnsureStyles();float scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
             GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1600*scale)/2,(Screen.height-900*scale)/2,0),Quaternion.identity,new Vector3(scale,scale,1));
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(nativeUI)
+            {
+                if(showHistory)HistoryUI();
+                if(showSettings)SettingsUI();
+                if(showHelp)HelpUI();
+                GUI.matrix=Matrix4x4.identity;
+                return;
+            }
+#endif
             bool previousEnabled=GUI.enabled;
             GUI.enabled=previousEnabled&&!showCards&&!showHelp&&!showSettings&&!showHistory&&!paused;
             if(mode==ScreenMode.Title)TitleUI();else if(mode==ScreenMode.Lobby)LobbyUI();else if(mode==ScreenMode.Battle)BattleUI();else if(mode==ScreenMode.Result)ResultUI();else EndingUI();

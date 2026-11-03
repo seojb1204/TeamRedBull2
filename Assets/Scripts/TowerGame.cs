@@ -68,6 +68,9 @@ namespace ReversalTower
             shake=Mathf.Max(0,shake-raw*12);
             if(Input.GetKeyDown(KeyCode.F12))Capture();
             if(Input.GetKeyDown(KeyCode.F1))showHelp=!showHelp;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DevKeys();
+#endif
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 if(showHelp)showHelp=false;else if(showHistory)showHistory=false;else if(showSettings){showSettings=false;SaveStore.Save(save);}else if(showCards)showCards=false;else if(mode==ScreenMode.Battle)paused=!paused;else if(mode==ScreenMode.Lobby)mode=ScreenMode.Title;
@@ -92,6 +95,26 @@ namespace ReversalTower
 #endif
         }
         void Capture(){string path=System.IO.Path.Combine(SaveStore.Root,"Screenshot_"+DateTime.Now.ToString("yyyyMMdd_HHmmss")+".png");ScreenCapture.CaptureScreenshot(path);Say("스크린샷을 저장했습니다",2);}
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // 개발용 단축키 (에디터·개발 빌드에서만): 발표 시연과 패턴 확인용
+        // F2 무적  F3 보스 HP 59%(2페이즈)  F4 보스 HP 29%(분노)  F5/F6 이전/다음 패턴 바로 실행
+        bool devGod;int devPattern=-1;
+        void DevKeys()
+        {
+            if(mode!=ScreenMode.Battle||spec==null)return;
+            if(Input.GetKeyDown(KeyCode.F2)){devGod=!devGod;Say(devGod?"[DEV] 무적 켜짐":"[DEV] 무적 꺼짐",1.5f);}
+            if(Input.GetKeyDown(KeyCode.F3)){bossHp=Mathf.Min(bossHp,spec.hp*.59f);Say("[DEV] 보스 HP 59%",1.5f);}
+            if(Input.GetKeyDown(KeyCode.F4)){bossHp=Mathf.Min(bossHp,spec.hp*.29f);Say("[DEV] 보스 HP 29%",1.5f);}
+            int step=Input.GetKeyDown(KeyCode.F6)?1:Input.GetKeyDown(KeyCode.F5)?-1:0;
+            if(step!=0&&spec.patterns.Length>0)
+            {
+                devPattern=(devPattern+step+spec.patterns.Length)%spec.patterns.Length;
+                var p=spec.patterns[devPattern];BossPatterns.forceNext=p;
+                Say("[DEV] 다음 패턴 "+(devPattern+1)+"/"+spec.patterns.Length+" · "+p.name,2);
+            }
+            if(devGod){playerHp=maxHp;}
+        }
+#endif
         public void Say(string text,float duration=2.5f){notice=text;noticeTime=duration;}
         void LobbyKeys()
         {

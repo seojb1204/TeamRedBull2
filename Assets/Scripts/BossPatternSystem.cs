@@ -19,13 +19,14 @@ namespace ReversalTower
         public float behindTime;         // 플레이어가 등 뒤에 있던 시간 (퀵스텝 조건)
         public bool shieldOut,shieldCaught,leaping,struck,touched;
         public float leapStart,leapFrom,leapTo,moveFrom,moveTo;
+        public Pattern forceNext;        // 개발용: 다음에 바로 실행할 패턴 (TowerGame.DevKeys)
         public float DamageTakenScale => current!=null&&current.kind==AttackKind.Rage?RageDamageTaken:1f;
         public BossPatternSystem(TowerGame game) { g = game; }
         public void Reset()
         {
             cooldowns.Clear(); previousPattern=""; dashHit=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
-            shieldOut=shieldCaught=leaping=struck=touched=false;
+            shieldOut=shieldCaught=leaping=struck=touched=false;forceNext=null;
         }
         readonly Dictionary<string,float> cooldowns=new Dictionary<string,float>();
         readonly System.Random combatRandom=new System.Random();
@@ -52,6 +53,7 @@ namespace ReversalTower
             {
                 if(!g.spec.airborne){g.boss.y=0;leaping=false;}
                 poseFrame=-1;
+                if(forceNext!=null){var f=forceNext;forceNext=null;if(f.kind==AttackKind.Rage)rageDone=true;BeginPattern(f);return;}
                 // 분노: HP 30% 아래로 내려가면 지금 패턴이 끝난 뒤 한 번 (기획서 4.3)
                 if(g.spec.hasPillars&&!rageDone&&g.bossHp<g.spec.hp*RageThreshold)
                 {var rage=Find(AttackKind.Rage);if(rage!=null){rageDone=true;BeginPattern(rage);return;}}

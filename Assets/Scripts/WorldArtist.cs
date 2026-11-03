@@ -76,6 +76,8 @@ namespace ReversalTower
             {
                 if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);
                 if(g.current!=null)Telegraph();
+                if(g.current!=null&&g.current.kind>=AttackKind.Step)ArakusCues(time);
+                if(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage))RageAura(time);
                 foreach(var h in g.hazards)
                 {
                     if(h.delay>0){Rect(h.x,.04f,h.width,.07f,h.color);Rect(h.x,3,h.width,6,Palette.Alpha(h.color,.055f));for(int i=0;i<3;i++)Tri(h.x,1.2f+i*.8f,.2f,.22f,Palette.Alpha(h.color,.3f),180);}
@@ -87,7 +89,9 @@ namespace ReversalTower
                 Character(g.player,1,g.face,g.stun>0?"hit":g.dashTime>0?"dash":g.attackAnim>0?g.playerAction:Mathf.Abs(g.pvY)>1?"jump":Mathf.Abs(g.horizontalSpeed)>.3f?"run":"idle",false,time,g.hitFlash>0?Palette.Red:Palette.Teal);
                 Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
                 foreach(var s in g.shots)
-                {Color c=s.friendly?Palette.Teal:s.parry?Palette.Gold:Palette.Red;Disc(s.pos.x,s.pos.y,s.radius*5,s.radius*5,Palette.Alpha(c,.12f));Line(s.pos-s.vel.normalized*.65f,s.pos,.08f,Palette.Alpha(c,.4f));Disc(s.pos.x,s.pos.y,s.radius*2,s.radius*2,c);Disc(s.pos.x,s.pos.y,s.radius,s.radius,Palette.White);}
+                {
+                    if(s.returns){Shield(s,time);continue;}
+                    Color c=s.friendly?Palette.Teal:s.parry?Palette.Gold:Palette.Red;Disc(s.pos.x,s.pos.y,s.radius*5,s.radius*5,Palette.Alpha(c,.12f));Line(s.pos-s.vel.normalized*.65f,s.pos,.08f,Palette.Alpha(c,.4f));Disc(s.pos.x,s.pos.y,s.radius*2,s.radius*2,c);Disc(s.pos.x,s.pos.y,s.radius,s.radius,Palette.White);}
                 if(g.parryAge<.21f)
                 {float a=Mathf.Clamp01(1-g.parryAge/.24f);Disc(g.player.x+g.face*.6f,g.player.y+1.1f,.8f,1.7f,Palette.Alpha(Palette.Teal,a*.25f));Rect(g.player.x+g.face*.65f,g.player.y+1.1f,.07f,1.6f,Palette.Alpha(Palette.White,a));}
                 if(g.dashTime>0)for(int i=1;i<4;i++)Rect(g.player.x-g.face*i*.5f,g.player.y+.9f,.4f,1.4f,Palette.Alpha(Palette.Teal,.14f/i));
@@ -117,6 +121,87 @@ namespace ReversalTower
             {Rect(g.safeSide*6,.04f,11.2f,.1f,Palette.Teal);Rect(g.safeSide*6,1,11.2f,2,Palette.Alpha(Palette.Teal,.08f));}
             if(p.parryable&&remaining<.3f)
             {float x=g.boss.x,y=g.boss.y+3.3f;Disc(x,y,.7f,.7f,Palette.Alpha(Palette.Gold,.2f));Rect(x,y,.3f,.3f,Palette.Gold,45);Line(new Vector2(x-.6f,y),new Vector2(x+.6f,y),.035f,Palette.White);}
+        }
+        // ── 아라쿠스 기획 패턴 예고·효과: 금빛 = 패링 가능, 붉은빛 = 피하거나 거리 벌리기 ──
+        void ArakusCues(float time)
+        {
+            var bp=g.BossPatterns;var p=g.current;float t=g.patternAge,w=g.windup,pulse=.5f+.5f*Mathf.Sin(time*16);
+            float face=g.bossFace,bx=g.boss.x;
+            if(p.kind==AttackKind.ShieldThrow)
+            {
+                if(t<w)
+                {
+                    // 두 패턴이 같은 예고 (이지선다): 방패가 날아갈 길
+                    Vector2 hand=g.boss+new Vector2(face*.75f,1.25f);Vector2 aim=(g.player+Vector2.up*.9f-hand).normalized;
+                    for(int i=1;i<=7;i++){Vector2 q=hand+aim*i;Disc(q.x,q.y,.18f,.18f,Palette.Alpha(Palette.Gold,.18f+.25f*pulse*(i/7f)));}
+                    return;
+                }
+                if(p.id=="throw")
+                {
+                    if(!bp.struck){float x=bp.moveTo+face*p.range*.5f;Rect(x,.8f,p.range,1.6f,Palette.Alpha(Palette.Gold,.1f+.08f*pulse));Rect(x,.05f,p.range,.05f,Palette.Gold);}
+                    else if(t<w+1.1f){float x=bx+face*1.2f;Line(new Vector2(x-face*.9f,2.1f),new Vector2(x+face*.5f,.3f),.12f,Palette.Alpha(Palette.White,.8f));}
+                    return;
+                }
+                // 내려찍기: 도약 중 착지점(반경 1.5m), 착지 뒤 충격파
+                if(bp.leaping||!bp.struck)
+                {
+                    float x=bp.leaping?bp.leapTo:g.player.x,a=bp.leaping?.16f+.12f*pulse:.05f;
+                    Rect(x,.06f,3.6f,.08f,Palette.Alpha(Palette.Red,bp.leaping?1:.4f));Rect(x,.9f,3.6f,1.8f,Palette.Alpha(Palette.Red,a));
+                    if(bp.leaping)for(int i=0;i<3;i++)Tri(x,2.4f-i*.6f,.3f,.3f,Palette.Alpha(Palette.Red,.5f),180);
+                }
+                else
+                {
+                    float age=t-bp.leapStart,r=1.8f+age*9;
+                    if(age<.35f){Rect(bx,.12f,r*2,.12f,Palette.Alpha(Palette.Red,.8f*(1-age/.35f)));Disc(bx,.1f,r*1.2f,.45f,Palette.Alpha(Palette.Red,.25f*(1-age/.35f)));}
+                }
+                return;
+            }
+            if(p.kind==AttackKind.ShieldRush)
+            {
+                if(t<w){float x=bx+face*3;Rect(x,.9f,6.4f,1.8f,Palette.Alpha(Palette.Red,.07f+.06f*pulse));Rect(x,.05f,6.4f,.05f,Palette.Red);for(int i=0;i<4;i++)Tri(bx+face*(1+i*1.4f),1,.35f,.45f,Palette.Alpha(Palette.Red,.45f),face>0?-90:90);}
+                else if(!bp.struck)for(int i=1;i<4;i++)Rect(bx-face*i*.45f,1.2f,.35f,2,Palette.Alpha(Palette.Red,.14f/i));
+                return;
+            }
+            if(p.kind==AttackKind.Sweep)
+            {
+                float second=w+1f/bp.tempo;
+                if(t<w){Rect(bx,.5f,p.range*2,1f,Palette.Alpha(Palette.Red,.07f+.07f*pulse));Rect(bx,.05f,p.range*2,.05f,Palette.Red);Rect(bx,1.02f,p.range*2,.04f,Palette.Alpha(Palette.Red,.7f));}
+                else if(t<second)
+                {
+                    float k=Mathf.Clamp01((t-w)/(second-w));
+                    Rect(bx,1.25f,p.range*2,2.5f,Palette.Alpha(Palette.Red,.04f+.12f*k+.05f*pulse));Rect(bx,2.52f,p.range*2,.04f,Palette.Alpha(Palette.Red,.4f+.5f*k));
+                    if(t<w+.25f)Rect(bx,.45f,p.range*2*Mathf.Clamp01((t-w)/.12f),.14f,Palette.Alpha(Palette.White,.8f));
+                }
+                else if(t<second+.25f)Rect(bx,1.3f,.14f+p.range*2*Mathf.Clamp01((t-second)/.12f),2.4f,Palette.Alpha(Palette.White,.55f));
+                return;
+            }
+            if(p.kind==AttackKind.Step&&t>w)for(int i=1;i<4;i++)Rect(bx+face*i*.4f,1.2f,.3f,2,Palette.Alpha(Palette.Stone,.25f/i));
+        }
+        void RageAura(float time)
+        {
+            var bp=g.BossPatterns;bool casting=g.current!=null&&g.current.kind==AttackKind.Rage&&g.patternAge<g.windup;
+            float pulse=.5f+.5f*Mathf.Sin(time*(casting?18:6)),x=g.boss.x,y=g.boss.y;
+            if(casting)
+            {
+                float k=Mathf.Clamp01(g.patternAge/Mathf.Max(.01f,g.windup));
+                Rect(x,3+y,1.2f+k*1.6f,6,Palette.Alpha(Palette.Red,.08f+.1f*pulse));
+                Disc(x,1.4f+y,2.6f+k*1.5f,3.4f+k*1.5f,Palette.Alpha(Palette.Red,.06f+.06f*pulse));
+                for(int i=0;i<6;i++){float a=time*3+i*1.047f;Disc(x+Mathf.Cos(a)*(1.8f-k),1.4f+y+Mathf.Sin(a)*(1.8f-k),.14f,.14f,Palette.Alpha(Palette.Red,.7f));}
+            }
+            else if(bp.rageActive)
+            {
+                Disc(x,1.3f+y,2.4f,3.2f,Palette.Alpha(Palette.Red,.04f+.03f*pulse));
+                for(int i=0;i<3;i++){float a=time*1.7f+i*2.1f;Disc(x+Mathf.Sin(a)*.7f,.6f+y+Mathf.Repeat(time*1.2f+i*.33f,1)*2.4f,.08f,.08f,Palette.Alpha(Palette.Red,.6f));}
+            }
+        }
+        void Shield(TowerGame.Shot s,float time)
+        {
+            Color glow=s.friendly?Palette.Teal:Palette.Gold;
+            Disc(s.pos.x,s.pos.y,1.1f,1.1f,Palette.Alpha(glow,.14f));
+            var pic=ExternalAssets.Picture("Art/Arakus/Arakus_Shield_Projectile.png");
+            if(pic!=null)Shape(pic,s.pos.x,s.pos.y,1.25f,1.25f,Palette.White,time*720);
+            else{Disc(s.pos.x,s.pos.y,.8f,.8f,Palette.Stone);Disc(s.pos.x,s.pos.y,.35f,.35f,glow);}
+            Line(s.pos-s.vel.normalized*.9f,s.pos-s.vel.normalized*.3f,.1f,Palette.Alpha(glow,.35f));
         }
         void Minion(float x,float t)
         {

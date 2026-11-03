@@ -202,11 +202,13 @@ namespace ReversalTower
         {
             if(ended||mode!=ScreenMode.Battle)return;
             if(barrier)damage*=.15f;
+            damage*=BossPatterns.DamageTakenScale; // 아라쿠스 분노 시전 중에만 절반
             bossHp=Mathf.Max(0,bossHp-damage);bossFlash=.12f;ult=Mathf.Min(100,ult+damage*.03f);shake=Mathf.Max(shake,1.1f);sound.Play("hit");
             Burst(boss+new Vector2(0,1.4f),.5f,Palette.Gold,8);
             if(bossHp<=0)EndBattle(true);
         }
-        public void PlayerHit(float damage,bool canParry,string pattern,float attackerX,bool overlap=true)
+        // ignoreDash: 대시 무적을 무시하는 공격 (아라쿠스 일대 휩쓸기). 맞은 뒤의 무적은 그대로 지킨다.
+        public void PlayerHit(float damage,bool canParry,string pattern,float attackerX,bool overlap=true,bool ignoreDash=false)
         {
             if(ended)return;var s=Stat(pattern);if(s==null)return;
             if(!overlap){s.opportunities++;s.dodges++;return;}
@@ -219,7 +221,7 @@ namespace ReversalTower
                 if(seal&&++sealParries>=3){seal=false;Say("회피 봉인 해제",2);}
                 return;
             }
-            if(playerInv>0){if(dashTime>0){s.opportunities++;s.dodges++;}else s.ignored++;return;}
+            if(playerInv>0&&!(ignoreDash&&dashTime>0)){if(dashTime>0){s.opportunities++;s.dodges++;}else s.ignored++;return;}
             s.opportunities++;s.hits++;damage=Mathf.Min(damage,maxHp*.3f);s.damage+=damage;
             playerHp=Mathf.Max(0,playerHp-damage);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=4;
             if(playerAction=="E"&&actionTime>.6f)skillE=7.5f;
@@ -248,7 +250,7 @@ namespace ReversalTower
             jump=current!=null&&current.kind==AttackKind.Wave&&patternAge>windup-.2f;dash=false;r=ult>=100;f=playerHp<maxHp*.5f;
         }
         public sealed class Hazard{public float x,width,delay,life,damage;public string pattern;public bool parry,hit,wide;public Color color;}
-        public sealed class Shot{public Vector2 pos,vel;public float damage,life=6,radius=.22f;public bool parry,friendly;public string pattern;}
+        public sealed class Shot{public Vector2 pos,vel;public float damage,life=6,radius=.22f,maxTravel,travelled;public bool parry,friendly,returns,returning,hitDone;public string pattern;}
         public sealed class Minion{public float x,hp=25,attack;public string pattern;}
         public sealed class Mote{public Vector2 pos,velocity;public float life,size;public Color color;}
     }

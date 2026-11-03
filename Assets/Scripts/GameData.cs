@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace ReversalTower
 {
-    public enum AttackKind { Slash, Dash, Wave, Rain, Volley, Pillar, Summon, Balance, Barrier, Echo }
+    // 뒤에 붙인 다섯 종류는 아라쿠스 기획 패턴 전용 (순서를 바꾸면 BossDefinition 에셋의 kind 숫자가 어긋난다).
+    public enum AttackKind { Slash, Dash, Wave, Rain, Volley, Pillar, Summon, Balance, Barrier, Echo, Step, ShieldThrow, ShieldRush, Sweep, Rage }
     [Serializable]
     public class Pattern
     {
@@ -12,8 +13,13 @@ namespace ReversalTower
         public float windup, recovery, damage, range;
         public int count;
         public bool parryable;
+        // 선택 조건 (0 = 예전 규칙). 거리 창 [minRange, maxRange], 전용 쿨타임(초), 가중치, 등장 페이즈(2 = 2페이즈부터, -1 = 무작위 선택 안 함).
+        public float minRange, maxRange, cooldown, weight;
+        public int minPhase;
         public Pattern(string id, string name, AttackKind kind, float windup, float recovery, float damage, float range, int count, bool parryable)
         { this.id=id; this.name=name; this.kind=kind; this.windup=windup; this.recovery=recovery; this.damage=damage; this.range=range; this.count=count; this.parryable=parryable; }
+        public Pattern When(float minRange, float maxRange, float cooldown, float weight, int minPhase=0)
+        { this.minRange=minRange; this.maxRange=maxRange; this.cooldown=cooldown; this.weight=weight; this.minPhase=minPhase; return this; }
     }
     [Serializable] public class BossSpec
     {
@@ -28,6 +34,7 @@ namespace ReversalTower
             this.id=id;this.name=name;this.title=title;this.lesson=lesson;this.ultimate=ultimate;this.hp=hp;this.speed=speed;this.patterns=patterns;
             airborne=id=="phanes";hasPillars=id=="arakus";echoBoss=id=="kharos";afterSlashHazard=id=="aethelos";
             dashSpeed=hasPillars?13:18;projectileSpeed=hasPillars?7:8;
+            if(hasPillars)phaseSpeedScale=1f; // 아라쿠스는 2페이즈에 빨라지지 않고, HP 30% 분노 뒤에 1.5배가 된다 (기획서 4.3)
             minionHp=id=="adicus"?32:id=="kharos"?40:24;
             minionSpeed=echoBoss?1.5f:1;
         }
@@ -37,13 +44,19 @@ namespace ReversalTower
         static Pattern P(string id,string name,AttackKind kind,float w,float r,float d,float range,int n=1,bool parry=false)
             =>new Pattern(id,name,kind,w,r,d,range,n,parry);
         public static readonly BossSpec[] Bosses={
+            // 아라쿠스: 팀 기획서 4.1~4.3의 시간·거리. 판정 거리는 기획 거리 + 몸 너비 0.9m. 피해는 기준 12 × 기획 계수(임시).
             new BossSpec("arakus","아라쿠스","첫 번째 문 · 철의 맹세","금빛 공격은 K로 패링. 돌진은 기둥 뒤로 유도하세요.","철왕의 휩쓸기",780,2.1f,
-                P("cleave","거검 휘두르기",AttackKind.Slash,.85f,.85f,18,3.2f,1,true),
-                P("shield","방패 연격",AttackKind.Slash,.65f,.85f,9,2.5f,3,true),
-                P("kick","갑주의 발차기",AttackKind.Slash,.55f,.6f,13,1.9f),
-                P("charge","철벽 돌진",AttackKind.Dash,1.1f,1.2f,23,16),
-                P("throw","돌아오는 방패",AttackKind.Volley,.95f,.75f,15,18,1,true),
-                P("quake","대지 가르기",AttackKind.Wave,1.1f,.9f,20,18,2)),
+                P("cleave","거검 휘두르기",AttackKind.Slash,.85f,.75f,18,2.9f,1,true).When(0,2.9f,6,1.5f),
+                P("shield","방패 내려찍기",AttackKind.Slash,.85f,1.05f,10,1.9f,1,true).When(0,1.9f,0,2),
+                P("kick","발차기",AttackKind.Slash,.8f,.4f,8,1.4f).When(0,1.4f,0,2),
+                P("charge","철벽 돌진",AttackKind.Dash,1.1f,.4f,18,24).When(0,99,10,1.2f,2),
+                P("throw","방패 투척 후 대쉬",AttackKind.ShieldThrow,.6f,.5f,14,1.9f,1,true).When(3,7,9,1),
+                P("slam","방패 던지고 내려찍기",AttackKind.ShieldThrow,.6f,.45f,19,2.4f).When(3,7,9,1),
+                P("slash","거검 횡베기",AttackKind.Slash,1.05f,1.05f,12,2.4f).When(0,2.4f,0,3),
+                P("rush","방패 돌진",AttackKind.ShieldRush,.5f,.35f,4,1.4f,8).When(1,5,8,1),
+                P("sweep","일대 휩쓸기",AttackKind.Sweep,1f,.8f,18,6.9f,2).When(0,6.9f,12,.8f),
+                P("step","퀵스텝",AttackKind.Step,.1f,.35f,0,.75f).When(0,99,3,0,-1),
+                P("rage","아라쿠스의 분노",AttackKind.Rage,2.5f,2.5f,0,0).When(0,99,0,0,-1)),
             new BossSpec("phanes","파네스","두 번째 문 · 거짓된 광휘","금빛 광탄을 반사하세요. 빛 기둥은 무적 대시로 통과할 수 있습니다.","굴절의 별",930,2.5f,
                 P("orb","굴절의 광탄",AttackKind.Volley,1f,.85f,17,20,2,true),
                 P("fan","성운의 파편",AttackKind.Volley,.8f,.8f,10,20,5,true),

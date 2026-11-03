@@ -89,7 +89,7 @@ namespace ReversalTower
 #if !DESKTOP_PREVIEW
     public sealed class PixelPresentation:UnityEngine.MonoBehaviour {}
     public sealed class WorldArtist:UnityEngine.MonoBehaviour {public void Initialize(TowerGame g){}public void Render(){}}
-    public static class Palette {public static UnityEngine.Color Teal=new UnityEngine.Color(),Gold=new UnityEngine.Color(),Red=new UnityEngine.Color(),Purple=new UnityEngine.Color();}
+    public static class Palette {public static UnityEngine.Color Teal=new UnityEngine.Color(),Gold=new UnityEngine.Color(),Red=new UnityEngine.Color(),Purple=new UnityEngine.Color(),ParryRim=new UnityEngine.Color();}
     public sealed partial class TowerGame {void InitGui(){} }
 #endif
 }

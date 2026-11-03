@@ -92,8 +92,9 @@ namespace ReversalTower
                 if(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage))RageAura(time);
                 foreach(var h in g.hazards)
                 {
-                    if(h.delay>0){Rect(h.x,.04f,h.width,.07f,h.color);Rect(h.x,3,h.width,6,Palette.Alpha(h.color,.055f));for(int i=0;i<3;i++)Tri(h.x,1.2f+i*.8f,.2f,.22f,Palette.Alpha(h.color,.3f),180);}
-                    else{Rect(h.x,4,h.width,8,Palette.Alpha(h.color,.7f));Rect(h.x,4,h.width*.35f,8,Palette.White);}
+                    Color hc=h.parry?Palette.ParryRim:h.color;   // 패링 가능한 잔상은 파란 예고
+                    if(h.delay>0){Rect(h.x,.04f,h.width,.07f,hc);Rect(h.x,3,h.width,6,Palette.Alpha(hc,.055f));for(int i=0;i<3;i++)Tri(h.x,1.2f+i*.8f,.2f,.22f,Palette.Alpha(hc,.3f),180);}
+                    else{Rect(h.x,4,h.width,8,Palette.Alpha(hc,.7f));Rect(h.x,4,h.width*.35f,8,Palette.White);}
                 }
                 if(g.barrier)
                 {Rect(0,2.6f,.24f,5.2f,Palette.Alpha(Palette.Gold,.4f));for(int i=0;i<7;i++)Line(new Vector2(-.45f,i*.75f),new Vector2(.45f,i*.75f+.4f),.05f,Palette.Gold);Rect(0,5.65f,1.5f,.08f,Palette.Slate);Rect(-.75f+.75f*Mathf.Max(0,g.barrierHp)/45,5.65f,1.5f*Mathf.Max(0,g.barrierHp)/45,.08f,Palette.Gold);}
@@ -104,7 +105,7 @@ namespace ReversalTower
                 foreach(var s in g.shots)
                 {
                     if(s.returns){Shield(s,time);continue;}
-                    Color c=s.friendly?Palette.Teal:s.parry?Palette.Gold:Palette.Red;Disc(s.pos.x,s.pos.y,s.radius*5,s.radius*5,Palette.Alpha(c,.12f));Line(s.pos-s.vel.normalized*.65f,s.pos,.08f,Palette.Alpha(c,.4f));Disc(s.pos.x,s.pos.y,s.radius*2,s.radius*2,c);Disc(s.pos.x,s.pos.y,s.radius,s.radius,Palette.White);}
+                    Color c=s.friendly?Palette.Teal:s.parry?Palette.ParryRim:Palette.Red;Disc(s.pos.x,s.pos.y,s.radius*5,s.radius*5,Palette.Alpha(c,.12f));Line(s.pos-s.vel.normalized*.65f,s.pos,.08f,Palette.Alpha(c,.4f));Disc(s.pos.x,s.pos.y,s.radius*2,s.radius*2,c);Disc(s.pos.x,s.pos.y,s.radius,s.radius,Palette.White);}
                 if(g.parryAge<.21f)
                 {float a=Mathf.Clamp01(1-g.parryAge/.24f);Disc(g.player.x+g.face*.6f,g.player.y+1.1f,.8f,1.7f,Palette.Alpha(Palette.Teal,a*.25f));Rect(g.player.x+g.face*.65f,g.player.y+1.1f,.07f,1.6f,Palette.Alpha(Palette.White,a));}
                 if(g.dashTime>0)for(int i=1;i<4;i++)Rect(g.player.x-g.face*i*.5f,g.player.y+.9f,.4f,1.4f,Palette.Alpha(Palette.Teal,.14f/i));
@@ -127,14 +128,14 @@ namespace ReversalTower
         {
             var p=g.current;float remaining=g.windup-g.patternAge;
             if(remaining<=0)return;
-            Color c=p.parryable?Palette.Gold:Palette.Red;float opacity=.08f+.05f*Mathf.Sin(g.realClock*14);
+            Color c=p.parryable?Palette.ParryRim:Palette.Red;float opacity=.08f+.05f*Mathf.Sin(g.realClock*14);
             if(p.kind==AttackKind.Slash)
             {bool radial=p.id=="spin";float x=radial?g.boss.x:g.boss.x+g.bossFace*p.range*.5f;Rect(x,.8f,radial?p.range*2:p.range,1.6f,Palette.Alpha(c,opacity));Rect(x,.05f,radial?p.range*2:p.range,.04f,c);}
             if(p.kind==AttackKind.Dash){Rect(0,.06f,24,.05f,Palette.Red);for(int i=0;i<8;i++)Tri(-10+i*3,.4f,.35f,.45f,Palette.Alpha(c,.4f),g.bossFace>0?-90:90);}
             if(p.kind==AttackKind.Balance)
             {Rect(g.safeSide*6,.04f,11.2f,.1f,Palette.Teal);Rect(g.safeSide*6,1,11.2f,2,Palette.Alpha(Palette.Teal,.08f));}
         }
-        // ── 아라쿠스 기획 패턴 예고·효과: 금빛 = 패링 가능, 붉은빛 = 피하거나 거리 벌리기 ──
+        // ── 아라쿠스 기획 패턴 예고·효과: 파란빛 = 패링 가능, 붉은빛 = 피하거나 거리 벌리기 ──
         void ArakusCues(float time)
         {
             var bp=g.BossPatterns;var p=g.current;float t=g.patternAge,w=g.windup,pulse=.5f+.5f*Mathf.Sin(time*16);
@@ -145,12 +146,12 @@ namespace ReversalTower
                 {
                     // 두 패턴이 같은 예고 (이지선다): 방패가 날아갈 길
                     Vector2 hand=g.boss+new Vector2(face*.75f,1.25f);Vector2 aim=(g.player+Vector2.up*.9f-hand).normalized;
-                    for(int i=1;i<=7;i++){Vector2 q=hand+aim*i;Disc(q.x,q.y,.18f,.18f,Palette.Alpha(Palette.Gold,.18f+.25f*pulse*(i/7f)));}
+                    for(int i=1;i<=7;i++){Vector2 q=hand+aim*i;Disc(q.x,q.y,.18f,.18f,Palette.Alpha(Palette.ParryRim,.18f+.25f*pulse*(i/7f)));}
                     return;
                 }
                 if(p.id=="throw")
                 {
-                    if(!bp.struck){float x=bp.moveTo+face*p.range*.5f;Rect(x,.8f,p.range,1.6f,Palette.Alpha(Palette.Gold,.1f+.08f*pulse));Rect(x,.05f,p.range,.05f,Palette.Gold);}
+                    if(!bp.struck){float x=bp.moveTo+face*p.range*.5f;Rect(x,.8f,p.range,1.6f,Palette.Alpha(Palette.ParryRim,.1f+.08f*pulse));Rect(x,.05f,p.range,.05f,Palette.ParryRim);}
                     else if(t<w+1.1f){float x=bx+face*1.2f;Line(new Vector2(x-face*.9f,2.1f),new Vector2(x+face*.5f,.3f),.12f,Palette.Alpha(Palette.White,.8f));}
                     return;
                 }
@@ -208,7 +209,7 @@ namespace ReversalTower
         }
         void Shield(TowerGame.Shot s,float time)
         {
-            Color glow=s.friendly?Palette.Teal:Palette.Gold;
+            Color glow=s.friendly?Palette.Teal:Palette.ParryRim;
             Disc(s.pos.x,s.pos.y,1.1f,1.1f,Palette.Alpha(glow,.14f));
             var pic=ExternalAssets.Picture("Art/Arakus/Arakus_Shield_Projectile.png");
             if(pic!=null)Shape(pic,s.pos.x,s.pos.y,1.25f,1.25f,Palette.White,time*720);

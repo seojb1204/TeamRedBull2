@@ -182,7 +182,7 @@ namespace ReversalTower
                     {
                         struck=true;g.boss.x=moveTo;
                         g.PlayerHit(patternDamage,true,p.id,g.boss.x,InFront(p.range)&&g.player.y<2.2f);
-                        g.Burst(g.boss+new Vector2(g.bossFace*1.3f,1.2f),.8f,Palette.Gold,10);g.shake=Mathf.Max(g.shake,2.5f);
+                        g.Burst(g.boss+new Vector2(g.bossFace*1.3f,1.2f),.8f,Palette.ParryRim,10);g.shake=Mathf.Max(g.shake,2.5f);
                     }
                     poseFrame=2;
                     if(t>=dashEnd+recovery)Finish();
@@ -321,7 +321,7 @@ namespace ReversalTower
                 // 거검 휘두르기: 맞으면 1m 날아감 (PlayerHit 기본 0.45m + 0.55m)
                 if(g.spec.hasPillars&&p.id=="cleave"&&g.hits>hitsBefore)g.player.x=Mathf.Clamp(g.player.x+g.bossFace*.55f,TowerGame.Left+.4f,TowerGame.Right-.4f);
                 if(g.spec.hasPillars)g.shake=Mathf.Max(g.shake,p.id=="shield"?3.5f:2);
-                g.Burst(g.boss+new Vector2(g.bossFace*1.5f,1.25f),.6f,p.parryable?Palette.Gold:Palette.Red,7);
+                g.Burst(g.boss+new Vector2(g.bossFace*1.5f,1.25f),.6f,p.parryable?Palette.ParryRim:Palette.Red,7);
                 if(g.spec.afterSlashHazard&&phaseTwo)g.hazards.Add(new TowerGame.Hazard{x=g.boss.x,width=1.5f,delay=.8f,life=.25f,damage=14,pattern=p.id,color=Palette.Purple});
             }
             else if(p.kind==AttackKind.Dash)

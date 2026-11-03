@@ -45,7 +45,7 @@ namespace ReversalTower
             =>new Pattern(id,name,kind,w,r,d,range,n,parry);
         public static readonly BossSpec[] Bosses={
             // 아라쿠스: 팀 기획서 4.1~4.3의 시간·거리. 판정 거리는 기획 거리 + 몸 너비 0.9m. 피해는 기준 12 × 기획 계수(임시).
-            new BossSpec("arakus","아라쿠스","첫 번째 문 · 철의 맹세","금빛 공격은 K로 패링. 돌진은 기둥 뒤로 유도하세요.","철왕의 휩쓸기",780,2.1f,
+            new BossSpec("arakus","아라쿠스","첫 번째 문 · 철의 맹세","파랗게 빛나는 공격은 K로 패링. 돌진은 기둥 뒤로 유도하세요.","철왕의 휩쓸기",780,2.1f,
                 P("cleave","거검 휘두르기",AttackKind.Slash,.85f,.75f,18,2.9f,1,true).When(0,2.9f,6,1.5f),
                 P("shield","방패 내려찍기",AttackKind.Slash,.85f,1.05f,10,1.9f,1,true).When(0,1.9f,0,2),
                 P("kick","발차기",AttackKind.Slash,.8f,.4f,8,1.4f).When(0,1.4f,0,2),
@@ -57,7 +57,7 @@ namespace ReversalTower
                 P("sweep","일대 휩쓸기",AttackKind.Sweep,1f,.8f,18,6.9f,2).When(0,6.9f,12,.8f),
                 P("step","퀵스텝",AttackKind.Step,.1f,.35f,0,.75f).When(0,99,3,0,-1),
                 P("rage","아라쿠스의 분노",AttackKind.Rage,2.5f,2.5f,0,0).When(0,99,0,0,-1)),
-            new BossSpec("phanes","파네스","두 번째 문 · 거짓된 광휘","금빛 광탄을 반사하세요. 빛 기둥은 무적 대시로 통과할 수 있습니다.","굴절의 별",930,2.5f,
+            new BossSpec("phanes","파네스","두 번째 문 · 거짓된 광휘","푸른 광탄을 반사하세요. 빛 기둥은 무적 대시로 통과할 수 있습니다.","굴절의 별",930,2.5f,
                 P("orb","굴절의 광탄",AttackKind.Volley,1f,.85f,17,20,2,true),
                 P("fan","성운의 파편",AttackKind.Volley,.8f,.8f,10,20,5,true),
                 P("beam","단죄의 빛 기둥",AttackKind.Pillar,1.05f,1f,21,20,3),

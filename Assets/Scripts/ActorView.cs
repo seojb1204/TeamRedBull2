@@ -62,6 +62,42 @@ namespace ReversalTower
                 animator.Play(state,0,Mathf.Min(.999f,normalized));
                 animator.Update(0);
             }
+            if(bossActor)RenderParryGlow(battle?game.BossPatterns:null,game.realClock);
+        }
+
+        // ── 패링 신호: 같은 그림을 가산 재질로 8방향에 겹쳐 테두리 빛, 몸 위에 한 장 더 얹어 몸 전체를 밝힌다 ──
+        SpriteRenderer[] glow;
+        static readonly Vector2[] GlowDirections={new Vector2(1,0),new Vector2(-1,0),new Vector2(0,1),new Vector2(0,-1),new Vector2(.7f,.7f),new Vector2(-.7f,.7f),new Vector2(.7f,-.7f),new Vector2(-.7f,-.7f)};
+        void RenderParryGlow(BossPatternSystem bp,float time)
+        {
+            float level=bp!=null?bp.parryGlow:0;
+            float flash=bp!=null?Mathf.Clamp01(1-bp.parryFlash/BossPatternSystem.ParryFlashTime):0;
+            bool on=level>.01f||flash>0;
+            if(glow==null)
+            {
+                if(!on||ParryGlow.Material==null)return;
+                glow=new SpriteRenderer[GlowDirections.Length*2+1];
+                for(int i=0;i<glow.Length;i++)
+                {
+                    bool shine=i==glow.Length-1;
+                    var child=new GameObject(shine?"Parry Shine":"Parry Glow");child.transform.SetParent(body.transform,false);
+                    var r=child.AddComponent<SpriteRenderer>();r.sharedMaterial=ParryGlow.Material;
+                    r.sortingLayerID=body.sortingLayerID;r.sortingOrder=body.sortingOrder+(shine?1:-1);glow[i]=r;
+                }
+            }
+            for(int i=0;i<glow.Length;i++)glow[i].enabled=on;
+            if(!on)return;
+            float pulse=.85f+.15f*Mathf.Sin(time*22),k=Mathf.Max(level*pulse,flash);
+            int n=GlowDirections.Length;
+            for(int i=0;i<glow.Length;i++)
+            {
+                var r=glow[i];r.sprite=body.sprite;r.flipX=body.flipX;r.flipY=body.flipY;
+                if(i==glow.Length-1){r.transform.localPosition=Vector3.zero;r.color=Palette.Alpha(Palette.ParryCore,.16f*level+.45f*flash);continue;}
+                // 안쪽 고리(약 2px)는 진하게, 바깥 고리(약 5px)는 옅게 → 부드러운 빛 번짐
+                bool outer=i>=n;float reach=(outer?.11f:.045f)*(1+.6f*flash);
+                r.transform.localPosition=(Vector3)(GlowDirections[i%n]*reach);
+                r.color=Palette.Alpha(Palette.ParryRim,(outer?.16f:.42f)*k);
+            }
         }
 
         static string PoseForPattern(string id)

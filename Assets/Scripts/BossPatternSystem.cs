@@ -20,6 +20,12 @@ namespace ReversalTower
         public bool shieldOut,shieldCaught,leaping,struck,touched;
         public float leapStart,leapFrom,leapTo,moveFrom,moveTo;
         public Pattern forceNext;        // 개발용: 다음에 바로 실행할 패턴 (TowerGame.DevKeys)
+        // 패링 신호 (파란 빛): 패링 가능한 공격을 시전하기 전 보스 몸이 파랗게 빛나고,
+        // 받아칠 순간 ParryFlashLead초 전에 푸른 별빛이 번쩍인다. 화면은 ActorView·WorldArtist가 그린다.
+        public const float ParryCueLead=1.2f, ParryFlashLead=.35f, ParryFlashTime=.3f;
+        public float parryGlow;          // 0~1 보스 몸의 파란 빛 (부드럽게 따라감)
+        public float parryFlash=99;      // 보스 무기 앞 별빛이 터진 뒤 지난 시간
+        int patternSerial,cueKey=-1;float cueSoundAt=-9;
         public float DamageTakenScale => current!=null&&current.kind==AttackKind.Rage?RageDamageTaken:1f;
         public BossPatternSystem(TowerGame game) { g = game; }
         public void Reset()
@@ -27,6 +33,7 @@ namespace ReversalTower
             cooldowns.Clear(); previousPattern=""; dashHit=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
             shieldOut=shieldCaught=leaping=struck=touched=false;forceNext=null;
+            parryGlow=0;parryFlash=99;cueKey=-1;cueSoundAt=-9;
         }
         readonly Dictionary<string,float> cooldowns=new Dictionary<string,float>();
         readonly System.Random combatRandom=new System.Random();
@@ -277,7 +284,7 @@ namespace ReversalTower
         }
         public void BeginPattern(Pattern p)
         {
-            current=p;patternAge=0;attackStep=0;dashHit=false;g.bossFace=g.player.x>=g.boss.x?1:-1;
+            current=p;patternAge=0;attackStep=0;dashHit=false;patternSerial++;g.bossFace=g.player.x>=g.boss.x?1:-1;
             origin=g.boss;targetX=g.player.x;
             int level=g.Stat(p.id).level;
             float[] telegraph={1.3f,1.15f,1,.9f,.8f},damage={.8f,.9f,1,1.1f,1.2f},cooldown={1.25f,g.spec.phaseSpeedScale,1,.9f,.8f};
@@ -356,6 +363,50 @@ namespace ReversalTower
             int l=g.Stat(p.id).level;interval*=l<0?1.1f:l>0?.95f:1;
             nextHit=patternAge+interval;
         }
+        // ── 패링 신호 ──
+        // 보스가 다음에 '패링 가능한' 동작을 하기까지 남은 시간 (-1 = 없음). melee = 보스 무기로 직접 치는 타격.
+        // 투사체·잔상은 던지는 순간까지만 보스가 빛나고, 받아칠 순간의 별빛은 투사체 쪽에서 터진다.
+        public float ParryCueTime(out bool melee)
+        {
+            melee=false;var p=current;
+            if(p==null||bossStagger>0||g.BattleEnded)return -1;
+            if(p.kind==AttackKind.ShieldThrow)
+            {
+                if(attackStep==0)return Mathf.Max(0,windup-patternAge);                    // 방패 투척
+                if(p.id=="throw"&&!struck){melee=true;return Mathf.Max(0,windup+.8f/tempo-patternAge);} // 대쉬 끝 베기
+                return -1;
+            }
+            if(p.kind>=AttackKind.Step||!p.parryable||attackStep>=patternCount)return -1;
+            if(p.kind==AttackKind.Dash)
+            {
+                melee=true;float reach=Mathf.Abs(g.player.x-g.boss.x)/Mathf.Max(1,g.spec.dashSpeed*tempo);
+                if(attackStep==0)return Mathf.Max(0,nextHit-patternAge)+reach;
+                return dashHit?-1:reach;
+            }
+            melee=p.kind==AttackKind.Slash;
+            return Mathf.Max(0,nextHit-patternAge);
+        }
+        // 투사체가 플레이어에게 닿기까지 남은 시간 (멀어지는 중이면 99)
+        public float ShotEta(TowerGame.Shot s)
+        {
+            float dx=g.player.x-s.pos.x;
+            if(Mathf.Abs(s.vel.x)<.01f||dx*s.vel.x<=0)return 99;
+            return Mathf.Max(0,Mathf.Abs(dx)-.5f-s.radius)/Mathf.Abs(s.vel.x);
+        }
+        public void TickParryCue(float dt)
+        {
+            float t=ParryCueTime(out bool melee);
+            float target=t<0||t>ParryCueLead?0:.55f+.45f*(1-t/ParryCueLead);
+            parryGlow=Mathf.MoveTowards(parryGlow,target,dt*(target>parryGlow?6:3));
+            parryFlash+=dt;
+            int key=patternSerial*32+attackStep+(struck?16:0);
+            if(melee&&t>=0&&t<=ParryFlashLead&&key!=cueKey){cueKey=key;parryFlash=0;Ting();}
+            foreach(var s in g.shots)
+                if(s.parry&&!s.friendly&&!s.hitDone&&s.cueAt<0&&ShotEta(s)<=ParryFlashLead){s.cueAt=g.seconds;Ting();}
+            foreach(var h in g.hazards)
+                if(h.parry&&h.cueAt<0&&h.delay>0&&h.delay<=ParryFlashLead){h.cueAt=g.seconds;Ting();}
+        }
+        void Ting(){if(g.seconds-cueSoundAt>.12f){cueSoundAt=g.seconds;g.PlaySound("cue");}}
         public void FireShot(Vector2 pos,Vector2 velocity,float damage,bool parry,string pattern,bool friendly=false)
         {g.shots.Add(new TowerGame.Shot{pos=pos,vel=velocity,damage=damage,parry=parry,pattern=pattern,friendly=friendly});}
         public void TickShots(float dt)

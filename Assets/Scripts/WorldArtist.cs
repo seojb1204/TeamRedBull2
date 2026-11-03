@@ -6,11 +6,17 @@ namespace ReversalTower
     public static class Palette
     {
         public static readonly Color Ink=new Color(.035f,.05f,.075f),Slate=new Color(.12f,.16f,.21f),Stone=new Color(.22f,.28f,.33f),Teal=new Color(.33f,.89f,.83f),Gold=new Color(1,.76f,.37f),Red=new Color(1,.30f,.32f),Purple=new Color(.69f,.49f,1),White=new Color(.91f,.92f,.87f);
+        // 패링 신호 (파란 빛): 테두리 빛 / 몸 위 빛·별빛 중심
+        public static readonly Color ParryRim=new Color(.28f,.62f,1f),ParryCore=new Color(.72f,.88f,1f);
         public static Color Alpha(Color c,float a){c.a=a;return c;}
     }
     public sealed class WorldArtist : MonoBehaviour
     {
         TowerGame g;Sprite box,disk,triangle;readonly List<SpriteRenderer> pool=new List<SpriteRenderer>();int cursor;
+        bool glowing;int layerBoost;   // 가산(발광) 재질로 그리기 / 아라쿠스 그림(정렬 1000) 위에 그리기
+#if !DESKTOP_PREVIEW
+        Material spriteMaterial;
+#endif
         public void Initialize(TowerGame game)
         {
             g=game;box=Make(0);disk=Make(1);triangle=Make(2);
@@ -30,12 +36,18 @@ namespace ReversalTower
         void Shape(Sprite sprite,float x,float y,float w,float h,Color color,float angle=0)
         {
             if(cursor>=pool.Count){var obj=new GameObject("Ink "+cursor);obj.transform.SetParent(transform);pool.Add(obj.AddComponent<SpriteRenderer>());}
-            var r=pool[cursor];r.gameObject.SetActive(true);r.sprite=sprite;r.color=color;r.sortingOrder=cursor++;
+            var r=pool[cursor];r.gameObject.SetActive(true);r.sprite=sprite;r.color=color;r.sortingOrder=layerBoost+cursor++;
+#if !DESKTOP_PREVIEW
+            if(spriteMaterial==null)spriteMaterial=r.sharedMaterial;
+            var material=glowing&&ParryGlow.Material!=null?ParryGlow.Material:spriteMaterial;
+            if(r.sharedMaterial!=material)r.sharedMaterial=material;
+#endif
             r.transform.position=new Vector3(x,y,0);r.transform.localScale=new Vector3(w,h,1);r.transform.rotation=Quaternion.Euler(0,0,angle);
         }
         void Rect(float x,float y,float w,float h,Color c,float a=0)=>Shape(box,x,y,w,h,c,a);
         void Disc(float x,float y,float w,float h,Color c)=>Shape(disk,x,y,w,h,c);
         void Tri(float x,float y,float w,float h,Color c,float a=0)=>Shape(triangle,x,y,w,h,c,a);
+        void GlowShape(Sprite sprite,float x,float y,float w,float h,Color c,float a=0){glowing=true;Shape(sprite,x,y,w,h,c,a);glowing=false;}
         void Line(Vector2 a,Vector2 b,float width,Color c)
         {var d=b-a;Rect((a.x+b.x)*.5f,(a.y+b.y)*.5f,d.magnitude,width,c,Mathf.Atan2(d.y,d.x)*Mathf.Rad2Deg);}
         public void Render()
@@ -87,6 +99,7 @@ namespace ReversalTower
                 {Rect(0,2.6f,.24f,5.2f,Palette.Alpha(Palette.Gold,.4f));for(int i=0;i<7;i++)Line(new Vector2(-.45f,i*.75f),new Vector2(.45f,i*.75f+.4f),.05f,Palette.Gold);Rect(0,5.65f,1.5f,.08f,Palette.Slate);Rect(-.75f+.75f*Mathf.Max(0,g.barrierHp)/45,5.65f,1.5f*Mathf.Max(0,g.barrierHp)/45,.08f,Palette.Gold);}
                 foreach(var m in g.minions)Minion(m.x,time);
                 Character(g.player,1,g.face,g.stun>0?"hit":g.dashTime>0?"dash":g.attackAnim>0?g.playerAction:Mathf.Abs(g.pvY)>1?"jump":Mathf.Abs(g.horizontalSpeed)>.3f?"run":"idle",false,time,g.hitFlash>0?Palette.Red:Palette.Teal);
+                ParryAura();
                 Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
                 foreach(var s in g.shots)
                 {
@@ -95,6 +108,7 @@ namespace ReversalTower
                 if(g.parryAge<.21f)
                 {float a=Mathf.Clamp01(1-g.parryAge/.24f);Disc(g.player.x+g.face*.6f,g.player.y+1.1f,.8f,1.7f,Palette.Alpha(Palette.Teal,a*.25f));Rect(g.player.x+g.face*.65f,g.player.y+1.1f,.07f,1.6f,Palette.Alpha(Palette.White,a));}
                 if(g.dashTime>0)for(int i=1;i<4;i++)Rect(g.player.x-g.face*i*.5f,g.player.y+.9f,.4f,1.4f,Palette.Alpha(Palette.Teal,.14f/i));
+                ParryGlints();
             }
             else
             {
@@ -119,8 +133,6 @@ namespace ReversalTower
             if(p.kind==AttackKind.Dash){Rect(0,.06f,24,.05f,Palette.Red);for(int i=0;i<8;i++)Tri(-10+i*3,.4f,.35f,.45f,Palette.Alpha(c,.4f),g.bossFace>0?-90:90);}
             if(p.kind==AttackKind.Balance)
             {Rect(g.safeSide*6,.04f,11.2f,.1f,Palette.Teal);Rect(g.safeSide*6,1,11.2f,2,Palette.Alpha(Palette.Teal,.08f));}
-            if(p.parryable&&remaining<.3f)
-            {float x=g.boss.x,y=g.boss.y+3.3f;Disc(x,y,.7f,.7f,Palette.Alpha(Palette.Gold,.2f));Rect(x,y,.3f,.3f,Palette.Gold,45);Line(new Vector2(x-.6f,y),new Vector2(x+.6f,y),.035f,Palette.White);}
         }
         // ── 아라쿠스 기획 패턴 예고·효과: 금빛 = 패링 가능, 붉은빛 = 피하거나 거리 벌리기 ──
         void ArakusCues(float time)
@@ -225,7 +237,56 @@ namespace ReversalTower
                 var hero=ExternalAssets.Hero(action,t,progress,g.pvY);
                 if(hero!=null){Shape(hero,pos.x,pos.y+.89f*scale,6.7f*scale*face,6.7f*scale,Palette.White);return;}
             }
-            Shape(PixelSprites.Get(actor,action,frame),pos.x,pos.y+1.4f*scale,3.36f*scale*face,3.36f*scale,Palette.White);
+            var sprite=PixelSprites.Get(actor,action,frame);float cy=pos.y+1.4f*scale,w=3.36f*scale*face,h=3.36f*scale;
+            // 패링 신호: 같은 그림을 8방향으로 살짝 어긋나게 가산 → 테두리 빛, 몸 위에 한 장 더 → 몸이 밝아짐
+            var bp=g.BossPatterns;bool battle=enemy&&g.mode==ScreenMode.Battle;
+            float level=battle?bp.parryGlow:0,flash=battle?Mathf.Clamp01(1-bp.parryFlash/BossPatternSystem.ParryFlashTime):0;
+            float k=Mathf.Max(level*(.85f+.15f*Mathf.Sin(t*22)),flash);
+            if(level>.01f||flash>0)for(int i=0;i<16;i++)
+            {
+                float a=i*Mathf.PI/4,reach=(i<8?.06f:.15f)*(1+.6f*flash);
+                GlowShape(sprite,pos.x+Mathf.Cos(a)*reach,cy+Mathf.Sin(a)*reach,w,h,Palette.Alpha(Palette.ParryRim,(i<8?.42f:.16f)*k));
+            }
+            Shape(sprite,pos.x,cy,w,h,Palette.White);
+            if(level>.01f||flash>0)GlowShape(sprite,pos.x,cy,w,h,Palette.Alpha(Palette.ParryCore,.16f*level+.45f*flash));
+        }
+        // 패링 신호: 보스 뒤 푸른 빛 번짐 (몸 테두리 빛과 함께 '이 공격은 받아칠 수 있다'를 알림)
+        void ParryAura()
+        {
+            var bp=g.BossPatterns;float level=bp.parryGlow;if(level<=.01f)return;
+            float x=g.boss.x,y=g.boss.y+1.6f,pulse=.8f+.2f*Mathf.Sin(g.realClock*9);
+            GlowShape(disk,x,y,4.6f,5.4f,Palette.Alpha(Palette.ParryRim,.07f*level*pulse));
+            GlowShape(disk,x,y,2.8f,3.6f,Palette.Alpha(Palette.ParryRim,.09f*level*pulse));
+            for(int i=0;i<5;i++)
+            {
+                float u=Mathf.Repeat(g.realClock*.9f+i*.2f,1);
+                GlowShape(disk,x+Mathf.Sin(i*2.4f+g.realClock*2)*.9f,g.boss.y+.3f+u*3.2f,.09f,.09f,Palette.Alpha(Palette.ParryCore,.7f*level*(1-u)));
+            }
+        }
+        // 패링 신호: 받아칠 순간 직전 푸른 별빛 (근접 = 보스 무기 앞, 투사체·잔상 = 그 자리). 아라쿠스 그림보다 위에 그린다.
+        void ParryGlints()
+        {
+            var bp=g.BossPatterns;float span=BossPatternSystem.ParryFlashTime;
+            layerBoost=2000;
+            float melee=Mathf.Clamp01(1-bp.parryFlash/span);
+            if(melee>0)Glint(g.boss.x+g.bossFace*1.3f,g.boss.y+1.8f,melee,1);
+            foreach(var s in g.shots)if(s.cueAt>=0&&!s.friendly){float k=Mathf.Clamp01(1-(g.seconds-s.cueAt)/span);if(k>0)Glint(s.pos.x,s.pos.y,k,.7f);}
+            foreach(var hz in g.hazards)if(hz.cueAt>=0){float k=Mathf.Clamp01(1-(g.seconds-hz.cueAt)/span);if(k>0)Glint(hz.x,1.3f,k,.9f);}
+            layerBoost=0;
+        }
+        // 푸른 별빛 한 번 (k: 막 터졌을 때 1 → 0). 긴 가로줄 + 세로줄 + X자 별 + 퍼지는 고리
+        void Glint(float x,float y,float k,float size)
+        {
+            float pop=Mathf.Clamp01((1-k)/.18f),grow=size*(.6f+.4f*pop);
+            GlowShape(disk,x,y,2.6f*grow,2.6f*grow,Palette.Alpha(Palette.ParryRim,.22f*k));
+            GlowShape(box,x,y,1+9*grow*k,.07f,Palette.Alpha(Palette.ParryRim,.9f*k));
+            GlowShape(box,x,y,.5f+4*grow*k,.035f,Palette.Alpha(Palette.ParryCore,.9f*k));
+            GlowShape(box,x,y,.05f,.4f+2.6f*grow*k,Palette.Alpha(Palette.ParryRim,.8f*k));
+            GlowShape(box,x,y,1.1f*grow,.13f,Palette.Alpha(Palette.ParryCore,k),45);
+            GlowShape(box,x,y,1.1f*grow,.13f,Palette.Alpha(Palette.ParryCore,k),-45);
+            GlowShape(disk,x,y,.42f*grow,.42f*grow,Palette.Alpha(Palette.White,k));
+            float ring=(.55f+1.1f*(1-k))*size;
+            for(int i=0;i<20;i++){float a=i*Mathf.PI/10;GlowShape(box,x+Mathf.Cos(a)*ring,y+Mathf.Sin(a)*ring,.22f*size,.05f,Palette.Alpha(Palette.ParryRim,.55f*k),a*Mathf.Rad2Deg+90);}
         }
     }
 }

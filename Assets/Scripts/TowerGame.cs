@@ -180,7 +180,7 @@ namespace ReversalTower
             dashTime-=dt;
             pvY-=22.5f*dt;player.y+=pvY*dt;if(player.y<0){player.y=0;pvY=0;}
             if(actionTime>0)TickAction(dt);if(ended)return;
-            TickBoss(dt);if(ended)return;
+            TickBoss(dt);if(ended)return;BossPatterns.TickParryCue(dt);
             TickShots(dt);if(ended)return;TickHazards(dt);if(ended)return;TickMinions(dt);
             if(playerHp<=0)EndBattle(false);
         }
@@ -272,8 +272,8 @@ namespace ReversalTower
             parry=current!=null&&current.parryable&&patternAge>windup-.14f&&patternAge<windup-.09f;
             jump=current!=null&&current.kind==AttackKind.Wave&&patternAge>windup-.2f;dash=false;r=ult>=100;f=playerHp<maxHp*.5f;
         }
-        public sealed class Hazard{public float x,width,delay,life,damage;public string pattern;public bool parry,hit,wide;public Color color;}
-        public sealed class Shot{public Vector2 pos,vel;public float damage,life=6,radius=.22f,maxTravel,travelled;public bool parry,friendly,returns,returning,hitDone;public string pattern;}
+        public sealed class Hazard{public float x,width,delay,life,damage;public string pattern;public bool parry,hit,wide;public float cueAt=-1;public Color color;}
+        public sealed class Shot{public Vector2 pos,vel;public float damage,life=6,radius=.22f,maxTravel,travelled;public bool parry,friendly,returns,returning,hitDone;public float cueAt=-1;public string pattern;}
         public sealed class Minion{public float x,hp=25,attack;public string pattern;}
         public sealed class Mote{public Vector2 pos,velocity;public float life,size;public Color color;}
     }

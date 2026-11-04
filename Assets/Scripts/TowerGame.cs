@@ -113,7 +113,7 @@ namespace ReversalTower
         void Capture(){string path=System.IO.Path.Combine(SaveStore.Root,"Screenshot_"+DateTime.Now.ToString("yyyyMMdd_HHmmss")+".png");ScreenCapture.CaptureScreenshot(path);Say("스크린샷을 저장했습니다",2);}
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         // 개발용 단축키 (에디터·개발 빌드에서만): 발표 시연과 패턴 확인용
-        // F2 무적  F3 보스 HP 59%(2페이즈)  F4 보스 HP 29%(분노)  F5/F6 이전/다음 패턴 바로 실행
+        // F2 무적  F3 보스 HP 59%(2페이즈)  F4 보스 HP 29%(분노)  F5/F6 이전/다음 패턴 바로 실행  F7 패링 성공 연출 미리보기
         bool devGod;int devPattern=-1;
         void DevKeys()
         {
@@ -128,6 +128,7 @@ namespace ReversalTower
                 var p=spec.patterns[devPattern];BossPatterns.forceNext=p;
                 Say("[DEV] 다음 패턴 "+(devPattern+1)+"/"+spec.patterns.Length+" · "+p.name,2);
             }
+            if(Input.GetKeyDown(KeyCode.F7)){bossStagger=Mathf.Max(bossStagger,.45f);ParryFeedback(boss.x);}   // 패링 성공 연출만 미리보기
             if(devGod){playerHp=maxHp;}
         }
 #endif
@@ -237,6 +238,14 @@ namespace ReversalTower
             Burst(player+new Vector2(face*.9f,1),.25f,Palette.Teal,4);
         }
         public float BossWidth=>bossIndex==0?.9f:bossIndex==3?.8f:.65f;
+        // 패링 성공 연출: 멈춤 → 슬로모션, 화면 번쩍임, 부딪힌 곳으로 카메라 펀치, 큰 충돌 불꽃, 보스가 크게 밀려 보임
+        public void ParryFeedback(float attackerX)
+        {
+            float toward=Mathf.Sign(attackerX-player.x);Vector2 clash=player+new Vector2(toward*.8f,1.25f);
+            flash=.3f;shake=6;sound.Play("parry");sound.Play("clang");Burst(clash,2.4f,Palette.Gold,32);
+            HitStop(HitStopParry);slowMo=ParrySlowMo;whiteFlash=.55f;zoomPunch=.8f;zoomFocus=clash;bossFlash=.14f;
+            bossRecoil=toward*.45f;AddImpact(clash,2,1.2f,0);
+        }
         // weight: 타격의 무게 (일반 공격 1, 스킬 1.3~2.6) → 멈춤·흔들림·밀림·불꽃 크기가 커진다
         public void DamageBoss(float damage,float weight=1)
         {
@@ -261,12 +270,7 @@ namespace ReversalTower
             if(activeParry)
             {
                 s.opportunities++;s.parries++;parries++;ult=Mathf.Min(100,ult+15);parryLock=.05f;parryAge=99;bossStagger=Mathf.Max(bossStagger,.45f);
-                // 패링 성공: 멈춤 → 슬로모션, 화면 번쩍임, 부딪힌 곳으로 카메라 펀치, 큰 충돌 불꽃, 보스가 크게 밀려 그로기
-                Vector2 clash=player+new Vector2(face*.8f,1.25f);
-                flash=.3f;shake=6;sound.Play("parry");sound.Play("clang");Burst(clash,2.4f,Palette.Gold,32);
-                HitStop(HitStopParry);slowMo=ParrySlowMo;whiteFlash=.55f;zoomPunch=.8f;zoomFocus=clash;bossFlash=.14f;
-                float away=Mathf.Sign(attackerX-player.x);if(away==0)away=face;bossRecoil=away*.45f;
-                AddImpact(clash,2,1.2f,0);
+                ParryFeedback(attackerX);
                 if(seal&&++sealParries>=3){seal=false;Say("회피 봉인 해제",2);}
                 return;
             }

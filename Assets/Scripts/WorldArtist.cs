@@ -110,6 +110,7 @@ namespace ReversalTower
                 {float a=Mathf.Clamp01(1-g.parryAge/.24f);Disc(g.player.x+g.face*.6f,g.player.y+1.1f,.8f,1.7f,Palette.Alpha(Palette.Teal,a*.25f));Rect(g.player.x+g.face*.65f,g.player.y+1.1f,.07f,1.6f,Palette.Alpha(Palette.White,a));}
                 if(g.dashTime>0)for(int i=1;i<4;i++)Rect(g.player.x-g.face*i*.5f,g.player.y+.9f,.4f,1.4f,Palette.Alpha(Palette.Teal,.14f/i));
                 ParryGlints();
+                Impacts();
             }
             else
             {
@@ -238,9 +239,10 @@ namespace ReversalTower
                 var hero=ExternalAssets.Hero(action,t,progress,g.pvY);
                 if(hero!=null){Shape(hero,pos.x,pos.y+.89f*scale,6.7f*scale*face,6.7f*scale,Palette.White);return;}
             }
+            var bp=g.BossPatterns;bool battle=enemy&&g.mode==ScreenMode.Battle;
+            if(battle)pos.x+=g.bossRecoil;   // 맞으면 살짝 밀려 보임
             var sprite=PixelSprites.Get(actor,action,frame);float cy=pos.y+1.4f*scale,w=3.36f*scale*face,h=3.36f*scale;
             // 패링 신호: 같은 그림을 8방향으로 살짝 어긋나게 가산 → 테두리 빛, 몸 위에 한 장 더 → 몸이 밝아짐
-            var bp=g.BossPatterns;bool battle=enemy&&g.mode==ScreenMode.Battle;
             float level=battle?bp.parryGlow:0,flash=battle?Mathf.Clamp01(1-bp.parryFlash/BossPatternSystem.ParryFlashTime):0;
             float k=Mathf.Max(level*(.85f+.15f*Mathf.Sin(t*22)),flash);
             if(level>.01f||flash>0)for(int i=0;i<16;i++)
@@ -250,6 +252,51 @@ namespace ReversalTower
             }
             Shape(sprite,pos.x,cy,w,h,Palette.White);
             if(level>.01f||flash>0)GlowShape(sprite,pos.x,cy,w,h,Palette.Alpha(Palette.ParryCore,.16f*level+.45f*flash));
+            float hit=battle?Mathf.Clamp01(g.bossFlash/.1f):0;   // 맞았을 때 하얗게 번쩍
+            if(hit>0)GlowShape(sprite,pos.x,cy,w,h,Palette.Alpha(Palette.White,.8f*hit));
+        }
+        // ── 타격감: 충돌 불꽃 (칼자국·패링 충돌·피격) + 화면 하얀 번쩍임. 주인공·아라쿠스 그림(정렬 1000)보다 위에 그린다. ──
+        void Impacts()
+        {
+            layerBoost=2000;
+            foreach(var im in g.impacts)
+            {
+                float u=Mathf.Clamp01(im.age/im.life),k=1-u,s=im.size;Vector2 p=im.pos;
+                if(im.kind==2)
+                {
+                    // 패링 충돌: 둥근 빛 → 긴 가로 섬광 + 세로줄 + X자 별 → 퍼지는 충격파 고리와 방사형 선
+                    GlowShape(disk,p.x,p.y,(1.4f+3.4f*u)*s,(1.4f+3.4f*u)*s,Palette.Alpha(Palette.Gold,.28f*k));
+                    GlowShape(box,p.x,p.y,(2+13*k)*s,.1f*s,Palette.Alpha(Palette.White,k));
+                    GlowShape(box,p.x,p.y,(1+6*k)*s,.05f*s,Palette.Alpha(Palette.Gold,k));
+                    GlowShape(box,p.x,p.y,.07f*s,(1+5*k)*s,Palette.Alpha(Palette.Gold,.85f*k));
+                    float star=(1.2f+1.2f*k)*s;
+                    GlowShape(box,p.x,p.y,star,.16f*s,Palette.Alpha(Palette.White,k),45);GlowShape(box,p.x,p.y,star,.16f*s,Palette.Alpha(Palette.White,k),-45);
+                    GlowShape(disk,p.x,p.y,.7f*s*(.4f+.6f*k),.7f*s*(.4f+.6f*k),Palette.Alpha(Palette.White,k));
+                    float ring=(.4f+2.6f*u)*s;
+                    for(int i=0;i<28;i++){float a=i*Mathf.PI*2/28;GlowShape(box,p.x+Mathf.Cos(a)*ring,p.y+Mathf.Sin(a)*ring,.34f*s,.07f*s*(.3f+.7f*k),Palette.Alpha(Palette.Gold,.9f*k),a*Mathf.Rad2Deg+90);}
+                    for(int i=0;i<12;i++){float a=i*Mathf.PI/6+.26f,r0=(.7f+1.8f*u)*s,len=.9f*k*s;Vector2 d=new Vector2(Mathf.Cos(a),Mathf.Sin(a));Vector2 q=p+d*(r0+len*.5f);GlowShape(box,q.x,q.y,len,.05f*s,Palette.Alpha(Palette.White,.8f*k),a*Mathf.Rad2Deg);}
+                }
+                else if(im.kind==3)
+                {
+                    // 플레이어 피격: 붉은 고리 + X자
+                    float ring=(.3f+1.1f*u)*s;
+                    for(int i=0;i<16;i++){float a=i*Mathf.PI/8;GlowShape(box,p.x+Mathf.Cos(a)*ring,p.y+Mathf.Sin(a)*ring,.22f,.06f,Palette.Alpha(Palette.Red,.8f*k),a*Mathf.Rad2Deg+90);}
+                    GlowShape(box,p.x,p.y,1.2f*s*(.5f+.5f*k),.1f,Palette.Alpha(Palette.Red,k),40);GlowShape(box,p.x,p.y,1.2f*s*(.5f+.5f*k),.1f,Palette.Alpha(Palette.Red,k),-40);
+                }
+                else
+                {
+                    // 칼자국: 비스듬한 하얀 베기 줄(처음엔 길고 굵다가 가늘어짐) + 금빛 테두리 + 작은 별 + 튀는 불티
+                    bool heavy=im.kind==1;float len=(heavy?2.6f:1.8f)*s*(.55f+.45f*k),th=(heavy?.2f:.13f)*s*k;
+                    GlowShape(box,p.x,p.y,len*1.08f,th*2.2f,Palette.Alpha(Palette.Gold,.55f*k),im.angle);
+                    GlowShape(box,p.x,p.y,len,th,Palette.Alpha(Palette.White,k),im.angle);
+                    float star=(heavy?1.1f:.7f)*s*k;
+                    GlowShape(box,p.x,p.y,star,.07f,Palette.Alpha(Palette.White,k),im.angle+90);
+                    GlowShape(disk,p.x,p.y,(heavy?1.5f:1)*s*(.5f+u),(heavy?1.5f:1)*s*(.5f+u),Palette.Alpha(Palette.Gold,.22f*k));
+                    for(int i=0;i<(heavy?10:6);i++){float a=i*Mathf.PI*2/(heavy?10:6)+im.angle*.02f,r0=(.25f+(heavy?1.2f:.8f)*u)*s;Vector2 q=p+new Vector2(Mathf.Cos(a),Mathf.Sin(a))*r0;GlowShape(box,q.x,q.y,.28f*s*k,.04f,Palette.Alpha(Palette.Gold,.9f*k),a*Mathf.Rad2Deg);}
+                }
+            }
+            if(g.whiteFlash>0){layerBoost=3000;Rect(0,5,90,50,Palette.Alpha(Palette.White,g.whiteFlash*.45f));}
+            layerBoost=0;
         }
         // 패링 신호: 보스 뒤 푸른 빛 번짐 (몸 테두리 빛과 함께 '이 공격은 받아칠 수 있다'를 알림)
         void ParryAura()

@@ -15,7 +15,7 @@ namespace ReversalTower
             Vector2 position = bossActor ? game.boss : game.player;
             int facing = bossActor ? game.bossFace : game.face;
             if (!battle) { position=new Vector2(bossActor?6:-5.3f,0); facing=bossActor?-1:1; }
-            transform.position=new Vector3(position.x,position.y,0);
+            transform.position=new Vector3(position.x+(battle&&bossActor?game.bossRecoil:0),position.y,0);   // 맞으면 살짝 밀려 보임
             transform.localScale=new Vector3(1.4f*facing,1.4f,1);
             body.color=(bossActor?game.bossFlash:game.hitFlash)>0?Color.white:new Color(.99f,.99f,.99f,1);
             if(bossActor&&battle&&game.bossFlash<=0)
@@ -62,37 +62,50 @@ namespace ReversalTower
                 animator.Play(state,0,Mathf.Min(.999f,normalized));
                 animator.Update(0);
             }
-            if(bossActor)RenderParryGlow(battle?game.BossPatterns:null,game.realClock);
+            RenderGlow(game,battle);
         }
 
-        // ── 패링 신호: 같은 그림을 가산 재질로 8방향에 겹쳐 테두리 빛, 몸 위에 한 장 더 얹어 몸 전체를 밝힌다 ──
+        // ── 빛 겹치기 (가산 재질) ──
+        // 테두리 빛: 같은 그림을 8방향으로 살짝 어긋나게 겹침 (보스의 파란 패링 신호)
+        // 몸 위 빛: 한 장 더 얹어 몸 전체를 밝힘 (패링 신호 / 맞았을 때 하얀 번쩍임 / 주인공 피격 붉은 번쩍임)
         SpriteRenderer[] glow;
         static readonly Vector2[] GlowDirections={new Vector2(1,0),new Vector2(-1,0),new Vector2(0,1),new Vector2(0,-1),new Vector2(.7f,.7f),new Vector2(-.7f,.7f),new Vector2(.7f,-.7f),new Vector2(-.7f,-.7f)};
-        void RenderParryGlow(BossPatternSystem bp,float time)
+        static readonly Color HurtRed=new Color(1f,.28f,.22f);
+        void RenderGlow(TowerGame game,bool battle)
         {
-            float level=bp!=null?bp.parryGlow:0;
-            float flash=bp!=null?Mathf.Clamp01(1-bp.parryFlash/BossPatternSystem.ParryFlashTime):0;
-            bool on=level>.01f||flash>0;
+            float level=0,flash=0,shine=0;Color shineColor=Palette.ParryCore;
+            if(battle&&bossActor)
+            {
+                var bp=game.BossPatterns;level=bp.parryGlow;flash=Mathf.Clamp01(1-bp.parryFlash/BossPatternSystem.ParryFlashTime);
+                shine=.16f*level+.45f*flash;
+                float hit=Mathf.Clamp01(game.bossFlash/.1f);
+                if(hit>0){shineColor=Color.Lerp(shineColor,Color.white,hit);shine=Mathf.Max(shine,.8f*hit);}
+            }
+            else if(battle)
+            {
+                float hurt=Mathf.Clamp01(game.hitFlash/.18f);
+                if(hurt>0){shineColor=HurtRed;shine=.65f*hurt;}
+            }
+            bool rim=level>.01f||flash>0,on=rim||shine>.01f;
             if(glow==null)
             {
                 if(!on||ParryGlow.Material==null)return;
                 glow=new SpriteRenderer[GlowDirections.Length*2+1];
                 for(int i=0;i<glow.Length;i++)
                 {
-                    bool shine=i==glow.Length-1;
-                    var child=new GameObject(shine?"Parry Shine":"Parry Glow");child.transform.SetParent(body.transform,false);
+                    bool overlay=i==glow.Length-1;
+                    var child=new GameObject(overlay?"Glow Shine":"Glow Rim");child.transform.SetParent(body.transform,false);
                     var r=child.AddComponent<SpriteRenderer>();r.sharedMaterial=ParryGlow.Material;
-                    r.sortingLayerID=body.sortingLayerID;r.sortingOrder=body.sortingOrder+(shine?1:-1);glow[i]=r;
+                    r.sortingLayerID=body.sortingLayerID;r.sortingOrder=body.sortingOrder+(overlay?1:-1);glow[i]=r;
                 }
             }
-            for(int i=0;i<glow.Length;i++)glow[i].enabled=on;
-            if(!on)return;
-            float pulse=.85f+.15f*Mathf.Sin(time*22),k=Mathf.Max(level*pulse,flash);
-            int n=GlowDirections.Length;
+            int n=GlowDirections.Length;float k=Mathf.Max(level*(.85f+.15f*Mathf.Sin(game.realClock*22)),flash);
             for(int i=0;i<glow.Length;i++)
             {
-                var r=glow[i];r.sprite=body.sprite;r.flipX=body.flipX;r.flipY=body.flipY;
-                if(i==glow.Length-1){r.transform.localPosition=Vector3.zero;r.color=Palette.Alpha(Palette.ParryCore,.16f*level+.45f*flash);continue;}
+                var r=glow[i];bool overlay=i==glow.Length-1;
+                r.enabled=overlay?shine>.01f:rim;if(!r.enabled)continue;
+                r.sprite=body.sprite;r.flipX=body.flipX;r.flipY=body.flipY;
+                if(overlay){r.transform.localPosition=Vector3.zero;r.color=Palette.Alpha(shineColor,shine);continue;}
                 // 안쪽 고리(약 2px)는 진하게, 바깥 고리(약 5px)는 옅게 → 부드러운 빛 번짐
                 bool outer=i>=n;float reach=(outer?.11f:.045f)*(1+.6f*flash);
                 r.transform.localPosition=(Vector3)(GlowDirections[i%n]*reach);

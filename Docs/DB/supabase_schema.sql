@@ -108,6 +108,9 @@ group by card;
 --   · 원본 테이블에는 "추가"만 가능 (조회·수정·삭제 불가)
 --   · 집계 뷰는 "조회"만 가능
 -- ----------------------------------------------------------------------------
+-- "Automatically expose new tables"를 끈 프로젝트에서도 동작하도록 필요한 권한을 직접 준다.
+grant usage on schema public to anon;
+
 alter table public.players       enable row level security;
 alter table public.battles       enable row level security;
 alter table public.pattern_stats enable row level security;

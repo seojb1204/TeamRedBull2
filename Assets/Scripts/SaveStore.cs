@@ -53,8 +53,11 @@ namespace ReversalTower
             }
             catch(Exception e){LastError="저장 실패: "+e.Message;Debug.LogError(LastError);return false;}
         }
+        // 전투 기록이 남을 때마다 알림 (CloudSync가 DB로 보냄). 저장 실패와 무관하게 호출된다.
+        public static event Action<HistoryEntry,System.Collections.Generic.List<PatternStats>,SaveData> BattleLogged;
         public static void Log(HistoryEntry h,System.Collections.Generic.List<PatternStats> stats,SaveData progression=null)
         {
+            try{BattleLogged?.Invoke(h,stats,progression);}catch(Exception e){Debug.LogWarning("Battle upload hook failed: "+e.Message);}
             try
             {
                 var dir=Path.Combine(Root,"Battles");Directory.CreateDirectory(dir);

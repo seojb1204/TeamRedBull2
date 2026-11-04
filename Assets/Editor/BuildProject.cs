@@ -49,7 +49,14 @@ public static class BuildProject
         foreach(var boss in Catalog.Bosses)
         {
             var ids=new System.Collections.Generic.HashSet<string>();int parry=0;
-            foreach(var p in boss.patterns){Assert(ids.Add(p.id),"Unique pattern IDs");Assert(p.windup>=.4f&&p.damage>0,"Valid attack data");if(p.parryable)parry++;}
+            foreach(var p in boss.patterns)
+            {
+                Assert(ids.Add(p.id),"Unique pattern IDs");
+                // Movement and state changes intentionally have no attack damage or attack windup.
+                if(p.kind!=AttackKind.Step&&p.kind!=AttackKind.Rage)
+                    Assert(p.windup>=.4f&&p.damage>0,"Valid attack data");
+                if(p.parryable)parry++;
+            }
             Assert(parry>=2,"Each boss offers multiple parry patterns");
         }
         var model=new BanditModel();var x=model.Context(.3f,.5f,0,.4f,2);

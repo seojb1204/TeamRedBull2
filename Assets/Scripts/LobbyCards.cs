@@ -57,6 +57,8 @@ namespace ReversalTower
             var pool=new List<UpgradeCard>(All);var rng=new Random();data.cardOffer=new string[3];
             for(int i=0;i<3;i++){int at=rng.Next(pool.Count);data.cardOffer[i]=pool[at].id;pool.RemoveAt(at);}
         }
+        // 강화 카드를 산 뒤 알림 (카드 id, 비용, 몇 번째 강화인지). CloudSync가 DB로 보냄.
+        public static event Action<string,int,int> Purchased;
         public static bool Purchase(SaveData data,string id,out string error)
         {
             error=null;Normalize(data);
@@ -71,7 +73,9 @@ namespace ReversalTower
             stack.count++;candidate.cardPurchases++;candidate.gold-=cost;candidate.cardChosen=true;candidate.version=2;
             if(!SaveStore.Save(candidate)){error="저장하지 못해 강화를 취소했습니다. "+SaveStore.LastError;return false;}
             data.version=candidate.version;data.cards=candidate.cards;data.gold=candidate.gold;
-            data.cardPurchases=candidate.cardPurchases;data.cardChosen=true;return true;
+            data.cardPurchases=candidate.cardPurchases;data.cardChosen=true;
+            try{Purchased?.Invoke(id,cost,data.cardPurchases-1);}catch(Exception){}
+            return true;
         }
     }
     public sealed partial class TowerGame

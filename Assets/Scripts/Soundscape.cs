@@ -7,7 +7,7 @@ namespace ReversalTower
     public sealed class Soundscape : MonoBehaviour
     {
         AudioSource music,fx;long sample;int rate;public volatile float tension;
-        AudioClip hit,parry,dash,attack,heal,death,confirm,cue,clang,thud;
+        AudioClip hit,parry,dash,attack,heal,death,confirm,cue,clang,thud,step;
         AudioClip battleMusic,carrier;bool externalMusic;
         public void Initialize()
         {
@@ -18,7 +18,7 @@ namespace ReversalTower
             hit=Tone("Impact",100,.16f,.3f,true);parry=Tone("Parry",920,.33f,.25f,false);
             dash=Tone("Dash",180,.18f,.12f,true);attack=Tone("Blade",370,.13f,.12f,true);
             heal=Tone("Heal",520,.5f,.14f,false);death=Tone("Death",65,.8f,.3f,true);confirm=Tone("Confirm",660,.13f,.12f,false);
-            cue=Glint();clang=Clang();thud=Thud();
+            cue=Glint();clang=Clang();thud=Thud();step=Step();
             attack=Imported("attack")??attack;parry=Imported("parry")??parry;hit=Imported("hit")??hit;dash=Imported("dash")??dash;
         }
         AudioClip Imported(string name){var wave=ExternalAssets.Wave(name);if(wave==null)return null;var clip=AudioClip.Create(name,wave.samples.Length/wave.channels,wave.channels,wave.rate,false);clip.SetData(wave.samples,0);return clip;}
@@ -61,8 +61,19 @@ namespace ReversalTower
             }
             var c=AudioClip.Create("Heavy Thud",n,1,rate,false);c.SetData(data,0);return c;
         }
+        // 보스 발소리: 낮게 울리는 짧은 쿵 (흙먼지 잡음 조금)
+        AudioClip Step()
+        {
+            int n=(int)(rate*.22f);var data=new float[n];var rng=new System.Random(23);double ph=0;
+            for(int i=0;i<n;i++)
+            {
+                float t=(float)i/rate;ph+=2*Math.PI*(62-24*Mathf.Clamp01(t*6))/rate;
+                data[i]=((float)Math.Sin(ph)*.9f+((float)rng.NextDouble()*2-1)*Mathf.Exp(-t*55)*.35f)*Mathf.Exp(-t*16)*Mathf.Clamp01(t*500)*.3f;
+            }
+            var c=AudioClip.Create("Boss Step",n,1,rate,false);c.SetData(data,0);return c;
+        }
         public void Play(string sound)
-        {if(!fx)return;fx.PlayOneShot(sound=="clang"?clang:sound=="thud"?thud:sound=="cue"?cue:sound=="parry"?parry:sound=="hit"?hit:sound=="dash"?dash:sound=="heal"?heal:sound=="death"?death:sound=="confirm"?confirm:attack);}
+        {if(!fx)return;fx.PlayOneShot(sound=="step"?step:sound=="clang"?clang:sound=="thud"?thud:sound=="cue"?cue:sound=="parry"?parry:sound=="hit"?hit:sound=="dash"?dash:sound=="heal"?heal:sound=="death"?death:sound=="confirm"?confirm:attack);}
         void OnAudioFilterRead(float[] data,int channels)
         {
             if(rate==0||externalMusic)return;

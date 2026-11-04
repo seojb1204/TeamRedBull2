@@ -26,6 +26,19 @@ namespace ReversalTower
         public float parryGlow;          // 0~1 보스 몸의 파란 빛 (부드럽게 따라감)
         public float parryFlash=99;      // 보스 무기 앞 별빛이 터진 뒤 지난 시간
         int patternSerial,cueKey=-1;float cueSoundAt=-9;
+        // 걷기: walkPhase = 걸어온 거리 / StrideLength (한 주기 = 두 걸음). walking = 이번 프레임에 실제로 걸었는지.
+        // 아라쿠스는 한 걸음씩 쿵쿵 걷는다: 발을 드는 동안 빠르고 디딜 때 느림(평균 속도는 같음), 디딜 때마다 먼지·발소리.
+        public const float StrideLength=1.8f;
+        public float walkPhase;public bool walking;int lastStep;
+        void Walked(float distance)
+        {
+            walking=distance>0;walkPhase+=distance/StrideLength;
+            int step=Mathf.FloorToInt((walkPhase+.125f)*2);
+            if(step==lastStep)return;lastStep=step;
+            if(!g.spec.hasPillars)return;
+            // 홀수 걸음 = 앞발, 짝수 걸음 = 뒷발이 땅에 닿음 (Arakus_Walk 1·3번 프레임에서 든 발)
+            g.BossFootstep(new Vector2(g.boss.x+g.bossFace*(step%2!=0?.4f:-1f),.05f));
+        }
         public float DamageTakenScale => current!=null&&current.kind==AttackKind.Rage?RageDamageTaken:1f;
         public BossPatternSystem(TowerGame game) { g = game; }
         public void Reset()
@@ -33,13 +46,14 @@ namespace ReversalTower
             cooldowns.Clear(); previousPattern=""; dashHit=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
             shieldOut=shieldCaught=leaping=struck=touched=false;forceNext=null;
-            parryGlow=0;parryFlash=99;cueKey=-1;cueSoundAt=-9;
+            parryGlow=0;parryFlash=99;cueKey=-1;cueSoundAt=-9;walkPhase=0;walking=false;lastStep=0;
         }
         readonly Dictionary<string,float> cooldowns=new Dictionary<string,float>();
         readonly System.Random combatRandom=new System.Random();
         string previousPattern="";
         public void TickBoss(float dt)
         {
+            if(dt>0)walking=false;
             if(g.bossHp<=0)return;
             if(!phaseTwo&&g.bossHp<g.spec.hp*g.spec.phaseThreshold)
             {
@@ -72,7 +86,12 @@ namespace ReversalTower
                 float distance=Mathf.Abs(g.boss.x-g.player.x);
                 g.bossFace=g.player.x>=g.boss.x?1:-1;
                 float chase=g.spec.speed*(g.spec.hasPillars?(rageActive?RageTempo:1):(phaseTwo?1.18f:1));
-                if(distance>3.1f&&!g.spec.airborne){g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase);if(distance>5&&combatRandom.NextDouble()>.015)return;}
+                if(distance>3.1f&&!g.spec.airborne)
+                {
+                    float before=g.boss.x,stride=g.spec.hasPillars?1-.6f*Mathf.Cos(walkPhase*4*Mathf.PI):1;
+                    g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase*stride);Walked(Mathf.Abs(g.boss.x-before));
+                    if(distance>5&&combatRandom.NextDouble()>.015)return;
+                }
                 if(g.spec.airborne&&distance<3){g.boss.x=Mathf.MoveTowards(g.boss.x,-Mathf.Sign(g.player.x)*7,dt*4);}
                 SelectPattern(distance);return;
             }

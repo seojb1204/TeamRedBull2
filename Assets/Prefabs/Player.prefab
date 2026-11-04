@@ -49,7 +49,7 @@ MonoBehaviour:
   body: {fileID: 6352717804868875490}
   animator: {fileID: 5774972182225047087}
   bossActor: 0
-  sourcePack: Hero Knight CC0
+  sourcePack: Team Silver Rogue v2
 --- !u!212 &6352717804868875490
 SpriteRenderer:
   serializedVersion: 2
@@ -99,7 +99,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1000
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8381659573352531839, guid: fe7bc981752e9044eb6ffda48122ceef, type: 3}
+  m_Sprite: {fileID: 8796414546810629957, guid: 81eb1863ee45bcb7377eb1c162833fac, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

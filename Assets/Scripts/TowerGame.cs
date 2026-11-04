@@ -28,9 +28,7 @@ namespace ReversalTower
         public readonly List<Impact> impacts=new List<Impact>();
         int hitCount;
         public void HitStop(float t){hitStop=Mathf.Max(hitStop,t);}
-        public void AddImpact(Vector2 pos,int kind,float size,float angle){impacts.Add(new Impact{pos=pos,kind=kind,size=size,angle=angle,life=kind==4?.5f:kind==2?.42f:kind==1?.24f:.17f});if(impacts.Count>24)impacts.RemoveAt(0);}
-        // 보스 발걸음: 살짝 흔들림 + 쿵 소리 + 발밑 먼지
-        public void BossFootstep(Vector2 at){shake=Mathf.Max(shake,1.1f);sound.Play("step");AddImpact(at,4,1.2f,0);}
+        public void AddImpact(Vector2 pos,int kind,float size,float angle){impacts.Add(new Impact{pos=pos,kind=kind,size=size,angle=angle,life=kind==2?.42f:kind==1?.24f:.17f});if(impacts.Count>24)impacts.RemoveAt(0);}
         public HistoryEntry result;public bool wasFirstClear;public float realClock;
         float comboGap;int combo;bool skillFired,ended;float dodgeBuffer,coyote;
         readonly DdaBattleSession dda=new DdaBattleSession();
@@ -309,7 +307,7 @@ namespace ReversalTower
         public sealed class Shot{public Vector2 pos,vel;public float damage,life=6,radius=.22f,maxTravel,travelled;public bool parry,friendly,returns,returning,hitDone;public float cueAt=-1;public string pattern;}
         public sealed class Minion{public float x,hp=25,attack;public string pattern;}
         public sealed class Mote{public Vector2 pos,velocity;public float life,size;public Color color;}
-        // 충돌 불꽃 한 개. kind 0 = 일반 타격, 1 = 강한 타격, 2 = 패링 충돌, 3 = 플레이어 피격, 4 = 발밑 먼지
+        // 충돌 불꽃 한 개. kind 0 = 일반 타격, 1 = 강한 타격, 2 = 패링 충돌, 3 = 플레이어 피격
         public sealed class Impact{public Vector2 pos;public float age,life,size,angle;public int kind;}
     }
 }

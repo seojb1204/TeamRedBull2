@@ -39,7 +39,7 @@ namespace ReversalTower
                     // 패턴이 고른 프레임 (클립은 프레임 N개를 같은 간격으로 놓고 마지막을 한 번 더 둔다 → 중앙 = (k+0.5)/(N+1))
                     normalized=frame>=0?(frame+.5f)/(FramesOf(state)+1):game.patternAge<game.windup?0:game.attackStep<game.patternCount?.38f:.72f;
                 }
-                else if(game.bossState=="추적"&&game.BossPatterns.walking)state="Run";   // 실제로 걸을 때만 걷기 그림
+                else if(game.bossState=="추적")state="Run";
             }
             else if(battle)
             {
@@ -58,8 +58,7 @@ namespace ReversalTower
             }
             if(animator&&animator.runtimeAnimatorController)
             {
-                if(state=="Run"&&bossActor)normalized=Mathf.Repeat(game.BossPatterns.walkPhase+.125f,1);   // 걸은 거리에 맞춰 발을 옮김
-                else if(state=="Run"||state=="Dash")normalized=Mathf.Repeat(game.realClock*1.5f,1);
+                if(state=="Run"||state=="Dash")normalized=Mathf.Repeat(game.realClock*1.5f,1);
                 animator.Play(state,0,Mathf.Min(.999f,normalized));
                 animator.Update(0);
             }

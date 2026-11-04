@@ -76,7 +76,7 @@ public static class FoundationSetup
         controller=AnimatorController.CreateAnimatorControllerAtPath(path);
         string[] states=boss?new[]{"Idle","Run","Attack","SwordSwing","ShieldStrike","Kick","Charge","ShieldThrow","Sweep","Phase","Hit","Death","QuickStep","ShieldDash","ShieldSlam"}:
             new[]{"Idle","Run","Jump","Fall","Attack","Skill","Parry","Dash","Hit","Death"};
-        string[] sheets=boss?new[]{"Idle","Walk","NormalAttack_R_PT","Sword_Swinging_PT","NormalAttack_L_PT","NormalAttack_F_PT","Charge_PT","ShieldThrowing_DashAttack_PT","Aggressive_Attack_PT","Of_Wrath_PT","Groggy","Groggy","QuickStep_PT","ShieldDash_PT","Shield_Throwing_Fly_Attack_PT"}:
+        string[] sheets=boss?new[]{"Idle","Idle","NormalAttack_R_PT","Sword_Swinging_PT","NormalAttack_L_PT","NormalAttack_F_PT","Charge_PT","ShieldThrowing_DashAttack_PT","Aggressive_Attack_PT","Of_Wrath_PT","Groggy","Groggy","QuickStep_PT","ShieldDash_PT","Shield_Throwing_Fly_Attack_PT"}:
             states;   // 주인공: 상태마다 SilverRogue_<상태>.png 한 장 (서정범 님 은발 검사 v2, 오른쪽을 보도록 반전)
         for(int i=0;i<states.Length;i++)
         {

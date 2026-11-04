@@ -276,19 +276,6 @@ namespace ReversalTower
                     for(int i=0;i<28;i++){float a=i*Mathf.PI*2/28;GlowShape(box,p.x+Mathf.Cos(a)*ring,p.y+Mathf.Sin(a)*ring,.34f*s,.07f*s*(.3f+.7f*k),Palette.Alpha(Palette.Gold,.9f*k),a*Mathf.Rad2Deg+90);}
                     for(int i=0;i<12;i++){float a=i*Mathf.PI/6+.26f,r0=(.7f+1.8f*u)*s,len=.9f*k*s;Vector2 d=new Vector2(Mathf.Cos(a),Mathf.Sin(a));Vector2 q=p+d*(r0+len*.5f);GlowShape(box,q.x,q.y,len,.05f*s,Palette.Alpha(Palette.White,.8f*k),a*Mathf.Rad2Deg);}
                 }
-                else if(im.kind==4)
-                {
-                    // 발밑 먼지: 양옆으로 퍼지는 흙먼지 두 덩이 + 바닥 파문 + 작은 돌가루 (빛나지 않으므로 일반 그리기)
-                    Color dust=new Color(.55f,.5f,.44f);
-                    Rect(p.x,.03f,(.6f+1.8f*u)*s,.04f,Palette.Alpha(dust,.45f*k));
-                    for(int side=-1;side<=1;side+=2)
-                    {
-                        float dx=side*(.25f+1f*u)*s,size=(.35f+.55f*u)*s;
-                        Disc(p.x+dx,p.y+.18f+.3f*u,size*1.3f,size*.8f,Palette.Alpha(dust,.32f*k));
-                        Disc(p.x+dx*.6f,p.y+.1f+.18f*u,size*.8f,size*.55f,Palette.Alpha(dust,.25f*k));
-                    }
-                    for(int i=0;i<4;i++){float a=.6f+i*.65f,r=(.3f+1.4f*u)*s;Rect(p.x+Mathf.Cos(a)*r*(i%2==0?1:-1),p.y+.1f+Mathf.Sin(a)*r*.6f-1.2f*u*u,.06f,.06f,Palette.Alpha(new Color(.4f,.35f,.3f),k));}
-                }
                 else if(im.kind==3)
                 {
                     // 플레이어 피격: 붉은 고리 + X자

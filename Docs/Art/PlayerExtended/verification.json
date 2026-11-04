@@ -1,0 +1,12 @@
+{
+  "baseMain": "2e8bcd8b3df0dd0d9ff547caebe90b841392174f",
+  "unity": "6000.4.0f1",
+  "existingLogicAssertions": 119,
+  "newAnimationAssertions": 177,
+  "renderedStates": 17,
+  "actualDbConfigurationExcluded": true,
+  "protectedScenePrefabGuidAndEditorVersionUnchanged": true,
+  "manualPlaythrough": "not performed",
+  "windowsBuild": "not performed",
+  "mainMerged": false
+}

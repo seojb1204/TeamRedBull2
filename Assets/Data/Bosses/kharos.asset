@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150706bf5853351468d95f039e2c1ac8, type: 3}
+  m_Name: kharos
+  m_EditorClassIdentifier: Assembly-CSharp::ReversalTower.BossDefinition
+  template:
+    id: kharos
+    name: "\uCE74\uB85C\uC2A4"
+    title: "\uC228\uACA8\uC9C4 \uC2EC\uC5F0 \xB7 \uBA3C\uC800 \uCD94\uB77D\uD55C
+      \uC790"
+    lesson: "\uC794\uC0C1\uC774 \uACF5\uACA9\uC744 \uBC18\uBCF5\uD569\uB2C8\uB2E4.
+      \uD328\uB9C1 3\uD68C\uB85C \uD68C\uD53C \uBD09\uC778\uC744 \uD574\uC81C\uD558\uC138\uC694."
+    ultimate: "\uC2EC\uC5F0\uC758 \uC794\uC0C1"
+    hp: 1500
+    speed: 3.3
+    phaseThreshold: 0.6
+    phaseSpeedScale: 1.12
+    dashSpeed: 18
+    projectileSpeed: 8
+    minionSpeed: 1.5
+    minionHp: 40
+    airborne: 0
+    hasPillars: 0
+    echoBoss: 1
+    afterSlashHazard: 0
+    patterns:
+    - id: twelve
+      name: "\uB9DD\uC790\uC758 \uC5F0\uACA9"
+      kind: 0
+      windup: 0.7
+      recovery: 1.1
+      damage: 8
+      range: 3.5
+      count: 6
+      parryable: 1
+    - id: draw
+      name: "\uC2EC\uC5F0 \uBC1C\uB3C4"
+      kind: 1
+      windup: 0.8
+      recovery: 0.9
+      damage: 23
+      range: 20
+      count: 1
+      parryable: 1
+    - id: echo
+      name: "\uC774\uB984 \uC5C6\uB294 \uC794\uC0C1"
+      kind: 9
+      windup: 1.15
+      recovery: 1
+      damage: 17
+      range: 4.5
+      count: 3
+      parryable: 1
+    - id: eclipse
+      name: "\uC77C\uC2DD"
+      kind: 7
+      windup: 2.1
+      recovery: 1.2
+      damage: 26
+      range: 20
+      count: 1
+      parryable: 0
+    - id: rain
+      name: "\uAC80\uC758 \uBB34\uB364"
+      kind: 3
+      windup: 1
+      recovery: 0.9
+      damage: 18
+      range: 20
+      count: 5
+      parryable: 0
+    - id: phantom
+      name: "\uB3CC\uC544\uC628 \uB9DD\uC790"
+      kind: 6
+      windup: 0.9
+      recovery: 0.8
+      damage: 11
+      range: 20
+      count: 3
+      parryable: 0
+    - id: end
+      name: "\uC2EC\uC5F0\uC758 \uD30C\uB3D9"
+      kind: 2
+      windup: 1.05
+      recovery: 1.1
+      damage: 20
+      range: 20
+      count: 3
+      parryable: 0

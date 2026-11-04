@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150706bf5853351468d95f039e2c1ac8, type: 3}
+  m_Name: phanes
+  m_EditorClassIdentifier: Assembly-CSharp::ReversalTower.BossDefinition
+  template:
+    id: phanes
+    name: "\uD30C\uB124\uC2A4"
+    title: "\uB450 \uBC88\uC9F8 \uBB38 \xB7 \uAC70\uC9D3\uB41C \uAD11\uD718"
+    lesson: "\uD478\uB978 \uAD11\uD0C4\uC744 \uBC18\uC0AC\uD558\uC138\uC694. \uBE5B
+      \uAE30\uB465\uC740 \uBB34\uC801 \uB300\uC2DC\uB85C \uD1B5\uACFC\uD560 \uC218
+      \uC788\uC2B5\uB2C8\uB2E4."
+    ultimate: "\uAD74\uC808\uC758 \uBCC4"
+    hp: 930
+    speed: 2.5
+    phaseThreshold: 0.6
+    phaseSpeedScale: 1.12
+    dashSpeed: 18
+    projectileSpeed: 8
+    minionSpeed: 1
+    minionHp: 24
+    airborne: 1
+    hasPillars: 0
+    echoBoss: 0
+    afterSlashHazard: 0
+    patterns:
+    - id: orb
+      name: "\uAD74\uC808\uC758 \uAD11\uD0C4"
+      kind: 4
+      windup: 1
+      recovery: 0.85
+      damage: 17
+      range: 20
+      count: 2
+      parryable: 1
+    - id: fan
+      name: "\uC131\uC6B4\uC758 \uD30C\uD3B8"
+      kind: 4
+      windup: 0.8
+      recovery: 0.8
+      damage: 10
+      range: 20
+      count: 5
+      parryable: 1
+    - id: beam
+      name: "\uB2E8\uC8C4\uC758 \uBE5B \uAE30\uB465"
+      kind: 5
+      windup: 1.05
+      recovery: 1
+      damage: 21
+      range: 20
+      count: 3
+      parryable: 0
+    - id: rain
+      name: "\uCD94\uB77D\uD558\uB294 \uBCC4"
+      kind: 3
+      windup: 1.15
+      recovery: 0.85
+      damage: 17
+      range: 20
+      count: 4
+      parryable: 0
+    - id: barrier
+      name: "\uB2E8\uC808\uC758 \uACB0\uACC4"
+      kind: 8
+      windup: 1.3
+      recovery: 1.3
+      damage: 25
+      range: 20
+      count: 1
+      parryable: 0
+    - id: pulse
+      name: "\uCC9C\uACF5\uC758 \uD30C\uB3D9"
+      kind: 2
+      windup: 0.95
+      recovery: 0.85
+      damage: 18
+      range: 20
+      count: 2
+      parryable: 0

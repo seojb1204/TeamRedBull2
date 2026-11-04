@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150706bf5853351468d95f039e2c1ac8, type: 3}
+  m_Name: adicus
+  m_EditorClassIdentifier: Assembly-CSharp::ReversalTower.BossDefinition
+  template:
+    id: adicus
+    name: "\uC544\uB514\uCFE0\uC2A4"
+    title: "\uC138 \uBC88\uC9F8 \uBB38 \xB7 \uB208\uBA3C \uC2EC\uD310"
+    lesson: "\uC8C4\uC218\uC640 \uB9DD\uC790\uB97C \uC815\uB9AC\uD558\uACE0, \uC2EC\uD310
+      \uB54C \uBE5B\uB098\uB294 \uC800\uC6B8 \uCABD\uC73C\uB85C \uC774\uB3D9\uD558\uC138\uC694."
+    ultimate: "\uC2EC\uD310\uC758 \uB0AB"
+    hp: 1100
+    speed: 2.3
+    phaseThreshold: 0.6
+    phaseSpeedScale: 1.12
+    dashSpeed: 18
+    projectileSpeed: 8
+    minionSpeed: 1
+    minionHp: 32
+    airborne: 0
+    hasPillars: 0
+    echoBoss: 0
+    afterSlashHazard: 0
+    patterns:
+    - id: scythe
+      name: "\uC2EC\uD310\uC758 \uB0AB"
+      kind: 0
+      windup: 0.85
+      recovery: 0.85
+      damage: 20
+      range: 3.8
+      count: 1
+      parryable: 1
+    - id: cross
+      name: "X\uC790 \uBCA0\uAE30"
+      kind: 0
+      windup: 0.75
+      recovery: 0.9
+      damage: 12
+      range: 3.3
+      count: 2
+      parryable: 1
+    - id: chain
+      name: "\uC0AC\uC2AC\uB0AB \uD3EC\uD68D"
+      kind: 4
+      windup: 0.9
+      recovery: 0.9
+      damage: 17
+      range: 20
+      count: 1
+      parryable: 1
+    - id: fall
+      name: "\uB0AB \uB099\uD558"
+      kind: 3
+      windup: 1.1
+      recovery: 0.85
+      damage: 17
+      range: 20
+      count: 4
+      parryable: 0
+    - id: prisoner
+      name: "\uC8C4\uC218 \uC18C\uD658"
+      kind: 6
+      windup: 1
+      recovery: 0.8
+      damage: 10
+      range: 20
+      count: 3
+      parryable: 0
+    - id: judgement
+      name: "\uC2EC\uD310\uC758 \uC800\uC6B8"
+      kind: 7
+      windup: 2.4
+      recovery: 1.3
+      damage: 26
+      range: 20
+      count: 1
+      parryable: 0
+    - id: spin
+      name: "\uB0AB \uC804\uCCB4\uD68C\uC804"
+      kind: 0
+      windup: 1
+      recovery: 1.2
+      damage: 9
+      range: 4.3
+      count: 5
+      parryable: 1

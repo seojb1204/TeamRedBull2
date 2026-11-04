@@ -77,11 +77,11 @@ public static class FoundationSetup
         string[] states=boss?new[]{"Idle","Run","Attack","SwordSwing","ShieldStrike","Kick","Charge","ShieldThrow","Sweep","Phase","Hit","Death","QuickStep","ShieldDash","ShieldSlam"}:
             new[]{"Idle","Run","Jump","Fall","Attack","Skill","Parry","Dash","Hit","Death"};
         string[] sheets=boss?new[]{"Idle","Idle","NormalAttack_R_PT","Sword_Swinging_PT","NormalAttack_L_PT","NormalAttack_F_PT","Charge_PT","ShieldThrowing_DashAttack_PT","Aggressive_Attack_PT","Of_Wrath_PT","Groggy","Groggy","QuickStep_PT","ShieldDash_PT","Shield_Throwing_Fly_Attack_PT"}:
-            new[]{"Idle","Run","Jump","Fall","Attack1","Attack2","Attack1","Run","Take Hit","Death"};
+            states;   // 주인공: 상태마다 SilverRogue_<상태>.png 한 장 (서정범 님 은발 검사 v2, 오른쪽을 보도록 반전)
         for(int i=0;i<states.Length;i++)
         {
-            string sheet=boss?"Assets/Art/Arakus/Arakus_"+sheets[i]+".png":"Assets/Art/Player/"+sheets[i]+".png";
-            Sprite[] sprites=ImportSheet(sheet,boss?156:180,boss?146:180,boss?new Vector2(82f/156,4f/146):new Vector2(.5f,64f/180));
+            string sheet=boss?"Assets/Art/Arakus/Arakus_"+sheets[i]+".png":"Assets/Art/Player/SilverRogue/SilverRogue_"+sheets[i]+".png";
+            Sprite[] sprites=boss?ImportSheet(sheet,156,146,new Vector2(82f/156,4f/146)):ImportSheet(sheet,128,128,new Vector2(.4618f,.125f),75);
             var clip=new AnimationClip{name=prefix+"_"+states[i],frameRate=8};
             var keys=new ObjectReferenceKeyframe[sprites.Length+1];
             for(int n=0;n<sprites.Length;n++)keys[n]=new ObjectReferenceKeyframe{time=n/8f,value=sprites[n]};
@@ -96,7 +96,7 @@ public static class FoundationSetup
         return controller;
     }
 
-    static Sprite[] ImportSheet(string path,int width,int height,Vector2 pivot)
+    static Sprite[] ImportSheet(string path,int width,int height,Vector2 pivot,float pixelsPerUnit=45)
     {
         var importer=(TextureImporter)AssetImporter.GetAtPath(path);
         if(!importer)throw new Exception("Missing sprite sheet: "+path);
@@ -104,7 +104,7 @@ public static class FoundationSetup
         int count=sourceWidth/width;
         if(sourceWidth%width!=0||sourceHeight!=height)throw new Exception("Invalid frame dimensions: "+path);
         importer.textureType=TextureImporterType.Sprite;importer.spriteImportMode=SpriteImportMode.Multiple;
-        importer.spritePixelsPerUnit=45;importer.filterMode=FilterMode.Point;
+        importer.spritePixelsPerUnit=pixelsPerUnit;importer.filterMode=FilterMode.Point;
         importer.textureCompression=TextureImporterCompression.Uncompressed;importer.mipmapEnabled=false;importer.alphaIsTransparency=true;importer.npotScale=TextureImporterNPOTScale.None;
         var slices=new SpriteMetaData[count];
         for(int i=0;i<count;i++)slices[i]=new SpriteMetaData{name=Path.GetFileNameWithoutExtension(path)+"_"+i.ToString("D2"),rect=new Rect(i*width,0,width,height),alignment=9,pivot=pivot};
@@ -124,7 +124,7 @@ public static class FoundationSetup
         var root=new GameObject(name);var view=root.AddComponent<ActorView>();
         view.body=root.AddComponent<SpriteRenderer>();view.body.sortingOrder=1000;
         view.animator=root.AddComponent<Animator>();view.animator.runtimeAnimatorController=controller;
-        view.animator.speed=0;view.bossActor=boss;view.sourcePack=boss?"Team Arakus_PixelSprites":"Hero Knight CC0";
+        view.animator.speed=0;view.bossActor=boss;view.sourcePack=boss?"Team Arakus_PixelSprites":"Team Silver Rogue v2";
         view.body.sprite=((AnimationClip)controller.layers[0].stateMachine.defaultState.motion).objectReferenceDefaultSprite();
         PrefabUtility.SaveAsPrefabAsset(root,path);UnityEngine.Object.DestroyImmediate(root);
     }

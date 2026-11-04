@@ -9,6 +9,8 @@ namespace ReversalTower
         public Animator animator;
         public bool bossActor;
         public string sourcePack;
+        string playerPoseState;
+        float playerPoseStarted;
 
         public void Render(TowerGame game, bool battle)
         {
@@ -41,6 +43,25 @@ namespace ReversalTower
                 }
                 else if(game.bossState=="추적")state="Run";
             }
+            else if(HasExtendedPlayer())
+            {
+                var input=new PlayerAnimationSelection.Input {
+                    dead=battle&&game.playerHp<=0,combat=battle&&game.mode==ScreenMode.Battle,
+                    hurt=Mathf.Max(game.stun,game.hitFlash),parryAge=game.parryAge,
+                    parryRemaining=game.playerAction=="parry"?game.attackAnim:0,dashRemaining=game.dashTime,
+                    action=game.playerAction,actionRemaining=game.actionTime,actionTotal=game.actionTotal,
+                    height=game.player.y,verticalSpeed=game.pvY,horizontalSpeed=game.horizontalSpeed,
+                    equippedUltimate=game.save!=null?game.save.equippedUltimate:-1
+                };
+                string next=PlayerAnimationSelection.State(input);
+                // Battle seconds freeze with pause/hit-stop; result death must still finish its pose.
+                float clock=input.combat&&!input.dead?game.seconds:game.realClock;
+                if(next!=playerPoseState||clock<playerPoseStarted){playerPoseState=next;playerPoseStarted=clock;}
+                var pose=PlayerAnimationSelection.Sample(input,clock-playerPoseStarted);
+                state=pose.state;normalized=pose.normalized;
+                body.flipX=true; // New art faces left; the existing root scale still follows gameplay facing.
+                animator.speed=0;
+            }
             else if(battle)
             {
                 if(game.playerHp<=0){state="Death";normalized=.9f;}
@@ -58,12 +79,14 @@ namespace ReversalTower
             }
             if(animator&&animator.runtimeAnimatorController)
             {
-                if(state=="Run"||state=="Dash")normalized=Mathf.Repeat(game.realClock*1.5f,1);
+                if((state=="Run"||state=="Dash")&&!HasExtendedPlayer())normalized=Mathf.Repeat(game.realClock*1.5f,1);
                 animator.Play(state,0,Mathf.Min(.999f,normalized));
                 animator.Update(0);
             }
             RenderGlow(game,battle);
         }
+
+        bool HasExtendedPlayer()=>!bossActor&&animator&&animator.runtimeAnimatorController&&animator.HasState(0,Animator.StringToHash("SkillQ"));
 
         // ── 빛 겹치기 (가산 재질) ──
         // 테두리 빛: 같은 그림을 8방향으로 살짝 어긋나게 겹침 (보스의 파란 패링 신호)

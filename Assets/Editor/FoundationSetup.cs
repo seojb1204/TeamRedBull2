@@ -68,6 +68,7 @@ public static class FoundationSetup
 
     static AnimatorController CreateController(bool boss)
     {
+        if(!boss)return PlayerExtendedSetup.EnsureController();
         string prefix=boss?"Arakus":"Player";
         string path="Assets/Animation/"+prefix+".controller";
         AnimatorController controller=AssetDatabase.LoadAssetAtPath<AnimatorController>(path);

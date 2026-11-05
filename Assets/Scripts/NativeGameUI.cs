@@ -52,6 +52,17 @@ namespace ReversalTower
         float cardsClock,outro=-1;
         int chosen=-1;
         bool cardsWereOpen;
+        int cardsReleasedFrame=-1;
+        public bool CardOutroBlocksInput => isActiveAndEnabled&&game&&game.mode==ScreenMode.Lobby&&(outro>=0||cardsReleasedFrame==Time.frameCount);
+        public bool BlocksLobbyInput => game&&game.mode==ScreenMode.Lobby&&(game.showCards||CardOutroBlocksInput);
+
+        void ApplyLobbyInputState()
+        {
+            bool blocked=BlocksLobbyInput;
+            if(lobbyGroup){lobbyGroup.interactable=!blocked;lobbyGroup.blocksRaycasts=!blocked;}
+            if(cardsGroup)cardsGroup.blocksRaycasts=game&&game.mode==ScreenMode.Lobby&&(game.showCards||outro>=0);
+        }
+        void OnDisable(){outro=-1;chosen=-1;cardsReleasedFrame=-1;cardsWereOpen=false;}
         // 전투
         sealed class Slot{public RectTransform root;public Image frame,shade;public Text key,name,badge;public string letter;public float pop,last;}
         Slot[] slots;
@@ -321,7 +332,7 @@ namespace ReversalTower
             switch(mode)
             {
                 case ScreenMode.Title:Set(titleEnterLabel,game.save.history.Count>0?"이어서 오르기":"탑에 들어가기");break;
-                case ScreenMode.Lobby:RefreshLobby(dt);RefreshCards(dt);break;
+                case ScreenMode.Lobby:RefreshLobby(dt);RefreshCards(dt);ApplyLobbyInputState();break;
                 case ScreenMode.Battle:RefreshBattle(dt);break;
                 case ScreenMode.Result:RefreshResult(dt);break;
             }
@@ -330,6 +341,7 @@ namespace ReversalTower
         void EnterMode(ScreenMode mode)
         {
             pageClock=0;
+            if(mode!=ScreenMode.Lobby){outro=-1;chosen=-1;cardsReleasedFrame=-1;cardsWereOpen=false;}
             if(notice)
             {
                 if(mode==ScreenMode.Battle)UiKit.PlaceCentered(notice,300,180,1000,36);
@@ -338,7 +350,7 @@ namespace ReversalTower
             if(mode==ScreenMode.Lobby)
             {
                 if(shownGold<0)shownGold=game.save.gold;   // 타이틀에서 처음 들어올 땐 굴리지 않음, 전투 뒤엔 늘어나는 게 보임
-                cardsWereOpen=false;outro=-1;chosen=-1;
+                cardsWereOpen=false;outro=-1;chosen=-1;cardsReleasedFrame=-1;
                 Set(lobbyLine,LastRunLine(game.save));
             }
             if(mode==ScreenMode.Battle&&game.spec!=null)
@@ -391,7 +403,7 @@ namespace ReversalTower
         void RefreshCards(float dt)
         {
             SaveData save=game.save;
-            if(game.showCards&&!cardsWereOpen){cardsClock=0;outro=-1;chosen=-1;for(int i=0;i<cardLift.Length;i++)cardLift[i]=0;}
+            if(game.showCards&&!cardsWereOpen){cardsClock=0;outro=-1;chosen=-1;cardsReleasedFrame=-1;for(int i=0;i<cardLift.Length;i++)cardLift[i]=0;}
             cardsWereOpen=game.showCards;
             if(!cardsPage.activeSelf)return;
             cardsClock+=dt;if(outro>=0)outro+=dt;
@@ -429,11 +441,12 @@ namespace ReversalTower
                 cardRects[i].anchoredPosition=cardHome[i]+new Vector2(0,cardLift[i]-rise);
                 cardRects[i].localScale=Vector3.one*scale;
                 cardGroups[i].alpha=alpha;
+                cardGroups[i].blocksRaycasts=live;
             }
             if(cardsClose&&cardsClose.gameObject.activeSelf!=live)cardsClose.gameObject.SetActive(live);
             cardsGroup.alpha=live?UiKit.EaseOut(cardsClock/.18f):1-Mathf.Clamp01((outro-.42f)/.22f);
-            cardsGroup.blocksRaycasts=live;
-            if(outro>.66f){outro=-1;chosen=-1;cardsPage.SetActive(false);}
+            cardsGroup.blocksRaycasts=true; // The full-screen Dim must consume clicks until the outro ends.
+            if(outro>.66f){outro=-1;chosen=-1;cardsReleasedFrame=Time.frameCount;cardsPage.SetActive(false);}
         }
 
         void RefreshBattle(float dt)
@@ -589,26 +602,31 @@ namespace ReversalTower
 
         // ═══════════════════════════ 버튼 이벤트 (씬에 이름으로 연결됨) ═══════════════════════════
 
-        public void EnterLobby(){game.ReturnLobby();}
-        public void SelectBoss(int index){if(index<=game.save.unlockedBoss)game.bossIndex=index;}
-        public void EnterBattle(){game.StartBattle(game.bossIndex);}
-        public void OpenCards(){game.OpenCards();}
+        public void EnterLobby(){if(!BlocksLobbyInput)game.ReturnLobby();}
+        public void SelectBoss(int index){if(!BlocksLobbyInput&&index>=0&&index<=game.save.unlockedBoss)game.bossIndex=index;}
+        public void EnterBattle(){if(!BlocksLobbyInput)game.StartBattle(game.bossIndex);}
+        public void OpenCards(){if(BlocksLobbyInput)return;game.OpenCards();ApplyLobbyInputState();}
         public void ChooseCard(int index)
         {
-            if(game.save.cardOffer.Length!=3)return;
-            bool before=game.save.cardChosen;
-            game.ChooseCard(game.save.cardOffer[index]);
-            if(!before&&game.save.cardChosen){chosen=index;outro=0;game.PlaySound("heal");}   // 결제는 즉시, 연출은 그 뒤에
+            if(!game||!game.showCards||CardOutroBlocksInput||game.save.cardOffer==null||index<0||index>=game.save.cardOffer.Length)return;
+            if(game.ChooseCard(game.save.cardOffer[index]))
+            {
+                chosen=index;outro=0;cardsReleasedFrame=-1;
+                ApplyLobbyInputState();
+                foreach(var group in cardGroups)group.blocksRaycasts=false;
+                if(UnityEngine.EventSystems.EventSystem.current)UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+                game.PlaySound("heal"); // Payment is immediate; the separate presentation keeps its input lock.
+            }
         }
-        public void CloseCards(){game.showCards=false;}
+        public void CloseCards(){if(CardOutroBlocksInput)return;game.showCards=false;ApplyLobbyInputState();}
         public void Retry(){game.StartBattle(game.bossIndex);}
-        public void OpenSettings(){game.showSettings=true;}
-        public void OpenHelp(){game.showHelp=true;}
-        public void OpenHistory(){game.showHistory=true;}
+        public void OpenSettings(){if(!BlocksLobbyInput)game.showSettings=true;}
+        public void OpenHelp(){if(!BlocksLobbyInput)game.showHelp=true;}
+        public void OpenHistory(){if(!BlocksLobbyInput)game.showHistory=true;}
         public void Resume(){game.paused=false;}
         public void Abandon(){game.Abandon();}
         public void ShowEnding(){game.mode=ScreenMode.Ending;}
-        public void CycleUltimate(){game.CycleUltimate();}
+        public void CycleUltimate(){if(!BlocksLobbyInput)game.CycleUltimate();}
 
         // ═══════════════════════════ 작은 도우미 ═══════════════════════════
 

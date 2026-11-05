@@ -76,17 +76,11 @@ namespace ReversalTower
             noticeTime=Mathf.Max(0,noticeTime-raw);flash=Mathf.Max(0,flash-raw*2);phaseFlash=Mathf.Max(0,phaseFlash-raw*.8f);
             shake=Mathf.Max(0,shake-raw*12);
             if(Input.GetKeyDown(KeyCode.F12))Capture();
-            if(Input.GetKeyDown(KeyCode.F1))showHelp=!showHelp;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DevKeys();
 #endif
-            if(Input.GetKeyDown(KeyCode.Escape))
-            {
-                if(showHelp)showHelp=false;else if(showHistory)showHistory=false;else if(showSettings){showSettings=false;SaveStore.Save(save);}else if(showCards)showCards=false;else if(mode==ScreenMode.Battle)paused=!paused;else if(mode==ScreenMode.Lobby)mode=ScreenMode.Title;
-            }
-            if(mode==ScreenMode.Title&&Input.GetKeyDown(KeyCode.Return)){mode=ScreenMode.Lobby;sound.Play("confirm");}
-            else if(mode==ScreenMode.Lobby&&!showHistory&&!showSettings&&!showHelp&&!showCards) LobbyKeys();
-            if(mode==ScreenMode.Result&&Input.GetKeyDown(KeyCode.Return))ReturnLobby();
+            HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
+                Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
             // 역경직 동안에는 전투 시간을 0으로 흘린다 (입력은 계속 읽어서 그 사이 누른 키를 놓치지 않음)
             float battleDt=raw;bool fighting=mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;
             if(fighting){if(hitStop>0){hitStop=Mathf.Max(0,hitStop-raw);battleDt=0;}else if(slowMo>0){slowMo=Mathf.Max(0,slowMo-raw);battleDt=raw*SlowMoScale;}}
@@ -133,12 +127,39 @@ namespace ReversalTower
         }
 #endif
         public void Say(string text,float duration=2.5f){notice=text;noticeTime=duration;}
-        void LobbyKeys()
+        bool CardOutroBlocksInput
         {
-            if(Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A))bossIndex=Mathf.Max(0,bossIndex-1);
-            if(Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D))bossIndex=Mathf.Min(save.unlockedBoss,bossIndex+1);
-            if(Input.GetKeyDown(KeyCode.C))OpenCards();
-            if(Input.GetKeyDown(KeyCode.Return)&&!showCards)StartBattle(bossIndex);
+            get
+            {
+#if !HEADLESS && !DESKTOP_PREVIEW
+                return nativeUI&&nativeUI.CardOutroBlocksInput;
+#else
+                return false;
+#endif
+            }
+        }
+        bool CardsBlockLobbyInput => showCards||CardOutroBlocksInput;
+        void HandleScreenInput(bool helpDown,bool escapeDown,bool enterDown,bool leftDown,bool rightDown,bool cardsDown)
+        {
+            // Keep a card-close event from activating the lobby later in this same input batch.
+            bool cardsBlocked=CardsBlockLobbyInput,animating=CardOutroBlocksInput;
+            if(helpDown&&!animating)showHelp=!showHelp;
+            if(escapeDown&&!animating)
+            {
+                if(showHelp)showHelp=false;else if(showHistory)showHistory=false;else if(showSettings){showSettings=false;SaveStore.Save(save);}else if(showCards)showCards=false;else if(mode==ScreenMode.Battle)paused=!paused;else if(mode==ScreenMode.Lobby)mode=ScreenMode.Title;
+            }
+            if(mode==ScreenMode.Title&&enterDown){mode=ScreenMode.Lobby;sound.Play("confirm");}
+            else if(mode==ScreenMode.Lobby&&!showHistory&&!showSettings&&!showHelp&&!cardsBlocked&&!CardsBlockLobbyInput)
+                LobbyKeys(leftDown,rightDown,cardsDown,enterDown);
+            if(mode==ScreenMode.Result&&enterDown)ReturnLobby();
+        }
+        void LobbyKeys(bool leftDown,bool rightDown,bool cardsDown,bool enterDown)
+        {
+            if(CardsBlockLobbyInput)return;
+            if(leftDown)bossIndex=Mathf.Max(0,bossIndex-1);
+            if(rightDown)bossIndex=Mathf.Min(save.unlockedBoss,bossIndex+1);
+            if(cardsDown)OpenCards();
+            if(enterDown&&!CardsBlockLobbyInput)StartBattle(bossIndex);
         }
         public void StartBattle(int index)
         {

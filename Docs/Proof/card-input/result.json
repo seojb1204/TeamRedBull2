@@ -1,0 +1,1 @@
+{"passed":true,"checks":69,"scope":"Unity editor unsaved production scene, camera-rendered UI raycasts, injected keyboard/lifecycle signals; deterministic next-frame boundary"}

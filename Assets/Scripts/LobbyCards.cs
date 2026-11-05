@@ -7,19 +7,21 @@ namespace ReversalTower
     public sealed class UpgradeCard
     {
         public readonly string id,name,description,glyph;
-        public UpgradeCard(string id,string name,string description,string glyph)
-        {this.id=id;this.name=name;this.description=description;this.glyph=glyph;}
+        // 카드 화면용: amount 크게 보이는 수치, stat 무엇이 오르는지, detail 덧붙일 한 줄(없으면 빈 문자열)
+        public readonly string amount,stat,detail;
+        public UpgradeCard(string id,string name,string description,string glyph,string amount="",string stat="",string detail="")
+        {this.id=id;this.name=name;this.description=description;this.glyph=glyph;this.amount=amount;this.stat=stat;this.detail=detail;}
     }
     // Provisional tuning lives here. No timing windows or invulnerability are changed.
     public static class LobbyCards
     {
         public static readonly UpgradeCard[] All={
-            new UpgradeCard("blade","검의 단련","기본 공격력 +1\n스킬과 궁극기의 기준 공격력도 증가","검"),
-            new UpgradeCard("vitality","생명의 인장","최대 체력 +10","심"),
-            new UpgradeCard("remedy","회복의 인장","회복약 회복량 +5","약"),
-            new UpgradeCard("rush","돌진의 인장","Q 돌진 베기 피해 +5%p","Q"),
-            new UpgradeCard("whirl","회전의 인장","W 회전 베기 피해 +5%p","W"),
-            new UpgradeCard("execute","처형의 인장","E 처형 베기 피해 +5%p","E")
+            new UpgradeCard("blade","검의 단련","기본 공격력 +1\n스킬과 궁극기의 기준 공격력도 증가","검","+1","공격력","스킬과 궁극기도 함께 세진다"),
+            new UpgradeCard("vitality","생명의 인장","최대 체력 +10","심","+10","최대 체력"),
+            new UpgradeCard("remedy","회복의 인장","회복약 회복량 +5","약","+5","회복약 회복량","한 병에 더 많이 회복한다"),
+            new UpgradeCard("rush","돌진의 인장","Q 돌진 베기 피해 +5%p","Q","+5%","돌진 베기 피해"),
+            new UpgradeCard("whirl","회전의 인장","W 회전 베기 피해 +5%p","W","+5%","회전 베기 피해"),
+            new UpgradeCard("execute","처형의 인장","E 처형 베기 피해 +5%p","E","+5%","처형 베기 피해")
         };
         public static UpgradeCard Find(string id)=>Array.Find(All,c=>c.id==id);
         public static int Count(SaveData data,string id)
@@ -62,16 +64,16 @@ namespace ReversalTower
         public static bool Purchase(SaveData data,string id,out string error)
         {
             error=null;Normalize(data);
-            if(data.cardChosen){error="이번 로비에서는 이미 강화했습니다. 전투 정산 후 다시 선택할 수 있습니다.";return false;}
-            if(Array.IndexOf(data.cardOffer,id)<0||Find(id)==null){error="현재 제시된 카드가 아닙니다.";return false;}
-            if(Count(data,id)>=10000){error="이 강화는 저장 가능한 최대 누적 횟수에 도달했습니다.";return false;}
-            int cost=Cost(data);if(data.gold<cost){error="Gold가 부족합니다. 강화하지 않고 입장할 수 있습니다.";return false;}
+            if(data.cardChosen){error="이번 인장은 이미 골랐습니다. 전투가 끝나면 다시 고를 수 있습니다.";return false;}
+            if(Array.IndexOf(data.cardOffer,id)<0||Find(id)==null){error="지금 놓인 인장이 아닙니다.";return false;}
+            if(Count(data,id)>=10000){error="이 인장은 더 쌓을 수 없습니다.";return false;}
+            int cost=Cost(data);if(data.gold<cost){error="골드가 모자랍니다.";return false;}
             // Commit a detached copy first: failed disk writes never consume live Gold or grant an effect.
             var candidate=UnityEngine.JsonUtility.FromJson<SaveData>(UnityEngine.JsonUtility.ToJson(data));
             var stack=candidate.cards.Find(c=>c.id==id);
             if(stack==null){stack=new CardStack{id=id};candidate.cards.Add(stack);}
             stack.count++;candidate.cardPurchases++;candidate.gold-=cost;candidate.cardChosen=true;candidate.version=2;
-            if(!SaveStore.Save(candidate)){error="저장하지 못해 강화를 취소했습니다. "+SaveStore.LastError;return false;}
+            if(!SaveStore.Save(candidate)){error="저장하지 못해 인장을 취소했습니다. "+SaveStore.LastError;return false;}
             data.version=candidate.version;data.cards=candidate.cards;data.gold=candidate.gold;
             data.cardPurchases=candidate.cardPurchases;data.cardChosen=true;
             try{Purchased?.Invoke(id,cost,data.cardPurchases-1);}catch(Exception){}
@@ -84,17 +86,17 @@ namespace ReversalTower
         public void OpenCards()
         {
             if(mode!=ScreenMode.Lobby)return;
-            if(save.cardChosen){Say("이번 로비의 강화는 완료했습니다. 다음 전투를 진행하세요.");return;}
+            if(save.cardChosen){Say("이번 인장은 이미 골랐다. 전투가 끝나면 다시 고를 수 있다.");return;}
             string[] previous=save.cardOffer;
             LobbyCards.EnsureOffer(save);
-            if(!SaveStore.Save(save)){save.cardOffer=previous;Say("강화 후보를 저장하지 못했습니다.");return;}
+            if(!SaveStore.Save(save)){save.cardOffer=previous;Say("저장하지 못해 인장을 열 수 없습니다.");return;}
             showCards=true;
         }
         public bool ChooseCard(string id)
         {
             if(mode!=ScreenMode.Lobby||!showCards)return false;
             string error;if(!LobbyCards.Purchase(save,id,out error)){Say(error,5);return false;}
-            showCards=false;Say(LobbyCards.Find(id).name+" 강화 완료 · 영구 저장했습니다.",4);return true;
+            var card=LobbyCards.Find(id);showCards=false;Say(card.stat+" "+card.amount+"  ·  "+card.name,3);return true;
         }
     }
 }

@@ -7,28 +7,50 @@ namespace ReversalTower
     {
         Font font;GUIStyle label,button;Texture2D white;Vector2 historyScroll;
         Color muted=new Color(.55f,.64f,.69f),panel=new Color(.035f,.055f,.08f,.94f);
+        // 게임 화면이 uGUI(NativeGameUI)일 때 남은 IMGUI 창(도움말·설정·기록)도 같은 도트 폰트·테두리로 그린다 (UiKit.cs)
+        bool pixelUi;
         void InitGui()
         {
             font=Font.CreateDynamicFontFromOSFont(new[]{"Malgun Gothic","맑은 고딕","Arial"},22);
             white=Texture2D.whiteTexture;
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(nativeUI){UiKit.Init();font=UiKit.Regular;pixelUi=true;}
+#endif
+        }
+        int FontSize(int size)
+        {
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelUi)return UiKit.Snap(size);
+#endif
+            return size;
         }
         void EnsureStyles()
         {
             if(label!=null)return;
             label=new GUIStyle(GUI.skin.label){font=font,richText=false,wordWrap=true};
-            button=new GUIStyle(GUI.skin.button){font=font,fontSize=19,alignment=TextAnchor.MiddleCenter,richText=false};
+            button=new GUIStyle(GUI.skin.button){font=font,fontSize=FontSize(19),alignment=TextAnchor.MiddleCenter,richText=false};
             button.normal.background=null;button.hover.background=null;button.active.background=null;button.focused.background=null;
             button.normal.textColor=Palette.White;button.hover.textColor=Palette.Gold;button.active.textColor=Palette.Ink;button.focused.textColor=Palette.Gold;
         }
         void Fill(Rect r,Color c){var old=GUI.color;GUI.color=c;GUI.DrawTexture(r,white);GUI.color=old;}
         void Text(float x,float y,float w,float h,string text,int size=20,Color? color=null,TextAnchor align=TextAnchor.UpperLeft)
-        {label.fontSize=size;label.normal.textColor=color??Palette.White;label.alignment=align;GUI.Label(new Rect(x,y,w,h),text,label);}
+        {label.fontSize=FontSize(size);label.normal.textColor=color??Palette.White;label.alignment=align;GUI.Label(new Rect(x,y,w,h),text,label);}
         void Rule(float x,float y,float w,Color? c=null)=>Fill(new Rect(x,y,w,1),c??Palette.Alpha(Palette.Gold,.25f));
         bool Button(float x,float y,float w,float h,string text,bool primary=false,bool enabled=true)
         {
             Rect r=new Rect(x,y,w,h);bool hover=r.Contains(Event.current.mousePosition);
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelUi)
+            {
+                if(Event.current.type==EventType.Repaint)
+                    UiKit.Imgui(!enabled?"disabled":primary?(hover?"primaryHover":"primary"):(hover?"buttonHover":"button")).Draw(r,GUIContent.none,false,false,false,false);
+            }
+            else
+#endif
+            {
             Fill(r,primary?Palette.Alpha(Palette.Gold,enabled?(hover?1:.87f):.15f):hover&&enabled?new Color(.14f,.21f,.25f,.96f):new Color(.065f,.10f,.14f,.95f));
             Fill(new Rect(x,y,primary?3:1,h),Palette.Alpha(Palette.Gold,enabled?.75f:.15f));
+            }
             var old=GUI.enabled;GUI.enabled=old&&enabled;
             button.normal.textColor=primary?Palette.Ink:enabled?Palette.White:muted;button.hover.textColor=primary?Palette.Ink:Palette.Gold;
             bool clicked=GUI.Button(r,text,button);GUI.enabled=old;if(clicked)sound.Play("confirm");return clicked;
@@ -136,7 +158,7 @@ namespace ReversalTower
             int cost=save.UpgradeCost(attack);if(save.gold<cost||(attack?save.attackLevel:save.healthLevel)>=10)return;
             save.gold-=cost;if(attack)save.attackLevel++;else save.healthLevel++;SaveStore.Save(save);sound.Play("heal");
         }
-        void CycleUltimate()
+        public void CycleUltimate()
         {
             int next=save.equippedUltimate;for(int n=0;n<6;n++){next++;if(next>4)next=-1;if(next<0||save.cleared[next]){save.equippedUltimate=next;break;}}SaveStore.Save(save);
         }
@@ -201,7 +223,13 @@ namespace ReversalTower
             Footer("원작 기획  팀 레드불    /    독립 구현 · 절차적 그래픽 · 합성 음악");
         }
         void Modal(float x,float y,float w,float h,string title)
-        {Fill(new Rect(0,0,1600,900),new Color(0,0,0,.72f));Fill(new Rect(x,y,w,h),panel);Fill(new Rect(x,y,w,2),Palette.Gold);Text(x+32,y+25,w-64,50,title,30);}
+        {
+            Fill(new Rect(0,0,1600,900),new Color(0,0,0,.72f));
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelUi){if(Event.current.type==EventType.Repaint)UiKit.Imgui("panel").Draw(new Rect(x,y,w,h),GUIContent.none,false,false,false,false);Text(x+32,y+25,w-64,50,title,30);return;}
+#endif
+            Fill(new Rect(x,y,w,h),panel);Fill(new Rect(x,y,w,2),Palette.Gold);Text(x+32,y+25,w-64,50,title,30);
+        }
         void PauseUI()
         {
             Modal(535,215,530,466,"잠시 검을 내려놓고");Text(568,282,460,40,"전투는 멈춰 있습니다.",18,muted);
@@ -216,7 +244,7 @@ namespace ReversalTower
             string[] keys={"A / D · ← / →","SPACE","J / Z · 마우스 왼쪽","K / X · 마우스 오른쪽","SHIFT","Q / W / E","R","F"};
             string[] actions={"이동","점프 · 지면 파동을 뛰어넘습니다","검격","푸른 신호에 맞춰 패링 · 궁극기 +15","무적 대시 · 2스택, 지상에서 스택당 2.5초 충전","돌진 베기 / 회전 베기 / 처형 베기","궁극기 · 게이지 100 소모","회복약 · "+LobbyCards.Heal(save).ToString("0")+" 회복, 한 전투에 3개"};
             for(int i=0;i<keys.Length;i++){float y=202+i*48;Text(298,y,320,32,keys[i],18,Palette.Gold);Text(650,y,640,34,actions[i],18,Palette.White);}
-            Rule(298,608,1000);Text(298,632,1000,72,"파란빛은 패링, 붉은색은 회피 신호입니다. 푸른 별빛이 번쩍이는 순간 패링하세요 (입력 0.05초 뒤부터 0.15초 유효).\n보스의 공격이 끝난 빈틈을 노리고, 체력이 적으면 안전한 순간에 회복하세요.",17,muted);
+            Rule(298,608,1000);Text(298,632,1000,72,"파랗게 빛나면 받아치고, 붉게 빛나면 피하세요.\n별빛이 번쩍이는 순간이 받아칠 때입니다.",17,muted);
             if(Button(1070,726,230,44,"알겠습니다",true)){showHelp=false;save.tutorialSeen=true;SaveStore.Save(save);}
         }
         void SettingsUI()
@@ -225,20 +253,20 @@ namespace ReversalTower
             Text(478,280,600,32,"전체 음량",20);save.masterVolume=GUI.HorizontalSlider(new Rect(480,337,600,28),save.masterVolume,0,1);AudioListener.volume=save.masterVolume;
             Text(478,385,600,32,"패턴별 적응 난이도  /  DDA",20);
             if(Button(480,438,600,48,save.dda?"사용 중  ·  클릭하여 고정 난이도로 변경":"고정 난이도  ·  클릭하여 DDA 사용")){save.dda=!save.dda;SaveStore.Save(save);}
-            Text(480,513,600,74,"변경 사항은 다음 전투부터 적용됩니다. 조작과 패링 판정은 일정하게 유지합니다. 이 버전의 기록은 이 PC에만 저장됩니다.",16,muted);
+            Text(480,505,600,110,"바꾼 설정은 다음 전투부터 적용됩니다. 전투 기록은 이 PC에 저장되고, 인터넷이 연결되면 익명 ID로 팀 서버에도 보내집니다.",16,muted);
             if(Button(480,621,600,48,"저장하고 닫기",true)){SaveStore.Save(save);showSettings=false;}
         }
         void HistoryUI()
         {
             Modal(260,110,1080,690,"탑이 기억하는 전투");
-            Text(300,192,1000,35,"최근 30회의 도전  ·  모든 기록은 로컬에 저장됩니다",17,muted);
+            Text(300,192,1000,35,"최근 30번의 도전",17,muted);
             historyScroll=GUI.BeginScrollView(new Rect(294,245,1012,450),historyScroll,new Rect(0,0,980,Mathf.Max(430,save.history.Count*66)));
-            if(save.history.Count==0)Text(15,80,940,80,"첫 번째 문을 열면, 당신의 기록이 시작됩니다.",22,muted,TextAnchor.UpperCenter);
+            if(save.history.Count==0)Text(15,80,940,80,"첫 번째 문을 열면 여기에 남는다.",22,muted,TextAnchor.UpperCenter);
             for(int i=0;i<save.history.Count;i++)
             {
                 var h=save.history[i];float y=i*66;Fill(new Rect(0,y,975,57),new Color(.07f,.10f,.14f));var b=Array.Find(Catalog.Bosses,p=>p.id==h.boss);
-                Text(16,y+9,205,35,b==null?h.boss:b.name,20,h.clear?Palette.Gold:Palette.White);Text(240,y+12,160,30,h.clear?"맹세 계승":"재도전",16,h.clear?Palette.Teal:muted);
-                Text(420,y+12,470,30,FormatTime(h.seconds)+"   /   패링 "+h.parries+"   /   "+h.gold+" G",16,Palette.White);Text(15,y+37,840,20,h.date+"   ·   "+(h.dda?"DDA":"고정 난이도"),11,muted);
+                Text(16,y+9,205,35,b==null?h.boss:b.name,20,h.clear?Palette.Gold:Palette.White);Text(240,y+12,160,30,h.clear?"★ 넘음":"쓰러짐",16,h.clear?Palette.Teal:muted);
+                Text(420,y+12,470,30,FormatTime(h.seconds)+"   /   패링 "+h.parries+"   /   "+h.gold+" G",16,Palette.White);Text(15,y+37,840,20,h.date,11,muted);   // DDA 적용 여부는 플레이어에게 보이지 않는다 (UI/UX 설계서)
             }
             GUI.EndScrollView();if(Button(1069,727,230,44,"닫기",true))showHistory=false;
         }

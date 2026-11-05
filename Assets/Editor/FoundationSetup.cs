@@ -68,33 +68,7 @@ public static class FoundationSetup
 
     static AnimatorController CreateController(bool boss)
     {
-        if(!boss)return PlayerExtendedSetup.EnsureController();
-        string prefix=boss?"Arakus":"Player";
-        string path="Assets/Animation/"+prefix+".controller";
-        AnimatorController controller=AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
-        if(controller&&controller.layers.Length>0&&controller.layers[0].stateMachine.states.Length==(boss?15:10))return controller;
-        if(controller)AssetDatabase.DeleteAsset(path);
-        controller=AnimatorController.CreateAnimatorControllerAtPath(path);
-        string[] states=boss?new[]{"Idle","Run","Attack","SwordSwing","ShieldStrike","Kick","Charge","ShieldThrow","Sweep","Phase","Hit","Death","QuickStep","ShieldDash","ShieldSlam"}:
-            new[]{"Idle","Run","Jump","Fall","Attack","Skill","Parry","Dash","Hit","Death"};
-        string[] sheets=boss?new[]{"Idle","Idle","NormalAttack_R_PT","Sword_Swinging_PT","NormalAttack_L_PT","NormalAttack_F_PT","Charge_PT","ShieldThrowing_DashAttack_PT","Aggressive_Attack_PT","Of_Wrath_PT","Groggy","Groggy","QuickStep_PT","ShieldDash_PT","Shield_Throwing_Fly_Attack_PT"}:
-            states;   // 주인공: 상태마다 SilverRogue_<상태>.png 한 장 (서정범 님 은발 검사 v2, 오른쪽을 보도록 반전)
-        for(int i=0;i<states.Length;i++)
-        {
-            string sheet=boss?"Assets/Art/Arakus/Arakus_"+sheets[i]+".png":"Assets/Art/Player/SilverRogue/SilverRogue_"+sheets[i]+".png";
-            Sprite[] sprites=boss?ImportSheet(sheet,156,146,new Vector2(82f/156,4f/146)):ImportSheet(sheet,128,128,new Vector2(.4618f,.125f),75);
-            var clip=new AnimationClip{name=prefix+"_"+states[i],frameRate=8};
-            var keys=new ObjectReferenceKeyframe[sprites.Length+1];
-            for(int n=0;n<sprites.Length;n++)keys[n]=new ObjectReferenceKeyframe{time=n/8f,value=sprites[n]};
-            keys[sprites.Length]=new ObjectReferenceKeyframe{time=sprites.Length/8f,value=sprites[sprites.Length-1]};
-            AnimationUtility.SetObjectReferenceCurve(clip,new EditorCurveBinding{path="",type=typeof(SpriteRenderer),propertyName="m_Sprite"},keys);
-            AssetDatabase.CreateAsset(clip,"Assets/Animation/"+clip.name+".anim");
-            var state=controller.layers[0].stateMachine.AddState(states[i]);state.motion=clip;
-            if(i==0)controller.layers[0].stateMachine.defaultState=state;
-        }
-        // The projectile is also imported, but no existing pattern is silently replaced by a new mechanic.
-        if(boss)ImportSheet("Assets/Art/Arakus/Arakus_Shield_Projectile.png",40,40,new Vector2(.5f,.5f));
-        return controller;
+        return boss?ArakusSpriteSetup.EnsureController():PlayerExtendedSetup.EnsureController();
     }
 
     static Sprite[] ImportSheet(string path,int width,int height,Vector2 pivot,float pixelsPerUnit=45)

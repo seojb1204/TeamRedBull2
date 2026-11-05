@@ -81,6 +81,13 @@ namespace ReversalTower
         void Build()
         {
             if(built)return;built=true;
+            var scaler=GetComponent<CanvasScaler>();
+            if(scaler){scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1600,900);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.Expand;}
+            foreach(var page in new[]{titlePage,lobbyPage,battlePage,resultPage,endingPage,cardsPage,pausePage})
+            {
+                UiKit.Center(page.transform);
+                var bg=page.GetComponent<Image>();if(bg)bg.enabled=false;   // 화면 전체 막은 Dim으로 따로 깐다
+            }
             titleGroup=Group(titlePage);lobbyGroup=Group(lobbyPage);battleGroup=Group(battlePage);
             resultGroup=Group(resultPage);endingGroup=Group(endingPage);cardsGroup=Group(cardsPage);
             BuildTitle();BuildLobby();BuildCards();BuildBattle();BuildPause();BuildResult();BuildEnding();
@@ -90,7 +97,8 @@ namespace ReversalTower
         void BuildTitle()
         {
             var t=titlePage.transform;
-            UiKit.Picture(t,"Shade",0,0,880,900,UiKit.FadeRight,Alpha(UiKit.Ink,.92f)).transform.SetAsFirstSibling();
+            UiKit.Picture(t,"Shade Fade",300,0,700,900,UiKit.FadeRight,Alpha(UiKit.Ink,.9f)).transform.SetAsFirstSibling();
+            UiKit.Picture(t,"Shade",-2000,0,2300,900,UiKit.Solid,Alpha(UiKit.Ink,.9f)).transform.SetAsFirstSibling();
             UiKit.Picture(t,"Accent",104,182,56,6,UiKit.Solid,Palette.Gold);
             var heading=Grab<Text>(titlePage,"Title");
             if(heading){UiKit.Place(heading,96,200,760,120);UiKit.Dress(heading,UiKit.Giant,Palette.White,TextAnchor.UpperLeft,true,true);heading.text="역전의 탑";}
@@ -106,7 +114,7 @@ namespace ReversalTower
         void BuildLobby()
         {
             var t=lobbyPage.transform;
-            UiKit.Picture(t,"Shade",0,0,1600,240,UiKit.FadeDown,Alpha(UiKit.Ink,.85f)).transform.SetAsFirstSibling();
+            var shade=UiKit.Picture(t,"Shade",0,0,1600,240,UiKit.FadeDown,Alpha(UiKit.Ink,.85f));shade.transform.SetAsFirstSibling();UiKit.BleedX(shade,0,240);
             var heading=Grab<Text>(lobbyPage,"Title");
             if(heading){UiKit.Place(heading,72,34,640,60);UiKit.Dress(heading,UiKit.Head,Palette.White,TextAnchor.UpperLeft,true,true);heading.text="맹세의 회랑";}
             lobbyLine=UiKit.Label(t,"Last Run",74,98,940,30,UiKit.Body,UiKit.Muted,TextAnchor.UpperLeft,false,true);
@@ -116,12 +124,12 @@ namespace ReversalTower
             int n=bossButtons.Length;bossNumbers=new Text[n];bossNames=new Text[n];bossStates=new Text[n];
             for(int i=0;i<n;i++)
             {
-                var b=bossButtons[i];UiKit.Place(b,72,160+i*80,380,68);UiKit.Skin(b,UiKit.Button);
+                var b=bossButtons[i];UiKit.Place(b,72,160+i*84,380,76);UiKit.Skin(b,UiKit.Button);
                 bossNames[i]=b.GetComponentInChildren<Text>(true);
-                UiKit.Place(bossNames[i],72,4,290,40);UiKit.Dress(bossNames[i],UiKit.Sub,Palette.White);
-                bossNumbers[i]=UiKit.Label(b.transform,"Number",20,0,48,68,UiKit.Body,Palette.Gold,TextAnchor.MiddleLeft);
+                UiKit.Place(bossNames[i],74,8,290,40);UiKit.Dress(bossNames[i],UiKit.Sub,Palette.White);
+                bossNumbers[i]=UiKit.Label(b.transform,"Number",20,0,48,76,UiKit.Body,Palette.Gold,TextAnchor.MiddleLeft);
                 bossNumbers[i].text=(i+1).ToString("00");
-                bossStates[i]=UiKit.Label(b.transform,"State",74,40,290,26,UiKit.Body,UiKit.Muted);
+                bossStates[i]=UiKit.Label(b.transform,"State",76,46,290,26,UiKit.Body,UiKit.Muted);
             }
 
             // 가운데: 고른 문 하나
@@ -161,8 +169,7 @@ namespace ReversalTower
         void BuildCards()
         {
             var t=cardsPage.transform;
-            var bg=cardsPage.GetComponent<Image>();
-            if(bg){UiKit.Paint(bg,UiKit.Solid,new Color(.01f,.015f,.025f,.88f));bg.raycastTarget=true;}
+            UiKit.Dim(t,new Color(.01f,.015f,.025f,.88f),true);
             var title=Grab<Text>(cardsPage,"Title");
             if(title){UiKit.Place(title,0,140,1600,60);UiKit.Dress(title,UiKit.Head,Palette.White,TextAnchor.UpperCenter,true,true);title.text="인장을 하나 고르세요";}
             cardSub=UiKit.Label(t,"Subtitle",0,206,1600,30,UiKit.Body,UiKit.Muted,TextAnchor.UpperCenter);
@@ -188,9 +195,8 @@ namespace ReversalTower
         void BuildBattle()
         {
             var t=battlePage.transform;
-            var bg=battlePage.GetComponent<Image>();
-            if(bg)UiKit.Paint(bg,UiKit.FadeDown,Alpha(UiKit.Ink,.9f));
-            UiKit.Picture(t,"Shade Bottom",0,720,1600,180,UiKit.FadeUp,Alpha(UiKit.Ink,.9f)).transform.SetAsFirstSibling();
+            var top=UiKit.Picture(t,"Shade Top",0,0,1600,190,UiKit.FadeDown,Alpha(UiKit.Ink,.9f));top.transform.SetAsFirstSibling();UiKit.BleedX(top,0,190);
+            var bottom=UiKit.Picture(t,"Shade Bottom",0,720,1600,180,UiKit.FadeUp,Alpha(UiKit.Ink,.9f));bottom.transform.SetAsFirstSibling();UiKit.BleedX(bottom,720,180);
 
             // 왼쪽 위: 내 체력
             playerTrail=Bar(t,playerHealth,60,48,"Player");
@@ -244,11 +250,9 @@ namespace ReversalTower
 
         void BuildPause()
         {
-            UiKit.Place(pausePage.transform,0,0,1600,900);
-            var bg=pausePage.GetComponent<Image>();
-            if(bg){UiKit.Paint(bg,UiKit.Solid,new Color(0,0,0,.62f));bg.raycastTarget=true;}
             var t=pausePage.transform;
-            UiKit.Picture(t,"Frame",500,200,600,470,UiKit.Panel,Color.white).transform.SetAsFirstSibling();
+            UiKit.Dim(t,new Color(0,0,0,.62f),true);
+            UiKit.Picture(t,"Frame",500,200,600,470,UiKit.Panel,Color.white).transform.SetSiblingIndex(1);
             var title=Grab<Text>(pausePage,"Title");
             if(title){UiKit.Place(title,540,234,520,60);UiKit.Dress(title,UiKit.Head,Palette.White,TextAnchor.UpperLeft,true);title.text="잠시 검을 내려놓고";}
             var resume=Grab<Button>(pausePage,"계속하기");
@@ -261,10 +265,8 @@ namespace ReversalTower
 
         void BuildResult()
         {
-            UiKit.Place(resultPage.transform,0,0,1600,900);
-            var bg=resultPage.GetComponent<Image>();
-            if(bg){UiKit.Paint(bg,UiKit.Solid,new Color(.012f,.02f,.035f,.84f));bg.raycastTarget=true;}
             var t=resultPage.transform;
+            UiKit.Dim(t,new Color(.012f,.02f,.035f,.84f),true);
             if(resultStats){UiKit.Place(resultStats,0,148,1600,100);UiKit.Dress(resultStats,UiKit.Huge,Palette.White,TextAnchor.UpperCenter,true,true);}
             resSub=UiKit.Label(t,"Sub",0,250,1600,46,UiKit.Sub,Palette.White,TextAnchor.UpperCenter,false,true);
             resBarFrame=UiKit.Picture(t,"Boss Left Frame",494,306,612,30,UiKit.BarFrame,Color.white);
@@ -285,10 +287,8 @@ namespace ReversalTower
 
         void BuildEnding()
         {
-            UiKit.Place(endingPage.transform,0,0,1600,900);
-            var bg=endingPage.GetComponent<Image>();
-            if(bg){UiKit.Paint(bg,UiKit.Solid,new Color(.01f,.015f,.025f,.94f));bg.raycastTarget=true;}
             var t=endingPage.transform;
+            UiKit.Dim(t,new Color(.01f,.015f,.025f,.94f),true);
             endingOver=UiKit.Label(t,"Over",0,178,1600,30,UiKit.Body,Palette.Gold,TextAnchor.UpperCenter);
             if(endingText){UiKit.Place(endingText,0,218,1600,100);UiKit.Dress(endingText,UiKit.Huge,Palette.White,TextAnchor.UpperCenter,true,true);}
             endingBody=UiKit.Label(t,"Body",400,340,800,200,UiKit.Body,UiKit.Soft,TextAnchor.UpperCenter);endingBody.lineSpacing=1.25f;
@@ -332,8 +332,8 @@ namespace ReversalTower
             pageClock=0;
             if(notice)
             {
-                if(mode==ScreenMode.Battle)UiKit.Place(notice,300,180,1000,36);
-                else UiKit.Place(notice,300,836,1000,36);
+                if(mode==ScreenMode.Battle)UiKit.PlaceCentered(notice,300,180,1000,36);
+                else UiKit.PlaceCentered(notice,300,836,1000,36);
             }
             if(mode==ScreenMode.Lobby)
             {

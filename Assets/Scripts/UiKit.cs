@@ -241,6 +241,52 @@ namespace ReversalTower
             return rt;
         }
 
+        /// <summary>
+        /// 화면(페이지)을 캔버스 가운데 1600×900 칸으로 둔다. CanvasScaler를 Expand로 쓰면
+        /// 화면비가 16:9가 아니어도 1600×900이 항상 다 보이고, 남는 쪽은 양옆(또는 위아래)으로 늘어난다.
+        /// </summary>
+        public static void Center(Component c)
+        {
+            var rt = (RectTransform)c.transform;
+            rt.anchorMin = rt.anchorMax = new Vector2(.5f, .5f);
+            rt.pivot = new Vector2(.5f, .5f);
+            rt.anchoredPosition = Vector2.zero;
+            rt.sizeDelta = new Vector2(1600, 900);
+            rt.localScale = Vector3.one;
+        }
+
+        /// <summary>캔버스 바로 밑에 있는 요소를 가운데 1600×900 칸 기준 좌표로 둔다</summary>
+        public static void PlaceCentered(Component c, float x, float y, float w, float h)
+        {
+            var rt = (RectTransform)c.transform;
+            rt.anchorMin = rt.anchorMax = new Vector2(.5f, .5f);
+            rt.pivot = new Vector2(.5f, .5f);
+            rt.anchoredPosition = new Vector2(x + w / 2 - 800, -(y + h / 2 - 450));
+            rt.sizeDelta = new Vector2(w, h);
+            rt.localScale = Vector3.one;
+        }
+
+        /// <summary>그림자·띠를 좌우로 화면 끝까지 늘린다 (넓은 화면에서도 끊기지 않게)</summary>
+        public static void BleedX(Component c, float y, float h, float extra = 2000)
+        {
+            var rt = (RectTransform)c.transform;
+            rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(.5f, 1);
+            rt.anchoredPosition = new Vector2(0, -y);
+            rt.sizeDelta = new Vector2(extra * 2, h);
+        }
+
+        /// <summary>페이지 뒤에 화면 전체를 덮는 어두운 막을 깐다. block이면 뒤쪽 클릭을 막는다</summary>
+        public static Image Dim(Transform page, Color color, bool block)
+        {
+            var image = Picture(page, "Dim", 0, 0, 10, 10, Solid, color);
+            var rt = image.rectTransform;
+            rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one; rt.pivot = new Vector2(.5f, .5f);
+            rt.offsetMin = new Vector2(-3000, -3000); rt.offsetMax = new Vector2(3000, 3000);
+            rt.SetAsFirstSibling();
+            image.raycastTarget = block;
+            return image;
+        }
+
         public static void Stretch(Component c, float inset = 0)
         {
             var rt = (RectTransform)c.transform;

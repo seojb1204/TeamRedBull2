@@ -28,7 +28,8 @@ namespace ReversalTower
         {
             if(label!=null)return;
             label=new GUIStyle(GUI.skin.label){font=font,richText=false,wordWrap=true};
-            button=new GUIStyle(GUI.skin.button){font=font,fontSize=FontSize(19),alignment=TextAnchor.MiddleCenter,richText=false};
+            // 기본 버튼 스킨은 배경을 지워도 고해상도용 배경(scaledBackgrounds)이 남아 회색 버튼이 겹쳐 그려진다 → 배경 없는 label에서 만든다
+            button=new GUIStyle(GUI.skin.label){font=font,fontSize=FontSize(19),alignment=TextAnchor.MiddleCenter,richText=false,wordWrap=false};
             button.normal.background=null;button.hover.background=null;button.active.background=null;button.focused.background=null;
             button.normal.textColor=Palette.White;button.hover.textColor=Palette.Gold;button.active.textColor=Palette.Ink;button.focused.textColor=Palette.Gold;
         }

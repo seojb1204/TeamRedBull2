@@ -1,0 +1,341 @@
+{
+  "tool": "built-in image_gen",
+  "camera": "Near right side with 5–10 degrees toward camera, visually specified, not measured 3D",
+  "reference": "User supplied Legion warrior design sheet; Arakus original image pair was not available",
+  "common": "Use case: stylized-concept. Production pixel sprite animation for ARAKUS 2D side-scrolling boss. Match reference warrior: massive muscular scarred bare chest, silver Corinthian closed helmet, long crimson plume, brown torn waist skirt belt bracers strapped boots. NO cape, torso armor, gold, blue. Wide chipped SINGLE edged greatsword in RIGHT near hand, round wooden iron-rimmed shield with central boss on LEFT far arm. Facing RIGHT, near-profile only 5-10 degrees toward camera, both arms readable. Hard edged coherent pixel art, dark outline, limited 32-color look, chunky clear color clusters, no blur, no antialiasing, no ground or shadows or lettering. Transparent background. Equal spaced cells, identical body scale and baseline, generous transparent gutters; all objects fully inside cells. In-place animation, no root translation. Separate FX not included.",
+  "poses": [
+    [
+      "Idle",
+      "대기",
+      4,
+      [
+        300,
+        300,
+        300,
+        300
+      ],
+      "HAND"
+    ],
+    [
+      "NormalAttack_R",
+      "거검 횡베기",
+      5,
+      [
+        600,
+        450,
+        250,
+        400,
+        400
+      ],
+      "HAND all cells. ready; sword drawn back over right shoulder; CONTACT horizontal cut forward; follow through sword tip low; ready. Hit1.05s end2.1s."
+    ],
+    [
+      "NormalAttack_L",
+      "방패 내려찍기",
+      5,
+      [
+        500,
+        350,
+        250,
+        400,
+        400
+      ],
+      "HAND. ready; LEFT shield raised overhead; CONTACT shield rim strikes ground; crouched impact hold; lift shield ready. Sword remains held."
+    ],
+    [
+      "NormalAttack_F",
+      "발차기",
+      4,
+      [
+        600,
+        250,
+        150,
+        200
+      ],
+      "HAND. ready; right knee chamber; short brutal right push kick forwards stomach height; foot down ready."
+    ],
+    [
+      "QuickStep",
+      "퀵스텝",
+      5,
+      [
+        150,
+        200,
+        150,
+        200,
+        250
+      ],
+      "HAND. ready; crouch; low backward hop posture; land crouch; ready. IN PLACE, no backwards displacement."
+    ],
+    [
+      "Sword_Swinging",
+      "양손 거검 휘두르기",
+      6,
+      [
+        350,
+        500,
+        200,
+        300,
+        100,
+        150
+      ],
+      "Shield transitions HAND to BACK to HAND. left hand swings shield onto upper BACK; both hands grip sword heavy low windup; both hands swing CONTACT; followthrough; straighten; re-equip shield on left forearm. Shield ONLY on BACK cells2-5."
+    ],
+    [
+      "ShieldThrowing_DashAttack",
+      "투척 후 돌진 베기",
+      6,
+      [
+        600,
+        200,
+        200,
+        400,
+        200,
+        200
+      ],
+      "HAND,NONE,NONE,NONE,NONE,HAND. 1 shield windup low pulled back; 2 release empty left hand extended no shield drawn anywhere; 3 sprint launch sword low;4 full sprint sword ready;5 diagonal sword slash;6 catch shield ready. No flying shield in sheet."
+    ],
+    [
+      "ShieldDash",
+      "방패 돌진",
+      5,
+      [
+        500,
+        950,
+        950,
+        100,
+        100
+      ],
+      "HAND. shield front shoulder low ready; running right leg; running left leg; braking front foot; ready. Shield pressed close, no shield detachment."
+    ],
+    [
+      "Shield_Throwing_Fly_Attack",
+      "투척 후 도약 내려찍기",
+      6,
+      [
+        600,
+        150,
+        100,
+        250,
+        250,
+        450
+      ],
+      "1-2 COPY exact first2 poses of attached THROW sheet,3 catch shield crouch,4 leap launch,5 tucked airborne shield aimed down,6 deep squat shield rim impact. shield HAND,NONE,HAND,HAND,HAND,HAND. no root vertical shift within cells."
+    ],
+    [
+      "Aggressive_Attack",
+      "일대 휩쓸기",
+      6,
+      [
+        700,
+        300,
+        300,
+        700,
+        500,
+        500
+      ],
+      "HAND on left forearm while left hand can grip sword too. 1 both hands sword upright in front helmet;2 low windup;3 low horizontal slash contact;4 sword above head;5 huge downward vertical cut;6 recover. NO light effects."
+    ],
+    [
+      "Of_Wrath",
+      "아라쿠스의 분노",
+      4,
+      [
+        400,
+        2100,
+        500,
+        2000
+      ],
+      "HAND. kneel sword planted; kneel head bowed hold; rise roaring arms open sword still in right; wide aggressive ready. Normal skin NOT RED, NO aura."
+    ],
+    [
+      "Charge",
+      "기믹 돌진",
+      5,
+      [
+        1100,
+        150,
+        180,
+        180,
+        400
+      ],
+      "HAND. deep sprinter start; explosive launch; sprint right leg; sprint left leg; brake. identical scale no displacement."
+    ],
+    [
+      "Walk",
+      "걷기",
+      4,
+      [
+        200,
+        200,
+        200,
+        200
+      ],
+      "HAND. heavy WALK loop: right foot contact; passing; left foot contact; passing. not four identical ready stances. sword low shield close."
+    ],
+    [
+      "Stagger",
+      "패링 경직",
+      3,
+      [
+        150,
+        2000,
+        350
+      ],
+      "HAND. sword arm knocked upward SHORT recoil, off balance knees bent, regaining stance. attached limbs waist shoulder."
+    ],
+    [
+      "Groggy",
+      "기둥 충돌 그로기",
+      4,
+      [
+        150,
+        350,
+        2250,
+        2250
+      ],
+      "HAND. collision recoil; knees buckle sword tip dragging; dazed lean a little forwards; dazed recover slight sway. not falling."
+    ],
+    [
+      "Death",
+      "사망",
+      5,
+      [
+        120,
+        200,
+        200,
+        250,
+        400
+      ],
+      "HAND,HAND,NONE,NONE,NONE. fatal jolt; both knees sword planted; shield slips entirely OFF BODY, no loose shield drawn; slumps forward over sword; collapsed face down corpse horizontal with sword by hand. NO shield prop, separate dropped shield handles it."
+    ],
+    [
+      "Shield_Spin",
+      "회전 방패",
+      4,
+      [
+        90,
+        90,
+        90,
+        90
+      ],
+      "PROP ONLY no man no sword: same round wood iron-rimmed shield from master, face visible, arrows/gashes rotated 0,90,180,270 degrees. exact equal size."
+    ],
+    [
+      "Pillar",
+      "돌진 저지 기둥",
+      2,
+      [
+        1000,
+        1000
+      ],
+      "PROP ONLY no man: ruined battlefield stone pillar, height three times width; intact then same pillar heavily cracked on LEFT side with chips missing. same size and baseline."
+    ]
+  ],
+  "fx": [
+    [
+      "FX_SwordAttack",
+      "거검 베기",
+      120,
+      "crescent slash white core pale grey crescent arc, radius60 pixels; appear thin, expand crescent, peak arc, break, fragments, vanish"
+    ],
+    [
+      "FX_ShieldAttack",
+      "방패 지면 충격",
+      50,
+      "radial ground cracks and 4-6 rock chunks rise then fall, earth brown stone grey, width50pixels"
+    ],
+    [
+      "FX_SwordSwing",
+      "양손 거검 검풍",
+      80,
+      "broad white slash arc and short radial speed lines, width80pixels"
+    ],
+    [
+      "FX_ArmWind",
+      "양손 거검 바람",
+      80,
+      "3-4 wavy white wind streaks following powerful horizontal swing, width80pixels"
+    ],
+    [
+      "FX_Dirt",
+      "퀵스텝 먼지",
+      30,
+      "tiny earthbrown foot dust puff kicked backwards, width30pixels"
+    ],
+    [
+      "FX_ShieldThrow",
+      "방패 적중",
+      40,
+      "white core X-shaped metal impact sparks pale gold fragments burst outward, width40pixels"
+    ],
+    [
+      "FX_ShieldDash",
+      "방패 돌진 먼지",
+      80,
+      "low earthbrown dust behind running feet, width80pixels, six frames seamless loop no empty final"
+    ],
+    [
+      "FX_LeapingSlam",
+      "도약 착지",
+      120,
+      "ground splits jagged stone shards erupt upward then fall, earthbrown grey white initial flash, width120pixels height60pixels"
+    ],
+    [
+      "FX_WideHorizontal",
+      "휩쓸기 가로",
+      240,
+      "low wide white/palegold crescent horizontal slash trail, 240pixels wide48high, appear peak lingering afterimage fade"
+    ],
+    [
+      "FX_WideVertical",
+      "휩쓸기 세로",
+      200,
+      "tall white/palegold downwards vertical sword slash, 200pixels high, stepped pixel bands afterimage fade"
+    ],
+    [
+      "FX_BladeCharge",
+      "거검 충전",
+      70,
+      "thin vertical sword-shaped charging light silhouette 70pixels tall white/palegold stepped bands and little sparkles, effect only no real sword, six frames loop"
+    ],
+    [
+      "FX_WrathWhite",
+      "분노 준비 오라",
+      60,
+      "white aura around imaginary kneeling man 60pixels tall, EMPTY transparent center no character, rising bands, six frames loop"
+    ],
+    [
+      "FX_WrathRing",
+      "분노 충격파",
+      240,
+      "white ring shockwave expands sideways along ground to240pixels diameter, small debris, stepped white to crimson bands"
+    ],
+    [
+      "FX_WrathRed",
+      "분노 붉은 오라",
+      88,
+      "crimson flame-edged aura around imaginary standing man88pixels tall, EMPTY transparent center no man, six frames loop"
+    ],
+    [
+      "FX_Charge",
+      "돌진 출발",
+      80,
+      "rock debris dirt spray backwards plus earthbrown dust cloud left at launch, width80pixels"
+    ],
+    [
+      "FX_PillarImpact",
+      "기둥 충돌",
+      80,
+      "stonegrey dust and chunks bursting from LEFT side imaginary pillar, NO pillar itself, width80pixels"
+    ]
+  ],
+  "revisions": [
+    "Idle camera changed from front three-quarter to near right profile",
+    "Sword swing regenerated with wide spacing and shield on back",
+    "Death regenerated: shield on left arm in first2, none last3",
+    "Wrath regenerated: final upright standing stance",
+    "Shield slam frames re-sequenced to ground contact at0.85 seconds",
+    "Thrown patterns first2 use identical exported frame files"
+  ]
+}

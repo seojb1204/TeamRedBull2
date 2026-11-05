@@ -1,0 +1,98 @@
+[
+  [
+    "FX_SwordAttack",
+    "거검 베기",
+    120,
+    "crescent slash white core pale grey crescent arc, radius60 pixels; appear thin, expand crescent, peak arc, break, fragments, vanish"
+  ],
+  [
+    "FX_ShieldAttack",
+    "방패 지면 충격",
+    50,
+    "radial ground cracks and 4-6 rock chunks rise then fall, earth brown stone grey, width50pixels"
+  ],
+  [
+    "FX_SwordSwing",
+    "양손 거검 검풍",
+    80,
+    "broad white slash arc and short radial speed lines, width80pixels"
+  ],
+  [
+    "FX_ArmWind",
+    "양손 거검 바람",
+    80,
+    "3-4 wavy white wind streaks following powerful horizontal swing, width80pixels"
+  ],
+  [
+    "FX_Dirt",
+    "퀵스텝 먼지",
+    30,
+    "tiny earthbrown foot dust puff kicked backwards, width30pixels"
+  ],
+  [
+    "FX_ShieldThrow",
+    "방패 적중",
+    40,
+    "white core X-shaped metal impact sparks pale gold fragments burst outward, width40pixels"
+  ],
+  [
+    "FX_ShieldDash",
+    "방패 돌진 먼지",
+    80,
+    "low earthbrown dust behind running feet, width80pixels, six frames seamless loop no empty final"
+  ],
+  [
+    "FX_LeapingSlam",
+    "도약 착지",
+    120,
+    "ground splits jagged stone shards erupt upward then fall, earthbrown grey white initial flash, width120pixels height60pixels"
+  ],
+  [
+    "FX_WideHorizontal",
+    "휩쓸기 가로",
+    240,
+    "low wide white/palegold crescent horizontal slash trail, 240pixels wide48high, appear peak lingering afterimage fade"
+  ],
+  [
+    "FX_WideVertical",
+    "휩쓸기 세로",
+    200,
+    "tall white/palegold downwards vertical sword slash, 200pixels high, stepped pixel bands afterimage fade"
+  ],
+  [
+    "FX_BladeCharge",
+    "거검 충전",
+    70,
+    "thin vertical sword-shaped charging light silhouette 70pixels tall white/palegold stepped bands and little sparkles, effect only no real sword, six frames loop"
+  ],
+  [
+    "FX_WrathWhite",
+    "분노 준비 오라",
+    60,
+    "white aura around imaginary kneeling man 60pixels tall, EMPTY transparent center no character, rising bands, six frames loop"
+  ],
+  [
+    "FX_WrathRing",
+    "분노 충격파",
+    240,
+    "white ring shockwave expands sideways along ground to240pixels diameter, small debris, stepped white to crimson bands"
+  ],
+  [
+    "FX_WrathRed",
+    "분노 붉은 오라",
+    88,
+    "crimson flame-edged aura around imaginary standing man88pixels tall, EMPTY transparent center no man, six frames loop"
+  ],
+  [
+    "FX_Charge",
+    "돌진 출발",
+    80,
+    "rock debris dirt spray backwards plus earthbrown dust cloud left at launch, width80pixels"
+  ],
+  [
+    "FX_PillarImpact",
+    "기둥 충돌",
+    80,
+    "stonegrey dust and chunks bursting from LEFT side imaginary pillar, NO pillar itself, width80pixels"
+  ]
+]

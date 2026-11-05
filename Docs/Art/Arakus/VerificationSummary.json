@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-05",
+  "unityVersion": "6000.4.0f1",
+  "clips": 34,
+  "frames": 179,
+  "characterClips": 16,
+  "characterFrames": 77,
+  "propClips": 2,
+  "propFrames": 6,
+  "fxClips": 16,
+  "fxFrames": 96,
+  "pixelValidation": true,
+  "previewLogic": {
+    "passed": true,
+    "assertionsAndDrawChecks": 1206,
+    "scope": "Node VM simulated DOM; not a real browser click test",
+    "clips": 34,
+    "frames": 179
+  },
+  "unityLog": "work/arakus-unity.log",
+  "unityMarkers": "ARAKUS_VERIFIED clips=34 frames=179",
+  "scope": "Separate art prototype. No original game scenes, prefabs, shared code or DB changed.",
+  "notVerified": [
+    "Browser button interaction",
+    "Manual full playthrough",
+    "Windows build",
+    "Combat integration"
+  ]
+}

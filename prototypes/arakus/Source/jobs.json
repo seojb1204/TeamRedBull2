@@ -1,0 +1,229 @@
+[
+  [
+    "Idle",
+    "대기",
+    4,
+    [
+      300,
+      300,
+      300,
+      300
+    ],
+    "HAND"
+  ],
+  [
+    "NormalAttack_R",
+    "거검 횡베기",
+    5,
+    [
+      600,
+      450,
+      250,
+      400,
+      400
+    ],
+    "HAND all cells. ready; sword drawn back over right shoulder; CONTACT horizontal cut forward; follow through sword tip low; ready. Hit1.05s end2.1s."
+  ],
+  [
+    "NormalAttack_L",
+    "방패 내려찍기",
+    5,
+    [
+      500,
+      350,
+      250,
+      400,
+      400
+    ],
+    "HAND. ready; LEFT shield raised overhead; CONTACT shield rim strikes ground; crouched impact hold; lift shield ready. Sword remains held."
+  ],
+  [
+    "NormalAttack_F",
+    "발차기",
+    4,
+    [
+      600,
+      250,
+      150,
+      200
+    ],
+    "HAND. ready; right knee chamber; short brutal right push kick forwards stomach height; foot down ready."
+  ],
+  [
+    "QuickStep",
+    "퀵스텝",
+    5,
+    [
+      150,
+      200,
+      150,
+      200,
+      250
+    ],
+    "HAND. ready; crouch; low backward hop posture; land crouch; ready. IN PLACE, no backwards displacement."
+  ],
+  [
+    "Sword_Swinging",
+    "양손 거검 휘두르기",
+    6,
+    [
+      350,
+      500,
+      200,
+      300,
+      100,
+      150
+    ],
+    "Shield transitions HAND to BACK to HAND. left hand swings shield onto upper BACK; both hands grip sword heavy low windup; both hands swing CONTACT; followthrough; straighten; re-equip shield on left forearm. Shield ONLY on BACK cells2-5."
+  ],
+  [
+    "ShieldThrowing_DashAttack",
+    "투척 후 돌진 베기",
+    6,
+    [
+      600,
+      200,
+      200,
+      400,
+      200,
+      200
+    ],
+    "HAND,NONE,NONE,NONE,NONE,HAND. 1 shield windup low pulled back; 2 release empty left hand extended no shield drawn anywhere; 3 sprint launch sword low;4 full sprint sword ready;5 diagonal sword slash;6 catch shield ready. No flying shield in sheet."
+  ],
+  [
+    "ShieldDash",
+    "방패 돌진",
+    5,
+    [
+      500,
+      950,
+      950,
+      100,
+      100
+    ],
+    "HAND. shield front shoulder low ready; running right leg; running left leg; braking front foot; ready. Shield pressed close, no shield detachment."
+  ],
+  [
+    "Shield_Throwing_Fly_Attack",
+    "투척 후 도약 내려찍기",
+    6,
+    [
+      600,
+      150,
+      100,
+      250,
+      250,
+      450
+    ],
+    "1-2 COPY exact first2 poses of attached THROW sheet,3 catch shield crouch,4 leap launch,5 tucked airborne shield aimed down,6 deep squat shield rim impact. shield HAND,NONE,HAND,HAND,HAND,HAND. no root vertical shift within cells."
+  ],
+  [
+    "Aggressive_Attack",
+    "일대 휩쓸기",
+    6,
+    [
+      700,
+      300,
+      300,
+      700,
+      500,
+      500
+    ],
+    "HAND on left forearm while left hand can grip sword too. 1 both hands sword upright in front helmet;2 low windup;3 low horizontal slash contact;4 sword above head;5 huge downward vertical cut;6 recover. NO light effects."
+  ],
+  [
+    "Of_Wrath",
+    "아라쿠스의 분노",
+    4,
+    [
+      400,
+      2100,
+      500,
+      2000
+    ],
+    "HAND. kneel sword planted; kneel head bowed hold; rise roaring arms open sword still in right; wide aggressive ready. Normal skin NOT RED, NO aura."
+  ],
+  [
+    "Charge",
+    "기믹 돌진",
+    5,
+    [
+      1100,
+      150,
+      180,
+      180,
+      400
+    ],
+    "HAND. deep sprinter start; explosive launch; sprint right leg; sprint left leg; brake. identical scale no displacement."
+  ],
+  [
+    "Walk",
+    "걷기",
+    4,
+    [
+      200,
+      200,
+      200,
+      200
+    ],
+    "HAND. heavy WALK loop: right foot contact; passing; left foot contact; passing. not four identical ready stances. sword low shield close."
+  ],
+  [
+    "Stagger",
+    "패링 경직",
+    3,
+    [
+      150,
+      2000,
+      350
+    ],
+    "HAND. sword arm knocked upward SHORT recoil, off balance knees bent, regaining stance. attached limbs waist shoulder."
+  ],
+  [
+    "Groggy",
+    "기둥 충돌 그로기",
+    4,
+    [
+      150,
+      350,
+      2250,
+      2250
+    ],
+    "HAND. collision recoil; knees buckle sword tip dragging; dazed lean a little forwards; dazed recover slight sway. not falling."
+  ],
+  [
+    "Death",
+    "사망",
+    5,
+    [
+      120,
+      200,
+      200,
+      250,
+      400
+    ],
+    "HAND,HAND,NONE,NONE,NONE. fatal jolt; both knees sword planted; shield slips entirely OFF BODY, no loose shield drawn; slumps forward over sword; collapsed face down corpse horizontal with sword by hand. NO shield prop, separate dropped shield handles it."
+  ],
+  [
+    "Shield_Spin",
+    "회전 방패",
+    4,
+    [
+      90,
+      90,
+      90,
+      90
+    ],
+    "PROP ONLY no man no sword: same round wood iron-rimmed shield from master, face visible, arrows/gashes rotated 0,90,180,270 degrees. exact equal size."
+  ],
+  [
+    "Pillar",
+    "돌진 저지 기둥",
+    2,
+    [
+      1000,
+      1000
+    ],
+    "PROP ONLY no man: ruined battlefield stone pillar, height three times width; intact then same pillar heavily cracked on LEFT side with chips missing. same size and baseline."
+  ]
+]

@@ -12,6 +12,9 @@ namespace ReversalTower
         string playerPoseState;
         float playerPoseStarted;
 
+        ArakusVisuals arakusVisuals;
+        public bool UsesArakusArt=>bossActor&&animator&&animator.runtimeAnimatorController&&animator.HasState(0,Animator.StringToHash("NormalAttack_R"))&&ArakusVisuals.HasArt;
+
         public void Render(TowerGame game, bool battle)
         {
             Vector2 position = bossActor ? game.boss : game.player;
@@ -29,7 +32,12 @@ namespace ReversalTower
             }
             string state="Idle";
             float normalized=Mathf.Repeat(game.realClock*.25f,1);
-            if (battle && bossActor)
+            if(UsesArakusArt)
+            {
+                if(!arakusVisuals)arakusVisuals=GetComponent<ArakusVisuals>()??gameObject.AddComponent<ArakusVisuals>();
+                var pose=arakusVisuals.Sample(game,battle);state=pose.state;normalized=pose.normalized;body.flipX=false;animator.speed=0;
+            }
+            else if (battle && bossActor)
             {
                 if(game.bossHp<=0){state="Death";normalized=.8f;}
                 else if(game.bossState=="페이즈 전환"){state=game.spec!=null&&game.spec.hasPillars?"Hit":"Phase";normalized=game.spec!=null&&game.spec.hasPillars?.4f:Mathf.Clamp01(1-game.rest/2);}
@@ -83,6 +91,7 @@ namespace ReversalTower
                 animator.Play(state,0,Mathf.Min(.999f,normalized));
                 animator.Update(0);
             }
+            if(UsesArakusArt)arakusVisuals.Render(game,battle,this);
             RenderGlow(game,battle);
         }
 

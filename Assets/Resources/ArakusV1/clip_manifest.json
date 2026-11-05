@@ -1,0 +1,850 @@
+{
+  "version": 1,
+  "pixelsPerUnit": 40,
+  "standingHeight": 88,
+  "canvasSize": 192,
+  "fxCanvasSize": 384,
+  "view": "right-facing near profile, visually 5–10 degrees toward camera; not a measured 3D camera",
+  "notes": [
+    "Pose timings are for art review; gameplay code is not changed.",
+    "Dash arrival duration is distance-dependent in gameplay; preview uses one example.",
+    "Groggy loop section frames2–3 and charge run frames2–3 require gameplay sequencing.",
+    "Pillar state is selected, not animated in gameplay."
+  ],
+  "clips": [
+    {
+      "id": "Idle",
+      "label": "대기",
+      "count": 4,
+      "ms": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "description": "대기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": true,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "NormalAttack_R",
+      "label": "거검 횡베기",
+      "count": 5,
+      "ms": [
+        600,
+        450,
+        250,
+        400,
+        400
+      ],
+      "description": "거검 횡베기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "NormalAttack_L",
+      "label": "방패 내려찍기",
+      "count": 5,
+      "ms": [
+        500,
+        350,
+        250,
+        400,
+        400
+      ],
+      "description": "방패 내려찍기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "NormalAttack_F",
+      "label": "발차기",
+      "count": 4,
+      "ms": [
+        600,
+        250,
+        150,
+        200
+      ],
+      "description": "발차기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "QuickStep",
+      "label": "퀵스텝",
+      "count": 5,
+      "ms": [
+        150,
+        200,
+        150,
+        200,
+        250
+      ],
+      "description": "퀵스텝의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Sword_Swinging",
+      "label": "양손 거검 휘두르기",
+      "count": 6,
+      "ms": [
+        350,
+        500,
+        200,
+        300,
+        100,
+        150
+      ],
+      "description": "양손 거검 휘두르기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND_TO_BACK",
+        "BACK",
+        "BACK",
+        "BACK",
+        "BACK",
+        "HAND"
+      ]
+    },
+    {
+      "id": "ShieldThrowing_DashAttack",
+      "label": "투척 후 돌진 베기",
+      "count": 6,
+      "ms": [
+        600,
+        200,
+        200,
+        400,
+        200,
+        200
+      ],
+      "description": "투척 후 돌진 베기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "NONE",
+        "NONE",
+        "NONE",
+        "NONE",
+        "HAND"
+      ]
+    },
+    {
+      "id": "ShieldDash",
+      "label": "방패 돌진",
+      "count": 5,
+      "ms": [
+        500,
+        950,
+        950,
+        100,
+        100
+      ],
+      "description": "방패 돌진의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Shield_Throwing_Fly_Attack",
+      "label": "투척 후 도약 내려찍기",
+      "count": 6,
+      "ms": [
+        600,
+        150,
+        100,
+        250,
+        250,
+        450
+      ],
+      "description": "투척 후 도약 내려찍기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "NONE",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Aggressive_Attack",
+      "label": "일대 휩쓸기",
+      "count": 6,
+      "ms": [
+        700,
+        300,
+        300,
+        700,
+        500,
+        500
+      ],
+      "description": "일대 휩쓸기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Of_Wrath",
+      "label": "아라쿠스의 분노",
+      "count": 4,
+      "ms": [
+        400,
+        2100,
+        500,
+        2000
+      ],
+      "description": "아라쿠스의 분노의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Charge",
+      "label": "기믹 돌진",
+      "count": 5,
+      "ms": [
+        1100,
+        150,
+        180,
+        180,
+        400
+      ],
+      "description": "기믹 돌진의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Walk",
+      "label": "걷기",
+      "count": 4,
+      "ms": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "description": "걷기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": true,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Stagger",
+      "label": "패링 경직",
+      "count": 3,
+      "ms": [
+        150,
+        2000,
+        350
+      ],
+      "description": "패링 경직의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Groggy",
+      "label": "기둥 충돌 그로기",
+      "count": 4,
+      "ms": [
+        150,
+        350,
+        2250,
+        2250
+      ],
+      "description": "기둥 충돌 그로기의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "HAND",
+        "HAND"
+      ]
+    },
+    {
+      "id": "Death",
+      "label": "사망",
+      "count": 5,
+      "ms": [
+        120,
+        200,
+        200,
+        250,
+        400
+      ],
+      "description": "사망의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "캐릭터",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "HAND",
+        "HAND",
+        "NONE",
+        "NONE",
+        "NONE"
+      ]
+    },
+    {
+      "id": "Shield_Spin",
+      "label": "회전 방패",
+      "count": 4,
+      "ms": [
+        90,
+        90,
+        90,
+        90
+      ],
+      "description": "회전 방패의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "소품",
+      "loop": true,
+      "end": "hold",
+      "shield": [
+        "PROP",
+        "PROP",
+        "PROP",
+        "PROP"
+      ]
+    },
+    {
+      "id": "Pillar",
+      "label": "돌진 저지 기둥",
+      "count": 2,
+      "ms": [
+        1000,
+        1000
+      ],
+      "description": "돌진 저지 기둥의 준비·동작·회복 자세를 확인합니다.",
+      "size": 192,
+      "group": "소품",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "PROP",
+        "PROP"
+      ]
+    },
+    {
+      "id": "FX_SwordAttack",
+      "label": "거검 베기",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "거검 베기을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_ShieldAttack",
+      "label": "방패 지면 충격",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "방패 지면 충격을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_SwordSwing",
+      "label": "양손 거검 검풍",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "양손 거검 검풍을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_ArmWind",
+      "label": "양손 거검 바람",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "양손 거검 바람을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_Dirt",
+      "label": "퀵스텝 먼지",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "퀵스텝 먼지을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_ShieldThrow",
+      "label": "방패 적중",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "방패 적중을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_ShieldDash",
+      "label": "방패 돌진 먼지",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "방패 돌진 먼지을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": true,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_LeapingSlam",
+      "label": "도약 착지",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "도약 착지을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_WideHorizontal",
+      "label": "휩쓸기 가로",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "휩쓸기 가로을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_WideVertical",
+      "label": "휩쓸기 세로",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "휩쓸기 세로을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_BladeCharge",
+      "label": "거검 충전",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "거검 충전을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": true,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_WrathWhite",
+      "label": "분노 준비 오라",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "분노 준비 오라을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": true,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_WrathRing",
+      "label": "분노 충격파",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "분노 충격파을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_WrathRed",
+      "label": "분노 붉은 오라",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "분노 붉은 오라을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": true,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_Charge",
+      "label": "돌진 출발",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "돌진 출발을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    },
+    {
+      "id": "FX_PillarImpact",
+      "label": "기둥 충돌",
+      "count": 6,
+      "ms": [
+        70,
+        70,
+        90,
+        100,
+        120,
+        150
+      ],
+      "size": 384,
+      "description": "기둥 충돌을 별도 투명 스프라이트로 재생합니다.",
+      "group": "이펙트",
+      "loop": false,
+      "end": "hold",
+      "shield": [
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX",
+        "FX"
+      ]
+    }
+  ]
+}

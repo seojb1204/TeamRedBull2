@@ -52,6 +52,10 @@ namespace ReversalTower
         {var d=b-a;Rect((a.x+b.x)*.5f,(a.y+b.y)*.5f,d.magnitude,width,c,Mathf.Atan2(d.y,d.x)*Mathf.Rad2Deg);}
         public void Render()
         {
+            bool spriteArakus=false;
+#if !DESKTOP_PREVIEW
+            spriteArakus=g.bossIndex==0&&g.scenePresentation&&g.scenePresentation.arakus&&g.scenePresentation.arakus.UsesArakusArt;
+#endif
             cursor=0;bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;float time=g.realClock;
             Rect(0,5,70,40,Palette.Ink);
             Disc(4,7.5f,19,19,new Color(.055f,.09f,.125f));Disc(4,7.5f,14,14,new Color(.075f,.12f,.15f));
@@ -86,10 +90,10 @@ namespace ReversalTower
             if(floor!=null)for(int i=-5;i<=5;i++)Shape(floor,i*3,-.48f,3,1,Palette.White);
             if(fight)
             {
-                if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);
+                if(!spriteArakus){if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);}
                 if(g.current!=null)Telegraph();
                 if(g.current!=null&&g.current.kind>=AttackKind.Step)ArakusCues(time);
-                if(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage))RageAura(time);
+                if(!spriteArakus&&(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage)))RageAura(time);
                 foreach(var h in g.hazards)
                 {
                     Color hc=h.parry?Palette.ParryRim:h.color;   // 패링 가능한 잔상은 파란 예고
@@ -104,7 +108,7 @@ namespace ReversalTower
                 Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
                 foreach(var s in g.shots)
                 {
-                    if(s.returns){Shield(s,time);continue;}
+                    if(s.returns){if(!spriteArakus)Shield(s,time);continue;}
                     Color c=s.friendly?Palette.Teal:s.parry?Palette.ParryRim:Palette.Red;Disc(s.pos.x,s.pos.y,s.radius*5,s.radius*5,Palette.Alpha(c,.12f));Line(s.pos-s.vel.normalized*.65f,s.pos,.08f,Palette.Alpha(c,.4f));Disc(s.pos.x,s.pos.y,s.radius*2,s.radius*2,c);Disc(s.pos.x,s.pos.y,s.radius,s.radius,Palette.White);}
                 if(g.parryAge<.21f)
                 {float a=Mathf.Clamp01(1-g.parryAge/.24f);Disc(g.player.x+g.face*.6f,g.player.y+1.1f,.8f,1.7f,Palette.Alpha(Palette.Teal,a*.25f));Rect(g.player.x+g.face*.65f,g.player.y+1.1f,.07f,1.6f,Palette.Alpha(Palette.White,a));}

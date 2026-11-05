@@ -13,12 +13,13 @@
   "checks": {
     "existingLogic": 119,
     "playerAnimation": 177,
-    "arakusAnimation": 420,
-    "unityProductionRender": 153,
+    "arakusAnimation": 422,
+    "unityProductionRender": 155,
     "windowsLobbySmoke": 19,
     "windowsBuild": true,
     "windowsRuntimeResources": 179,
-    "windowsWorldVariedPixels": 450711
+    "windowsWorldVariedPixels": 450711,
+    "arakusTestHost": "Unity Editor, same Tests/ArakusAnimationTests.cs; dedicated exe blocked by host application control"
   },
   "runtimeDemo": {
     "input": "scripted DemoInput",
@@ -39,6 +40,6 @@
     "No actual DB integration",
     "Hidden ScreenCapture images were black and not used as proof",
     "Windows world camera output uses verification-only runtime probe, not shipped in PR",
-    "No shield-free idle/stagger variants were supplied; empty-hand throw pose is used while projectile is away"
+    "No shield-free idle/stagger/leap/landing variants were supplied; empty-hand pose is used while projectile is away including timeout safety leap"
   ]
 }

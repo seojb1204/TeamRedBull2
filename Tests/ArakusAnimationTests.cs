@@ -38,6 +38,7 @@ public static class ArakusAnimationTests
   i.stagger=1;Check(ArakusAnimationSelection.Sample(i,0).state=="Stagger","parry interrupts attack pose");i.groggy=true;Check(ArakusAnimationSelection.Sample(i,.5f).state=="Groggy","pillar collision has distinct groggy");
   i.dead=true;i.combat=false;Check(ArakusAnimationSelection.Sample(i,3).frame==4,"result death finishes despite no combat");
   i=new ArakusAnimationSelection.Input{combat=true,shieldOut=true,pattern="slash",stagger=.45f};Check(ArakusAnimationSelection.Sample(i,.1f).state=="ShieldThrowing_DashAttack"&&ArakusAnimationSelection.Sample(i,.1f).frame==1,"no duplicated held shield when projectile is away");
+  i.stagger=0;i.pattern="slam";i.leaping=true;Check(ArakusAnimationSelection.Sample(i,0).frame==1&&ArakusAnimationSelection.Sample(i,0).state=="ShieldThrowing_DashAttack","timeout leap cannot invent a returned shield");i.leaping=false;i.struck=true;Check(ArakusAnimationSelection.Sample(i,0).frame==1&&ArakusAnimationSelection.Sample(i,0).state=="ShieldThrowing_DashAttack","timeout landing cannot duplicate flying shield");
   i=new ArakusAnimationSelection.Input{combat=false,pattern="slash"};Check(ArakusAnimationSelection.Sample(i,0).state=="Idle","lobby ignores old combat state");
   foreach(var d in ArakusAnimationSelection.Definitions)foreach(float t in new[]{-1f,0f,.07f,1f,100f}){int f=ArakusAnimationSelection.NativeFrame(d.id,t,true);Check(f>=0&&f<d.ms.Length,"loop sample stays in sheet "+d.id);}
   Console.WriteLine("ARAKUS_ANIMATION_TESTS_PASSED "+n);

@@ -67,12 +67,13 @@ namespace ReversalTower
             var d=Find(id);float t=Math.Max(0,elapsed);if(loop)t%=d.Duration;int n=0;
             for(int k=0;k<d.ms.Length;k++){n+=d.ms[k];if(t<n/1000f)return k;}return d.ms.Length-1;
         }
+        static bool EmptyHandFallback(Input i)=>i.shieldOut&&!i.shieldCaught&&((i.pattern!="throw"&&i.pattern!="slam")||(i.pattern=="slam"&&(i.leaping||i.struck)));
         public static string State(Input i)
         {
             if(i.dead)return "Death";
             if(!i.combat)return "Idle";
             // No empty-hand stagger/idle art was supplied; keep a shield-free pose while the real projectile is away.
-            if(i.shieldOut&&!i.shieldCaught&&(i.pattern!="throw"&&i.pattern!="slam"))return "ShieldThrowing_DashAttack";
+            if(EmptyHandFallback(i))return "ShieldThrowing_DashAttack";
             if(i.stagger>0||i.phase)return i.groggy?"Groggy":"Stagger";
             switch(i.pattern)
             {
@@ -92,7 +93,7 @@ namespace ReversalTower
             if(state=="Idle"||state=="Walk")return new Pose(state,NativeFrame(state,elapsed,true));
             if(state=="Stagger")return new Pose(state,Math.Min(2,(int)(Clamp(elapsed/Math.Max(.01f,elapsed+Math.Max(i.stagger,i.hurt)))*3)));
             if(state=="Groggy")return new Pose(state,elapsed<.15f?0:elapsed<.35f?1:2+(int)((elapsed-.35f)/.35f)%2);
-            if(i.shieldOut&&!i.shieldCaught&&(i.stagger>0||string.IsNullOrEmpty(i.pattern)))return new Pose(state,1);
+            if(EmptyHandFallback(i))return new Pose(state,1);
             if(state=="ShieldThrowing_DashAttack")
             {
                 if(t<w)frame=0;else if(t<w+.2f*T)frame=1;

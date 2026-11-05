@@ -1,0 +1,2225 @@
+{
+  "characterColors": 32,
+  "sharedThrowOpeningIdentical": true,
+  "totalFrames": 179,
+  "sheetPixelsMatchFrames": true,
+  "notVerified": [
+    "Manual full game play",
+    "Combat integration",
+    "Build executable",
+    "Measured 3D camera angle"
+  ],
+  "clips": 34,
+  "noCanvasClipping": true,
+  "binaryAlpha": true,
+  "checks": [
+    {
+      "frames": 4,
+      "id": "Idle",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2400,
+          "colors": 31,
+          "bounds": [
+            70,
+            72,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2410,
+          "colors": 32,
+          "bounds": [
+            71,
+            71,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2375,
+          "colors": 31,
+          "bounds": [
+            71,
+            71,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2386,
+          "colors": 31,
+          "bounds": [
+            72,
+            72,
+            128,
+            159
+          ]
+        }
+      ],
+      "durationMs": 1200.0
+    },
+    {
+      "frames": 5,
+      "id": "NormalAttack_R",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2502,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2619,
+          "colors": 32,
+          "bounds": [
+            62,
+            72,
+            122,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2781,
+          "colors": 32,
+          "bounds": [
+            76,
+            73,
+            160,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2723,
+          "colors": 32,
+          "bounds": [
+            80,
+            76,
+            148,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2522,
+          "colors": 32,
+          "bounds": [
+            71,
+            72,
+            126,
+            159
+          ]
+        }
+      ],
+      "durationMs": 2100.0
+    },
+    {
+      "frames": 5,
+      "id": "NormalAttack_L",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2494,
+          "colors": 32,
+          "bounds": [
+            75,
+            72,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2784,
+          "colors": 32,
+          "bounds": [
+            77,
+            62,
+            129,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2521,
+          "colors": 32,
+          "bounds": [
+            65,
+            92,
+            124,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2521,
+          "colors": 32,
+          "bounds": [
+            65,
+            92,
+            124,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2494,
+          "colors": 32,
+          "bounds": [
+            75,
+            72,
+            127,
+            159
+          ]
+        }
+      ],
+      "durationMs": 1900.0
+    },
+    {
+      "frames": 4,
+      "id": "NormalAttack_F",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2525,
+          "colors": 32,
+          "bounds": [
+            70,
+            72,
+            124,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2486,
+          "colors": 32,
+          "bounds": [
+            74,
+            72,
+            122,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2576,
+          "colors": 32,
+          "bounds": [
+            73,
+            73,
+            140,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2529,
+          "colors": 32,
+          "bounds": [
+            71,
+            73,
+            124,
+            159
+          ]
+        }
+      ],
+      "durationMs": 1200.0
+    },
+    {
+      "frames": 5,
+      "id": "QuickStep",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2510,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            125,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2266,
+          "colors": 32,
+          "bounds": [
+            78,
+            85,
+            126,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2154,
+          "colors": 32,
+          "bounds": [
+            79,
+            81,
+            126,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2252,
+          "colors": 32,
+          "bounds": [
+            77,
+            86,
+            125,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2447,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            123,
+            159
+          ]
+        }
+      ],
+      "durationMs": 950.0
+    },
+    {
+      "frames": 6,
+      "id": "Sword_Swinging",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2550,
+          "colors": 32,
+          "bounds": [
+            71,
+            72,
+            124,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2587,
+          "colors": 32,
+          "bounds": [
+            70,
+            73,
+            119,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 3072,
+          "colors": 32,
+          "bounds": [
+            66,
+            76,
+            181,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2927,
+          "colors": 32,
+          "bounds": [
+            66,
+            79,
+            169,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2546,
+          "colors": 32,
+          "bounds": [
+            76,
+            72,
+            120,
+            159
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 2535,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            125,
+            159
+          ]
+        }
+      ],
+      "durationMs": 1600.0
+    },
+    {
+      "frames": 6,
+      "id": "ShieldThrowing_DashAttack",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2617,
+          "colors": 32,
+          "bounds": [
+            76,
+            72,
+            124,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2306,
+          "colors": 32,
+          "bounds": [
+            74,
+            72,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2276,
+          "colors": 32,
+          "bounds": [
+            72,
+            79,
+            129,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2332,
+          "colors": 32,
+          "bounds": [
+            93,
+            79,
+            159,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2340,
+          "colors": 32,
+          "bounds": [
+            66,
+            73,
+            134,
+            159
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 2534,
+          "colors": 32,
+          "bounds": [
+            74,
+            72,
+            126,
+            159
+          ]
+        }
+      ],
+      "durationMs": 1800.0
+    },
+    {
+      "frames": 5,
+      "id": "ShieldDash",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2387,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            122,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2404,
+          "colors": 32,
+          "bounds": [
+            64,
+            77,
+            118,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2409,
+          "colors": 32,
+          "bounds": [
+            62,
+            77,
+            113,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2551,
+          "colors": 32,
+          "bounds": [
+            69,
+            78,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2400,
+          "colors": 32,
+          "bounds": [
+            73,
+            73,
+            121,
+            159
+          ]
+        }
+      ],
+      "durationMs": 2600.0
+    },
+    {
+      "frames": 6,
+      "id": "Shield_Throwing_Fly_Attack",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2617,
+          "colors": 32,
+          "bounds": [
+            76,
+            72,
+            124,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2306,
+          "colors": 32,
+          "bounds": [
+            74,
+            72,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2628,
+          "colors": 32,
+          "bounds": [
+            75,
+            86,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2716,
+          "colors": 32,
+          "bounds": [
+            91,
+            79,
+            153,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2393,
+          "colors": 32,
+          "bounds": [
+            73,
+            89,
+            133,
+            159
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 2548,
+          "colors": 32,
+          "bounds": [
+            63,
+            95,
+            122,
+            159
+          ]
+        }
+      ],
+      "durationMs": 1800.0
+    },
+    {
+      "frames": 6,
+      "id": "Aggressive_Attack",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2743,
+          "colors": 32,
+          "bounds": [
+            73,
+            60,
+            121,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2573,
+          "colors": 32,
+          "bounds": [
+            76,
+            73,
+            126,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2696,
+          "colors": 32,
+          "bounds": [
+            73,
+            75,
+            152,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2924,
+          "colors": 32,
+          "bounds": [
+            71,
+            50,
+            121,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2627,
+          "colors": 32,
+          "bounds": [
+            63,
+            73,
+            117,
+            159
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 2567,
+          "colors": 32,
+          "bounds": [
+            74,
+            72,
+            125,
+            159
+          ]
+        }
+      ],
+      "durationMs": 3000.0
+    },
+    {
+      "frames": 4,
+      "id": "Of_Wrath",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2093,
+          "colors": 32,
+          "bounds": [
+            76,
+            97,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2099,
+          "colors": 32,
+          "bounds": [
+            76,
+            97,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2467,
+          "colors": 32,
+          "bounds": [
+            68,
+            82,
+            119,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2558,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            121,
+            159
+          ]
+        }
+      ],
+      "durationMs": 5000.0
+    },
+    {
+      "frames": 5,
+      "id": "Charge",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 1723,
+          "colors": 32,
+          "bounds": [
+            76,
+            100,
+            126,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 1603,
+          "colors": 32,
+          "bounds": [
+            93,
+            96,
+            144,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 1682,
+          "colors": 32,
+          "bounds": [
+            57,
+            95,
+            110,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 1518,
+          "colors": 32,
+          "bounds": [
+            93,
+            96,
+            145,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 1776,
+          "colors": 32,
+          "bounds": [
+            74,
+            96,
+            121,
+            159
+          ]
+        }
+      ],
+      "durationMs": 2010.0
+    },
+    {
+      "frames": 4,
+      "id": "Walk",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2693,
+          "colors": 32,
+          "bounds": [
+            66,
+            72,
+            123,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2493,
+          "colors": 32,
+          "bounds": [
+            78,
+            71,
+            135,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2659,
+          "colors": 32,
+          "bounds": [
+            65,
+            72,
+            120,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2589,
+          "colors": 32,
+          "bounds": [
+            81,
+            72,
+            135,
+            159
+          ]
+        }
+      ],
+      "durationMs": 800.0
+    },
+    {
+      "frames": 3,
+      "id": "Stagger",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2565,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            127,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2846,
+          "colors": 32,
+          "bounds": [
+            64,
+            73,
+            135,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2686,
+          "colors": 32,
+          "bounds": [
+            70,
+            73,
+            127,
+            159
+          ]
+        }
+      ],
+      "durationMs": 2500.0
+    },
+    {
+      "frames": 4,
+      "id": "Groggy",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2499,
+          "colors": 32,
+          "bounds": [
+            72,
+            72,
+            129,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2509,
+          "colors": 32,
+          "bounds": [
+            71,
+            78,
+            121,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2368,
+          "colors": 32,
+          "bounds": [
+            70,
+            85,
+            117,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2525,
+          "colors": 32,
+          "bounds": [
+            76,
+            75,
+            126,
+            159
+          ]
+        }
+      ],
+      "durationMs": 5000.0
+    },
+    {
+      "frames": 5,
+      "id": "Death",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 2434,
+          "colors": 32,
+          "bounds": [
+            74,
+            72,
+            120,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2132,
+          "colors": 32,
+          "bounds": [
+            76,
+            89,
+            122,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 1807,
+          "colors": 32,
+          "bounds": [
+            70,
+            101,
+            120,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 1690,
+          "colors": 30,
+          "bounds": [
+            70,
+            110,
+            124,
+            159
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 1408,
+          "colors": 32,
+          "bounds": [
+            46,
+            133,
+            126,
+            159
+          ]
+        }
+      ],
+      "durationMs": 1170.0
+    },
+    {
+      "frames": 4,
+      "id": "Shield_Spin",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 968,
+          "colors": 23,
+          "bounds": [
+            78,
+            124,
+            112,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 966,
+          "colors": 24,
+          "bounds": [
+            78,
+            124,
+            112,
+            159
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 970,
+          "colors": 25,
+          "bounds": [
+            79,
+            124,
+            113,
+            159
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 965,
+          "colors": 24,
+          "bounds": [
+            78,
+            124,
+            112,
+            159
+          ]
+        }
+      ],
+      "durationMs": 360.0
+    },
+    {
+      "frames": 2,
+      "id": "Pillar",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 3635,
+          "colors": 32,
+          "bounds": [
+            73,
+            40,
+            119,
+            159
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 3707,
+          "colors": 32,
+          "bounds": [
+            72,
+            40,
+            119,
+            159
+          ]
+        }
+      ],
+      "durationMs": 2000.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_SwordAttack",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 536,
+          "colors": 22,
+          "bounds": [
+            164,
+            281,
+            219,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 1895,
+          "colors": 20,
+          "bounds": [
+            151,
+            243,
+            231,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 4317,
+          "colors": 20,
+          "bounds": [
+            139,
+            218,
+            244,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 4482,
+          "colors": 21,
+          "bounds": [
+            138,
+            216,
+            244,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 1872,
+          "colors": 22,
+          "bounds": [
+            149,
+            225,
+            233,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 318,
+          "colors": 14,
+          "bounds": [
+            132,
+            253,
+            251,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_ShieldAttack",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 164,
+          "colors": 23,
+          "bounds": [
+            172,
+            302,
+            210,
+            318
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 462,
+          "colors": 27,
+          "bounds": [
+            170,
+            285,
+            212,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 923,
+          "colors": 27,
+          "bounds": [
+            167,
+            268,
+            216,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 844,
+          "colors": 26,
+          "bounds": [
+            167,
+            270,
+            215,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 391,
+          "colors": 26,
+          "bounds": [
+            170,
+            287,
+            212,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 166,
+          "colors": 21,
+          "bounds": [
+            172,
+            300,
+            211,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_SwordSwing",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 163,
+          "colors": 20,
+          "bounds": [
+            168,
+            298,
+            215,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 360,
+          "colors": 22,
+          "bounds": [
+            158,
+            287,
+            225,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 1009,
+          "colors": 25,
+          "bounds": [
+            152,
+            270,
+            231,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 976,
+          "colors": 24,
+          "bounds": [
+            161,
+            270,
+            222,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 365,
+          "colors": 21,
+          "bounds": [
+            165,
+            276,
+            218,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 128,
+          "colors": 21,
+          "bounds": [
+            166,
+            285,
+            216,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_ArmWind",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 248,
+          "colors": 18,
+          "bounds": [
+            166,
+            304,
+            216,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 547,
+          "colors": 21,
+          "bounds": [
+            166,
+            290,
+            217,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 951,
+          "colors": 22,
+          "bounds": [
+            152,
+            277,
+            231,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 1377,
+          "colors": 20,
+          "bounds": [
+            159,
+            277,
+            223,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 407,
+          "colors": 20,
+          "bounds": [
+            161,
+            287,
+            221,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 135,
+          "colors": 16,
+          "bounds": [
+            165,
+            300,
+            217,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_Dirt",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 21,
+          "colors": 5,
+          "bounds": [
+            185,
+            315,
+            198,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 129,
+          "colors": 17,
+          "bounds": [
+            180,
+            306,
+            202,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 343,
+          "colors": 18,
+          "bounds": [
+            177,
+            296,
+            206,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 149,
+          "colors": 18,
+          "bounds": [
+            179,
+            296,
+            205,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 45,
+          "colors": 6,
+          "bounds": [
+            181,
+            303,
+            203,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 10,
+          "colors": 4,
+          "bounds": [
+            186,
+            311,
+            199,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_ShieldThrow",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 25,
+          "colors": 5,
+          "bounds": [
+            188,
+            312,
+            195,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 156,
+          "colors": 11,
+          "bounds": [
+            181,
+            301,
+            201,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 424,
+          "colors": 16,
+          "bounds": [
+            173,
+            286,
+            210,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 145,
+          "colors": 16,
+          "bounds": [
+            175,
+            291,
+            207,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 51,
+          "colors": 8,
+          "bounds": [
+            178,
+            291,
+            204,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 11,
+          "colors": 4,
+          "bounds": [
+            172,
+            301,
+            211,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_ShieldDash",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 297,
+          "colors": 19,
+          "bounds": [
+            167,
+            303,
+            216,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 907,
+          "colors": 24,
+          "bounds": [
+            161,
+            291,
+            221,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 1967,
+          "colors": 24,
+          "bounds": [
+            157,
+            272,
+            226,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 1108,
+          "colors": 22,
+          "bounds": [
+            162,
+            283,
+            221,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 498,
+          "colors": 18,
+          "bounds": [
+            153,
+            294,
+            230,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 230,
+          "colors": 12,
+          "bounds": [
+            152,
+            304,
+            231,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_LeapingSlam",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 1317,
+          "colors": 26,
+          "bounds": [
+            135,
+            278,
+            248,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 3430,
+          "colors": 26,
+          "bounds": [
+            134,
+            242,
+            248,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 7097,
+          "colors": 26,
+          "bounds": [
+            132,
+            197,
+            251,
+            317
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2996,
+          "colors": 27,
+          "bounds": [
+            132,
+            230,
+            251,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 1435,
+          "colors": 11,
+          "bounds": [
+            133,
+            256,
+            250,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 543,
+          "colors": 12,
+          "bounds": [
+            135,
+            281,
+            248,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_WideHorizontal",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 524,
+          "colors": 11,
+          "bounds": [
+            117,
+            305,
+            265,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 1534,
+          "colors": 15,
+          "bounds": [
+            72,
+            284,
+            311,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2546,
+          "colors": 17,
+          "bounds": [
+            98,
+            267,
+            285,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 2393,
+          "colors": 17,
+          "bounds": [
+            98,
+            276,
+            284,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 1538,
+          "colors": 16,
+          "bounds": [
+            99,
+            280,
+            284,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 555,
+          "colors": 10,
+          "bounds": [
+            105,
+            290,
+            278,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_WideVertical",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 943,
+          "colors": 13,
+          "bounds": [
+            151,
+            284,
+            232,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 4340,
+          "colors": 15,
+          "bounds": [
+            145,
+            186,
+            237,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 8162,
+          "colors": 12,
+          "bounds": [
+            141,
+            120,
+            241,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 7279,
+          "colors": 12,
+          "bounds": [
+            143,
+            126,
+            240,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 3154,
+          "colors": 14,
+          "bounds": [
+            149,
+            156,
+            234,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 1077,
+          "colors": 11,
+          "bounds": [
+            154,
+            217,
+            229,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_BladeCharge",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 143,
+          "colors": 13,
+          "bounds": [
+            174,
+            299,
+            208,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 383,
+          "colors": 13,
+          "bounds": [
+            174,
+            278,
+            209,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 870,
+          "colors": 14,
+          "bounds": [
+            170,
+            250,
+            212,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 636,
+          "colors": 13,
+          "bounds": [
+            172,
+            257,
+            211,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 362,
+          "colors": 14,
+          "bounds": [
+            174,
+            266,
+            209,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 129,
+          "colors": 14,
+          "bounds": [
+            175,
+            297,
+            208,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_WrathWhite",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 230,
+          "colors": 12,
+          "bounds": [
+            172,
+            289,
+            211,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 388,
+          "colors": 12,
+          "bounds": [
+            170,
+            276,
+            212,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 616,
+          "colors": 14,
+          "bounds": [
+            169,
+            260,
+            213,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 535,
+          "colors": 13,
+          "bounds": [
+            170,
+            264,
+            213,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 314,
+          "colors": 11,
+          "bounds": [
+            170,
+            276,
+            212,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 148,
+          "colors": 9,
+          "bounds": [
+            172,
+            289,
+            210,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_WrathRing",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 625,
+          "colors": 23,
+          "bounds": [
+            146,
+            284,
+            236,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 2834,
+          "colors": 31,
+          "bounds": [
+            96,
+            226,
+            288,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 12843,
+          "colors": 32,
+          "bounds": [
+            72,
+            161,
+            311,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 8221,
+          "colors": 32,
+          "bounds": [
+            88,
+            189,
+            295,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 2784,
+          "colors": 29,
+          "bounds": [
+            96,
+            239,
+            286,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 819,
+          "colors": 15,
+          "bounds": [
+            102,
+            262,
+            280,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_WrathRed",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 262,
+          "colors": 18,
+          "bounds": [
+            163,
+            294,
+            220,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 1096,
+          "colors": 30,
+          "bounds": [
+            161,
+            252,
+            221,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2078,
+          "colors": 31,
+          "bounds": [
+            158,
+            234,
+            225,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 1736,
+          "colors": 31,
+          "bounds": [
+            151,
+            237,
+            231,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 727,
+          "colors": 29,
+          "bounds": [
+            159,
+            248,
+            223,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 168,
+          "colors": 17,
+          "bounds": [
+            163,
+            288,
+            220,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_Charge",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 746,
+          "colors": 23,
+          "bounds": [
+            154,
+            294,
+            229,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 1072,
+          "colors": 27,
+          "bounds": [
+            156,
+            284,
+            226,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 1835,
+          "colors": 27,
+          "bounds": [
+            152,
+            258,
+            231,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 1188,
+          "colors": 25,
+          "bounds": [
+            154,
+            273,
+            227,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 408,
+          "colors": 24,
+          "bounds": [
+            154,
+            295,
+            228,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 190,
+          "colors": 21,
+          "bounds": [
+            157,
+            303,
+            226,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    },
+    {
+      "frames": 6,
+      "id": "FX_PillarImpact",
+      "framesVerified": [
+        {
+          "index": 0,
+          "opaquePixels": 373,
+          "colors": 25,
+          "bounds": [
+            164,
+            300,
+            218,
+            319
+          ]
+        },
+        {
+          "index": 1,
+          "opaquePixels": 1002,
+          "colors": 29,
+          "bounds": [
+            161,
+            279,
+            222,
+            319
+          ]
+        },
+        {
+          "index": 2,
+          "opaquePixels": 2206,
+          "colors": 30,
+          "bounds": [
+            156,
+            252,
+            226,
+            319
+          ]
+        },
+        {
+          "index": 3,
+          "opaquePixels": 1570,
+          "colors": 30,
+          "bounds": [
+            156,
+            266,
+            226,
+            319
+          ]
+        },
+        {
+          "index": 4,
+          "opaquePixels": 673,
+          "colors": 23,
+          "bounds": [
+            162,
+            284,
+            220,
+            319
+          ]
+        },
+        {
+          "index": 5,
+          "opaquePixels": 267,
+          "colors": 12,
+          "bounds": [
+            152,
+            302,
+            231,
+            319
+          ]
+        }
+      ],
+      "durationMs": 600.0
+    }
+  ],
+  "passed": true
+}

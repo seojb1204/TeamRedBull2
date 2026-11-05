@@ -525,7 +525,7 @@ namespace ReversalTower
             else
             {
                 resultStats.text=UiKit.Josa(name,"이","가")+" 버텨냈다";resultStats.color=Palette.White;
-                resSub.text="남은 체력 "+Mathf.CeilToInt(left*100)+"%";resSub.color=Palette.White;resSub2.text="";
+                resSub.text="남은 체력 "+Mathf.Clamp(Mathf.RoundToInt(left*100),1,100)+"%";resSub.color=Palette.White;resSub2.text="";
             }
             resBarFrame.gameObject.SetActive(!r.clear);resBarFill.gameObject.SetActive(!r.clear);
             resSub2.gameObject.SetActive(r.clear);

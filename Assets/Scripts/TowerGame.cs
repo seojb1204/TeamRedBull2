@@ -294,7 +294,7 @@ namespace ReversalTower
             sound.Play(clear?"parry":"death");
         }
         public void ReturnLobby(){mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}
-        public void Abandon(){EndBattle(false);Say("전투를 중단했습니다. 기록과 획득 보상이 저장되었습니다.");}
+        public void Abandon(){EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}
         void OnApplicationQuit(){if(mode==ScreenMode.Battle&&!ended)EndBattle(false);if(save!=null)SaveStore.Save(save);}
         void DemoInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,ref bool q,ref bool w,ref bool e,ref bool r,ref bool f,float dt)
         {

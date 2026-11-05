@@ -1,0 +1,342 @@
+{
+  "canvas": 192,
+  "pixelsPerUnit": 32,
+  "clips": [
+    {
+      "id": "Idle",
+      "label": "대기",
+      "count": 8,
+      "loop": true,
+      "end": "loop",
+      "ms": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        150,
+        150,
+        150
+      ],
+      "reviewFrame": 2
+    },
+    {
+      "id": "Walk",
+      "label": "이동",
+      "count": 8,
+      "loop": true,
+      "end": "loop",
+      "ms": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "reviewFrame": 2
+    },
+    {
+      "id": "Attack",
+      "label": "기본 공격",
+      "count": 8,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        100,
+        80,
+        60,
+        50,
+        80,
+        70,
+        90,
+        130
+      ],
+      "reviewFrame": 4
+    },
+    {
+      "id": "Hit",
+      "label": "피격",
+      "count": 8,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        70,
+        50,
+        50,
+        60,
+        70,
+        90,
+        120,
+        140
+      ],
+      "reviewFrame": 2
+    },
+    {
+      "id": "Parry",
+      "label": "패링",
+      "count": 4,
+      "cols": 2,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        70,
+        55,
+        100,
+        100
+      ],
+      "action": "PARRY, exactly 4 frames: 1 dagger snaps up diagonally IN FRONT of face, bent elbow, knees braced; 2 blade angle deflects incoming force with a very small upper-body recoil, cloak flicks backward; 3 firm braced guard hold; 4 lower dagger back toward idle. Dagger remains in the same closed gripping hand throughout. No enemy or incoming weapon.",
+      "targetFirstHeight": 90,
+      "reviewFrame": 1
+    },
+    {
+      "id": "Dash",
+      "label": "대시",
+      "count": 4,
+      "cols": 2,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        70,
+        50,
+        50,
+        100
+      ],
+      "action": "DASH LEFT, exactly 4 frames: 1 deep low push-off, lean forward; 2 body very low almost horizontal with a long forward stride, dagger held low behind hand; 3 same dash with legs exchanged and cloak trailing; 4 braking, front foot planted and body begins rising. Keep actor in place horizontally; pose changes only, no background or speed effects. Connected shoulders, waist, hips.",
+      "targetFirstHeight": 63,
+      "reviewFrame": 1
+    },
+    {
+      "id": "Death",
+      "label": "사망",
+      "count": 7,
+      "cols": 4,
+      "rows": 2,
+      "loop": false,
+      "end": "hold",
+      "ms": [
+        100,
+        110,
+        100,
+        130,
+        150,
+        150,
+        300
+      ],
+      "action": "DEATH, exactly 7 frames: 1 major impact with head recoiling; 2 stagger backward; 3 dagger slipping from grip but still adjacent to hand; 4 drop onto knees; 5 kneel and slump forward; 6 fall forward to LEFT; 7 lie face-down motionless on the same ground baseline, cloak resting over back, dagger resting nearby inside this cell. Do not stand back up. Preserve body size: lying character is wider but shorter, not a shrunken body.",
+      "targetFirstHeight": 93,
+      "reviewFrame": 6
+    },
+    {
+      "id": "SkillQ",
+      "label": "Q · 돌진 베기",
+      "count": 7,
+      "cols": 4,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        90,
+        60,
+        60,
+        65,
+        85,
+        90,
+        130
+      ],
+      "action": "SKILL Q DASH SLASH, exactly 7 frames: 1 crouch with dagger chambered near ribs, elbow bent; 2 explosive low forward lunge LEFT; 3 glide low with dagger extending LEFT; 4 wide horizontal forehand slash at full extension; 5 follow-through blade past front of body; 6 skid stop with bent forward leg; 7 recover toward idle. Full connected torso and hips coordinate with arm. No giant VFX arc or effects.",
+      "targetFirstHeight": 72,
+      "reviewFrame": 3
+    },
+    {
+      "id": "SkillW",
+      "label": "W · 회전 베기",
+      "count": 8,
+      "cols": 4,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        80,
+        65,
+        65,
+        65,
+        65,
+        65,
+        65,
+        110
+      ],
+      "action": "SKILL W SPIN SLASH, exactly 8 frames of one FULL 360-DEGREE ROTATION in place with gripping dagger hand extended: 1 LEFT-facing ready; 2 rotate toward front three-quarter; 3 front view; 4 opposite right-facing view; 5 back three-quarter; 6 back view; 7 near left-facing three-quarter; 8 LEFT-facing ready again. Show actual torso and head turning, not just moving the arm. Cloak wraps and swirls but remains attached at shoulders. Outfit and gold emblem consistent through back and front views. This clip is the intentional exception to the fixed LEFT facing rule.",
+      "targetFirstHeight": 93,
+      "reviewFrame": 5
+    },
+    {
+      "id": "SkillE",
+      "label": "E · 처형 베기",
+      "count": 9,
+      "cols": 3,
+      "rows": 3,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        110,
+        110,
+        120,
+        80,
+        85,
+        65,
+        100,
+        130,
+        140
+      ],
+      "action": "SKILL E EXECUTION STRIKE, exactly 9 frames: 1 lower stance; 2 both hands grip the same short dagger and begin raising above head; 3 tense overhead two-hand ready, elbows connected; 4 leap with knees flexed; 5 peak of leap in compact tuck, dagger overhead; 6 descend plunging dagger DOWN; 7 impact in deep crouch, dagger blade driven toward ground (the attack key pose); 8 hold impact pose; 9 rise toward ready. Keep actor root centered and ground baseline fixed; airborne poses may lift feet. No impact effects, crater, lightning, ground lines or extra weapons.",
+      "targetFirstHeight": 83,
+      "reviewFrame": 6
+    },
+    {
+      "id": "Jump",
+      "label": "점프",
+      "count": 3,
+      "cols": 3,
+      "rows": 1,
+      "loop": false,
+      "end": "hold",
+      "ms": [
+        90,
+        100,
+        180
+      ],
+      "action": "JUMP, exactly 3 frames: 1 deep takeoff crouch about to spring; 2 upward-stretched body with knees pulling up; 3 compact apex tuck with cloak gently floating. Dagger held securely. Feet may leave shared baseline. Animate in place with enough clear padding above head. Do not add landing or falling poses.",
+      "targetFirstHeight": 65,
+      "reviewFrame": 2
+    },
+    {
+      "id": "Fall",
+      "label": "낙하",
+      "count": 3,
+      "cols": 3,
+      "rows": 1,
+      "loop": true,
+      "end": "loop",
+      "ms": [
+        120,
+        120,
+        120
+      ],
+      "action": "FALL, exactly 3 airborne poses: 1 beginning to fall with legs extending downward and cloak lifting; 2 descending with legs reaching for ground and free arm balancing; 3 same as 2 but slightly changed cloak flutter, ready to loop. Dagger remains held, body suspended above ground baseline. No ground drawn, no landing or standing pose.",
+      "targetFirstHeight": 95,
+      "reviewFrame": 1
+    },
+    {
+      "id": "UltimateBasic",
+      "label": "일반 궁극기 · 작은 전기탄",
+      "count": 6,
+      "cols": 3,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        100,
+        100,
+        120,
+        65,
+        85,
+        130
+      ],
+      "action": "BASIC ULTIMATE SPARK SHOT, exactly 6 frames, small quick understated technique: 1 guarded ready, FREE hand near hip, dagger stays in other hand; 2 raise free hand to chest height with open palm; 3 focus with cupped palm; 4 quick forward open-palm push LEFT; 5 small hand recoil; 6 lower hand to guard. No projectile, electricity, sparks, light, glow or ANY magical effects. Character movement ONLY.",
+      "targetFirstHeight": 93,
+      "reviewFrame": 3
+    },
+    {
+      "id": "UltimateArakus",
+      "label": "아라쿠스 궁극기 · 철왕의 휩쓸기",
+      "count": 8,
+      "cols": 4,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        130,
+        140,
+        75,
+        95,
+        100,
+        70,
+        100,
+        140
+      ],
+      "action": "ARAKUS-INHERITED ULTIMATE IRON KING'S SWEEP, exactly 8 frames OF THIS SAME SILVER-HAIRED ROGUE, NOT the warrior boss: 1 wide heavy low stance, dagger chambered at hip; 2 weight shifts preparing bent-arm heavy cut; 3 low horizontal sweep skimming toward LEFT; 4 low cut follow-through with weight on front leg; 5 reverse preparation low at hips; 6 rising vertical cut LOW TO HIGH; 7 peak upward cut with cloak whipping upward; 8 settle into a heavy wide ready stance. Do not add a shield, helmet or boss outfit. No slash trails or effects.",
+      "targetFirstHeight": 78,
+      "reviewFrame": 5
+    },
+    {
+      "id": "UltimatePhanes",
+      "label": "파네스 궁극기 · 굴절된 별",
+      "count": 7,
+      "cols": 4,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        100,
+        120,
+        75,
+        70,
+        80,
+        75,
+        130
+      ],
+      "action": "PHANES-INHERITED ULTIMATE REFRACTED STAR, exactly 7 frames OF THE SAME ROGUE: 1 dagger across chest and free hand pulled back; 2 free hand to chest as if gathering energy, head lowers; 3 free hand thrust forward LEFT open palm; 4 small casting arm recoil; 5 palm pushes forward again; 6 small recoil again; 7 lower hand to ready. Dagger stays held in other hand throughout. These are ONLY character casting poses for a five-projectile skill; draw NO projectiles, stars, light, glow, or effects. Do not change character into another boss.",
+      "targetFirstHeight": 93,
+      "reviewFrame": 4
+    },
+    {
+      "id": "UltimateAdikus",
+      "label": "아디쿠스 궁극기 · 심판의 낫",
+      "count": 8,
+      "cols": 4,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        120,
+        130,
+        70,
+        100,
+        90,
+        140,
+        180,
+        150
+      ],
+      "action": "ADIKUS-INHERITED ULTIMATE SCYTHE OF JUDGEMENT, exactly 8 frames OF THE SAME ROGUE WITH SHORT DAGGER: 1 raise gripping hand high behind head with bent elbow; 2 coil upper body for a heavy cut; 3 sweeping overhand reaping cut down toward front LEFT; 4 blade low near ground with torso folded; 5 follow-through toward hip; 6 stand up straight breathing slowly; 7 free hand over chest and eyes closed, calm recovery/healing pose; 8 ready. Keep dagger a dagger, DO NOT replace it with a scythe. No healing light, green effect, crescents, trails or any effects.",
+      "targetFirstHeight": 112,
+      "reviewFrame": 6
+    },
+    {
+      "id": "UltimateAethelos",
+      "label": "에텔로스 궁극기 · 천상의 심판",
+      "count": 8,
+      "cols": 4,
+      "rows": 2,
+      "loop": false,
+      "end": "idle",
+      "ms": [
+        130,
+        140,
+        180,
+        75,
+        100,
+        140,
+        160,
+        160
+      ],
+      "action": "AETHELOS-INHERITED ULTIMATE JUDGEMENT OF THE HEAVENS, exactly 8 frames OF THE SAME ROGUE: 1 dagger points straight upward; 2 free hand opens and raises, cloak lifts; 3 hold tense sky-pointing pose looking upward; 4 sharply lower dagger in front; 5 drop to one knee bringing gripping dagger hand toward ground; 6 kneel with free hand open palm-up beside body and head raised; 7 hold kneeling pose; 8 stand to ready. Never add lightning, light beams, magic circle, sky strike or effects. Character poses only.",
+      "targetFirstHeight": 126,
+      "reviewFrame": 5
+    }
+  ]
+}

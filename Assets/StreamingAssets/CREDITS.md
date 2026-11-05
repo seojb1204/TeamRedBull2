@@ -11,6 +11,12 @@ Selected and imported on 2026-10-28. Each of the following creator pages labels 
 
 CC0 reference: https://creativecommons.org/publicdomain/zero/1.0/
 
+## Font (added 2026-11-05)
+
+| Resource | Creator | Original source | License and use |
+|---|---|---|---|
+| Galmuri11, Galmuri11 Bold 2.40.4 | Lee Minseo (quiple) | https://github.com/quiple/galmuri | SIL Open Font License 1.1 (not CC0). Unmodified TTF files in `Assets/Resources/UI/Fonts`, license text alongside as `Galmuri-OFL.txt`. Used for all in-game UI text. The font may be bundled with the game but must not be sold on its own. |
+
 The Hero Knight set has no dedicated parry, potion or dash animation. Parry currently holds an attack preparation pose, dash reuses running frames with a trail, and potion uses the idle pose with an effect. These are integration choices for this prototype, not additional animation assets attributed to LuizMelo.
 
 Boss sprites, UI, attack indicators, healing/death/confirmation fallback sounds and the lobby synth ambience remain the prototype's original resources. The DevWizard knight pack was inspected but is not used or distributed here. No claim of final art or full animation coverage is made.

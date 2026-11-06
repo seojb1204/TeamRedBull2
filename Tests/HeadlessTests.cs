@@ -27,6 +27,23 @@ public static class HeadlessTests
             for(int i=0;i<1000;i++){int l=model.Choose(x,0,10,.7f,0);if(Math.Abs(l)>1)throw new Exception("Invalid difficulty jump");model.Update(l,x,.8);if(double.IsNaN(model.Value(l+2,x)))throw new Exception("Invalid model");}
             Check(true,"1000 finite LinUCB updates with one-step bounds");
             var restored=JsonUtility.FromJson<BanditModel>(JsonUtility.ToJson(model));Check(Math.Abs(restored.Value(2,x)-model.Value(2,x))<1e-8,"Learned matrices survive serialization");
+            // 안전장치 규칙은 초반 3판 뒤에도 적용된다 (예전에는 5판부터 LinUCB만 남아 레벨이 굳었다)
+            Check(model.Choose(x,0,10,.95f,0)==1,"Skilled players keep progressing after the opening battles");
+            Check(model.Choose(x,0,10,.2f,0)==-1,"Struggling players stay supported after the opening battles");
+            Check(model.Choose(x,2,10,.95f,0)==2,"Hard upper bound");
+            {
+                // 처음 6판은 전부 맞고 지다가, 그 뒤로 전부 막아 내며 이기는 플레이어: 실력이 늘면 다시 어려워져야 한다
+                var learnSave=new SaveData();var arakus=Catalog.Bosses[0];var session=new DdaBattleSession();int low=0;
+                for(int battle=0;battle<18;battle++)
+                {
+                    session.Prepare(learnSave,arakus,false);bool good=battle>=6;
+                    foreach(var st in session.Stats){if(st.id=="step"||st.id=="rage")continue;st.opportunities=5;if(good)st.parries=5;else st.hits=5;}
+                    if(battle==5)low=session.Stats.Find(st=>st.id=="cleave").level;
+                    session.Complete(learnSave,arakus,good);
+                }
+                session.Prepare(learnSave,arakus,false);int high=session.Stats.Find(st=>st.id=="cleave").level;
+                Check(low<=-1&&high>=1,"DDA raises difficulty again when a struggling player improves ("+low+" -> "+high+")");
+            }
             Start();float hp=game.playerHp;game.parryAge=.1f;game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp&&game.parries==1&&game.ult==15,"Parry prevents damage and grants 15 ultimate");
             game.parryAge=.25f;game.playerInv=0;game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp-20,"Late parry receives damage");
             game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp-20&&game.Stat("cleave").ignored==1,"Post-hit invulnerability prevents repeated damage");

@@ -49,8 +49,8 @@ namespace ReversalTower
         {
             if (learning.battles == 0) return "첫 만남 · 기본 난이도";
             if (learning.lossStreak >= 3) return learning.lossStreak + "연패 보호 · 한 단계 쉽게";
-            if (learning.battles < 4 && success < .45f) return "초반 · 성공률 " + Mathf.RoundToInt(success * 100) + "% 낮음 → 쉽게";
-            if (learning.battles < 4 && success > .9f) return "초반 · 성공률 " + Mathf.RoundToInt(success * 100) + "% 높음 → 어렵게";
+            if (success < .45f) return "성공률 " + Mathf.RoundToInt(success * 100) + "% 낮음 → 한 단계 쉽게";
+            if (success > .9f) return "성공률 " + Mathf.RoundToInt(success * 100) + "% 높음 → 한 단계 어렵게";
             return "LinUCB 학습 · 성공률 " + Mathf.RoundToInt(success * 100) + "% (목표 60~80%)";
         }
 

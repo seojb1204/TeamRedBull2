@@ -44,6 +44,16 @@ public static class HeadlessTests
                 session.Prepare(learnSave,arakus,false);int high=session.Stats.Find(st=>st.id=="cleave").level;
                 Check(low<=-1&&high>=1,"DDA raises difficulty again when a struggling player improves ("+low+" -> "+high+")");
             }
+            {
+                // DDA 패널의 '다음 판' 미리보기: 몇 번 불러도 같은 답이고 학습하지 않는다
+                var previewSave=new SaveData();var arakus=Catalog.Bosses[0];double[] context;string reason;
+                int first=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                int again=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                Check(first==again&&previewSave.Learning("arakus").battles==0&&reason=="첫 만남 · 기본 난이도","DDA next-battle preview does not learn");
+                var learned=previewSave.Learning("arakus");learned.battles=5;var memory=learned.Pattern("cleave");memory.level=2;memory.observations=3;memory.success=1;
+                int capped=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                Check(capped==2&&reason.Contains("이미 가장 어려움"),"DDA reason says when the hardest level is already reached");
+            }
             Start();float hp=game.playerHp;game.parryAge=.1f;game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp&&game.parries==1&&game.ult==15,"Parry prevents damage and grants 15 ultimate");
             game.parryAge=.25f;game.playerInv=0;game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp-20,"Late parry receives damage");
             game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp-20&&game.Stat("cleave").ignored==1,"Post-hit invulnerability prevents repeated damage");

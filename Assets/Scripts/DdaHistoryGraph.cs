@@ -235,14 +235,18 @@ namespace ReversalTower
 
         void DdaGraphLine(Vector2 from, Vector2 to, Color color)
         {
-            var previous = GUI.matrix;
-            try
+            if (Event.current.type != EventType.Repaint) return;
+            // Use the same ScrollView-local coordinates as DdaGraphPoint, avoiding a second
+            // pivot/matrix transform inside the active scroll clip.
+            // Overlapping 2x2 stamps keep the line continuous without changing GUI.matrix;
+            // include both endpoints so their centers coincide exactly with the data points.
+            Vector2 d = to - from;
+            int steps = Mathf.Max(1, Mathf.CeilToInt(Mathf.Max(Mathf.Abs(d.x), Mathf.Abs(d.y))));
+            for (int i = 0; i <= steps; i++)
             {
-                Vector2 d = to - from;
-                GUIUtility.RotateAroundPivot(Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg, from);
-                Fill(new Rect(from.x, from.y - 1, d.magnitude, 2), color);
+                Vector2 point = Vector2.Lerp(from, to, i / (float)steps);
+                Fill(new Rect(point.x - 1, point.y - 1, 2, 2), color);
             }
-            finally { GUI.matrix = previous; }
         }
     }
 }

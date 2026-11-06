@@ -88,7 +88,7 @@ public static class DdaDifficultyHistoryTests
         var store = new DdaDifficultyHistoryStore(Root("recovery")); store.Record(Record("first")); store.Record(Record("second"));
         File.WriteAllText(store.PathName, "broken-json");
         var recovered = new DdaDifficultyHistoryStore(Root("recovery"));
-        Check(recovered.Recent("arakus").Count == 1 && recovered.Warning != null, "corrupt primary recovers valid backup with visible warning");
+        Check(recovered.Recent("arakus").Count == 1 && recovered.Warning != null && recovered.LastError == null, "corrupt primary recovers valid backup with visible warning");
         recovered.Record(Record("after-recovery"));
         Check(recovered.Completed("arakus") == 2 && Directory.GetFiles(Root("recovery"), "*.corrupt.*").Length == 1, "recovery preserves corrupt evidence and resumes without inventing lost records");
         Check(new DdaDifficultyHistoryStore(Root("recovery")).Recent("arakus").Count == 2, "recovered history persists on restart");

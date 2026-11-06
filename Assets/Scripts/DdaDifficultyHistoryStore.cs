@@ -41,6 +41,7 @@ namespace ReversalTower
                     Validate(candidate);
                     data = candidate; primaryValid = path == PathName;
                     if (!primaryValid) Warning = "DDA 이력 백업을 복구했습니다.";
+                    LastError = null;
                     return;
                 }
                 catch (Exception e) { LastError = "DDA 이력 읽기 실패: " + e.Message; }

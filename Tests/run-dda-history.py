@@ -11,7 +11,7 @@ from xml.sax.saxutils import escape
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dotnet', default=shutil.which('dotnet'))
-    parser.add_argument('--suite', choices=['history', 'logic'], default='history')
+    parser.add_argument('--suite', choices=['history', 'logic', 'panel'], default='history')
     args = parser.parse_args()
     if not args.dotnet:
         parser.error('A .NET SDK is required; supply --dotnet /path/to/dotnet')
@@ -22,6 +22,8 @@ def main():
     entry = 'DdaDifficultyHistoryTests' if args.suite == 'history' else 'HeadlessTests'
     sources = [repo / 'Assets' / 'Scripts' / (name + '.cs') for name in names]
     sources += [repo / 'Tests' / 'UnityShim.cs', repo / 'Tests' / (entry + '.cs')]
+    if args.suite == 'panel':
+        sources = [repo / 'Assets' / 'Scripts' / 'DdaPanelWindow.cs', repo / 'Tests' / 'DdaPanelWindowTests.cs']
     with tempfile.TemporaryDirectory(prefix='tower-dda-tests-') as folder:
         work = Path(folder)
         project = work / 'Tests.csproj'

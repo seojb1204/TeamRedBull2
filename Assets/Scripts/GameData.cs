@@ -89,7 +89,8 @@ namespace ReversalTower
                 P("end","심연의 파동",AttackKind.Wave,1.05f,1.1f,20,20,3))
         };
     }
-    [Serializable] public class HistoryEntry {public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda;}
+    // abandoned: ESC 포기·창 닫기·에디터 정지로 끝난 판. 기록과 골드는 남지만 DDA 학습과 DB 통계에는 쓰지 않는다.
+    [Serializable] public class HistoryEntry {public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda,abandoned;}
     [Serializable] public class SaveData
     {
         public int version=2,gold,attackLevel,healthLevel,equippedUltimate=-1,unlockedBoss;
@@ -122,6 +123,9 @@ namespace ReversalTower
     }
     // Disjoint LinUCB: six context features, five bounded difficulty arms.
     // Models learn only after battle completion; a running pattern never changes.
+    // 안전장치 규칙(성공률 45% 미만 → 한 단계 쉽게, 90% 초과 → 한 단계 어렵게)은 판 수와 관계없이 항상 먼저 적용한다.
+    // LinUCB는 그 사이(45~90%)에서만 고른다. 예전처럼 초반 3판에만 규칙을 쓰면, 개인 기록이 적어 LinUCB가
+    // 처음 몇 판에 정해진 레벨에 묶여 실력이 늘어도 다시 어려워지지 않았다 (2026-11-06 시뮬레이션으로 확인).
     [Serializable] public class BanditModel
     {
         public const int D=6,N=5;
@@ -141,8 +145,8 @@ namespace ReversalTower
         {
             if(battles==0)return 0;
             if(lossStreak>=3)return Math.Max(-2,current-1);
-            if(battles<4&&success<.45f)return Math.Max(-2,current-1);
-            if(battles<4&&success>.9f)return Math.Min(2,current+1);
+            if(success<.45f)return Math.Max(-2,current-1);
+            if(success>.9f)return Math.Min(2,current+1);
             int best=current;double value=double.NegativeInfinity;
             for(int level=Math.Max(-2,current-1);level<=Math.Min(2,current+1);level++)
             {

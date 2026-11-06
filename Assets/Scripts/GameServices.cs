@@ -20,43 +20,57 @@ namespace ReversalTower
             Stats = new List<PatternStats>();
             Contexts = new Dictionary<string,double[]>();
             Reasons = new Dictionary<string,string>();
-            BossLearning learning = save.Learning(boss.id);
             foreach (Pattern pattern in boss.patterns)
             {
-                PatternMemory memory = learning.Pattern(pattern.id);
-                // 아직 이 패턴을 겪어 보지 않았으면 다른 플레이어들의 성공률을 출발점으로 쓴다 (DB가 없으면 기존과 같음)
-                CommunityStats.Entry community;
-                bool shared = CommunityStats.TryGet(boss.id, pattern.id, out community) && community.opportunities >= CommunityStats.MinOpportunities;
-                float success = memory.observations == 0 && shared ? community.successRate : memory.success;
-                double[] context = learning.model.Context(success, learning.globalSuccess,
-                    memory.level, LobbyCards.Power(save), learning.lossStreak);
-                int level = Enabled ? learning.model.Choose(context, memory.level,
-                    learning.battles, success, learning.lossStreak) : 0;
-                string reason = !Enabled ? "DDA 꺼짐" : Reason(learning, success);
-                if (Enabled && learning.battles == 0 && shared)
-                {
-                    level = Math.Max(-1, Math.Min(1, community.suggestedLevel));
-                    reason = "첫 만남 · 다른 플레이어 " + community.players + "명 성공률 " + Mathf.RoundToInt(community.successRate * 100) + "%";
-                }
+                double[] context;
+                string reason;
+                int level = Decide(save, boss, pattern, Enabled, out context, out reason);
                 Stats.Add(new PatternStats { id=pattern.id, level=level });
                 Contexts[pattern.id] = context;
                 Reasons[pattern.id] = reason;
             }
         }
 
-        // BanditModel.Choose와 같은 순서로 판단 이유를 적는다
-        static string Reason(BossLearning learning, float success)
+        // 지금까지의 기억으로 이 패턴의 레벨을 고른다. Prepare와 DDA 패널의 '다음 판' 미리보기가 같이 쓴다.
+        // 학습(Complete)은 하지 않으므로 몇 번 불러도 결과가 바뀌지 않는다.
+        public static int Decide(SaveData save, BossSpec boss, Pattern pattern, bool enabled, out double[] context, out string reason)
         {
+            BossLearning learning = save.Learning(boss.id);
+            PatternMemory memory = learning.Pattern(pattern.id);
+            // 아직 이 패턴을 겪어 보지 않았으면 다른 플레이어들의 성공률을 출발점으로 쓴다 (DB가 없으면 기존과 같음)
+            CommunityStats.Entry community;
+            bool shared = CommunityStats.TryGet(boss.id, pattern.id, out community) && community.opportunities >= CommunityStats.MinOpportunities;
+            float success = memory.observations == 0 && shared ? community.successRate : memory.success;
+            context = learning.model.Context(success, learning.globalSuccess,
+                memory.level, LobbyCards.Power(save), learning.lossStreak);
+            int level = enabled ? learning.model.Choose(context, memory.level,
+                learning.battles, success, learning.lossStreak) : 0;
+            reason = !enabled ? "DDA 꺼짐" : Reason(learning, success, memory.level);
+            if (enabled && learning.battles == 0 && shared)
+            {
+                level = Math.Max(-1, Math.Min(1, community.suggestedLevel));
+                reason = "첫 만남 · 다른 플레이어 " + community.players + "명 성공률 " + Mathf.RoundToInt(community.successRate * 100) + "%";
+            }
+            return level;
+        }
+
+        // BanditModel.Choose와 같은 순서로 판단 이유를 적는다. current = 지난 판 레벨 (이미 끝에 닿았으면 그렇게 적음)
+        static string Reason(BossLearning learning, float success, int current)
+        {
+            string easier = current <= -2 ? " · 이미 가장 쉬움" : " · 한 단계 쉽게";
+            string harder = current >= 2 ? " · 이미 가장 어려움" : " · 한 단계 어렵게";
             if (learning.battles == 0) return "첫 만남 · 기본 난이도";
-            if (learning.lossStreak >= 3) return learning.lossStreak + "연패 보호 · 한 단계 쉽게";
-            if (learning.battles < 4 && success < .45f) return "초반 · 성공률 " + Mathf.RoundToInt(success * 100) + "% 낮음 → 쉽게";
-            if (learning.battles < 4 && success > .9f) return "초반 · 성공률 " + Mathf.RoundToInt(success * 100) + "% 높음 → 어렵게";
+            if (learning.lossStreak >= 3) return learning.lossStreak + "연패 보호" + easier;
+            if (success < .45f) return "성공률 " + Mathf.RoundToInt(success * 100) + "% 낮음" + easier;
+            if (success > .9f) return "성공률 " + Mathf.RoundToInt(success * 100) + "% 높음" + harder;
             return "LinUCB 학습 · 성공률 " + Mathf.RoundToInt(success * 100) + "% (목표 60~80%)";
         }
 
-        public void Complete(SaveData save, BossSpec boss, bool clear)
+        // abandoned: 끝까지 싸우지 않은 판(ESC 포기·창 닫기·에디터 정지). 연패·판 수·패턴 성공률 어느 것도 바꾸지 않는다.
+        // 테스트하다 끈 판이 쌓여 연패 보호가 걸리거나, 반쯤 싸운 기록이 학습되는 것을 막는다.
+        public void Complete(SaveData save, BossSpec boss, bool clear, bool abandoned = false)
         {
-            if (!Enabled) return;
+            if (!Enabled || abandoned) return;
             BossLearning learning = save.Learning(boss.id);
             float sum = 0;
             int observed = 0;

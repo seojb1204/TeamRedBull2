@@ -80,6 +80,8 @@ namespace ReversalTower
         void OnBattle(HistoryEntry h, List<PatternStats> stats, SaveData save)
         {
             if (h == null || stats == null) return;
+            // 끝까지 싸우지 않은 판(포기·종료)은 다른 플레이어의 첫 판 난이도를 정하는 통계에 섞지 않는다 (로컬 CSV에는 남음)
+            if (h.abandoned) return;
             string battleId = Guid.NewGuid().ToString();
             var ci = CultureInfo.InvariantCulture;
             var cards = new StringBuilder();

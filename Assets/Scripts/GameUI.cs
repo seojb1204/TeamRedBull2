@@ -63,6 +63,7 @@ namespace ReversalTower
 #if !HEADLESS && !DESKTOP_PREVIEW
             if(nativeUI)
             {
+                DdaPanelUI();   // F8 DDA 패널 (DdaPanel.cs). 아래 창들이 그 위에 그려진다
                 if(showHistory)HistoryUI();
                 if(showSettings)SettingsUI();
                 if(showHelp)HelpUI();
@@ -81,6 +82,9 @@ namespace ReversalTower
             if(flash>0)Fill(new Rect(0,0,1600,900),Palette.Alpha(Palette.Gold,flash*.12f));
             if(phaseFlash>0&&mode==ScreenMode.Battle)
             {Fill(new Rect(0,325,1600,110),new Color(.025f,.035f,.05f,phaseFlash*.85f));Text(0,352,1600,80,thirdPhase?"마지막 잔상":phaseTwo?"두 번째 맹세":"",40,Palette.Gold,TextAnchor.UpperCenter);}
+#if !HEADLESS && !DESKTOP_PREVIEW
+            DdaPanelUI();
+#endif
             if(paused&&mode==ScreenMode.Battle)PauseUI();
             if(showHistory)HistoryUI();if(showSettings)SettingsUI();if(showHelp)HelpUI();
             if(!string.IsNullOrEmpty(SaveStore.LastError))Text(20,875,1560,24,SaveStore.LastError,13,Palette.Red);

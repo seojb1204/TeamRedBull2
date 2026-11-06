@@ -15,6 +15,8 @@ namespace ReversalTower
         Rect start;
         Vector2 pointer;
 
+        public bool ConsumesPointer(Vector2 at) => Ready && (Dragging || Bounds.Contains(at));
+
         public void Reset() { Ready = custom = false; End(); }
         public void End() { corner = 0; }
 

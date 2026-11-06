@@ -11,6 +11,36 @@ namespace ReversalTower
         const float DdaGraphHeight = 310;
         bool ddaHistoryExpanded = true;
         Vector2 ddaHistoryScroll;
+        readonly DdaPanelWindow ddaPanelWindow = new DdaPanelWindow();
+        int ddaResizeControl;
+
+        void ResetDdaPanelWindow()
+        {
+            EndDdaPanelResize();
+            ddaPanelWindow.Reset();
+            ddaHistoryScroll = Vector2.zero;
+        }
+
+        void EndDdaPanelResize()
+        {
+            ddaPanelWindow.End();
+            if (ddaResizeControl != 0 && GUIUtility.hotControl == ddaResizeControl) GUIUtility.hotControl = 0;
+        }
+
+        // Update polls mouse buttons before OnGUI: Event.Use alone cannot shield combat input.
+        bool DdaPanelConsumesMouse()
+        {
+            if (!(ddaPanelLoaded ? showDdaPanel : PlayerPrefs.GetInt(DdaPanelPref, 0) == 1) ||
+                (mode != ScreenMode.Battle && mode != ScreenMode.Result) || save == null || spec == null ||
+                stats == null || stats.Count == 0) return false;
+            float scale = DdaPanelScale();
+            var mouse = Input.mousePosition;
+            var point = new Vector2(mouse.x / scale, (Screen.height - mouse.y) / scale);
+            return ddaPanelWindow.ConsumesPointer(point);
+        }
+
+        static float DdaPanelScale() => Mathf.Clamp(Mathf.Min(Screen.width / 1600f, Screen.height / 900f), .85f, 1.15f);
+
         DdaDifficultyHistoryStore ddaHistoryStore;
         int ddaHistoryRevision = -1;
         string ddaHistoryBoss;
@@ -30,29 +60,96 @@ namespace ReversalTower
         {
             var previous = GUI.matrix;
             float gameScale = Mathf.Min(Screen.width / 1600f, Screen.height / 900f);
-            float scale = Mathf.Clamp(gameScale, .85f, 1.15f);
+            float scale = DdaPanelScale();
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1));
             float sw = Screen.width / scale, sh = Screen.height / scale;
-            float width = Mathf.Min(contentWidth + 20, Mathf.Max(1, sw - 16));
-            // Leave the HP strip and bottom skill strip clear; scroll rather than shrink tiny text.
             float letterbox = (Screen.height - 900 * gameScale) * .5f;
-            float y = Mathf.Max(8, (letterbox + 166 * gameScale + 4) / scale);
+            float defaultY = Mathf.Max(8, (letterbox + 166 * gameScale + 4) / scale);
             float bottom = Mathf.Min(sh - 8, (letterbox + 752 * gameScale) / scale);
             float contentHeight = tableHeight + (ddaHistoryExpanded ? DdaGraphHeight : 0);
-            float height = Mathf.Min(contentHeight + 54, Mathf.Max(60, bottom - y));
-            if (y + height > sh - 8) y = Mathf.Max(8, sh - height - 8);
-            float x = Mathf.Max(8, sw - width - 8);
+            ddaPanelWindow.Resolve(sw, sh, contentWidth + 20,
+                Mathf.Min(contentHeight + 54, Mathf.Max(60, bottom - defaultY)), defaultY);
+            HandleDdaPanelResize();
+            Rect window = ddaPanelWindow.Bounds;
+            float x = window.x, y = window.y, width = window.width, height = window.height;
             Fill(new Rect(x, y, width, height), new Color(.02f, .035f, .055f, .94f));
             Fill(new Rect(x, y, width, 2), Palette.Gold);
-            Text(x + 12, y + 7, Mathf.Max(1, width - 150), 24, "F8 · 전투는 계속됩니다", 13, muted);
+            Text(x + 24, y + 7, Mathf.Max(1, width - 190), 24, "F8 · 모서리 드래그로 크기 조절", 13, muted);
             // Mouse buttons are combat inputs. A read-only header + unused F9 avoids attacking
             // or parrying merely to fold this developer overlay; the wheel can still scroll it.
             float foldWidth = Mathf.Min(142, width - 12);
-            Text(x + width - foldWidth - 6, y + 7, foldWidth, 24,
+            Text(x + width - foldWidth - 24, y + 7, foldWidth, 24,
                 ddaHistoryExpanded ? "F9 그래프 접기 ▲" : "F9 그래프 펼치기 ▼", 13, Palette.Gold, TextAnchor.UpperRight);
-            ddaHistoryScroll = GUI.BeginScrollView(new Rect(x + 4, y + 38, Mathf.Max(1, width - 8), Mathf.Max(1, height - 42)),
-                ddaHistoryScroll, new Rect(0, 0, contentWidth, contentHeight));
+            DrawDdaResizeHandles();
+            // Expand the graph with the viewport; retain the table's minimum width and scroll
+            // for the wider result columns. Reserve scrollbar/resize-handle gutters.
+            ddaPanelContentWidth = Mathf.Max(contentWidth, width - 28);
+            ddaHistoryScroll = GUI.BeginScrollView(new Rect(x + 4, y + 38, Mathf.Max(1, width - 16), Mathf.Max(1, height - 48)),
+                ddaHistoryScroll, new Rect(0, 0, ddaPanelContentWidth, contentHeight));
             return new DdaPanelScope(previous);
+        }
+
+        float ddaPanelContentWidth;
+
+        void HandleDdaPanelResize()
+        {
+            Event e = Event.current;
+            int control = GUIUtility.GetControlID(0x444441, FocusType.Passive);
+            if (ddaPanelWindow.Dragging && ddaResizeControl != control) EndDdaPanelResize();
+            if (!ddaPanelWindow.Dragging && GUIUtility.hotControl == ddaResizeControl && ddaResizeControl != 0)
+                GUIUtility.hotControl = 0;
+            ddaResizeControl = control;
+            // The overlay is drawn after the fallback result buttons. Claim a corner even
+            // if a button underneath claimed this same mouse-down; it must not receive the up.
+            if (e.type == EventType.MouseDown && e.button == 0)
+            {
+                if (ddaPanelWindow.Begin(e.mousePosition))
+                {
+                    GUIUtility.hotControl = ddaResizeControl;
+                    e.Use();
+                }
+            }
+            if (ddaPanelWindow.Dragging && GUIUtility.hotControl == ddaResizeControl)
+            {
+                if (e.type == EventType.MouseDrag)
+                {
+                    ddaPanelWindow.Drag(e.mousePosition);
+                    e.Use();
+                }
+                else if (e.rawType == EventType.MouseUp && e.button == 0)
+                {
+                    ddaPanelWindow.End();
+                    GUIUtility.hotControl = 0;
+                    e.Use();
+                }
+            }
+            // Release capture after focus loss, mode changes or a missing mouse-up outside Game View.
+            if (ddaPanelWindow.Dragging && (!Application.isFocused || !Input.GetMouseButton(0) || GUIUtility.hotControl != ddaResizeControl))
+            {
+                ddaPanelWindow.End();
+                if (GUIUtility.hotControl == ddaResizeControl) GUIUtility.hotControl = 0;
+            }
+        }
+
+        void DrawDdaResizeHandles()
+        {
+            Rect r = ddaPanelWindow.Bounds;
+            foreach (Vector2 p in new[] { new Vector2(r.x, r.y), new Vector2(r.xMax, r.y),
+                new Vector2(r.x, r.yMax), new Vector2(r.xMax, r.yMax) })
+            {
+                bool left = p.x == r.x, top = p.y == r.y;
+                float hx = left ? p.x + 2 : p.x - DdaPanelWindow.Handle;
+                float hy = top ? p.y + 2 : p.y - DdaPanelWindow.Handle;
+                var handle = new Rect(hx, hy, DdaPanelWindow.Handle - 2, DdaPanelWindow.Handle - 2);
+                Color color = ddaPanelWindow.Dragging || handle.Contains(Event.current.mousePosition) ? Palette.White : Palette.Gold;
+                Fill(handle, Palette.Alpha(color, .25f));
+                Fill(new Rect(left ? hx : hx + handle.width - 2, hy, 2, handle.height), color);
+                Fill(new Rect(hx, top ? hy : hy + handle.height - 2, handle.width, 2), color);
+#if UNITY_EDITOR
+                UnityEditor.EditorGUIUtility.AddCursorRect(handle,
+                    left == top ? UnityEditor.MouseCursor.ResizeUpLeft : UnityEditor.MouseCursor.ResizeUpRight);
+#endif
+            }
         }
 
         void DrawDdaDifficultyGraph(float x, float y, float width)

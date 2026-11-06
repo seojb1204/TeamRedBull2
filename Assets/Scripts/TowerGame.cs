@@ -188,8 +188,12 @@ namespace ReversalTower
             if(player.y<=.001f){coyote=.1f;if(dashes<2){dashRecharge+=dt;if(dashRecharge>=2.5f){dashes++;dashRecharge=0;}}}else coyote-=dt;
             bool left=Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.LeftArrow),right=Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow);
             bool jump=Input.GetKeyDown(KeyCode.Space),dash=Input.GetKeyDown(KeyCode.LeftShift)||Input.GetKeyDown(KeyCode.RightShift);
-            bool attack=Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||Input.GetMouseButtonDown(0);
-            bool parry=Input.GetKeyDown(KeyCode.K)||Input.GetKeyDown(KeyCode.X)||Input.GetMouseButtonDown(1);
+            bool panelMouse=false;
+#if !HEADLESS && !DESKTOP_PREVIEW
+            panelMouse=DdaPanelConsumesMouse();
+#endif
+            bool attack=Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||(!panelMouse&&Input.GetMouseButtonDown(0));
+            bool parry=Input.GetKeyDown(KeyCode.K)||Input.GetKeyDown(KeyCode.X)||(!panelMouse&&Input.GetMouseButtonDown(1));
             bool q=Input.GetKeyDown(KeyCode.Q),w=Input.GetKeyDown(KeyCode.W),e=Input.GetKeyDown(KeyCode.E),r=Input.GetKeyDown(KeyCode.R),f=Input.GetKeyDown(KeyCode.F);
             float move=(right?1:0)-(left?1:0);
             if(demo)DemoInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);

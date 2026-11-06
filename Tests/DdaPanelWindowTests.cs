@@ -33,11 +33,15 @@ static class DdaPanelWindowTests
         var window = new DdaPanelWindow();
         window.Resolve(1600, 900, 600, 500, 170);
         var original = window.Bounds;
+        Check(window.ConsumesPointer(new UnityEngine.Vector2(original.x + 100, original.y + 100)), "panel shields mouse before OnGUI drag starts");
+        Check(!window.ConsumesPointer(new UnityEngine.Vector2(0, 0)), "outside panel allows mouse combat");
         Check(!window.Begin(new UnityEngine.Vector2(original.x + 100, original.y + 100)), "body is not a handle");
         Check(window.Begin(new UnityEngine.Vector2(original.x + 2, original.yMax - 2)), "bottom-left handle");
         window.Drag(new UnityEngine.Vector2(original.x - 198, original.yMax + 98));
         Check(window.Bounds.width == 800 && window.Bounds.height == 600 && window.Bounds.xMax == original.xMax, "left expands while right stays anchored");
+        Check(window.ConsumesPointer(new UnityEngine.Vector2(0, 0)), "captured drag shields mouse even outside panel");
         window.End();
+        Check(!window.ConsumesPointer(new UnityEngine.Vector2(0, 0)), "mouse combat restored outside after release");
         window.Resolve(1600, 900, 1000, 300, 100);
         Check(window.Bounds.width == 800 && window.Bounds.height == 600, "custom size survives content/F9/mode changes");
         window.Reset(); window.Resolve(1600, 900, 600, 500, 170);

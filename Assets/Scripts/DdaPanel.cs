@@ -22,6 +22,7 @@ namespace ReversalTower
             Event e = Event.current;
             if (e != null && e.type == EventType.KeyDown && e.keyCode == KeyCode.F8)
             {
+                ResetDdaPanelWindow();
                 showDdaPanel = !showDdaPanel;
                 PlayerPrefs.SetInt(DdaPanelPref, showDdaPanel ? 1 : 0);
                 PlayerPrefs.Save();
@@ -53,8 +54,12 @@ namespace ReversalTower
         void DdaPanelUI()
         {
             DdaPanelInput();
-            if (!showDdaPanel || save == null || spec == null || stats == null || stats.Count == 0) return;
-            if (mode != ScreenMode.Battle && mode != ScreenMode.Result) return;
+            if (!showDdaPanel || save == null || spec == null || stats == null || stats.Count == 0 ||
+                (mode != ScreenMode.Battle && mode != ScreenMode.Result))
+            {
+                EndDdaPanelResize();
+                return;
+            }
             bool full = mode == ScreenMode.Result;
             if (full && result != ddaPreviewFor) RefreshDdaPreview();
 
@@ -74,6 +79,7 @@ namespace ReversalTower
             float h = header + 30 + rows.Count * Row + 36;
             using (BeginDdaHistoryPanel(w, h))
             {
+            w = ddaPanelContentWidth;
             float x = 0, y = 0, inner = w - Pad * 2;
 
             Fill(new Rect(x, y, w, h), new Color(.02f, .035f, .055f, .9f));

@@ -89,7 +89,8 @@ namespace ReversalTower
                 P("end","심연의 파동",AttackKind.Wave,1.05f,1.1f,20,20,3))
         };
     }
-    [Serializable] public class HistoryEntry {public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda;}
+    // abandoned: ESC 포기·창 닫기·에디터 정지로 끝난 판. 기록과 골드는 남지만 DDA 학습과 DB 통계에는 쓰지 않는다.
+    [Serializable] public class HistoryEntry {public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda,abandoned;}
     [Serializable] public class SaveData
     {
         public int version=2,gold,attackLevel,healthLevel,equippedUltimate=-1,unlockedBoss;

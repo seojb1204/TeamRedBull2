@@ -54,9 +54,11 @@ namespace ReversalTower
             return "LinUCB 학습 · 성공률 " + Mathf.RoundToInt(success * 100) + "% (목표 60~80%)";
         }
 
-        public void Complete(SaveData save, BossSpec boss, bool clear)
+        // abandoned: 끝까지 싸우지 않은 판(ESC 포기·창 닫기·에디터 정지). 연패·판 수·패턴 성공률 어느 것도 바꾸지 않는다.
+        // 테스트하다 끈 판이 쌓여 연패 보호가 걸리거나, 반쯤 싸운 기록이 학습되는 것을 막는다.
+        public void Complete(SaveData save, BossSpec boss, bool clear, bool abandoned = false)
         {
-            if (!Enabled) return;
+            if (!Enabled || abandoned) return;
             BossLearning learning = save.Learning(boss.id);
             float sum = 0;
             int observed = 0;

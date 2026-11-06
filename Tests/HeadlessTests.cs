@@ -68,6 +68,10 @@ public static class HeadlessTests
             game.ReturnLobby();Check(game.mode==ScreenMode.Lobby&&game.hazards.Count==0,"Returning to lobby clears battle hazards");
             foreach(int i in new[]{1,2,3,4}){game.StartBattle(i);game.DamageBoss(game.bossHp);Check(game.save.cleared[i],"Boss "+i+" can complete and persist progression");}
             Start();Call("EndBattle",false);Check(game.result.gold==0,"Immediate abandon does not generate free gold");
+            Start();game.Stat("cleave").opportunities=3;game.Stat("cleave").hits=3;game.Abandon();
+            {var learned=game.save.Learning("arakus");Check(game.result.abandoned&&game.save.history.Count==1&&learned.battles==0&&learned.lossStreak==0&&learned.Pattern("cleave").observations==0,"Abandoned battle keeps history but does not train DDA");}
+            Start();game.Stat("cleave").opportunities=3;game.Stat("cleave").hits=3;Call("EndBattle",false);
+            {var learned=game.save.Learning("arakus");Check(!game.result.abandoned&&learned.battles==1&&learned.lossStreak==1&&learned.Pattern("cleave").observations==1,"Fought-out defeat still trains DDA");}
             Start();game.Stat("cleave").level=-1;Call("BeginPattern",game.spec.patterns[0]);
             {var cds=(System.Collections.Generic.Dictionary<string,float>)typeof(BossPatternSystem).GetField("cooldowns",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(game.BossPatterns);
             Check(Math.Abs(cds["cleave"]-game.seconds-game.spec.patterns[0].cooldown*1.12f)<1e-4f,"Easier level -1 lengthens Arakus cooldown by 12%");}

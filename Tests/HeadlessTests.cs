@@ -74,6 +74,17 @@ public static class HeadlessTests
             }
             var saved=new SaveData{gold=123};Check(SaveStore.Save(saved),"Save writes successfully");saved.gold=234;Check(SaveStore.Save(saved),"Atomic save replacement succeeds");Check(SaveStore.Load().gold==234,"Save reload restores progress");
             File.WriteAllText(SaveStore.SavePath,"broken-json");Check(SaveStore.Load().gold==123,"Corrupt main save recovers backup");
+            // DDA 기록 초기화 (설정 화면 버튼): 학습만 지우고 진행·골드·기록은 남긴다
+            Start();game.DamageBoss(game.bossHp);
+            {
+                int gold=game.save.gold,history=game.save.history.Count;
+                Check(game.save.learning.Count==1&&game.save.Learning("arakus").battles==1,"Victory records DDA learning");
+                game.save.ResetDdaLearning();
+                Check(game.save.learning.Count==0&&game.save.gold==gold&&game.save.history.Count==history&&game.save.cleared[0],"DDA reset clears learning but keeps gold, history and progression");
+                Check(SaveStore.Save(game.save)&&SaveStore.Load().learning.Count==0,"DDA reset survives save and load");
+                game.ReturnLobby();game.StartBattle(0);
+                Check(game.save.Learning("arakus").battles==0&&game.Stat("cleave").level==0,"Battle after DDA reset starts as a first encounter");
+            }
             TestLobbyCards();
             Console.WriteLine("HEADLESS_TESTS_PASSED "+passed+" assertions. Rendering/audio require a real Unity player.");return 0;
         }

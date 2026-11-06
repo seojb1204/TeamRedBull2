@@ -287,7 +287,7 @@ namespace ReversalTower
             current=p;patternAge=0;attackStep=0;dashHit=false;patternSerial++;g.bossFace=g.player.x>=g.boss.x?1:-1;
             origin=g.boss;targetX=g.player.x;
             int level=g.Stat(p.id).level;
-            float[] telegraph={1.3f,1.15f,1,.9f,.8f},damage={.8f,.9f,1,1.1f,1.2f},cooldown={1.25f,g.spec.phaseSpeedScale,1,.9f,.8f};
+            float[] telegraph={1.3f,1.15f,1,.9f,.8f},damage={.8f,.9f,1,1.1f,1.2f},cooldown={1.25f,1.12f,1,.9f,.8f};   // 레벨 -2~+2 쿨타임 배율 (예전에 1.12f가 phaseSpeedScale로 잘못 바뀌어 아라쿠스 -1이 1.0이었음)
             tempo=rageActive?RageTempo:1;
             bool special=p.kind==AttackKind.Step||p.kind==AttackKind.Rage;
             windup=special?p.windup:Mathf.Max(.4f,p.windup*telegraph[level+2]/(phaseTwo?g.spec.phaseSpeedScale:1));

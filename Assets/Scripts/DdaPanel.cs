@@ -27,6 +27,11 @@ namespace ReversalTower
                 PlayerPrefs.Save();
                 e.Use();
             }
+            if (showDdaPanel && e != null && e.type == EventType.KeyDown && e.keyCode == KeyCode.F9)
+            {
+                ddaHistoryExpanded = !ddaHistoryExpanded;
+                e.Use();
+            }
         }
 
         // 결과 화면에서 한 번만 계산한다 (DdaBattleSession.Decide는 학습하지 않으므로 저장 데이터가 바뀌지 않음)
@@ -67,7 +72,9 @@ namespace ReversalTower
             float w = Pad * 2 + NameW + LevelW + NowW + MemoryW + (full ? NextW + ReasonW : 0);
             float header = 86 + (abandonedLine ? 20 : 0);
             float h = header + 30 + rows.Count * Row + 36;
-            float x = 1600 - w - 20, y = 96, inner = w - Pad * 2;
+            using (BeginDdaHistoryPanel(w, h))
+            {
+            float x = 0, y = 0, inner = w - Pad * 2;
 
             Fill(new Rect(x, y, w, h), new Color(.02f, .035f, .055f, .9f));
             Fill(new Rect(x, y, w, 2), Palette.Gold);
@@ -129,6 +136,8 @@ namespace ReversalTower
             cy += 8;
             Rule(cx, cy, inner);
             Text(cx, cy + 8, inner, 22, "레벨 -2 쉬움 ~ +2 어려움   ·   선딜 x1.3 ~ x0.8   ·   피해 x0.8 ~ x1.2   ·   쿨타임 x1.25 ~ x0.8", 13, muted);
+            if (ddaHistoryExpanded) DrawDdaDifficultyGraph(cx, h + 4, inner);
+            }
         }
 
         static string Pct(float value) => Mathf.RoundToInt(value * 100) + "%";

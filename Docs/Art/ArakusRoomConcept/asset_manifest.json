@@ -1,0 +1,139 @@
+{
+  "design": "Brutal Crimson Fortress",
+  "originality": "Original deterministic Pillow material/architecture painting. Existing art only in mockups; no generated/recolored Castle backgrounds.",
+  "base_commit": "f13bb6bd25f469e38acce05eceb712712dc30c3f",
+  "source_canvas": [
+    768,
+    512
+  ],
+  "source_ground_row": 366,
+  "source_pixels_per_world_unit": 21.951219512195124,
+  "pillar_contract": {
+    "sheet": [
+      384,
+      192
+    ],
+    "frame": [
+      192,
+      192
+    ],
+    "frames": 2,
+    "pivot": [
+      0.5,
+      0.16666666666666666
+    ],
+    "import_ppu": 56,
+    "existing_root_scale": 1.4,
+    "world_intact_height": 3.0
+  },
+  "assets": [
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/floor_tile.png",
+      "size": [
+        128,
+        48
+      ],
+      "mode": "RGBA",
+      "sha256": "4592e513b43a9e0a693349d5446c62205e874c12c1b792d2f9ad05becfdbd4e4"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/pillar_broken.png",
+      "size": [
+        192,
+        192
+      ],
+      "mode": "RGBA",
+      "sha256": "d05f14d8aef65cfad6bd36804ac53c873f8bc5fc6bb7355f081f1b2168413c30"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/pillar_intact.png",
+      "size": [
+        192,
+        192
+      ],
+      "mode": "RGBA",
+      "sha256": "537a99e45f80fbae08a2843af913e17f1efabfa3749485bdbe755c410d9be987"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/pillar_sheet.png",
+      "size": [
+        384,
+        192
+      ],
+      "mode": "RGBA",
+      "sha256": "2bd61f964bc402fcb3e915b151e5802fdceb9fcefcdf1bb78a24d2a804f718c0"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/room_far.png",
+      "size": [
+        768,
+        512
+      ],
+      "mode": "RGBA",
+      "sha256": "a16d71547cc9e3456dd765f4a52a3c56749d2a70e72e9d14f71971ac0318ff6f"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/room_mid.png",
+      "size": [
+        768,
+        512
+      ],
+      "mode": "RGBA",
+      "sha256": "840fa4066a0ed61d41c32d9f33b11e15d7a27a4a2391082e8069ca0dea0de289"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/floor_tile.png",
+      "size": [
+        128,
+        48
+      ],
+      "mode": "RGBA",
+      "sha256": "8a96f96b0f1b2e5905dd1a9eb966cf04529372fef53587f808a1663399f8813a"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_broken.png",
+      "size": [
+        192,
+        192
+      ],
+      "mode": "RGBA",
+      "sha256": "0a1b3998937b454411fa76b7db614b25942eb8edd118738abc536d5625ed3db6"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_intact.png",
+      "size": [
+        192,
+        192
+      ],
+      "mode": "RGBA",
+      "sha256": "68bb0d29a61d30938a794c4dc5d92884615270010a5a0b7e12030e6a778de341"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_sheet.png",
+      "size": [
+        384,
+        192
+      ],
+      "mode": "RGBA",
+      "sha256": "a8b1ce00081e2cac08f5a772b02b2a41a88885e1c011b8795947fb37b1803032"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/room_far.png",
+      "size": [
+        768,
+        512
+      ],
+      "mode": "RGBA",
+      "sha256": "b016f835c18979de484578335552a7a9cae438820ca125f27056c99e4233d75e"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/room_mid.png",
+      "size": [
+        768,
+        512
+      ],
+      "mode": "RGBA",
+      "sha256": "da69e6cb8e5819a8a0cad8c694e73bafd859c7d66f8103115787dd9fefb73738"
+    }
+  ]
+}

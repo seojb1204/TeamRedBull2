@@ -50,10 +50,11 @@ WorldArtist.Render: bossIndex==0 및 Battle/Result일 때만 DrawThroneRoom.
 기존 절차 배경/Castle/바닥/안개는 해당 분기에서 제외. 새 파일이 없으면 기존 배경으로 복귀.
 전투 예고/플레이어/보스/투사체/피격/패링 렌더링은 기존 공유 경로 유지.
 
-배경은 실제 Camera.pixelWidth/pixelHeight·orthographicSize·현재 위치를 읽어 전체 구도가 들어오는 배율을 계산한다.
-확대는 화면상 정수 배율, 축소는1/N 배율로 제한한다. 원본 y608을 기존 바닥y0에 맞추고 배경 위치만 화면 픽셀에 스냅한다(최대0.5px 차이). 아래 석재62px 스트립만 반복 연장.
-카메라 수식·위치·충돌 바닥은 변경하지 않았다. 일반16:9/4:3/21:9 구도를 보존하며 어두운 가장자리 여백이 생긴다.
-기존 패링 줌과 화면 흔들림 중 잠깐의 크롭은 실제 실행 확인 필요. 배경 자체를 화면비마다 왜곡하지 않는다.
+배경은 실제 Camera.pixelWidth/pixelHeight·orthographicSize를 읽어 뷰포트 가로를100% 채운다.
+원본 비율을 유지하며 필요한 중간 배율을 허용하고 Point 필터를 유지한다. 정수/1/N 강제 배율과 Contain은 폐기했다.
+배경 중심x는 카메라 중심x에 맞추되, 원본 y608은 항상 정확히 월드y0으로 배치한다. 카메라·캐릭터·기둥 좌표는 쓰거나 변경하지 않는다.
+위쪽 일부 크롭을 허용하며 하단 부족분은 기존 이미지의 석재62px 스트립으로 반복 연장한다.
+Battle/Result 아라쿠스 전용 분기와 누락 시 fallback은 유지한다.
 
 ArakusVisuals.DrawPillar: 기존 프레임/좌표/페이드 값을 전달받아 얇은 외곽선만 추가.
 Pillar_Outline.png는 각 프레임 알파의 3×3 최대 필터에서 원래 알파를 뺀 바깥1px 마스크.
@@ -99,28 +100,53 @@ Unity6000.4.0f1 미설치로 Unity 컴파일/실플레이/Windows 빌드 미실�
 7. Windows 빌드와 실행, StreamingAssets 파일 포함 확인.
 
 
-## 후속 로컬 수정 — 화면 잘림·픽셀 배율
+## 최종 배치 수정 — 가로100% 우선, y=0 정확 정렬
 
-WorldArtist.DrawThroneRoom의 고정26.5m 배치를 실제 카메라 뷰포트 기반 contain 배치로 바꿨다.
-카메라/해상도 설정을 쓰거나 수정하지 않고 읽기만 한다. 각 방향8px 여유를 두고 상단·하단·좌우에 모두 들어오는 배율을 선택한다.
-정수 배율이 안 들어가는 작은 화면에서는 1/N로 규칙적으로 축소한다. Point 필터는 기존 ExternalAssets.Texture 설정을 그대로 사용한다.
-배경 좌측과 발 기준을 픽셀에 맞추며, 남는 공간은 어둡게 두고 아래 석재만 연장한다.
-기둥/외곽선/돌진/페이드 및 입력·전투·DDA·DB·Scene·Prefab·카메라·아트 PNG는 이번 수정에서 변경하지 않았다.
+이전 완전Contain/정수 배율은 사용자의 Unity6000.4.0f1 실측에서 과도한 검은 여백으로 실패했다.
+정수 배율을 고집하지 않고 실제 Game View 너비에 배경을 맞추는 방식으로 대체했다.
 
-검증: 리소스·보존·수치 레이아웃 검사73 PASS / 0 FAIL, WorldArtist.cs Roslyn 문법0 errors.
-6해상도×3카메라 조건(일반 및0.8줌/좌우오프셋)의 수치 배치가 전체 배경을 포함한다.
-테스트 수식은 C# 배치의 독립 오프라인 oracle이며 실제 Unity Camera/GPU 실행이 아니다.
-1920×1080 일반 시 기존 약1.398배에서1배로 변경. 정상 중앙 카메라에서는 이전 코드도 수학적으로 좌우 잘림0이었다.
-0.8줌/카메라x±1 테스트에서는 기존 원본 환산 총약51.54px 잘림에서0으로 줄었다.
-이 수치는 사용자 Unity 화면의 실측값이 아니다. 사용자가 본 과도한 잘림이 같은 조건에서 재현됐다고 단정하지 않는다.
+계산(픽셀은 해당 Camera 뷰포트 기준):
 
-PNG 비교는 /workspace/artifacts/arakus-room-pixel-fit/의 offline_before_1920x1080.png,
-offline_after_1920x1080.png, offline_stairs_before_after.png를 참고한다.
-오프라인 목업은 Unity 스크린샷이 아니며, 실제 외곽선/셰이더/HUD를 완전히 재현하지 않는다.
-계단 비교는 좌측이 이전 배율, 우측이 정수 배율이며 같은 원본 영역을 최근접2배 표시한다.
-원본의 계단 보정 텍스처 경계나 손실된 디테일을 새로 그린 것은 아니다.
+```text
+pixelsPerWorld = camera.pixelHeight / (2 * camera.orthographicSize)
+unit = camera.pixelWidth / sourceWidth / pixelsPerWorld
+worldWidth = sourceWidth * unit
+centerX = camera.transform.position.x
+centerY = (608 - sourceHeight/2) * unit
+walklineY = centerY + (sourceHeight/2 - 608) * unit = 0
+```
 
-Unity Editor가 없으므로 실제16:9 전투 스크린샷·컴파일·실플레이·Windows 빌드는 미검증이다.
-Unity에서는1920×1080 Game View를100% 표시하고, 패링 줌/흔들림과1280×720·4:3·21:9를 확인해야 한다.
-정수 배율의 해상도별 단계 변화로 배경 크기가 달라지고 어두운 여백이 늘어난다. 실제 화면의 자연스러움은 최종 확인 필요하다.
-이 후속 수정은 사용자 승인에 따라 기존 통합 브랜치에 기록한다. 기존 아트 worktree/PR #19/main은 수정하지 않는다.
+Screen.width가 아니라 camera.pixelWidth를 사용한다. 확대/축소에 Floor/Ceil을 적용하지 않는다.
+카메라가 줌/이동하더라도 배경만 해당 표시 폭을 따라가며 캐릭터 좌표는 유지된다.
+텍스처 로더의 기존 Point/Clamp는 그대로다. 원본 및 적용용 PNG를 다시 그리거나 리샘플링하지 않았다.
+중간 배율의 Point 확대는 픽셀 폭이 번갈아 보일 수 있지만, 이를 피하려 배경을 작게 축소하지 않는다.
+
+16:9 기본 카메라(중심y5, orthographicSize8.2) 수치:
+
+| Game View | 배경 표시 크기 | 좌/우 여백 | 상단 크롭 | 하단 연장 | 화면상 원본1px |
+|---|---|---|---|---|---|
+|1920×1080|1920×1080px|0 / 0px|66.116px|66.116px|1.53846px|
+|1280×720|1280×720px|0 / 0px|44.078px|44.078px|1.02564px|
+|2560×1440|2560×1440px|0 / 0px|88.155px|88.155px|2.05128px|
+
+공통 월드 크기는 약29.15556×16.4m, 발 기준은 정확히y=0이다.
+상단 크롭은 원본 환산 약42.976px, 원본 높이의 약6.122%다. 가로 크롭은0이다.
+기존Contain의1920×1080에서는 폭1248px·한쪽336px 여백이었으나, 새 방식은 폭1920px·여백0이다.
+위 수치는 코드 기반 계산이며 이번 Unity 실측값은 아니다.
+
+### 이번 실행 검증
+
+- 리소스/보호 코드/임포트 계약/수치 배치:98 PASS / 0 FAIL.
+- 6해상도×3카메라 조건에서 폭100%, 좌우 여백0, 종횡비, 정확한 발 기준 검사.
+- 16:9 기본 조건의 상단 크롭7% 미만 검사.
+- WorldArtist.cs Roslyn 문법 오류0개. git diff --check PASS.
+- 독립 수식oracle/Pillow 합성이며 Unity Camera/GPU 실행은 아니다.
+- 아트PNG/메타/기둥/ArakusVisuals/DDA/DB/전투/카메라/Scene/Prefab은 변경하지 않았다.
+
+결과: /workspace/artifacts/arakus-room-width-fit/width-fit-metrics.json, resource-checks.json,
+offline_after_1920x1080.png, offline_previous_contain_1920x1080.png。
+PNG는 실제 스프라이트를 이용한 오프라인 합성이며 실제 외곽선/HUD/셰이더를 재현한 Unity 스크린샷이 아니다.
+
+Unity Editor가 없어 Unity 컴파일/실플레이/Windows 빌드는 미검증이다.
+Unity6000.4.0f1에서 Game View16:9/100% 표시, 발 정렬, 양쪽 석주, 작은 상단 크롭,
+패링 줌/흔들림, 하단 석재 연결, Title/Lobby/다른 보스 불변을 최종 확인한다.

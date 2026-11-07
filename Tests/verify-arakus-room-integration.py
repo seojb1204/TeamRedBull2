@@ -37,49 +37,54 @@ check('background_edits_confined_to_baked_posts',difference.getbbox() is None)
 # Offline camera projection, explicitly not Unity rendering or a shader simulation.
 spec=importlib.util.spec_from_file_location('roomart',ROOT/'Docs/Art/ArakusRoomConcept/create_assets.py');helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
 metrics=[]
-# Numerical layout oracle and offline projection; this does not execute Unity Camera or GPU rendering.
+check('width_fit_uses_actual_viewport','unit=pixelWidth/sourceWidth/pixelsPerWorld' in world and 'centerX=camera.transform.position.x' in world)
+check('no_integer_scale_or_floor_snap','Mathf.Floor(fit)' not in world and 'Mathf.Round(groundPixel)' not in world)
+check('art_and_pillar_resources_unchanged',subprocess.run(['git','diff','--quiet','HEAD','--','Assets/Resources','Assets/StreamingAssets'],cwd=ROOT).returncode==0)
+# Independent numerical projection oracle; not Unity Camera/GPU execution.
 for width,height in [(1920,1080),(1280,720),(2560,1440),(1024,768),(2520,1080),(640,360)]:
  for zoom,cx,cy in [(0,0,5),(.8,-1,4.5),(.8,1,5)]:
   aspect=width/height;ortho=max(8.2,14.3/aspect)-zoom;ppu=height/(2*ortho)
-  fit=min((width-2*abs(cx*ppu)-16)/1248,((cy+ortho)*ppu-8)/608,((ortho-cy)*ppu-8)/94)
-  scale=math.floor(fit) if fit>=1 else 1/math.ceil(1/fit)
-  unit=scale/ppu;ww=1248*unit
-  left=round(width/2-cx*ppu-1248*scale/2);ground=round(height/2+cy*ppu)
-  top=ground-608*scale;right=left+1248*scale;bottom=ground+94*scale
+  scale=width/1248;unit=scale/ppu;worldWidth=1248*unit
+  ground=height/2+cy*ppu;top=ground-608*scale;bottom=ground+94*scale
+  oldFit=min((width-2*abs(cx*ppu)-16)/1248,((cy+ortho)*ppu-8)/608,((ortho-cy)*ppu-8)/94)
+  oldScale=math.floor(oldFit) if oldFit>=1 else 1/math.ceil(1/oldFit)
   key=f'{width}x{height}_zoom{zoom}_cx{cx}'
-  check(key+'_whole_composition_contained',left>=0 and right<=width and top>=0 and bottom<=height)
-  check(key+'_integer_or_reciprocal_scale',scale>=1 and scale==int(scale) or scale<1 and abs(1/scale-round(1/scale))<1e-6)
-  check(key+'_walkline_snap_half_pixel',abs(ground-(height/2+cy*ppu))<=.5)
-  beforeScale=26.5/1248*ppu
-  beforeLeft=width/2-cx*ppu-1248*beforeScale/2
-  beforeCrop=(max(0,-beforeLeft)+max(0,beforeLeft+1248*beforeScale-width))/beforeScale
-  metrics.append(dict(width=width,height=height,zoom=zoom,camera_x=cx,source_pixels_per_screen_pixel_inverse=1/scale,screen_pixels_per_source_pixel=scale,before_screen_scale=beforeScale,before_horizontal_source_pixels_cropped=beforeCrop,after_horizontal_source_pixels_cropped=0))
+  check(key+'_fills_actual_width',abs(worldWidth*ppu-width)<1e-6)
+  check(key+'_no_horizontal_crop_or_margin',abs((worldWidth/2)*ppu-width/2)<1e-6)
+  centerY=(608-702/2)*unit
+  check(key+'_exact_walkline_y_zero',abs(centerY+(702/2-608)*unit)<1e-9)
+  check(key+'_preserves_image_aspect',abs(worldWidth/(702*unit)-1248/702)<1e-9)
+  if abs(aspect-16/9)<1e-6 and zoom==0:
+   check(key+'_top_crop_under_7_percent',max(0,-top)<height*.07)
+  metrics.append(dict(width=width,height=height,zoom=zoom,camera_x=cx,camera_y=cy,
+    background_screen_width=width,background_screen_height=702*scale,
+    background_world_width=worldWidth,background_world_height=702*unit,
+    screen_pixels_per_source_pixel=scale,left_margin_px=0,right_margin_px=0,
+    top_crop_px=max(0,-top),top_margin_px=max(0,top),top_crop_source_px=max(0,-top)/scale,
+    walkline_world_y=0,walkline_screen_y_from_top=ground,
+    original_bottom_screen_y=bottom,lower_extension_px=max(0,height-bottom),
+    previous_contain_width_px=1248*oldScale,previous_side_margin_px=(width-1248*oldScale)/2))
   if zoom:continue
-  world=lambda x,y:(width/2+(x-cx)*ppu,height/2+(cy-y)*ppu)
+  worldpos=lambda x,y:(width/2+(x-cx)*ppu,height/2+(cy-y)*ppu)
   def render(old):
    im=Image.new('RGBA',(width,height),(9,13,19,255))
-   if old:
-    k=beforeScale;xx=round(width/2-1248*k/2);yy=round(height/2+5*ppu-608*k);walk=height/2+5*ppu
-   else:k=scale;xx=left;yy=round(top);walk=ground
+   k=oldScale if old else scale
+   xx=round(width/2-1248*k/2);yy=round(ground-608*k)
    def paste(image,x,y):
     tile=image.resize((round(image.width*k),round(image.height*k)),Image.Resampling.NEAREST);im.alpha_composite(tile,(round(x),round(y)))
    paste(bg,xx,yy)
    strip=bg.crop((0,640,1248,702));end=yy+round(702*k);stripH=round(62*k)
    for y in range(end,height+stripH,stripH):paste(strip,xx,y)
    for x in [-4,4]:
-    size=round(192*ppu/40);fr=sheet.crop((0,0,192,192)).resize((size,size),Image.Resampling.NEAREST);px,py=world(x,0);im.alpha_composite(fr,(round(px-size/2),round(py-160*size/192)))
-   helper.actor(im,world,ppu,'player');helper.actor(im,world,ppu,'boss')
+    size=round(192*ppu/40);fr=sheet.crop((0,0,192,192)).resize((size,size),Image.Resampling.NEAREST);px,py=worldpos(x,0);im.alpha_composite(fr,(round(px-size/2),round(py-160*size/192)))
+   helper.actor(im,worldpos,ppu,'player');helper.actor(im,worldpos,ppu,'boss')
    return im
   render(False).save(args.output/f'offline_after_{width}x{height}.png')
   if (width,height)==(1920,1080):
-   render(True).save(args.output/'offline_before_1920x1080.png')
-   after=render(False);before=render(True)
-   # Same source stair region, displayed at nearest 2x for direct sampling comparison.
-   cut=Image.new('RGBA',(1280,400),(9,13,19,255))
-   for offset,image,k in [(0,before,beforeScale),(640,after,scale)]:
-    x0=round(width/2-1248*k/2+510*k);y0=round(height/2+5*ppu-608*k+485*k)
-    crop=image.crop((x0,y0,x0+round(220*k),y0+round(95*k))).resize((round(440*k),round(190*k)),Image.Resampling.NEAREST);cut.alpha_composite(crop,(offset,0))
-   cut.save(args.output/'offline_stairs_before_after.png')
-(args.output/'pixel-fit-metrics.json').write_text(json.dumps(metrics,indent=2))
-report={'passed':sum(c['pass'] for c in checks),'failed':sum(not c['pass'] for c in checks),'checks':checks,'not_verified':['Unity compilation/rendering','real combat visuals and HUD','Windows build'],'note':'Source/asset checks and offline previews only; no DB connection.'}
+   render(True).save(args.output/'offline_previous_contain_1920x1080.png')
+   # Source pixels are unchanged; representative stair fragment shown at new Point scale.
+   after=render(False);x0=round(510*scale);y0=round(top+485*scale)
+   after.crop((x0,y0,x0+500,y0+200)).save(args.output/'offline_stairs_width_fit.png')
+(args.output/'width-fit-metrics.json').write_text(json.dumps(metrics,indent=2))
+report={'passed':sum(c['pass'] for c in checks),'failed':sum(not c['pass'] for c in checks),'checks':checks,'not_verified':['Unity compilation/rendering','real combat visuals and HUD','Windows build'],'note':'Source/asset checks and independent numeric projection only; no DB connection.'}
 (args.output/'resource-checks.json').write_text(json.dumps(report,indent=2));print(report['passed'],'PASS',report['failed'],'FAIL');sys.exit(bool(report['failed']))

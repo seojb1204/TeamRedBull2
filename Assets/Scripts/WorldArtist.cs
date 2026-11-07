@@ -140,25 +140,15 @@ namespace ReversalTower
             if(pixelWidth<1||pixelHeight<1)return false;
             float pixelsPerWorld=pixelHeight/(2*camera.orthographicSize);
             float sourceWidth=room.rect.width,sourceHeight=room.rect.height;
-            const float groundRow=608f,margin=8f;
-            // Contain the complete room around world x=0 and the existing walk line y=0.
-            // Use the actual viewport and camera pose, including existing zoom/shake, without changing them.
-            float halfWidth=pixelWidth*.5f-Mathf.Abs(camera.transform.position.x*pixelsPerWorld)-margin;
-            float above=(camera.transform.position.y+camera.orthographicSize)*pixelsPerWorld-margin;
-            float below=(camera.orthographicSize-camera.transform.position.y)*pixelsPerWorld-margin;
-            float fit=Mathf.Min(2*halfWidth/sourceWidth,Mathf.Min(above/groundRow,below/(sourceHeight-groundRow)));
-            if(fit<=0)return false;
-            // Whole screen pixels per texel when enlarging; regular 1/N decimation on smaller views.
-            // Point sampling stays enabled in ExternalAssets.Texture. No camera or texture edits.
-            float pixelScale=fit>=1?Mathf.Floor(fit):1f/Mathf.Ceil(1f/fit);
-            float unit=pixelScale/pixelsPerWorld,width=sourceWidth*unit;
-            float leftPixel=pixelWidth*.5f-camera.transform.position.x*pixelsPerWorld-sourceWidth*pixelScale*.5f;
-            float centerX=camera.transform.position.x+(Mathf.Round(leftPixel)-pixelWidth*.5f)/pixelsPerWorld+width*.5f;
-            float groundPixel=pixelHeight*.5f-camera.transform.position.y*pixelsPerWorld;
-            float groundY=camera.transform.position.y+(Mathf.Round(groundPixel)-pixelHeight*.5f)/pixelsPerWorld;
-            float centerY=groundY+(groundRow-sourceHeight*.5f)*unit,bottom=groundY+(groundRow-sourceHeight)*unit;
+            const float groundRow=608f;
+            // Width-first fit: preserve both side columns, allow a small crop above the room.
+            // Use the actual viewport width, not Screen.width or a quantized texel multiplier.
+            float unit=pixelWidth/sourceWidth/pixelsPerWorld,width=sourceWidth*unit;
+            float centerX=camera.transform.position.x;
+            // Source walk line stays exactly on world y=0; never snap the floor away from the actors.
+            float centerY=(groundRow-sourceHeight*.5f)*unit,bottom=(groundRow-sourceHeight)*unit;
             Shape(room,centerX,centerY,width,width,Color.white);
-            // Only the bottom masonry repeats into spare vertical space. The full room remains unstretched.
+            // Continue the same lower masonry below the authored image into the visible floor area.
             var lower=ExternalAssets.Picture(path,0,0,1248,62);
             float stripHeight=62*unit;
             int strips=Mathf.CeilToInt(Mathf.Max(0,bottom-(camera.transform.position.y-camera.orthographicSize))/stripHeight)+1;

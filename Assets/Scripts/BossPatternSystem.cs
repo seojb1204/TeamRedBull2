@@ -215,9 +215,9 @@ namespace ReversalTower
             }
             if(p.kind==AttackKind.ShieldRush)
             {
-                // 방패 돌진: 선딜 0.5 → 1.75초 동안 직선 5m, 0.25초마다 판정 (피격 무적 0.35초라 실제로는 약 4타)
+                // 방패 돌진: 선딜 뒤 1.30초 동안 직선 5m, 0.25초마다 판정. Rage는 둘 다 가속한다.
                 if(t<windup){poseFrame=0;moveFrom=g.boss.x;moveTo=Mathf.Clamp(g.boss.x+g.bossFace*5,TowerGame.Left+1,TowerGame.Right-1);return;}
-                float span=1.75f*T,u=Mathf.Clamp01((t-windup)/span);
+                float span=ArakusPatternTiming.ShieldRushMoveDuration*T,u=Mathf.Clamp01((t-windup)/span);
                 if(u<1)
                 {
                     poseFrame=1;g.bossState="방패 돌진";g.boss.x=Mathf.Lerp(moveFrom,moveTo,u);
@@ -228,6 +228,7 @@ namespace ReversalTower
                     }
                     return;
                 }
+                g.boss.x=moveTo; // A frame crossing the end must still reach the full clamped 5m goal.
                 if(!struck){struck=true;if(!touched)g.PlayerHit(patternDamage,false,p.id,g.boss.x,false);}
                 poseFrame=2;
                 if(t>=windup+span+recovery)Finish();

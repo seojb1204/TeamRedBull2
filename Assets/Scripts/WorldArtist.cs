@@ -135,15 +135,34 @@ namespace ReversalTower
         {
             const string path="Art/ArakusRoom/Arakus_Throne_Background_Game.png";
             var room=ExternalAssets.Picture(path);if(room==null)return false;
-            // Keep the whole composition inside the existing minimum 28.6m camera width.
-            // Authored walk line is source row 608. Camera and all gameplay coordinates stay unchanged.
-            const float width=26.5f,unit=width/1248f,groundRow=608f;
-            float centerY=(groundRow-351f)*unit,bottom=(groundRow-702f)*unit;
-            Shape(room,0,centerY,width,width,Color.white);
-            // Extend only the lower masonry for taller views; never stretch/crop the throne.
+            var camera=Camera.main;if(!camera||!camera.orthographic)return false;
+            float pixelWidth=camera.pixelWidth,pixelHeight=camera.pixelHeight;
+            if(pixelWidth<1||pixelHeight<1)return false;
+            float pixelsPerWorld=pixelHeight/(2*camera.orthographicSize);
+            float sourceWidth=room.rect.width,sourceHeight=room.rect.height;
+            const float groundRow=608f,margin=8f;
+            // Contain the complete room around world x=0 and the existing walk line y=0.
+            // Use the actual viewport and camera pose, including existing zoom/shake, without changing them.
+            float halfWidth=pixelWidth*.5f-Mathf.Abs(camera.transform.position.x*pixelsPerWorld)-margin;
+            float above=(camera.transform.position.y+camera.orthographicSize)*pixelsPerWorld-margin;
+            float below=(camera.orthographicSize-camera.transform.position.y)*pixelsPerWorld-margin;
+            float fit=Mathf.Min(2*halfWidth/sourceWidth,Mathf.Min(above/groundRow,below/(sourceHeight-groundRow)));
+            if(fit<=0)return false;
+            // Whole screen pixels per texel when enlarging; regular 1/N decimation on smaller views.
+            // Point sampling stays enabled in ExternalAssets.Texture. No camera or texture edits.
+            float pixelScale=fit>=1?Mathf.Floor(fit):1f/Mathf.Ceil(1f/fit);
+            float unit=pixelScale/pixelsPerWorld,width=sourceWidth*unit;
+            float leftPixel=pixelWidth*.5f-camera.transform.position.x*pixelsPerWorld-sourceWidth*pixelScale*.5f;
+            float centerX=camera.transform.position.x+(Mathf.Round(leftPixel)-pixelWidth*.5f)/pixelsPerWorld+width*.5f;
+            float groundPixel=pixelHeight*.5f-camera.transform.position.y*pixelsPerWorld;
+            float groundY=camera.transform.position.y+(Mathf.Round(groundPixel)-pixelHeight*.5f)/pixelsPerWorld;
+            float centerY=groundY+(groundRow-sourceHeight*.5f)*unit,bottom=groundY+(groundRow-sourceHeight)*unit;
+            Shape(room,centerX,centerY,width,width,Color.white);
+            // Only the bottom masonry repeats into spare vertical space. The full room remains unstretched.
             var lower=ExternalAssets.Picture(path,0,0,1248,62);
             float stripHeight=62*unit;
-            for(int i=0;i<12;i++)Shape(lower,0,bottom-(i+.5f)*stripHeight,width,width,Color.white);
+            int strips=Mathf.CeilToInt(Mathf.Max(0,bottom-(camera.transform.position.y-camera.orthographicSize))/stripHeight)+1;
+            for(int i=0;i<strips;i++)Shape(lower,centerX,bottom-(i+.5f)*stripHeight,width,width,Color.white);
             return true;
         }
         void Pillar(float x)

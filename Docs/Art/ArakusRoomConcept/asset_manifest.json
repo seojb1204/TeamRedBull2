@@ -1,5 +1,5 @@
 {
-  "design": "Brutal Crimson Fortress",
+  "design": "Crimson Throne of the War God / legacy Iron Warworks",
   "originality": "Original deterministic Pillow material/architecture painting. Existing art only in mockups; no generated/recolored Castle backgrounds.",
   "base_commit": "f13bb6bd25f469e38acce05eceb712712dc30c3f",
   "source_canvas": [
@@ -88,7 +88,7 @@
         48
       ],
       "mode": "RGBA",
-      "sha256": "8a96f96b0f1b2e5905dd1a9eb966cf04529372fef53587f808a1663399f8813a"
+      "sha256": "2b61f14afaae03e0f927480251c1eb3055a0bbe6e6edbda8897b754b9650d9f6"
     },
     {
       "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_broken.png",
@@ -97,7 +97,7 @@
         192
       ],
       "mode": "RGBA",
-      "sha256": "0a1b3998937b454411fa76b7db614b25942eb8edd118738abc536d5625ed3db6"
+      "sha256": "5b28ca410f705e150888f6b9da1198434a57bdaf874d536ddde895df63635d3f"
     },
     {
       "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_intact.png",
@@ -106,7 +106,7 @@
         192
       ],
       "mode": "RGBA",
-      "sha256": "68bb0d29a61d30938a794c4dc5d92884615270010a5a0b7e12030e6a778de341"
+      "sha256": "c32b214d25aeb388fbb039ccf7334aef32df162ce5c856f38d7d4da2267d8181"
     },
     {
       "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_sheet.png",
@@ -115,7 +115,7 @@
         192
       ],
       "mode": "RGBA",
-      "sha256": "a8b1ce00081e2cac08f5a772b02b2a41a88885e1c011b8795947fb37b1803032"
+      "sha256": "7914ea247595c5146386b725a1ad02f54567e253c148bd16e2871780ab9869f6"
     },
     {
       "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/room_far.png",
@@ -124,7 +124,7 @@
         512
       ],
       "mode": "RGBA",
-      "sha256": "b016f835c18979de484578335552a7a9cae438820ca125f27056c99e4233d75e"
+      "sha256": "5d884e7b80647c984deb369813853931b252994a6ee9ef1efdfb0ddecfad1869"
     },
     {
       "path": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/room_mid.png",
@@ -133,7 +133,7 @@
         512
       ],
       "mode": "RGBA",
-      "sha256": "da69e6cb8e5819a8a0cad8c694e73bafd859c7d66f8103115787dd9fefb73738"
+      "sha256": "e8fb5deee29f1be7c70dd2aba9636cea923930e3c3980b5f5f70359cb79d0446"
     }
   ]
 }

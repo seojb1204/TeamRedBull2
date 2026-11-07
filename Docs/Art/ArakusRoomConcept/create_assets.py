@@ -1,4 +1,4 @@
-"""Original deterministic pixel-art production. Pillow only; never writes existing assets/code.
+"""Original deterministic pixel-art production. Pillow only; updates approved ArakusRoom output and docs, never game code or source Castle/character art.
 Run from this repository. Art is painted from geometric/material primitives, not recolored Castle art.
 Existing character/Castle PNGs are read solely for clearly labeled offline comparison mockups.
 """
@@ -170,7 +170,216 @@ def scars(im,seed,variant):
             dx,dy=math.cos(ang),math.sin(ang)
             stroke(im,[(cx+dx*8,cy+dy*8),(cx+dx*15-2,cy+dy*15),(cx+dx*22,cy+dy*22)],(15,16,21))
 
+# StoneFortress redesign: composition from the supplied throne concept, drawn afresh
+# in the game's pixel idiom. No photo pixels, blur, smooth gradients or color filtering.
+THRONE_RED=[(18,8,16),(34,8,21),(54,9,24),(79,10,28),(108,14,33),(143,18,38),(177,25,43),(211,38,49)]
+THRONE_STONE=[(10,13,19),(17,19,26),(24,25,33),(34,32,41),(47,41,49),(62,51,57)]
+
+def hewn_face(im,points,seed,base=(26,25,34),density=65):
+    poly(im,points,base)
+    rng=random.Random(seed);mask=Image.new('L',im.size);ImageDraw.Draw(mask).polygon(points,fill=255)
+    box=mask.getbbox();d=ImageDraw.Draw(im)
+    for _ in range(max(1,(box[2]-box[0])*(box[3]-box[1])//density)):
+        x=rng.randrange(box[0],box[2]);y=rng.randrange(box[1],box[3]);length=rng.choice([1,1,2,3])
+        if mask.getpixel((x,y)) and mask.getpixel((min(x+length,im.width-1),y)):
+            c=shift(base,rng.choice([-6,-4,4,6]));d.line((x,y,x+length,y),fill=c)
+    # A few long fractured facets, rather than a regular brick grid.
+    for _ in range(2):
+        x=rng.randrange(box[0],box[2]);y=rng.randrange(box[1],box[3]);pts=[]
+        for j in range(5):
+            xx=x+rng.randint(-3,3);yy=y+j*5
+            if 0<=xx<im.width and 0<=yy<im.height and mask.getpixel((xx,yy)):pts.append((xx,yy))
+        if len(pts)>1:
+            stroke(im,pts,shift(base,-12));stroke(im,[(x+1,y) for x,y in pts],shift(base,12))
+
+def war_mark(im,cx,cy,size=1,color=(119,25,42)):
+    # A cleft spear/war crest. No royal trim or cathedral ornament.
+    stroke(im,[(cx,cy-12*size),(cx,cy+13*size)],color,max(1,size))
+    poly(im,[(cx,cy-18*size),(cx-3*size,cy-10*size),(cx,cy-12*size),(cx+3*size,cy-10*size)],color)
+    for sign in [-1,1]:
+        stroke(im,[(cx+sign*2*size,cy+2*size),(cx+sign*8*size,cy-4*size),(cx+sign*6*size,cy+5*size),(cx+sign*2*size,cy+9*size)],color,max(1,size))
+
+def basalt_column(im,cx,top,bottom,width,seed,near=False):
+    rng=random.Random(seed);half=width//2;d=ImageDraw.Draw(im)
+    # Broad bases and uneven shoulders imply mass; shallow vertical planes keep the style coarse.
+    hewn_face(im,[(cx-half+4,top+9),(cx+half-5,top+9),(cx+half-8,bottom-17),(cx-half+7,bottom-17)],seed,(22,22,31))
+    inner=1 if cx<384 else -1
+    for offset,col in [(-half+8,(12,16,23)),(-half+15,(25,27,36)),(-3,(32,29,38)),(half-13,(17,19,28))]:
+        poly(im,[(cx+offset,top+11),(cx+offset+5,top+11),(cx+offset+3,bottom-18),(cx+offset,bottom-18)],col)
+    xedge=cx+inner*(half-9)
+    stroke(im,[(xedge,top+13),(xedge-inner*2,bottom-20)],(73,23,36) if near else (58,22,34),2)
+    for yy in range(top+69,bottom-24,65):
+        stroke(im,[(cx-half+7,yy),(cx+half-8,yy-1)],(10,13,20),2)
+        stroke(im,[(cx-half+8,yy+2),(cx+half-9,yy+1)],(40,33,43))
+    for _ in range(12):
+        x=cx+rng.randint(-half+9,half-10);y=rng.randint(top+15,bottom-24)
+        stroke(im,[(x,y),(x+3,y+3),(x+1,y+8)],(9,13,20))
+        d.point((x+4,y+3),fill=(59,36,45))
+    for yy,extra in [(top,5),(top+7,1),(bottom-19,0),(bottom-11,6),(bottom-5,11)]:
+        poly(im,[(cx-half-extra+3,yy),(cx+half+extra-4,yy),(cx+half+extra,yy+5),(cx-half-extra,yy+5)],(32,28,37))
+        stroke(im,[(cx-half-extra+3,yy),(cx+half+extra-4,yy)],(66,40,47) if yy<bottom-10 else (46,36,43))
+        stroke(im,[(cx-half-extra,yy+5),(cx+half+extra,yy+5)],(9,12,18),2)
+
+def throne_far():
+    im=Image.new('RGB',(W,H),(13,9,18));d=ImageDraw.Draw(im)
+    # Deep sanctuary recess and eight hard-edged crimson light values.
+    # Quantized planes/dither are pixel light, not a filtered painting or blurred photo.
+    for y in range(0,326):
+        spread=104+y*.18
+        fall=1 if y<206 else max(.13,1-(y-206)/135)
+        for x in range(145,624):
+            distance=abs(x-384)/spread
+            strength=max(0,1-distance)*fall
+            band=min(7,int(strength*8))
+            if band>0:
+                if (x+2*y)%7==0 and band>1:band-=1
+                im.putpixel((x,y),THRONE_RED[band])
+    # Clear descending shafts with angular, irregular sides and a darkened lower end.
+    for coords,col in [([(348,0),(419,0),(407,141),(421,218),(407,274),(360,274),(347,206),(360,121)],(166,24,42)),
+                       ([(367,0),(400,0),(395,92),(405,158),(396,231),(372,231),(364,154),(373,73)],(203,36,49))]:
+        poly(im,coords,col)
+    # Side walls are towering slabs, not a field of prison-cell brickwork.
+    for side in [0,1]:
+        mirror=lambda pts:[(W-x if side else x,y) for x,y in pts]
+        hewn_face(im,mirror([(0,0),(183,0),(219,162),(192,339),(0,369)]),901+side,(24,16,27),45)
+        poly(im,mirror([(173,0),(204,0),(237,171),(213,334),(190,337),(211,170)]),(42,15,29))
+        for y in [88,190,281]:stroke(im,mirror([(0,y+14),(190,y)]),(63,21,34))
+        poly(im,mirror([(0,55),(196,106),(213,124),(0,78)]),(17,17,26))
+        stroke(im,mirror([(0,56),(196,107),(210,120)]),(77,24,37),2)
+        poly(im,mirror([(0,80),(205,133),(207,147),(0,98)]),(9,13,20))
+    # Heavy segmented stone arch, receding in depth behind the throne.
+    cx,cy=384,174
+    for k in range(18):
+        a0=math.pi*k/18+.012;a1=math.pi*(k+1)/18-.012
+        pts=[(cx+180*math.cos(a0),cy-166*math.sin(a0)),(cx+180*math.cos(a1),cy-166*math.sin(a1)),
+             (cx+155*math.cos(a1),cy-142*math.sin(a1)),(cx+155*math.cos(a0),cy-142*math.sin(a0))]
+        poly(im,pts,[(26,22,33),(33,25,36),(23,22,32)][k%3])
+        stroke(im,[pts[3],pts[2]],(89,25,39),2)
+        stroke(im,[pts[0],pts[1]],(45,29,40))
+    for x in [224,544]:basalt_column(im,x,154,342,43,310+x)
+    for x in [275,493]:basalt_column(im,x,175,318,29,901+x)
+    # The lowest light is a low-value red recess, behind the dais and actors.
+    poly(im,[(163,319),(605,319),(646,359),(122,359)],(42,12,25))
+    # Broad stepped altar. Perspective widens towards the viewer, leaving the walk plane flat.
+    for i in range(8):
+        yy=302+i*7;hw=80+i*29
+        poly(im,[(384-hw+10,yy),(384+hw-10,yy),(384+hw,yy+3),(384-hw,yy+3)],(39,32,42))
+        poly(im,[(384-hw,yy+3),(384+hw,yy+3),(384+hw-1,yy+7),(384-hw+1,yy+7)],(15,18,26))
+        stroke(im,[(384-hw+10,yy),(384+hw-10,yy)],(65,47,54))
+        stroke(im,[(384-hw+3,yy+4),(384+hw-3,yy+4)],(23,24,33))
+        rng=random.Random(521+i)
+        for j in range(5):
+            xx=rng.randint(384-hw+12,384+hw-12)
+            stroke(im,[(xx,yy),(xx-3,yy+2),(xx+1,yy+5)],(8,12,19))
+            d.point((xx+1,yy),fill=(84,57,61))
+    # Distinct tall throne back with a central crown and rough blade-like stone shoulders.
+    back=[(348,269),(348,212),(341,201),(341,178),(351,194),(359,175),(359,170),(365,178),
+          (384,154),(403,178),(409,170),(409,175),(417,194),(427,178),(427,201),(420,212),(420,269)]
+    hewn_face(im,back,819,(18,21,29),35)
+    poly(im,[(384,160),(401,181),(401,261),(384,268)],(31,29,38))
+    poly(im,[(365,185),(384,160),(384,268),(365,259)],(25,26,35))
+    stroke(im,[(348,211),(348,265)],(72,27,40))
+    stroke(im,[(420,211),(420,265)],(72,27,40))
+    stroke(im,[(365,179),(384,155),(403,179)],(68,43,52))
+    # Fissures frame a simple martial sigil; no ornate royal border.
+    for pts in [[(367,192),(377,203),(374,216),(381,230)],[(402,187),(390,202),(395,217),(387,242)],[(360,244),(374,250),(371,262)]]:
+        stroke(im,pts,(8,13,20));stroke(im,[(x+1,y) for x,y in pts],(54,39,49))
+    war_mark(im,384,221,1,(137,28,43))
+    # Seat and open shadow beneath make this unmistakably a chair rather than an obelisk.
+    poly(im,[(350,265),(418,265),(427,274),(342,274)],(59,49,57))
+    hewn_face(im,[(344,274),(425,274),(418,291),(353,290)],929,(29,29,38),24)
+    stroke(im,[(346,274),(423,274)],(90,67,69))
+    stroke(im,[(365,275),(373,281),(369,287)],(10,14,22))
+    poly(im,[(353,290),(417,290),(414,303),(354,303)],(8,12,19))
+    for xx in [339,429]:
+        hewn_face(im,[(xx-6,265),(xx+7,265),(xx+5,299),(xx-5,299)],xx,(29,29,38),22)
+        stroke(im,[(xx-5,269),(xx-5,298)],(62,42,51))
+        poly(im,[(xx-11,297),(xx+11,297),(xx+13,304),(xx-13,304)],(35,31,40))
+        stroke(im,[(xx-10,297),(xx+10,297)],(75,50,57))
+        poly(im,[(xx-12,253),(xx+12,253),(xx+15,258),(xx+11,265),(xx-11,265),(xx-15,258)],(34,32,42))
+        stroke(im,[(xx-12,253),(xx+12,253),(xx+15,258)],(94,64,68),2)
+        stroke(im,[(xx-12,263),(xx+10,263)],(10,14,22),2)
+    # Quiet foreground and a deep basalt foundation for the real 4:3 camera.
+    poly(im,[(0,360),(W,360),(W,H),(0,H)],(16,16,24))
+    for yy in [388,430,474]:
+        stroke(im,[(0,yy),(W,yy)],(9,13,20),3)
+        for xx in range(0,W,113):stroke(im,[(xx,yy),(xx+5,yy+16),(xx+1,yy+35)],(27,23,33))
+    return im.convert('RGBA')
+
+def throne_mid():
+    im=Image.new('RGBA',(W,H));d=ImageDraw.Draw(im)
+    for x in [122,646]:basalt_column(im,x,-19,366,72,1100+x,True)
+    # Torn cloth hangs from stone pins, not bars, cages, chains or guard platforms.
+    for side in [0,1]:
+        x=190 if side==0 else 578;sign=1 if side==0 else -1
+        poly(im,[(x-30,67),(x+30,67),(x+29,211),(x+20,200),(x+15,223),(x+7,204),(x-1,220),
+                 (x-8,203),(x-15,216),(x-24,198),(x-29,208)],(65,12,29))
+        poly(im,[(x-26,73),(x-16,73),(x-14,202),(x-22,197)],(93,17,34))
+        poly(im,[(x-6,72),(x+5,72),(x+8,204),(x,211)],(48,10,25))
+        stroke(im,[(x+22,76),(x+22,193),(x+18,204)],(108,21,38),2)
+        stroke(im,[(x-30,67),(x+30,67)],(30,25,36),4)
+        for off in [-23,23]:
+            d.polygon([(x+off-2,64),(x+off+2,64),(x+off+3,71),(x+off-3,71)],fill=(59,35,45))
+        war_mark(im,x,133,2,(135,37,48))
+        # Real missing cloth shapes and stitch-width edge damage, not a rectangular flag silhouette.
+        for pts in [[(x-29,119),(x-20,124),(x-29,128)],[(x+29,153),(x+19,161),(x+29,166)],
+                    [(x-8,183),(x-4,172),(x-1,185),(x-4,191)]]:poly(im,pts,(0,0,0,0))
+        stroke(im,[(x-27,83),(x-26,110)],(115,25,42))
+    return im
+
+def throne_floor():
+    im=Image.new('RGBA',(128,48),(22,23,31,255));d=ImageDraw.Draw(im)
+    # Quiet black stone paving, with finite, cool bevels above a hewn basalt face.
+    for yy,c in enumerate([(64,65,69),(53,54,61),(39,41,51),(30,32,43)]):d.line((0,yy,127,yy),fill=c)
+    rng=random.Random(8199)
+    for pts,col in [([(4,6),(51,5),(46,26),(8,28)],(31,31,42)),
+                    ([(57,7),(113,5),(122,28),(61,27)],(28,28,39)),
+                    ([(0,32),(58,30),(61,47),(0,47)],(22,24,34)),
+                    ([(67,33),(127,30),(127,47),(65,47)],(24,25,35))]:
+        poly(im,pts,col)
+    for x in [53,117]:
+        stroke(im,[(x,3),(x-3,13),(x+1,20),(x-1,29)],(10,14,23),2)
+        stroke(im,[(x+2,5),(x-1,13)],(52,43,54))
+    for _ in range(80):
+        x=rng.randint(3,124);y=rng.randint(6,46)
+        d.line((x,y,min(125,x+rng.randint(1,3)),y),fill=rng.choice([(17,21,31),(38,33,45),(44,31,44)]))
+    # Tiny low-value reflected crimson flecks, not glowing attack-shaped floor markings.
+    for x,y in [(24,8),(75,12),(101,7)]:d.line((x,y,x+3,y),fill=(56,26,39))
+    for y in range(48):im.putpixel((127,y),im.getpixel((0,y)))
+    return im
+
+def throne_pillar(broken=False):
+    im=Image.new('RGBA',(192,192));d=ImageDraw.Draw(im)
+    if not broken:
+        pts=[(76,46),(81,42),(91,44),(97,40),(109,44),(117,49),(113,147),(125,155),(125,159),(65,159),(67,152),(76,146)]
+        hewn_face(im,pts,4561,(27,29,39),24)
+        poly(im,[(82,51),(96,49),(96,146),(81,146)],(39,36,47))
+        poly(im,[(104,50),(113,51),(111,146),(104,146)],(15,21,32))
+        stroke(im,[(78,52),(77,145)],(69,33,46),2)
+        stroke(im,[(83,48),(97,42),(110,47)],(74,53,63))
+        for yy in [55,141,150]:
+            poly(im,[(73 if yy<141 else 69,yy),(115 if yy<141 else 121,yy),(118 if yy<141 else 125,yy+5),(70 if yy<141 else 65,yy+5)],(33,31,44))
+            stroke(im,[(73 if yy<141 else 69,yy),(115 if yy<141 else 121,yy)],(64,43,55))
+        war_mark(im,96,97,1,(104,24,41))
+        stroke(im,[(107,68),(101,75),(106,83),(100,91)],(10,17,28))
+        stroke(im,[(82,114),(90,120),(87,133)],(12,19,30))
+        stroke(im,[(83,115),(91,120)],(57,44,57))
+        stroke(im,[(67,159),(125,159)],(34,31,43))
+    else:
+        hewn_face(im,[(75,121),(82,115),(89,124),(99,114),(105,125),(113,120),(115,146),(128,159),(65,159),(73,145)],4571,(29,29,40),15)
+        poly(im,[(75,121),(82,115),(89,124),(99,114),(105,125),(113,120),(110,130),(78,130)],(59,42,55))
+        poly(im,[(69,150),(119,150),(128,158),(65,159)],(33,30,43))
+        stroke(im,[(70,150),(119,150)],(63,43,56))
+        for x,y,w,h in [(67,159,16,10),(112,159,20,12),(79,101,11,8),(105,91,10,7),(96,113,8,6)]:
+            poly(im,[(x,y),(x+w,y-1),(x+w-2,y-h+2),(x+3,y-h)],(31,29,42))
+            stroke(im,[(x+3,y-h),(x+w-2,y-h+2)],(68,42,56))
+        stroke(im,[(97,131),(96,139)],(100,24,40))
+        stroke(im,[(65,159),(131,159)],(34,31,43))
+    return im
+
+
 def far(variant):
+    if variant=='StoneFortress':return throne_far()
     seed=SEEDS[variant];rng=random.Random(seed)
     im=Image.new('RGB',(W,H),P['void'])
     base=(37,27,30) if variant=='StoneFortress' else (29,28,34)
@@ -222,6 +431,7 @@ def far(variant):
     return im.convert('RGBA')
 
 def mid(variant):
+    if variant=='StoneFortress':return throne_mid()
     rng=random.Random(SEEDS[variant]+20);im=Image.new('RGBA',(W,H));d=ImageDraw.Draw(im)
     for side in [0,1]:
         cx=63 if side==0 else 705
@@ -249,6 +459,7 @@ def mid(variant):
     return im
 
 def floor(variant):
+    if variant=='StoneFortress':return throne_floor()
     rng=random.Random(SEEDS[variant]+40);im=Image.new('RGBA',(128,48),(35,36,41,255));d=ImageDraw.Draw(im)
     # Pixel-strata and bevel define an exact walk line at top row, without red hazard-like accents.
     shades=[(64,65,69),(58,59,63),(50,52,57),(45,47,52),(41,43,48),(39,40,45)]
@@ -276,6 +487,7 @@ def floor(variant):
     return im
 
 def pillar(variant,broken=False):
+    if variant=='StoneFortress':return throne_pillar(broken)
     seed=SEEDS[variant]+(101 if broken else 99);rng=random.Random(seed)
     im=Image.new('RGBA',(192,192));d=ImageDraw.Draw(im)
     base=(68,54,50) if variant=='StoneFortress' else (59,57,60)
@@ -431,18 +643,18 @@ def main():
         for i in range(6):repeat.alpha_composite(tile,(128*i,0))
         preview(repeat,variant+'_floor_repeat.png')
     original=existing_proxy();preview(original,'existing_assets_proxy_16x9.png')
-    panel_sheet([('Existing assets - offline approximation, NOT Unity capture',original),('A - Stone Fortress / current actors',mock('StoneFortress')),('B - Iron Warworks / current actors',mock('IronWarworks'))],'existing_vs_concepts.png',cols=1)
-    panel_sheet([('A - Stone Fortress / planned ~2x-player boss',mock('StoneFortress',True)),('B - Iron Warworks / planned ~2x-player boss',mock('IronWarworks',True))],'concepts_future_comparison.png')
+    panel_sheet([('Existing assets - offline approximation, NOT Unity capture',original),('A - Crimson Throne / current actors',mock('StoneFortress')),('B - Iron Warworks / current actors',mock('IronWarworks'))],'existing_vs_concepts.png',cols=1)
+    panel_sheet([('A - Crimson Throne / planned ~2x-player boss',mock('StoneFortress',True)),('B - Iron Warworks / planned ~2x-player boss',mock('IronWarworks',True))],'concepts_future_comparison.png')
     old=Image.open(ROOT/'Assets/Resources/ArakusV1/Pillar.png').convert('RGBA');atlas=Image.new('RGBA',(1152,224),(22,24,29,255));d=ImageDraw.Draw(atlas)
-    for i,(name,sheet) in enumerate([('Existing pillar reference',old),('A / Stone Fortress',Image.open(ART/'StoneFortress/pillar_sheet.png')),('B / Iron Warworks',Image.open(ART/'IronWarworks/pillar_sheet.png'))]):
+    for i,(name,sheet) in enumerate([('Existing pillar reference',old),('A / War God stone pillars',Image.open(ART/'StoneFortress/pillar_sheet.png')),('B / Iron Warworks',Image.open(ART/'IronWarworks/pillar_sheet.png'))]):
         atlas.alpha_composite(sheet,(384*i,24));d.text((384*i+10,8),name,fill='white');d.line((384*i,184,384*(i+1)-1,184),fill=(83,94,98))
     preview(atlas,'pillar_comparison.png',2)
     paths=sorted(ART.rglob('*.png'))
-    manifest={'design':'Brutal Crimson Fortress','originality':'Original deterministic Pillow material/architecture painting. Existing art only in mockups; no generated/recolored Castle backgrounds.',
+    manifest={'design':'Crimson Throne of the War God / legacy Iron Warworks','originality':'Original deterministic Pillow material/architecture painting. Existing art only in mockups; no generated/recolored Castle backgrounds.',
       'base_commit':'f13bb6bd25f469e38acce05eceb712712dc30c3f','source_canvas':[W,H],'source_ground_row':GROUND,'source_pixels_per_world_unit':PPU,
       'pillar_contract':{'sheet':[384,192],'frame':[192,192],'frames':2,'pivot':[.5,32/192],'import_ppu':56,'existing_root_scale':1.4,'world_intact_height':3.0},
       'assets':[{'path':str(p.relative_to(ROOT)),'size':list(Image.open(p).size),'mode':Image.open(p).mode,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]}
-    (DOC/'asset_manifest.json').write_text(json.dumps(manifest,indent=2));(DOC/'palette.json').write_text(json.dumps(P,indent=2))
+    (DOC/'asset_manifest.json').write_text(json.dumps(manifest,indent=2));(DOC/'palette.json').write_text(json.dumps({'legacy':P,'throne_red':THRONE_RED,'throne_stone':THRONE_STONE},indent=2))
     print('Created',len(paths),'runtime PNGs, two independent concept sets, and offline previews. No integration.')
 
 if __name__=='__main__':main()

@@ -125,7 +125,7 @@
     {
       "name": "StoneFortress/intact/foot_baseline",
       "pass": true,
-      "detail": "(65, 40, 128, 160)"
+      "detail": "(65, 40, 126, 160)"
     },
     {
       "name": "StoneFortress/intact/no_clipping",
@@ -135,7 +135,7 @@
     {
       "name": "StoneFortress/broken/foot_baseline",
       "pass": true,
-      "detail": "(65, 80, 133, 160)"
+      "detail": "(65, 84, 133, 160)"
     },
     {
       "name": "StoneFortress/broken/no_clipping",
@@ -410,7 +410,7 @@
           768,
           512
         ],
-        "colors": 270,
+        "colors": 80,
         "bbox": [
           0,
           0,
@@ -423,12 +423,12 @@
           768,
           512
         ],
-        "colors": 30,
+        "colors": 29,
         "bbox": [
-          20,
-          11,
-          760,
-          367
+          75,
+          0,
+          694,
+          368
         ]
       },
       "floor_tile.png": {
@@ -436,7 +436,7 @@
           128,
           48
         ],
-        "colors": 29,
+        "colors": 15,
         "bbox": [
           0,
           0,
@@ -449,11 +449,11 @@
           192,
           192
         ],
-        "colors": 44,
+        "colors": 19,
         "bbox": [
           65,
           40,
-          128,
+          126,
           160
         ]
       },
@@ -462,10 +462,10 @@
           192,
           192
         ],
-        "colors": 19,
+        "colors": 15,
         "bbox": [
           65,
-          80,
+          84,
           133,
           160
         ]
@@ -475,7 +475,7 @@
           384,
           192
         ],
-        "colors": 53,
+        "colors": 32,
         "bbox": [
           65,
           40,

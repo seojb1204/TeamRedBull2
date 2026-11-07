@@ -16,12 +16,21 @@
       "pass": true
     },
     {
+      "name": "style_refinement_alpha_silhouettes_unchanged",
+      "files": 6,
+      "pass": true
+    },
+    {
+      "name": "style_finite_authored_palette",
+      "pass": true
+    },
+    {
       "name": "deterministic_regeneration",
       "files": 34,
       "pass": true
     }
   ],
-  "passed": 4,
+  "passed": 6,
   "failed": 0,
   "scope_note": "Git diff checks tracked paths; inspect git status before staging new documents as well."
 }

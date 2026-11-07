@@ -172,17 +172,36 @@ def scars(im,seed,variant):
 
 # StoneFortress redesign: composition from the supplied throne concept, drawn afresh
 # in the game's pixel idiom. No photo pixels, blur, smooth gradients or color filtering.
-THRONE_RED=[(18,8,16),(34,8,21),(54,9,24),(79,10,28),(108,14,33),(143,18,38),(177,25,43),(211,38,49)]
+THRONE_RED=[(18,8,16),(54,9,24),(108,14,33),(166,24,42),(211,38,49)]
 THRONE_STONE=[(10,13,19),(17,19,26),(24,25,33),(34,32,41),(47,41,49),(62,51,57)]
+
+# Stone family: outline + shadow/midtone/light + occasional chipped highlight.
+# Red family is separate so the backlight, banners and martial symbols remain crimson.
+THRONE_RENDER_PALETTE=[(9,13,20),(17,19,28),(29,29,39),(46,40,51),(66,49,60),(90,65,70),
+    (18,8,16),(42,12,25),(65,12,29),(93,17,34),(135,37,48),
+    (54,9,24),(108,14,33),(166,24,42),(211,38,49),(64,65,69)]
+
+def throne_pixel_planes(im):
+    """Map authored material colors to finite planes; no resampling, alpha or geometry changes."""
+    rgba=im.convert('RGBA');lookup={}
+    for color in set(pixels(rgba)):
+        if color[3]==0:lookup[color]=color;continue
+        chosen=min(THRONE_RENDER_PALETTE,key=lambda c:sum((c[i]-color[i])**2 for i in range(3)))
+        lookup[color]=chosen+(color[3],)
+    rgba.putdata([lookup[c] for c in pixels(rgba)])
+    return rgba
 
 def hewn_face(im,points,seed,base=(26,25,34),density=65):
     poly(im,points,base)
     rng=random.Random(seed);mask=Image.new('L',im.size);ImageDraw.Draw(mask).polygon(points,fill=255)
     box=mask.getbbox();d=ImageDraw.Draw(im)
-    for _ in range(max(1,(box[2]-box[0])*(box[3]-box[1])//density)):
-        x=rng.randrange(box[0],box[2]);y=rng.randrange(box[1],box[3]);length=rng.choice([1,1,2,3])
-        if mask.getpixel((x,y)) and mask.getpixel((min(x+length,im.width-1),y)):
-            c=shift(base,rng.choice([-6,-4,4,6]));d.line((x,y,x+length,y),fill=c)
+    # Sparse 2-4px chips grouped into angular clusters, not fine grain across the face.
+    for _ in range(max(1,(box[2]-box[0])*(box[3]-box[1])//(density*3))):
+        x=rng.randrange(box[0],box[2]);y=rng.randrange(box[1],box[3])
+        c=shift(base,rng.choice([-10,12]))
+        for ox,oy in [(0,0),(1,0),(2,0),(0,1),(1,1),(0,2)]:
+            xx,yy=x+ox,y+oy
+            if xx<im.width and yy<im.height and mask.getpixel((xx,yy)):d.point((xx,yy),fill=c)
     # A few long fractured facets, rather than a regular brick grid.
     for _ in range(2):
         x=rng.randrange(box[0],box[2]);y=rng.randrange(box[1],box[3]);pts=[]
@@ -222,18 +241,19 @@ def basalt_column(im,cx,top,bottom,width,seed,near=False):
 
 def throne_far():
     im=Image.new('RGB',(W,H),(13,9,18));d=ImageDraw.Draw(im)
-    # Deep sanctuary recess and eight hard-edged crimson light values.
-    # Quantized planes/dither are pixel light, not a filtered painting or blurred photo.
-    for y in range(0,326):
-        spread=104+y*.18
-        fall=1 if y<206 else max(.13,1-(y-206)/135)
-        for x in range(145,624):
-            distance=abs(x-384)/spread
-            strength=max(0,1-distance)*fall
-            band=min(7,int(strength*8))
+    # Five explicit light planes. 4px sampling creates stepped silhouettes;
+    # only a few 2x2 clusters at band boundaries bridge adjacent values.
+    for y in range(0,326,4):
+        spread=104+(y//16)*3
+        fall=1 if y<208 else max(.13,1-((y-208)//12)*.09)
+        for x in range(144,624,4):
+            strength=max(0,1-abs(x-384)/spread)*fall
+            band=min(4,int(strength*5))
             if band>0:
-                if (x+2*y)%7==0 and band>1:band-=1
-                im.putpixel((x,y),THRONE_RED[band])
+                d.rectangle((x,y,x+3,min(325,y+3)),fill=THRONE_RED[band])
+                fraction=strength*5-int(strength*5)
+                if band>1 and fraction<.18 and (x//4+3*(y//4))%5==0:
+                    d.rectangle((x,y,x+1,y+1),fill=THRONE_RED[band-1])
     # Clear descending shafts with angular, irregular sides and a darkened lower end.
     for coords,col in [([(348,0),(419,0),(407,141),(421,218),(407,274),(360,274),(347,206),(360,121)],(166,24,42)),
                        ([(367,0),(400,0),(395,92),(405,158),(396,231),(372,231),(364,154),(373,73)],(203,36,49))]:
@@ -340,7 +360,7 @@ def throne_floor():
     for x in [53,117]:
         stroke(im,[(x,3),(x-3,13),(x+1,20),(x-1,29)],(10,14,23),2)
         stroke(im,[(x+2,5),(x-1,13)],(52,43,54))
-    for _ in range(80):
+    for _ in range(22):
         x=rng.randint(3,124);y=rng.randint(6,46)
         d.line((x,y,min(125,x+rng.randint(1,3)),y),fill=rng.choice([(17,21,31),(38,33,45),(44,31,44)]))
     # Tiny low-value reflected crimson flecks, not glowing attack-shaped floor markings.
@@ -373,13 +393,15 @@ def throne_pillar(broken=False):
         for x,y,w,h in [(67,159,16,10),(112,159,20,12),(79,101,11,8),(105,91,10,7),(96,113,8,6)]:
             poly(im,[(x,y),(x+w,y-1),(x+w-2,y-h+2),(x+3,y-h)],(31,29,42))
             stroke(im,[(x+3,y-h),(x+w-2,y-h+2)],(68,42,56))
+        # Preserve the original one-pixel chipped junction of the broken silhouette.
+        d.point((89,123),fill=(29,29,39))
         stroke(im,[(97,131),(96,139)],(100,24,40))
         stroke(im,[(65,159),(131,159)],(34,31,43))
     return im
 
 
 def far(variant):
-    if variant=='StoneFortress':return throne_far()
+    if variant=='StoneFortress':return throne_pixel_planes(throne_far())
     seed=SEEDS[variant];rng=random.Random(seed)
     im=Image.new('RGB',(W,H),P['void'])
     base=(37,27,30) if variant=='StoneFortress' else (29,28,34)
@@ -431,7 +453,7 @@ def far(variant):
     return im.convert('RGBA')
 
 def mid(variant):
-    if variant=='StoneFortress':return throne_mid()
+    if variant=='StoneFortress':return throne_pixel_planes(throne_mid())
     rng=random.Random(SEEDS[variant]+20);im=Image.new('RGBA',(W,H));d=ImageDraw.Draw(im)
     for side in [0,1]:
         cx=63 if side==0 else 705
@@ -459,7 +481,7 @@ def mid(variant):
     return im
 
 def floor(variant):
-    if variant=='StoneFortress':return throne_floor()
+    if variant=='StoneFortress':return throne_pixel_planes(throne_floor())
     rng=random.Random(SEEDS[variant]+40);im=Image.new('RGBA',(128,48),(35,36,41,255));d=ImageDraw.Draw(im)
     # Pixel-strata and bevel define an exact walk line at top row, without red hazard-like accents.
     shades=[(64,65,69),(58,59,63),(50,52,57),(45,47,52),(41,43,48),(39,40,45)]
@@ -487,7 +509,7 @@ def floor(variant):
     return im
 
 def pillar(variant,broken=False):
-    if variant=='StoneFortress':return throne_pillar(broken)
+    if variant=='StoneFortress':return throne_pixel_planes(throne_pillar(broken))
     seed=SEEDS[variant]+(101 if broken else 99);rng=random.Random(seed)
     im=Image.new('RGBA',(192,192));d=ImageDraw.Draw(im)
     base=(68,54,50) if variant=='StoneFortress' else (59,57,60)
@@ -654,7 +676,7 @@ def main():
       'base_commit':'f13bb6bd25f469e38acce05eceb712712dc30c3f','source_canvas':[W,H],'source_ground_row':GROUND,'source_pixels_per_world_unit':PPU,
       'pillar_contract':{'sheet':[384,192],'frame':[192,192],'frames':2,'pivot':[.5,32/192],'import_ppu':56,'existing_root_scale':1.4,'world_intact_height':3.0},
       'assets':[{'path':str(p.relative_to(ROOT)),'size':list(Image.open(p).size),'mode':Image.open(p).mode,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]}
-    (DOC/'asset_manifest.json').write_text(json.dumps(manifest,indent=2));(DOC/'palette.json').write_text(json.dumps({'legacy':P,'throne_red':THRONE_RED,'throne_stone':THRONE_STONE},indent=2))
+    (DOC/'asset_manifest.json').write_text(json.dumps(manifest,indent=2));(DOC/'palette.json').write_text(json.dumps({'legacy':P,'throne_red':THRONE_RED,'throne_stone':THRONE_STONE,'throne_render':THRONE_RENDER_PALETTE},indent=2))
     print('Created',len(paths),'runtime PNGs, two independent concept sets, and offline previews. No integration.')
 
 if __name__=='__main__':main()

@@ -7,6 +7,7 @@ import subprocess, hashlib, json, io
 DOC=Path(__file__).resolve().parent
 ROOT=DOC.parents[2]
 BASE='b7210c075badc9533c7418f5410bf0d74983d820'
+STYLE_BASE='fc7bbea550e07972c8c676b38c87b5c5f931521e'
 def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 tracked=git('ls-tree','-r','--name-only',BASE).decode().splitlines()
@@ -24,13 +25,22 @@ canvas=Image.new('RGB',(1280,390),(16,18,23));d=ImageDraw.Draw(canvas)
 for x,im,label in [(0,old,'BEFORE / fortress and gate'),(640,new,'AFTER / Crimson Throne of the War God')]:
     d.text((x+12,10),label,fill=(225,217,215));canvas.paste(im.resize((640,360),Image.Resampling.NEAREST),(x,30))
 canvas.save(DOC/'StoneFortress_redesign_comparison.png')
+# Keep a distinct before/after for style refinement; preserve the earlier structure comparison.
+previous=Image.open(io.BytesIO(git('show',STYLE_BASE+':Docs/Art/ArakusRoomConcept/StoneFortress_future_mockup.png'))).convert('RGB')
+style=Image.new('RGB',(1280,390),(16,18,23));sd=ImageDraw.Draw(style)
+for x,im,label in [(0,previous,'BEFORE / previous throne rendering'),(640,new,'AFTER / stepped light and clustered stone')]:
+    sd.text((x+12,10),label,fill=(225,217,215));style.paste(im.resize((640,360),Image.Resampling.NEAREST),(x,30))
+style.save(DOC/'StoneFortress_style_comparison.png')
+stone=ROOT/'Assets/StreamingAssets/Art/ArakusRoom/StoneFortress'
+checks.append({'name':'style_refinement_alpha_silhouettes_unchanged','files':6,'pass':all(Image.open(p).getchannel('A').tobytes()==Image.open(io.BytesIO(git('show',STYLE_BASE+':'+str(p.relative_to(ROOT))))).getchannel('A').tobytes() for p in stone.glob('*.png'))})
+checks.append({'name':'style_finite_authored_palette','pass':all(len(Image.open(p).getcolors(768*512))<=17 for p in stone.glob('*.png'))})
 # Check deterministic regeneration of the generator's 34 original outputs.
-paths=sorted((ROOT/'Assets/StreamingAssets/Art/ArakusRoom').rglob('*.png'))+sorted(p for p in DOC.glob('*.png') if p.name!='StoneFortress_redesign_comparison.png')
+paths=sorted((ROOT/'Assets/StreamingAssets/Art/ArakusRoom').rglob('*.png'))+sorted(p for p in DOC.glob('*.png') if p.name not in {'StoneFortress_redesign_comparison.png','StoneFortress_style_comparison.png'})
 before={str(p.relative_to(ROOT)):sha(p) for p in paths}
 subprocess.run(['python3',str(DOC/'create_assets.py')],cwd=ROOT,check=True)
 after={str(p.relative_to(ROOT)):sha(p) for p in paths}
 checks.append({'name':'deterministic_regeneration','files':len(paths),'pass':before==after})
-(DOC/'reproduction_report.json').write_text(json.dumps({'identical_pngs':sum(before[k]==after[k] for k in before),'method':'Regenerated the 34 generator PNG outputs and checked byte equality; historical comparison generated separately by verify_revision.py','sha256':after},indent=2)+'\n')
+(DOC/'reproduction_report.json').write_text(json.dumps({'identical_pngs':sum(before[k]==after[k] for k in before),'method':'Regenerated the 34 generator PNG outputs and checked byte equality; historical comparisons generated separately by verify_revision.py','sha256':after},indent=2)+'\n')
 report={'baseline':BASE,'checks':checks,'passed':sum(c['pass'] for c in checks),'failed':sum(not c['pass'] for c in checks),'scope_note':'Git diff checks tracked paths; inspect git status before staging new documents as well.'}
 (DOC/'revision_preservation_report.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))

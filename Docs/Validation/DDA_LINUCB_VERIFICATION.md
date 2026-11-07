@@ -49,6 +49,8 @@ GitHub API가 차단되어 PR의 현재 Open/Merged UI 상태를 조회하지는
   `SaveStore`, `LobbyCards`, `AutoRun`, `LobbySmoke`, UnityShim 및 검사 진입점.
 - **CloudSync와 StreamingAssets/실제 supabase.json은 읽거나 컴파일하지 않았다.** 원격 통계는
   실제 `CommunityStats.Replace()`에 메모리 객체를 넣어 검사했다. 서버 연결/업로드는 실행하지 않았다.
+- 반복 실험은 계측 전에 실제 model.Init()으로 단위행렬/0벡터를 준비해 초기화와 학습 갱신을 구분했다.
+  기존 지연 초기화와 같은 값이며 Choose/Update 정책을 변경한 것이 아니다.
 - 빌드/기존 검사 작업 디렉터리는 매번 새 임시 폴더다. 신규 검사 저장은 별도 GUID 폴더로
   `SaveStore.UseIsolatedRoot()`를 지정하고 종료 시 자기 폴더만 제거한다. 개인 저장/CloudQueue는 사용하지 않는다.
 - `verification-manifest.json`, `existing-manifest.json`에 커밋, 사용 소스 SHA-256, 결과 코드를 기록했다.
@@ -228,7 +230,9 @@ CSV의 `ucb_scores/final_scores`는 이런 규칙 분기에서도 관찰을 위�
 ![모델 갱신과 배정 비교](dda_results/learning_vs_assignment.png)
 
 CSV 해시는 A/b 전체 배열 기준이다. `arm_a_changed/arm_b_changed`도 공유 모델의 해당 Arm 변화이며
-그 패턴 하나만의 기여를 분리한 값은 아니다. 실제 수치 배열은 `*_final.json`에 있다.
+그 패턴 하나만의 기여를 분리한 값은 아니다.
+미등장 Step/Rage 행의 해당 Arm 변화가 true여도 다른 관측 패턴의 공유 모델 업데이트일 수 있다.
+이 행은 success/reward가 비어 있으며 해당 패턴 자체를 학습했다는 의미가 아니다. 실제 수치 배열은 `*_final.json`에 있다.
 해시 비교만으로 수학 검사를 대신하지 않고, 테스트에서는 전체 배열을 기대 업데이트와 직접 비교했다.
 
 ## 7. Cold Start

@@ -58,6 +58,10 @@ namespace ReversalTower
 #endif
             cursor=0;bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;float time=g.realClock;
             Rect(0,5,70,40,Palette.Ink);
+            Color accent=g.bossIndex==4?Palette.Purple:g.bossIndex==1?Palette.Teal:Palette.Gold;
+            bool throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom();
+            if(!throneRoom)
+            {
             Disc(4,7.5f,19,19,new Color(.055f,.09f,.125f));Disc(4,7.5f,14,14,new Color(.075f,.12f,.15f));
             // Repeated arches, a broken celestial dial, and a deep lower vault.
             for(int i=-3;i<=3;i++)
@@ -72,7 +76,6 @@ namespace ReversalTower
             var pillars=ExternalAssets.Picture("Art/Castle/parallaxBG-interior2.png");
             if(pillars!=null)for(int i=-1;i<=1;i++)Shape(pillars,i*11.2f,6.7f,11.2f,14,new Color(.65f,.7f,.8f,.75f));
             if(castle!=null)for(int i=-1;i<=1;i++)Shape(castle,i*14,7,14,14,new Color(.8f,.85f,.95f,.75f));
-            Color accent=g.bossIndex==4?Palette.Purple:g.bossIndex==1?Palette.Teal:Palette.Gold;
             for(int i=0;i<48;i++)
             {
                 float a=i*Mathf.PI*2/48,rad=3.3f;
@@ -88,6 +91,7 @@ namespace ReversalTower
             for(int i=-15;i<15;i++){Rect(i*1.1f,-.45f,.018f,.7f,new Color(.07f,.10f,.13f));Rect(i*1.7f,-.15f,.7f,.018f,Palette.Alpha(accent,.16f));}
             var floor=ExternalAssets.Picture("Art/Castle/twilight-tiles.png",0,240,48,16);
             if(floor!=null)for(int i=-5;i<=5;i++)Shape(floor,i*3,-.48f,3,1,Palette.White);
+            }
             if(fight)
             {
                 if(!spriteArakus){if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);}
@@ -124,8 +128,23 @@ namespace ReversalTower
             }
             foreach(var m in g.motes)Rect(m.pos.x,m.pos.y,m.size,m.size,Palette.Alpha(m.color,Mathf.Clamp01(m.life*3)),time*300);
             // Low drifting foreground mist.
-            for(int i=0;i<6;i++)Disc(-15+i*6+Mathf.Sin(time*.07f+i)*2,-.6f,12,.55f,new Color(.12f,.22f,.25f,.12f));
+            if(!throneRoom)for(int i=0;i<6;i++)Disc(-15+i*6+Mathf.Sin(time*.07f+i)*2,-.6f,12,.55f,new Color(.12f,.22f,.25f,.12f));
             for(int i=cursor;i<pool.Count;i++)pool[i].gameObject.SetActive(false);
+        }
+        bool DrawThroneRoom()
+        {
+            const string path="Art/ArakusRoom/Arakus_Throne_Background_Game.png";
+            var room=ExternalAssets.Picture(path);if(room==null)return false;
+            // Keep the whole composition inside the existing minimum 28.6m camera width.
+            // Authored walk line is source row 608. Camera and all gameplay coordinates stay unchanged.
+            const float width=26.5f,unit=width/1248f,groundRow=608f;
+            float centerY=(groundRow-351f)*unit,bottom=(groundRow-702f)*unit;
+            Shape(room,0,centerY,width,width,Color.white);
+            // Extend only the lower masonry for taller views; never stretch/crop the throne.
+            var lower=ExternalAssets.Picture(path,0,0,1248,62);
+            float stripHeight=62*unit;
+            for(int i=0;i<12;i++)Shape(lower,0,bottom-(i+.5f)*stripHeight,width,width,Color.white);
+            return true;
         }
         void Pillar(float x)
         {Rect(x,.85f,.65f,1.7f,Palette.Stone);Rect(x,1.75f,.9f,.18f,Palette.Slate);Rect(x,.15f,.9f,.3f,Palette.Slate);Rect(x-.18f,.95f,.07f,1.3f,Palette.Alpha(Palette.Gold,.5f));}

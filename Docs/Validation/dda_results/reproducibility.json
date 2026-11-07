@@ -1,0 +1,470 @@
+{
+  "main": {
+    "byte_identical_files": 57,
+    "files": [
+      {
+        "file": "battles.csv",
+        "sha256": "0d1c39e7c38735186e7ceb7df46b2890cfff2aec45914c0e228d492abb0ab40e"
+      },
+      {
+        "file": "checks.csv",
+        "sha256": "a8d003547001d25b1278007e496ada74bdb53bf35630a1079869d863a2a29c40"
+      },
+      {
+        "file": "adicus_fixed_off_final.json",
+        "sha256": "6963187fffaf0960eb5b2dd0685da3bdaaabed672fb97021f2d04e1655e91d08"
+      },
+      {
+        "file": "adicus_high_100_final.json",
+        "sha256": "0919b3e703a1334714a4243007b170bbfe972e7a2f45dcb790f90e4be78fd915"
+      },
+      {
+        "file": "adicus_high_95_final.json",
+        "sha256": "ad4ef6a1f694fc3ffd55b8803be1e812c774ac7c9642a88f87b5de1e34304611"
+      },
+      {
+        "file": "adicus_improving_20_to_100_final.json",
+        "sha256": "026d25851d6c894d4b6d48451856bb1137990d1b3affe70e7b431a01c74a7798"
+      },
+      {
+        "file": "adicus_loss_streak_high_final.json",
+        "sha256": "0343a514782d908cde4fb3cae65041c35ccaf7aae70048c7d5f5cafc691dae44"
+      },
+      {
+        "file": "adicus_low_00_final.json",
+        "sha256": "1d54e4782c848642a3b6cb08b861f451160a30f3a617c6ef34d097b7b18c2cc9"
+      },
+      {
+        "file": "adicus_low_30_final.json",
+        "sha256": "8dfcc502d695ef015c85e45d8b5a3d18fec3b32a3e5816669bfb60b4338a57fa"
+      },
+      {
+        "file": "adicus_mid_60_final.json",
+        "sha256": "468d99383c5da5360c52f79223399371bf0a0a8c28c1cc90cf5a9d6bfc0d5525"
+      },
+      {
+        "file": "adicus_mid_70_final.json",
+        "sha256": "ae2835d3cd145ae43279795726ff3969ea550be772bb3c2351f47b0c0ee5c393"
+      },
+      {
+        "file": "adicus_mid_80_final.json",
+        "sha256": "25d88e187c74421c387a2df1cad1d72e04fbd1836183a90101dfa08706d9a829"
+      },
+      {
+        "file": "adicus_mixed_by_pattern_final.json",
+        "sha256": "2926e0ee89ed289e52c85bf65aefb46c12cb527c4c2420e620906a2d8a17bb4b"
+      },
+      {
+        "file": "aethelos_fixed_off_final.json",
+        "sha256": "358184dbfa692673be35b1d03b9f9b147551216548a7593d9e071dc684814979"
+      },
+      {
+        "file": "aethelos_high_100_final.json",
+        "sha256": "4982b58a9f76e8e91b82c9133b4497e1c57fda2f1dbac21f066ba5fbf43cdecc"
+      },
+      {
+        "file": "aethelos_high_95_final.json",
+        "sha256": "13223a048e5d9b6489b39468c1887df41edd60822e02666218c039dad2c6d2cb"
+      },
+      {
+        "file": "aethelos_improving_20_to_100_final.json",
+        "sha256": "fde83fbe93cda744e44ba23d321225c948a91d6289acc08e973937243cdd0a1c"
+      },
+      {
+        "file": "aethelos_loss_streak_high_final.json",
+        "sha256": "4064efd59083a76038d5e3b582eaf8706c7e9e07fc4a4fb8229784847216bece"
+      },
+      {
+        "file": "aethelos_low_00_final.json",
+        "sha256": "433c5de2c816eb707a38988c26c611ef549e38106f0c83a7fd471b213cef1f87"
+      },
+      {
+        "file": "aethelos_low_30_final.json",
+        "sha256": "51881411c8b327ef73661c5a85fda74b5b2a6cc930c4044971f7ccc253db0bd0"
+      },
+      {
+        "file": "aethelos_mid_60_final.json",
+        "sha256": "8fc17f923b3c700528e58e2741c14696e3cf6f00dc744f0810bbbb86606003a5"
+      },
+      {
+        "file": "aethelos_mid_70_final.json",
+        "sha256": "12d2f95116e89d29cfd73eeb3b4fe6f60fcf74420ff8214d33bfec0996cbf26b"
+      },
+      {
+        "file": "aethelos_mid_80_final.json",
+        "sha256": "ddd6ba8638dee69e8d7d3583d7abb0931bd6fb448b5e5b0ee361adf8b2f4e3ce"
+      },
+      {
+        "file": "aethelos_mixed_by_pattern_final.json",
+        "sha256": "86492dd963e39d562af2457e3ce2a02a6bcbeed8d6f928b7f879d1665b384bf7"
+      },
+      {
+        "file": "arakus_fixed_off_final.json",
+        "sha256": "5064a84d12b5107fb663c5e0370b1b864f59f29cac1fd5bfe184d32b439aec0c"
+      },
+      {
+        "file": "arakus_high_100_final.json",
+        "sha256": "56ef5e6d22cf6525d1cdac3d063b5faa0d7899a8c81a18c0056e0ac1a05e2b9e"
+      },
+      {
+        "file": "arakus_high_95_final.json",
+        "sha256": "67dc449468a5cb37d7d8318d4a74c92e2c1729b4283fff157da3df7029f9722c"
+      },
+      {
+        "file": "arakus_improving_20_to_100_final.json",
+        "sha256": "ff83e24ef4e17db231bbe31748289070dcda60bc70db79aedd2da4788a52cbb0"
+      },
+      {
+        "file": "arakus_loss_streak_high_final.json",
+        "sha256": "ac0db742f7643c17918b7b4720d2c14e226d8099a5e4250f9542cff2c8d11811"
+      },
+      {
+        "file": "arakus_low_00_final.json",
+        "sha256": "a40548ed447bb72b189bf2709ea5904ca42f81693b062f21c8b8004a05b7a88f"
+      },
+      {
+        "file": "arakus_low_30_final.json",
+        "sha256": "99051f90ce8878ca3c6d0b42674c1123cb3557819ec72bd7176b608ab970b570"
+      },
+      {
+        "file": "arakus_mid_60_final.json",
+        "sha256": "6920d101f213c1877fe96772b27787a1cecea28e461685d1d5be805c949ee5cc"
+      },
+      {
+        "file": "arakus_mid_70_final.json",
+        "sha256": "ab649838cb57db5d7855d5d2d034f3b823a9e58ae81b895e0f8cef26fdb1d031"
+      },
+      {
+        "file": "arakus_mid_80_final.json",
+        "sha256": "b61bf03666ea1a165d55fa49756137080904067b328ab2b427f3c57b9134b987"
+      },
+      {
+        "file": "arakus_mixed_by_pattern_final.json",
+        "sha256": "89817efefe99df28b42bc3054a6f2dddf4b03e04d0e44d8eb5fcfc72cc504b57"
+      },
+      {
+        "file": "kharos_fixed_off_final.json",
+        "sha256": "7451a0d38ae4e75a0870aefe3e7dce42da7ce73293afd1b6971591cc8ed1bb46"
+      },
+      {
+        "file": "kharos_high_100_final.json",
+        "sha256": "db814c13abad1452a7a7e3d8c057e353b817504ce152207e7f52625dfffe95e7"
+      },
+      {
+        "file": "kharos_high_95_final.json",
+        "sha256": "9cd144b828be6daecb21057ccb1a1eb6cb7d5dec0ab74d1941c1fa9dd5b1c436"
+      },
+      {
+        "file": "kharos_improving_20_to_100_final.json",
+        "sha256": "5afdf7d236eb1750f3999621cac7d80fd3e0ad496497c633c48253c543af7b45"
+      },
+      {
+        "file": "kharos_loss_streak_high_final.json",
+        "sha256": "54b1ba7f5067d19b37c0a1c576ab1543f6b1e8c4b39d0872eac8078e4a07744d"
+      },
+      {
+        "file": "kharos_low_00_final.json",
+        "sha256": "37d4373983ce219e0be31bcfc827747daba48ebd90f4a15330887a3343bd6c2b"
+      },
+      {
+        "file": "kharos_low_30_final.json",
+        "sha256": "40c38b24345ccdd09cb66d824fff453e311cc66b0560a264ec441ddffe5ca221"
+      },
+      {
+        "file": "kharos_mid_60_final.json",
+        "sha256": "494a0ad125d0e966ecf673e7b7ab41aadfd10e7cf98472c8aca6c0eb4adeb61a"
+      },
+      {
+        "file": "kharos_mid_70_final.json",
+        "sha256": "c04b80235b8e942f180d2cec5c0aab4af279ad6dee2788aff58093bffe08cee6"
+      },
+      {
+        "file": "kharos_mid_80_final.json",
+        "sha256": "5eaa32bea430b599bb5bed5639774ccd0ca8407e8bfb523c481c32f55e2e11b5"
+      },
+      {
+        "file": "kharos_mixed_by_pattern_final.json",
+        "sha256": "416eca0b8e433d704320bdf5905a8083a46c6c7475c088198ab51c3b9bd7161f"
+      },
+      {
+        "file": "phanes_fixed_off_final.json",
+        "sha256": "8b6b8d2854a36e02ff1905631883c7e0fabcba99a95bd9d27d7c3813ec8ddf50"
+      },
+      {
+        "file": "phanes_high_100_final.json",
+        "sha256": "b2c2fd7e84cf372e0b951f5c0d944b0c3f4c6c4c90bff1a69503ea35384b650e"
+      },
+      {
+        "file": "phanes_high_95_final.json",
+        "sha256": "d697660193fd22cd15c26d78bc786895a04b91dad337bc06770079c3adc72f15"
+      },
+      {
+        "file": "phanes_improving_20_to_100_final.json",
+        "sha256": "e5e0bc259f719666c65dcf2bf6187ad791a58ff11cea2fa417739d6686dd3bd9"
+      },
+      {
+        "file": "phanes_loss_streak_high_final.json",
+        "sha256": "3bcb8fe6c58771d82aaafa813904f8b038c13d6a97b9d02f5c0aa96873f8501a"
+      },
+      {
+        "file": "phanes_low_00_final.json",
+        "sha256": "5e693fd946fbec3379860f62f1b46b57c835057e8386001c290487815301661b"
+      },
+      {
+        "file": "phanes_low_30_final.json",
+        "sha256": "265a17911393e70711aa274c5338f9d741771ebaab2d3b14d15088d632e75ff0"
+      },
+      {
+        "file": "phanes_mid_60_final.json",
+        "sha256": "e9a767d63a8c44266e344f44762a667083b38e6bf75db49daee928e6da1dc4a1"
+      },
+      {
+        "file": "phanes_mid_70_final.json",
+        "sha256": "a6a5dbb62ea6a8a008d7561a1968765c9234e45443e2bc5e5959b84f2562ff12"
+      },
+      {
+        "file": "phanes_mid_80_final.json",
+        "sha256": "41eba2907abf512e1d39b7519eaedd1813539d99c946c50eb64f48eeb038749c"
+      },
+      {
+        "file": "phanes_mixed_by_pattern_final.json",
+        "sha256": "9b110f42545a972611c6bdafe24b0090026fc63cc463bfd942cd78d5cc4c37c4"
+      }
+    ],
+    "note": "Two executions, same synthetic inputs. Logs/manifests contain temp paths and are not compared."
+  },
+  "pr13": {
+    "byte_identical_files": 57,
+    "files": [
+      {
+        "file": "battles.csv",
+        "sha256": "4ff1d5a46399c5e45d9c73d451ed3b1a3019a5f00e756513095e93dadaf630f5"
+      },
+      {
+        "file": "checks.csv",
+        "sha256": "a66deeaef748260b7de2977bca8f09c05daf547e208410f83d5fde4d793c6048"
+      },
+      {
+        "file": "adicus_fixed_off_final.json",
+        "sha256": "6963187fffaf0960eb5b2dd0685da3bdaaabed672fb97021f2d04e1655e91d08"
+      },
+      {
+        "file": "adicus_high_100_final.json",
+        "sha256": "39acd3590ac53491e81159dc5d2c52d868f49b0b4330eba63d7e1bdcaabd43a3"
+      },
+      {
+        "file": "adicus_high_95_final.json",
+        "sha256": "cd335da2860636a404c21c0b600f67af60d550da534900c6211ebd7cb629ab44"
+      },
+      {
+        "file": "adicus_improving_20_to_100_final.json",
+        "sha256": "55bf6964728296b65ccfedfd337ee13450040f664976c17b3be2d063719edfe4"
+      },
+      {
+        "file": "adicus_loss_streak_high_final.json",
+        "sha256": "0343a514782d908cde4fb3cae65041c35ccaf7aae70048c7d5f5cafc691dae44"
+      },
+      {
+        "file": "adicus_low_00_final.json",
+        "sha256": "fa0bcf89e56bc95184370ed69fe1f70ff817eba61b13f76ec70e14d4cddf6082"
+      },
+      {
+        "file": "adicus_low_30_final.json",
+        "sha256": "0127d18f94f4e2d5130029fd6fc86dc273a419c18eead7de5c2d890a6399d3fe"
+      },
+      {
+        "file": "adicus_mid_60_final.json",
+        "sha256": "468d99383c5da5360c52f79223399371bf0a0a8c28c1cc90cf5a9d6bfc0d5525"
+      },
+      {
+        "file": "adicus_mid_70_final.json",
+        "sha256": "ae2835d3cd145ae43279795726ff3969ea550be772bb3c2351f47b0c0ee5c393"
+      },
+      {
+        "file": "adicus_mid_80_final.json",
+        "sha256": "25d88e187c74421c387a2df1cad1d72e04fbd1836183a90101dfa08706d9a829"
+      },
+      {
+        "file": "adicus_mixed_by_pattern_final.json",
+        "sha256": "4b42f29b5c0f588bf6059b51a03ca8d4b71a88afb10d001cdd0d5dfd63c16c31"
+      },
+      {
+        "file": "aethelos_fixed_off_final.json",
+        "sha256": "358184dbfa692673be35b1d03b9f9b147551216548a7593d9e071dc684814979"
+      },
+      {
+        "file": "aethelos_high_100_final.json",
+        "sha256": "8d0c905c1e6b088dc1d1b0f85c59fe9546e610d8e1d32bffabab61261cc934ed"
+      },
+      {
+        "file": "aethelos_high_95_final.json",
+        "sha256": "e59f9cce03f7518e79791922aff57847d52c5a9bbca77f73f48dbb7923455134"
+      },
+      {
+        "file": "aethelos_improving_20_to_100_final.json",
+        "sha256": "75e3bdf29173045141867584a1b3befeab08e495281c313c3bffcf628efeba47"
+      },
+      {
+        "file": "aethelos_loss_streak_high_final.json",
+        "sha256": "4064efd59083a76038d5e3b582eaf8706c7e9e07fc4a4fb8229784847216bece"
+      },
+      {
+        "file": "aethelos_low_00_final.json",
+        "sha256": "67163a4107ad4773daa7a2b25da4589a121d46293d17c6f654fd49041e1f179e"
+      },
+      {
+        "file": "aethelos_low_30_final.json",
+        "sha256": "b5a2665690d7c74885b465325368587a6638cdf894e843c406da102c94354e7f"
+      },
+      {
+        "file": "aethelos_mid_60_final.json",
+        "sha256": "8fc17f923b3c700528e58e2741c14696e3cf6f00dc744f0810bbbb86606003a5"
+      },
+      {
+        "file": "aethelos_mid_70_final.json",
+        "sha256": "12d2f95116e89d29cfd73eeb3b4fe6f60fcf74420ff8214d33bfec0996cbf26b"
+      },
+      {
+        "file": "aethelos_mid_80_final.json",
+        "sha256": "ddd6ba8638dee69e8d7d3583d7abb0931bd6fb448b5e5b0ee361adf8b2f4e3ce"
+      },
+      {
+        "file": "aethelos_mixed_by_pattern_final.json",
+        "sha256": "05cc40bd538295f4182088ff9ce87c5bee328f152441107b220e8c546dc33f9f"
+      },
+      {
+        "file": "arakus_fixed_off_final.json",
+        "sha256": "5064a84d12b5107fb663c5e0370b1b864f59f29cac1fd5bfe184d32b439aec0c"
+      },
+      {
+        "file": "arakus_high_100_final.json",
+        "sha256": "7c672dfad8b182dd54605855d7731dd8daa5398df2115dcec60a6f6fb3cb1038"
+      },
+      {
+        "file": "arakus_high_95_final.json",
+        "sha256": "37b3351b825f7c49ab19b169d8578ca0e9e679cc798aa2f7d5770ebc754e395f"
+      },
+      {
+        "file": "arakus_improving_20_to_100_final.json",
+        "sha256": "7be176eb2747a627c4dfc1c5b20895d75456c9121359f0a417e8c99aca1e47e8"
+      },
+      {
+        "file": "arakus_loss_streak_high_final.json",
+        "sha256": "ac0db742f7643c17918b7b4720d2c14e226d8099a5e4250f9542cff2c8d11811"
+      },
+      {
+        "file": "arakus_low_00_final.json",
+        "sha256": "6865d1dcda452bfa205716a58688b7c61e0ce744a831e80a807dd37067f89aad"
+      },
+      {
+        "file": "arakus_low_30_final.json",
+        "sha256": "f186b91d7ce770ec1f14bab6338e6669f1b8b4ecd9ddf78f42e70b84ed802c26"
+      },
+      {
+        "file": "arakus_mid_60_final.json",
+        "sha256": "6920d101f213c1877fe96772b27787a1cecea28e461685d1d5be805c949ee5cc"
+      },
+      {
+        "file": "arakus_mid_70_final.json",
+        "sha256": "ab649838cb57db5d7855d5d2d034f3b823a9e58ae81b895e0f8cef26fdb1d031"
+      },
+      {
+        "file": "arakus_mid_80_final.json",
+        "sha256": "b61bf03666ea1a165d55fa49756137080904067b328ab2b427f3c57b9134b987"
+      },
+      {
+        "file": "arakus_mixed_by_pattern_final.json",
+        "sha256": "e309494861609dd7b81983696f823f623112bf68082dbaea1a81a57294b8159c"
+      },
+      {
+        "file": "kharos_fixed_off_final.json",
+        "sha256": "7451a0d38ae4e75a0870aefe3e7dce42da7ce73293afd1b6971591cc8ed1bb46"
+      },
+      {
+        "file": "kharos_high_100_final.json",
+        "sha256": "1c1a1911b4eb0bcb306a288930c8067e9e3cdef22a519c55e4c8db1755bc257f"
+      },
+      {
+        "file": "kharos_high_95_final.json",
+        "sha256": "52ed71657dc55a2068ca0ee85166c3859246293910278dd825a2183008d524a4"
+      },
+      {
+        "file": "kharos_improving_20_to_100_final.json",
+        "sha256": "60dc8c5c0a77e37d0df3187872b38a124e81b3e3850b07c6452c03b6197e2551"
+      },
+      {
+        "file": "kharos_loss_streak_high_final.json",
+        "sha256": "54b1ba7f5067d19b37c0a1c576ab1543f6b1e8c4b39d0872eac8078e4a07744d"
+      },
+      {
+        "file": "kharos_low_00_final.json",
+        "sha256": "1bdca78421ff143b69077df97caf77ae4e374f15e89c66a23b271359584b4fc5"
+      },
+      {
+        "file": "kharos_low_30_final.json",
+        "sha256": "dba2e4dd74c5109ac65eb845c5e1976758501888a8804127674ba2e6cbcc08fc"
+      },
+      {
+        "file": "kharos_mid_60_final.json",
+        "sha256": "494a0ad125d0e966ecf673e7b7ab41aadfd10e7cf98472c8aca6c0eb4adeb61a"
+      },
+      {
+        "file": "kharos_mid_70_final.json",
+        "sha256": "c04b80235b8e942f180d2cec5c0aab4af279ad6dee2788aff58093bffe08cee6"
+      },
+      {
+        "file": "kharos_mid_80_final.json",
+        "sha256": "5eaa32bea430b599bb5bed5639774ccd0ca8407e8bfb523c481c32f55e2e11b5"
+      },
+      {
+        "file": "kharos_mixed_by_pattern_final.json",
+        "sha256": "397fe274f25fe1ab9159212dfd1aef5d445452d7e4f5b53632645655b14355c3"
+      },
+      {
+        "file": "phanes_fixed_off_final.json",
+        "sha256": "8b6b8d2854a36e02ff1905631883c7e0fabcba99a95bd9d27d7c3813ec8ddf50"
+      },
+      {
+        "file": "phanes_high_100_final.json",
+        "sha256": "b0d47ab1013665d974be6dea9e275c08889c3fed0915c55a9c6d4e9722afdce7"
+      },
+      {
+        "file": "phanes_high_95_final.json",
+        "sha256": "90c2d12c6148fa3e03fdc43136268423a13834fce3c83306654b1b6cd3e9f622"
+      },
+      {
+        "file": "phanes_improving_20_to_100_final.json",
+        "sha256": "09155c04efca5c0713ffd443ff2995f735048fa24ae88a37772f1fc5d14321ee"
+      },
+      {
+        "file": "phanes_loss_streak_high_final.json",
+        "sha256": "3bcb8fe6c58771d82aaafa813904f8b038c13d6a97b9d02f5c0aa96873f8501a"
+      },
+      {
+        "file": "phanes_low_00_final.json",
+        "sha256": "aaa9fc30760876d09bde4f7044148d1af0b04cc82c37c9eb78f721d476adc594"
+      },
+      {
+        "file": "phanes_low_30_final.json",
+        "sha256": "cf9629e0f82d6991b492bb0d38bbdc1b030d5a0821eb1814a7bb4bc987e63ea3"
+      },
+      {
+        "file": "phanes_mid_60_final.json",
+        "sha256": "e9a767d63a8c44266e344f44762a667083b38e6bf75db49daee928e6da1dc4a1"
+      },
+      {
+        "file": "phanes_mid_70_final.json",
+        "sha256": "a6a5dbb62ea6a8a008d7561a1968765c9234e45443e2bc5e5959b84f2562ff12"
+      },
+      {
+        "file": "phanes_mid_80_final.json",
+        "sha256": "41eba2907abf512e1d39b7519eaedd1813539d99c946c50eb64f48eeb038749c"
+      },
+      {
+        "file": "phanes_mixed_by_pattern_final.json",
+        "sha256": "9e404a986412d24312c9ca7f1bcf4e278d5b1519fa83457718b614fe67f3beff"
+      }
+    ],
+    "note": "Two executions, same synthetic inputs. Logs/manifests contain temp paths and are not compared."
+  }
+}

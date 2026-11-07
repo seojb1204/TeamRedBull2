@@ -163,7 +163,15 @@ namespace ReversalTower
             if(remaining<=0)return;
             Color c=p.parryable?Palette.ParryRim:Palette.Red;float opacity=.08f+.05f*Mathf.Sin(g.realClock*14);
             if(p.kind==AttackKind.Slash)
-            {bool radial=p.id=="spin";float x=radial?g.boss.x:g.boss.x+g.bossFace*p.range*.5f;Rect(x,.8f,radial?p.range*2:p.range,1.6f,Palette.Alpha(c,opacity));Rect(x,.05f,radial?p.range*2:p.range,.04f,c);}
+            {
+                if(g.bossIndex==0)
+                {
+                    float reach=ArakusGeometry.Reach(g.spec,p),height=ArakusGeometry.AttackHeight(g.spec,p),width=reach+.3f;
+                    float x=g.boss.x+g.bossFace*(reach-.3f)*.5f;
+                    Rect(x,g.boss.y+height*.5f,width,height,Palette.Alpha(c,opacity));Rect(x,g.boss.y+.05f,width,.04f,c);
+                }
+                else{bool radial=p.id=="spin";float x=radial?g.boss.x:g.boss.x+g.bossFace*p.range*.5f;Rect(x,.8f,radial?p.range*2:p.range,1.6f,Palette.Alpha(c,opacity));Rect(x,.05f,radial?p.range*2:p.range,.04f,c);}
+            }
             if(p.kind==AttackKind.Dash){Rect(0,.06f,24,.05f,Palette.Red);for(int i=0;i<8;i++)Tri(-10+i*3,.4f,.35f,.45f,Palette.Alpha(c,.4f),g.bossFace>0?-90:90);}
             if(p.kind==AttackKind.Balance)
             {Rect(g.safeSide*6,.04f,11.2f,.1f,Palette.Teal);Rect(g.safeSide*6,1,11.2f,2,Palette.Alpha(Palette.Teal,.08f));}
@@ -204,7 +212,13 @@ namespace ReversalTower
             }
             if(p.kind==AttackKind.ShieldRush)
             {
-                if(t<w){float x=bx+face*3;Rect(x,.9f,6.4f,1.8f,Palette.Alpha(Palette.Red,.07f+.06f*pulse));Rect(x,.05f,6.4f,.05f,Palette.Red);for(int i=0;i<4;i++)Tri(bx+face*(1+i*1.4f),1,.35f,.45f,Palette.Alpha(Palette.Red,.45f),face>0?-90:90);}
+                if(t<w)
+                {
+                    if(g.bossIndex==0){float reach=5+ArakusGeometry.Reach(g.spec,p),height=ArakusGeometry.AttackHeight(g.spec,p),span=reach+.3f;
+                        float x=bx+face*(reach-.3f)*.5f;Rect(x,g.boss.y+height*.5f,span,height,Palette.Alpha(Palette.Red,.07f+.06f*pulse));Rect(x,.05f,span,.05f,Palette.Red);}
+                    else{float x=bx+face*3;Rect(x,.9f,6.4f,1.8f,Palette.Alpha(Palette.Red,.07f+.06f*pulse));Rect(x,.05f,6.4f,.05f,Palette.Red);}
+                    for(int i=0;i<4;i++)Tri(bx+face*(1+i*1.4f),1,.35f,.45f,Palette.Alpha(Palette.Red,.45f),face>0?-90:90);
+                }
                 else if(!bp.struck)for(int i=1;i<4;i++)Rect(bx-face*i*.45f,1.2f,.35f,2,Palette.Alpha(Palette.Red,.14f/i));
                 return;
             }

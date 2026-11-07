@@ -97,7 +97,7 @@ namespace ReversalTower
             if(cursor==pool.Count){var child=new GameObject("Arakus sprite effect "+cursor);child.transform.SetParent(transform,false);pool.Add(child.AddComponent<SpriteRenderer>());}
             var r=pool[cursor++];r.enabled=true;r.sprite=sprites[Mathf.Clamp(frame,0,sprites.Length-1)];r.sharedMaterial=owner.body.sharedMaterial;
             r.sortingLayerID=owner.body.sortingLayerID;r.sortingOrder=owner.body.sortingOrder+order;r.color=color??Color.white;
-            r.transform.position=new Vector3(pos.x,pos.y,0);r.transform.localScale=new Vector3(face*(transform.localScale.x<0?-1:1),1,1);r.transform.localRotation=Quaternion.identity;
+            r.transform.position=new Vector3(pos.x,pos.y,0);r.transform.localScale=new Vector3(face*ArakusGeometry.LegacyEffectScale/transform.lossyScale.x,ArakusGeometry.LegacyEffectScale/Mathf.Abs(transform.lossyScale.y),1);r.transform.localRotation=Quaternion.identity;
         }
         void DrawPillar(TowerGame g,int frame,Vector2 pos,int face,ActorView owner,float alpha)
         {

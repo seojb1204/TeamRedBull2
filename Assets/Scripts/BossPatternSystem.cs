@@ -3,6 +3,38 @@ using System.Collections.Generic;
 
 namespace ReversalTower
 {
+    // Geometry only: authored pattern data, DDA multipliers and motion timings stay unchanged.
+    public static class ArakusGeometry
+    {
+        public const float VisualScale=2.2f, LegacyEffectScale=1.4f, PixelsPerUnit=56f;
+        // Idle alpha bounds: pivot(96,160), max horizontal extent33px and height89px.
+        public const float HalfWidth=33f*VisualScale/PixelsPerUnit, Height=89f*VisualScale/PixelsPerUnit;
+        public static float Reach(BossSpec boss,Pattern p)
+        {
+            if(boss==null||boss.id!="arakus")return p.range;
+            switch(p.id)
+            {
+                case "cleave":return p.range*(4f/2.9f);
+                case "shield":return p.range*(2.5f/1.9f);
+                case "kick":return p.range*1.5f;
+                case "slash":return p.range*(3.2f/2.4f);
+                case "rush":return p.range*(2f/1.4f);
+                default:return p.range;
+            }
+        }
+        public static float AttackHeight(BossSpec boss,Pattern p)
+        {
+            if(boss==null||boss.id!="arakus")return 2.2f;
+            // Active-frame alpha height informs the vertical reach; kick keeps its low profile.
+            switch(p.id){case "cleave":return 3.3f;case "shield":return 2.7f;case "slash":return 3.4f;case "rush":return 2.7f;default:return 2.2f;}
+        }
+        public static float SelectionMax(BossSpec boss,Pattern p)
+        {
+            if(boss==null||boss.id!="arakus")return p.maxRange;
+            float reach=Reach(boss,p);if(reach==p.range||p.maxRange<=0)return p.maxRange;
+            return p.maxRange+reach-p.range;
+        }
+    }
     public sealed class BossPatternSystem
     {
         readonly TowerGame g;
@@ -84,7 +116,7 @@ namespace ReversalTower
                 if(current.kind==AttackKind.Slash&&patternAge<windup*.5f)
                 {
                     g.bossFace=g.player.x>=g.boss.x?1:-1;
-                    if(Mathf.Abs(g.boss.x-g.player.x)>current.range*.75f)g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*g.spec.speed*.7f*tempo);
+                    if(Mathf.Abs(g.boss.x-g.player.x)>ArakusGeometry.Reach(g.spec,current)*.75f)g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*g.spec.speed*.7f*tempo);
                 }
                 if(g.spec.hasPillars)poseFrame=0;
                 return;
@@ -224,7 +256,7 @@ namespace ReversalTower
                     while(attackStep<patternCount&&t>=windup+attackStep*.25f*T)
                     {
                         attackStep++;
-                        if(InFront(1.4f)&&g.player.y<2.2f){touched=true;g.PlayerHit(patternDamage,false,p.id,g.boss.x);g.Burst(g.boss+new Vector2(g.bossFace*1,1),.5f,Palette.Red,5);}
+                        if(InFront(g.spec.id=="arakus"?ArakusGeometry.Reach(g.spec,p):1.4f)&&g.player.y<ArakusGeometry.AttackHeight(g.spec,p)){touched=true;g.PlayerHit(patternDamage,false,p.id,g.boss.x);g.Burst(g.boss+new Vector2(g.bossFace*1,1),.5f,Palette.Red,5);}
                     }
                     return;
                 }
@@ -268,8 +300,8 @@ namespace ReversalTower
                 if(p.id==previousPattern)continue;
                 if(p.minPhase<0)continue;                      // 분노·퀵스텝은 조건으로만 나옴
                 if(p.minPhase>=2&&!phaseTwo)continue;
-                if(p.kind==AttackKind.Slash&&distance>p.range+1.5f)continue;
-                if(p.maxRange>0&&(distance<p.minRange||distance>p.maxRange+(p.kind==AttackKind.Slash?1.5f:0)))continue;
+                if(p.kind==AttackKind.Slash&&distance>ArakusGeometry.Reach(g.spec,p)+1.5f)continue;
+                if(p.maxRange>0&&(distance<p.minRange||distance>ArakusGeometry.SelectionMax(g.spec,p)+(p.kind==AttackKind.Slash?1.5f:0)))continue;
                 if(p.kind==AttackKind.Barrier&&!phaseTwo)continue;
                 if(p.kind==AttackKind.Summon&&g.minions.Count>=5)continue;
                 if(p.kind==AttackKind.Balance&&g.seconds<12)continue;
@@ -315,7 +347,7 @@ namespace ReversalTower
             if(p.kind==AttackKind.Slash)
             {
                 bool radial=p.id=="spin";
-                bool overlap=Mathf.Abs(g.player.x-g.boss.x)<p.range&&Mathf.Abs(g.player.y-g.boss.y)<2.2f&&(radial||(g.player.x-g.boss.x)*g.bossFace>-.3f);
+                bool overlap=Mathf.Abs(g.player.x-g.boss.x)<ArakusGeometry.Reach(g.spec,p)&&Mathf.Abs(g.player.y-g.boss.y)<ArakusGeometry.AttackHeight(g.spec,p)&&(radial||(g.player.x-g.boss.x)*g.bossFace>-.3f);
                 int hitsBefore=g.hits;
                 g.PlayerHit(patternDamage,p.parryable,p.id,g.boss.x,overlap);
                 // 거검 휘두르기: 맞으면 1m 날아감 (PlayerHit 기본 0.45m + 0.55m)
@@ -434,7 +466,7 @@ namespace ReversalTower
                 {
                     Vector2 aim=(g.boss+Vector2.up*1.3f-s.pos).normalized;
                     s.vel=Vector2.Lerp(s.vel,aim*12,dt*9);
-                    if(Vector2.Distance(s.pos,g.boss+Vector2.up*1.2f)<1.2f){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage);remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
+                    if(g.BossShotOverlap(s.pos,s.radius)){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage);remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
                 }
                 else if(!s.hitDone&&s.pos.x>g.player.x-.5f-s.radius&&s.pos.x<g.player.x+.5f+s.radius&&s.pos.y>g.player.y-s.radius&&s.pos.y<g.player.y+1.65f+s.radius)
                 {

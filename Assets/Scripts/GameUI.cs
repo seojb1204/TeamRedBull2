@@ -252,14 +252,23 @@ namespace ReversalTower
             Rule(298,608,1000);Text(298,632,1000,72,"파랗게 빛나면 받아치고, 붉게 빛나면 피하세요.\n별빛이 번쩍이는 순간이 받아칠 때입니다.",17,muted);
             if(Button(1070,726,230,44,"알겠습니다",true)){showHelp=false;save.tutorialSeen=true;SaveStore.Save(save);}
         }
+        // DDA 기록 초기화: 실수로 누르지 않게 4초 안에 한 번 더 눌러야 지운다. 전투 중에는 막는다(진행 중인 판이 지운 기록에 학습되지 않게).
+        float ddaResetArmedUntil=-1,ddaResetDoneUntil=-1;
         void SettingsUI()
         {
-            Modal(440,190,720,520,"설정");
+            Modal(440,190,720,590,"설정");
             Text(478,280,600,32,"전체 음량",20);save.masterVolume=GUI.HorizontalSlider(new Rect(480,337,600,28),save.masterVolume,0,1);AudioListener.volume=save.masterVolume;
             Text(478,385,600,32,"패턴별 적응 난이도  /  DDA",20);
             if(Button(480,438,600,48,save.dda?"사용 중  ·  클릭하여 고정 난이도로 변경":"고정 난이도  ·  클릭하여 DDA 사용")){save.dda=!save.dda;SaveStore.Save(save);}
-            Text(480,505,600,110,"바꾼 설정은 다음 전투부터 적용됩니다. 전투 기록은 이 PC에 저장되고, 인터넷이 연결되면 익명 ID로 팀 서버에도 보내집니다.",16,muted);
-            if(Button(480,621,600,48,"저장하고 닫기",true)){SaveStore.Save(save);showSettings=false;}
+            bool inBattle=mode==ScreenMode.Battle,armed=realClock<ddaResetArmedUntil,done=realClock<ddaResetDoneUntil;
+            string resetLabel=inBattle?"전투 중에는 DDA 기록을 초기화할 수 없습니다":done?"DDA 기록을 초기화했습니다":armed?"한 번 더 누르면 초기화합니다 (되돌릴 수 없음)":"DDA 기록 초기화  ·  모든 보스";
+            if(Button(480,498,600,44,resetLabel,false,!inBattle&&!done))
+            {
+                if(armed){save.ResetDdaLearning();SaveStore.Save(save);ddaResetArmedUntil=-1;ddaResetDoneUntil=realClock+3;Say("DDA 기록을 초기화했습니다. 다음 전투는 첫 만남부터 다시 배웁니다.",3);}
+                else ddaResetArmedUntil=realClock+4;
+            }
+            Text(480,555,600,130,"바꾼 설정은 다음 전투부터 적용됩니다. DDA 기록 초기화는 적응 난이도 학습만 지우고 골드·카드·전투 기록은 남깁니다. 전투 기록은 인터넷이 연결되면 익명 ID로 팀 서버에도 보내집니다.",16,muted);
+            if(Button(480,691,600,48,"저장하고 닫기",true)){SaveStore.Save(save);showSettings=false;}
         }
         void HistoryUI()
         {

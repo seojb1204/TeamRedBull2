@@ -103,6 +103,9 @@ namespace ReversalTower
         public bool[] cleared=new bool[5];
         public List<HistoryEntry> history=new List<HistoryEntry>();
         public List<BossLearning> learning=new List<BossLearning>();
+        // DDA가 보스별로 기억한 학습(판 수·연패·패턴별 레벨·성공률·LinUCB 행렬)만 지운다. 골드·카드·클리어·전투 기록은 그대로.
+        // 다음 전투는 그 보스와의 첫 만남(레벨 0, DB 통계가 있으면 그 값)으로 시작한다.
+        public void ResetDdaLearning() {learning.Clear();}
         public BossLearning Learning(string id) {var b=learning.Find(x=>x.id==id);if(b==null){b=new BossLearning{id=id};learning.Add(b);}return b;}
         public int UpgradeCost(bool attack) => 80+(attack?attackLevel:healthLevel)*55;
     }

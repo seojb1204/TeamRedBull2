@@ -1,0 +1,118 @@
+{
+  "scope": "Art resources only. Does not validate runtime integration.",
+  "checks": [
+    {
+      "name": "Arakus_Throne_Background_16x9.png_matches_delivered_original",
+      "pass": true
+    },
+    {
+      "name": "Arakus_Pillar_sheet_384x192.png_matches_delivered_original",
+      "pass": true
+    },
+    {
+      "name": "Arakus_Throne_Background_16x9.png_dimensions",
+      "pass": true
+    },
+    {
+      "name": "Arakus_Throne_Background_16x9.png_meta_exists",
+      "pass": true
+    },
+    {
+      "name": "Arakus_Throne_Background_Game.png_dimensions",
+      "pass": true
+    },
+    {
+      "name": "Arakus_Throne_Background_Game.png_meta_exists",
+      "pass": true
+    },
+    {
+      "name": "Arakus_Pillar_sheet_384x192.png_dimensions",
+      "pass": true
+    },
+    {
+      "name": "Arakus_Pillar_sheet_384x192.png_meta_exists",
+      "pass": true
+    },
+    {
+      "name": "Pillar_Outline.png_dimensions",
+      "pass": true
+    },
+    {
+      "name": "Pillar_Outline.png_meta_exists",
+      "pass": true
+    },
+    {
+      "name": "pillar_frame_0_foot_and_height",
+      "pass": true
+    },
+    {
+      "name": "pillar_frame_0_one_pixel_rim",
+      "pass": true
+    },
+    {
+      "name": "pillar_frame_1_foot_and_height",
+      "pass": true
+    },
+    {
+      "name": "pillar_frame_1_one_pixel_rim",
+      "pass": true
+    },
+    {
+      "name": "clean_plate_changes_only_two_post_regions",
+      "pass": true
+    },
+    {
+      "name": "existing_StoneFortress_IronWarworks_and_Pillar_GUID_unchanged",
+      "pass": true
+    },
+    {
+      "name": "outline_import_contract",
+      "pass": true
+    },
+    {
+      "name": "new_guids_distinct",
+      "pass": true
+    }
+  ],
+  "passed": 18,
+  "failed": 0,
+  "files": [
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/Arakus_Throne_Background_16x9.png",
+      "size": [
+        1248,
+        702
+      ],
+      "sha256": "7e8dae45c5e7688c3a01a3804332ea74917de403c25778948f08fd0cb0126745"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/Arakus_Throne_Background_Game.png",
+      "size": [
+        1248,
+        702
+      ],
+      "sha256": "62b66eebc1042e9ec7af123d283205cce773263b6c3e3b0a74eb7404c434d7bc"
+    },
+    {
+      "path": "Assets/StreamingAssets/Art/ArakusRoom/Arakus_Pillar_sheet_384x192.png",
+      "size": [
+        384,
+        192
+      ],
+      "sha256": "8666d4318e8f1ffed6353f18e6c2f92ac03a84771ab377b75712678d4927f831"
+    },
+    {
+      "path": "Assets/Resources/ArakusV1/Pillar_Outline.png",
+      "size": [
+        384,
+        192
+      ],
+      "sha256": "d1086b7a5369006c2c32b6ef2607061e8820c00e80f8ed0a73634a35a5e2535b"
+    }
+  ],
+  "not_verified": [
+    "Unity import/rendering",
+    "Windows build",
+    "actual combat VFX readability"
+  ]
+}

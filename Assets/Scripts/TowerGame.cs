@@ -256,14 +256,20 @@ namespace ReversalTower
                 if(u==4){range=30;damage*=2;playerInv=1;}
                 Burst(player+Vector2.up,3,Palette.Gold,45);shake=4;
             }
-            bool bossIn=Mathf.Abs(player.x-boss.x)<range+BossWidth&&Mathf.Abs(player.y-boss.y)<2.2f&&(radial||(boss.x-player.x)*face>-.5f);
+            bool bossIn=Mathf.Abs(player.x-boss.x)<range+BossWidth&&BossAttackHeightOverlap(player.y)&&(radial||(boss.x-player.x)*face>-.5f);
             if(bossIn&&damage>0)DamageBoss(damage,playerAction=="R"?2.6f:playerAction=="E"?2.2f:playerAction=="Q"?1.5f:playerAction=="W"?1.3f:1);
             for(int i=minions.Count-1;i>=0;i--)
             {var m=minions[i];if(Mathf.Abs(player.x-m.x)<range&&(radial||(m.x-player.x)*face>-.5f)){m.hp-=damage;if(m.hp<=0){Burst(new Vector2(m.x,1),.8f,Palette.Gold,12);minions.RemoveAt(i);}}}
             if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){barrier=false;bossStagger=3;Say("결계 파괴 · 파네스가 추락했습니다",2);}}
             Burst(player+new Vector2(face*.9f,1),.25f,Palette.Teal,4);
         }
-        public float BossWidth=>bossIndex==0?.9f:bossIndex==3?.8f:.65f;
+        public float BossWidth=>bossIndex==0?ArakusGeometry.HalfWidth:bossIndex==3?.8f:.65f;
+        public float BossHeight=>bossIndex==0?ArakusGeometry.Height:2.2f;
+        public bool BossAttackHeightOverlap(float feetY)
+            =>bossIndex==0?feetY<boss.y+BossHeight&&feetY+2.2f>boss.y:Mathf.Abs(feetY-boss.y)<2.2f;
+        public bool BossShotOverlap(Vector2 point,float radius)
+            =>bossIndex==0?Mathf.Abs(point.x-boss.x)<BossWidth+radius&&point.y+radius>boss.y&&point.y-radius<boss.y+BossHeight
+                :Vector2.Distance(point,boss+Vector2.up*1.2f)<1.2f;
         // 패링 성공 연출: 멈춤 → 슬로모션, 화면 번쩍임, 부딪힌 곳으로 카메라 펀치, 큰 충돌 불꽃, 보스가 크게 밀려 보임
         public void ParryFeedback(float attackerX)
         {

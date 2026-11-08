@@ -1,0 +1,98 @@
+{
+  "views_loaded": [
+    {
+      "view": "_future_mockup.png",
+      "loaded_image_sizes": [
+        [
+          1280,
+          720
+        ],
+        [
+          1280,
+          720
+        ]
+      ]
+    },
+    {
+      "view": "_current_mockup.png",
+      "loaded_image_sizes": [
+        [
+          1280,
+          720
+        ],
+        [
+          1280,
+          720
+        ]
+      ]
+    },
+    {
+      "view": "_room_16x9.png",
+      "loaded_image_sizes": [
+        [
+          1280,
+          720
+        ],
+        [
+          1280,
+          720
+        ]
+      ]
+    },
+    {
+      "view": "_future_4x3_crop.png",
+      "loaded_image_sizes": [
+        [
+          960,
+          720
+        ],
+        [
+          960,
+          720
+        ]
+      ]
+    },
+    {
+      "view": "_future_4x3_camera.png",
+      "loaded_image_sizes": [
+        [
+          960,
+          720
+        ],
+        [
+          960,
+          720
+        ]
+      ]
+    },
+    {
+      "view": "_readability.png",
+      "loaded_image_sizes": [
+        [
+          1280,
+          720
+        ],
+        [
+          1280,
+          720
+        ]
+      ]
+    },
+    {
+      "view": "_floor_repeat.png",
+      "loaded_image_sizes": [
+        [
+          1536,
+          96
+        ],
+        [
+          1536,
+          96
+        ]
+      ]
+    }
+  ],
+  "mobile_single_column": true,
+  "page_errors": [],
+  "note": "Local HTML documentation test only; no Unity or game integration."
+}

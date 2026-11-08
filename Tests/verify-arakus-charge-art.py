@@ -7,6 +7,7 @@ from PIL import Image
 
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--baseline', default='f13bb6bd25f469e38acce05eceb712712dc30c3f')
+p.add_argument('--presentation-baseline', help='Approved ActorView commit when validating alongside a separate size change; art baseline stays unchanged')
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[1]
 path = 'Assets/Resources/ArakusV1/Charge.png'
@@ -31,6 +32,9 @@ for frame in range(5):
     assert new.crop(c).tobytes() == expected.tobytes()
     print('PASS frame', frame, 'opaque WH', (b[2]-b[0], b[3]-b[1]), '->', (c[2]-c[0], c[3]-c[1]))
 for unchanged in [path+'.meta', 'Assets/Resources/ArakusV1/Groggy.png',
-                  'Assets/Resources/ArakusV1/Groggy.png.meta', 'Assets/Scripts/ActorView.cs']:
+                  'Assets/Resources/ArakusV1/Groggy.png.meta']:
     assert (repo / unchanged).read_bytes() == original(unchanged), unchanged + ' changed'
+actor = 'Assets/Scripts/ActorView.cs'
+actor_before = subprocess.check_output(['git', 'show', (a.presentation_baseline or a.baseline) + ':' + actor], cwd=repo)
+assert (repo / actor).read_bytes() == actor_before, 'ActorView differs from explicitly approved presentation baseline'
 print('ARAKUS_CHARGE_ART_CHECKS_PASSED: 5 frames, exact nearest-neighbor source pixels, baseline, metadata and excluded files')

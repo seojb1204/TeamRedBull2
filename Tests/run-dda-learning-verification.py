@@ -24,6 +24,8 @@ output = args.output.resolve()
 output.mkdir(parents=True, exist_ok=True)
 names = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices']
+if (source / 'Assets' / 'Scripts' / 'ArakusPatternTiming.cs').is_file():
+    names.append('ArakusPatternTiming')
 files = [source / 'Assets' / 'Scripts' / (n + '.cs') for n in names]
 files += [source / 'Tests' / 'UnityShim.cs']
 files += [repo / 'Tests' / 'DdaLearningVerificationTests.cs' if args.suite == 'verification' else source / 'Tests' / 'HeadlessTests.cs']

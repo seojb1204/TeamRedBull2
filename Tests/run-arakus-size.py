@@ -7,6 +7,7 @@ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--dotnet',default
 if not a.dotnet:p.error('Pass a .NET8 SDK executable with --dotnet')
 r=Path(__file__).resolve().parents[1];out=a.output.resolve();out.mkdir(parents=True,exist_ok=True)
 names=['GameData','TowerGame','BossCombat','SaveStore','LobbyCards','AutoRun','LobbySmoke','BossPatternSystem','GameServices','ArakusAnimationSelection']
+if (r/'Assets/Scripts/ArakusPatternTiming.cs').is_file():names.append('ArakusPatternTiming')
 files=[r/'Assets/Scripts'/f'{n}.cs' for n in names]+[r/'Tests'/f'{n}.cs' for n in ['UnityShim','HeadlessTests','ArakusAnimationTests','ArakusSizeTests']]
 manifest={'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=r,text=True).strip(),'source_sha256':{str(f.relative_to(r)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files},'tests':{},'limits':['HEADLESS UnityShim, not Unity API compilation/rendering','No actual editor transforms or graphics/Windows build','No real DB or existing saves']}
 with tempfile.TemporaryDirectory(prefix='arakus-size-') as tmp:

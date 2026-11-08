@@ -19,6 +19,8 @@ def main():
     names = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
              'LobbySmoke', 'BossPatternSystem', 'GameServices', 'DdaDifficultyHistory',
              'DdaDifficultyHistoryStore', 'DdaHistoryRecorder']
+    if (repo / 'Assets' / 'Scripts' / 'ArakusPatternTiming.cs').is_file():
+        names.append('ArakusPatternTiming')
     entry = 'DdaDifficultyHistoryTests' if args.suite == 'history' else 'HeadlessTests'
     sources = [repo / 'Assets' / 'Scripts' / (name + '.cs') for name in names]
     sources += [repo / 'Tests' / 'UnityShim.cs', repo / 'Tests' / (entry + '.cs')]

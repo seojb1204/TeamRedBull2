@@ -8,7 +8,7 @@ New-Item -ItemType Directory -Force $out | Out-Null
 $exe=Join-Path $out 'DdaHistoryTests.exe'
 $compile=@('-nologo','-noconfig','-nostdlib+','-define:HEADLESS','-target:exe',('-out:'+$exe))
 foreach($assembly in @('mscorlib.dll','System.dll','System.Core.dll','System.Runtime.Serialization.dll','System.Xml.dll')){$compile+='-r:'+(Join-Path $framework $assembly)}
-foreach($source in @('GameData','TowerGame','BossCombat','SaveStore','LobbyCards','AutoRun','LobbySmoke','BossPatternSystem','GameServices','DdaDifficultyHistory','DdaDifficultyHistoryStore','DdaHistoryRecorder')){
+foreach($source in @('GameData','TowerGame','BossCombat','SaveStore','LobbyCards','AutoRun','LobbySmoke','BossPatternSystem','ArakusPatternTiming','GameServices','DdaDifficultyHistory','DdaDifficultyHistoryStore','DdaHistoryRecorder')){
     $compile+=(Join-Path $PSScriptRoot ('Assets\Scripts\'+$source+'.cs'))
 }
 $compile+=(Join-Path $PSScriptRoot 'Tests\UnityShim.cs')

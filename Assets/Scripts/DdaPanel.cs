@@ -13,6 +13,8 @@ namespace ReversalTower
         const string DdaPanelPref = "DdaPanelVisible";
         bool ddaPanelLoaded, showDdaPanel;
         HistoryEntry ddaPreviewFor;
+        BossLearning ddaPreviewLearning;
+        bool ddaPreviewEnabled;
         readonly Dictionary<string,int> ddaNextLevel = new Dictionary<string,int>();
         readonly Dictionary<string,string> ddaNextReason = new Dictionary<string,string>();
 
@@ -42,6 +44,7 @@ namespace ReversalTower
             ddaNextLevel.Clear();
             ddaNextReason.Clear();
             bool enabled = save.dda && !AutoRunArgs.DisableDda;
+            ddaPreviewEnabled = enabled;
             foreach (Pattern p in spec.patterns)
             {
                 double[] context;
@@ -49,6 +52,7 @@ namespace ReversalTower
                 ddaNextLevel[p.id] = DdaBattleSession.Decide(save, spec, p, enabled, out context, out reason);
                 ddaNextReason[p.id] = reason;
             }
+            ddaPreviewLearning = save.learning.Find(b => b.id == spec.id);
         }
 
         void DdaPanelUI()
@@ -61,7 +65,9 @@ namespace ReversalTower
                 return;
             }
             bool full = mode == ScreenMode.Result;
-            if (full && result != ddaPreviewFor) RefreshDdaPreview();
+            // Settings can reset learning or toggle DDA while the same result stays open.
+            if (full && (result != ddaPreviewFor || ddaPreviewEnabled != (save.dda && !AutoRunArgs.DisableDda) ||
+                !object.ReferenceEquals(ddaPreviewLearning, save.learning.Find(b => b.id == spec.id)))) RefreshDdaPreview();
 
             BossLearning learning = save.learning.Find(b => b.id == spec.id);
             // 무작위로 나오지 않는 연출 패턴(아라쿠스 퀵스텝·분노)은 이번 판에 기회가 있었을 때만 보여 준다

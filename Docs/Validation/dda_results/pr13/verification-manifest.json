@@ -1,0 +1,28 @@
+{
+  "label": "pr13",
+  "source_commit": "2bcab4154ae534ba21befc08b5ce4c0d40741329",
+  "suite": "verification",
+  "target": "net8.0",
+  "define": "HEADLESS",
+  "sources": {
+    "Assets/Scripts/GameData.cs": "1093d34c71af6a04cf02ae36ff0ea1e6bb4a80faa9ef37741579fdb58235ec2e",
+    "Assets/Scripts/TowerGame.cs": "9c4e8ca6401c93276bff3bfd4dafae86349211b2c2d766a57414ec5f41ecadb5",
+    "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "Assets/Scripts/SaveStore.cs": "4394afe645c772e5f688ae3f2ed185762e18524e19e099552243071fc6ec541c",
+    "Assets/Scripts/LobbyCards.cs": "ffa59a1203745fc180ba523c9b78bedfef6614705a79e2bb4416058b378f1def",
+    "Assets/Scripts/AutoRun.cs": "bb1bfa115d22bc33fa6bd4a88b388d7252481dac9649652ec8f5a7b23757bd2d",
+    "Assets/Scripts/LobbySmoke.cs": "7f2e84942892f69533b6493ddf4d48ce23e7b0f315048621705cd5822b1ecc43",
+    "Assets/Scripts/BossPatternSystem.cs": "a8b5a65760e9c3f001165e16ed1f282d129a089d1beb88da28615e70d828baac",
+    "Assets/Scripts/GameServices.cs": "222cdb6b422feecc32a3ddb7ea39717db6be42e6dd3eaded5100afb8a01736cb",
+    "Tests/UnityShim.cs": "79aecf44439d70d18a607e8067c311c7e3d84b8bf77ad8bb92f6c1d519b99503",
+    "Tests/DdaLearningVerificationTests.cs": "d2afab1a1bc38197b26f7f40bc97487eca878f745f12907ba871275c4917e96d"
+  },
+  "excluded": [
+    "CloudSync.cs",
+    "StreamingAssets",
+    "supabase.json",
+    "Unity Editor",
+    "real player saves/CloudQueue"
+  ],
+  "exit_code": 0
+}

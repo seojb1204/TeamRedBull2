@@ -229,7 +229,7 @@ namespace ReversalTower
         void Character(Vector2 pos,float scale,int face,string action,bool enemy,float t,Color accent)
         {
 #if !DESKTOP_PREVIEW
-            if(g.scenePresentation&&(!enemy?g.scenePresentation.player!=null:g.bossIndex==0&&g.scenePresentation.arakus!=null))return;
+            if(g.scenePresentation&&(!enemy?g.scenePresentation.player!=null:(g.bossIndex==0&&g.scenePresentation.arakus!=null)||(g.bossIndex==1&&PhanesView.HasArt)))return;
 #endif
             int frame=action=="run"?(int)(t*9)%4:(int)(t*3)%2;
             bool attack=action=="attack"||action=="J"||action=="Q"||action=="W"||action=="E"||action=="R";

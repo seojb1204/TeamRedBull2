@@ -2,6 +2,7 @@
 import argparse
 import io
 from pathlib import Path
+import re
 import subprocess
 from PIL import Image
 
@@ -30,7 +31,14 @@ for frame in range(5):
     expected = old.crop(b).resize((c[2]-c[0], c[3]-c[1]), Image.Resampling.NEAREST)
     assert new.crop(c).tobytes() == expected.tobytes()
     print('PASS frame', frame, 'opaque WH', (b[2]-b[0], b[3]-b[1]), '->', (c[2]-c[0], c[3]-c[1]))
-for unchanged in [path+'.meta', 'Assets/Resources/ArakusV1/Groggy.png',
+# Charge.png.meta: only each frame's pivot x may differ (hip alignment, exact values pinned by
+# Tests/verify-arakus-dash-alignment.py). GUID, slices, PPU, pivot y and every other byte stay identical.
+PIVOT_X = re.compile(r'(      pivot: \{x: )[0-9.]+(, y: )')
+def without_pivot_x(data):
+    return PIVOT_X.sub(r'\1*\2', data.decode('utf-8'))
+meta = path + '.meta'
+assert without_pivot_x((repo / meta).read_bytes()) == without_pivot_x(original(meta)), meta + ' changed beyond per-frame pivot x'
+for unchanged in ['Assets/Resources/ArakusV1/Groggy.png',
                   'Assets/Resources/ArakusV1/Groggy.png.meta', 'Assets/Scripts/ActorView.cs']:
     assert (repo / unchanged).read_bytes() == original(unchanged), unchanged + ' changed'
 print('ARAKUS_CHARGE_ART_CHECKS_PASSED: 5 frames, exact nearest-neighbor source pixels, baseline, metadata and excluded files')

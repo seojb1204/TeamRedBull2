@@ -1,0 +1,10 @@
+{
+  "baseMain": "f13bb6bd25f469e38acce05eceb712712dc30c3f",
+  "renderChecks": 64,
+  "targetBodyWorldUnits": 2.2,
+  "arakusBodyPixels": 88,
+  "arakusPpu": 56,
+  "arakusScale": 1.4,
+  "renderer": "same HTML Canvas source executed with native Canvas in Node; no browser UI",
+  "unityIntegration": false
+}

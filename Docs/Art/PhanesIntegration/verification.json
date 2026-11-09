@@ -1,0 +1,11 @@
+{
+  "dbTested": false,
+  "unityChecks": 131,
+  "frames": 56,
+  "manualClear": false,
+  "windowsBuild": true,
+  "isolatedSave": true,
+  "windowsLobbyChecks": 19,
+  "windowsRuntimePhanes": true,
+  "diagnosticScriptShipped": false
+}

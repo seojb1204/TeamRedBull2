@@ -108,7 +108,7 @@ namespace ReversalTower
             }
             else if(state=="Of_Wrath")frame=t<w?(t<Math.Min(.4f*T,w*.4f)?0:1):t<w+.6f*T?2:3;
             else if(state=="QuickStep")frame=t<w?(t<w*.4f?0:1):t<w+.3f*T?2:t<w+.3f*T+r*.5f?3:4;
-            else if(state=="ShieldDash")frame=t<w?0:t<w+1.75f*T?1+(int)((t-w)/(.12f*T))%2:t<w+1.75f*T+r*.5f?3:4;
+            else if(state=="ShieldDash")frame=t<w?0:t<w+ArakusPatternTiming.ShieldRushMoveDuration*T?1+(int)((t-w)/(.12f*T))%2:t<w+ArakusPatternTiming.ShieldRushMoveDuration*T+r*.5f?3:4;
             else if(state=="Charge")frame=t<w?0:i.step<2?(t<w+.12f*T?1:2+(int)((t-w)/(.1f*T))%2):4;
             else if(state=="Aggressive_Attack")frame=t<w?(t<w*.7f?0:1):t<w+.3f*T?2:t<w+1*T?3:t<w+1*T+r*.65f?4:5;
             else

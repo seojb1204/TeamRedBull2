@@ -27,6 +27,33 @@ public static class HeadlessTests
             for(int i=0;i<1000;i++){int l=model.Choose(x,0,10,.7f,0);if(Math.Abs(l)>1)throw new Exception("Invalid difficulty jump");model.Update(l,x,.8);if(double.IsNaN(model.Value(l+2,x)))throw new Exception("Invalid model");}
             Check(true,"1000 finite LinUCB updates with one-step bounds");
             var restored=JsonUtility.FromJson<BanditModel>(JsonUtility.ToJson(model));Check(Math.Abs(restored.Value(2,x)-model.Value(2,x))<1e-8,"Learned matrices survive serialization");
+            // 안전장치 규칙은 초반 3판 뒤에도 적용된다 (예전에는 5판부터 LinUCB만 남아 레벨이 굳었다)
+            Check(model.Choose(x,0,10,.95f,0)==1,"Skilled players keep progressing after the opening battles");
+            Check(model.Choose(x,0,10,.2f,0)==-1,"Struggling players stay supported after the opening battles");
+            Check(model.Choose(x,2,10,.95f,0)==2,"Hard upper bound");
+            {
+                // 처음 6판은 전부 맞고 지다가, 그 뒤로 전부 막아 내며 이기는 플레이어: 실력이 늘면 다시 어려워져야 한다
+                var learnSave=new SaveData();var arakus=Catalog.Bosses[0];var session=new DdaBattleSession();int low=0;
+                for(int battle=0;battle<18;battle++)
+                {
+                    session.Prepare(learnSave,arakus,false);bool good=battle>=6;
+                    foreach(var st in session.Stats){if(st.id=="step"||st.id=="rage")continue;st.opportunities=5;if(good)st.parries=5;else st.hits=5;}
+                    if(battle==5)low=session.Stats.Find(st=>st.id=="cleave").level;
+                    session.Complete(learnSave,arakus,good);
+                }
+                session.Prepare(learnSave,arakus,false);int high=session.Stats.Find(st=>st.id=="cleave").level;
+                Check(low<=-1&&high>=1,"DDA raises difficulty again when a struggling player improves ("+low+" -> "+high+")");
+            }
+            {
+                // DDA 패널의 '다음 판' 미리보기: 몇 번 불러도 같은 답이고 학습하지 않는다
+                var previewSave=new SaveData();var arakus=Catalog.Bosses[0];double[] context;string reason;
+                int first=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                int again=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                Check(first==again&&previewSave.Learning("arakus").battles==0&&reason=="첫 만남 · 기본 난이도","DDA next-battle preview does not learn");
+                var learned=previewSave.Learning("arakus");learned.battles=5;var memory=learned.Pattern("cleave");memory.level=2;memory.observations=3;memory.success=1;
+                int capped=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                Check(capped==2&&reason.Contains("이미 가장 어려움"),"DDA reason says when the hardest level is already reached");
+            }
             Start();float hp=game.playerHp;game.parryAge=.1f;game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp&&game.parries==1&&game.ult==15,"Parry prevents damage and grants 15 ultimate");
             game.parryAge=.25f;game.playerInv=0;game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp-20,"Late parry receives damage");
             game.PlayerHit(20,true,"cleave",5);Check(game.playerHp==hp-20&&game.Stat("cleave").ignored==1,"Post-hit invulnerability prevents repeated damage");
@@ -51,6 +78,13 @@ public static class HeadlessTests
             game.ReturnLobby();Check(game.mode==ScreenMode.Lobby&&game.hazards.Count==0,"Returning to lobby clears battle hazards");
             foreach(int i in new[]{1,2,3,4}){game.StartBattle(i);game.DamageBoss(game.bossHp);Check(game.save.cleared[i],"Boss "+i+" can complete and persist progression");}
             Start();Call("EndBattle",false);Check(game.result.gold==0,"Immediate abandon does not generate free gold");
+            Start();game.Stat("cleave").opportunities=3;game.Stat("cleave").hits=3;game.Abandon();
+            {var learned=game.save.Learning("arakus");Check(game.result.abandoned&&game.save.history.Count==1&&learned.battles==0&&learned.lossStreak==0&&learned.Pattern("cleave").observations==0,"Abandoned battle keeps history but does not train DDA");}
+            Start();game.Stat("cleave").opportunities=3;game.Stat("cleave").hits=3;Call("EndBattle",false);
+            {var learned=game.save.Learning("arakus");Check(!game.result.abandoned&&learned.battles==1&&learned.lossStreak==1&&learned.Pattern("cleave").observations==1,"Fought-out defeat still trains DDA");}
+            Start();game.Stat("cleave").level=-1;Call("BeginPattern",game.spec.patterns[0]);
+            {var cds=(System.Collections.Generic.Dictionary<string,float>)typeof(BossPatternSystem).GetField("cooldowns",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(game.BossPatterns);
+            Check(Math.Abs(cds["cleave"]-game.seconds-game.spec.patterns[0].cooldown*1.12f)<1e-4f,"Easier level -1 lengthens Arakus cooldown by 12%");}
             for(int boss=0;boss<5;boss++)
             {
                 Start(boss);float stop=180;int frames=0;
@@ -74,6 +108,17 @@ public static class HeadlessTests
             }
             var saved=new SaveData{gold=123};Check(SaveStore.Save(saved),"Save writes successfully");saved.gold=234;Check(SaveStore.Save(saved),"Atomic save replacement succeeds");Check(SaveStore.Load().gold==234,"Save reload restores progress");
             File.WriteAllText(SaveStore.SavePath,"broken-json");Check(SaveStore.Load().gold==123,"Corrupt main save recovers backup");
+            // DDA 기록 초기화 (설정 화면 버튼): 학습만 지우고 진행·골드·기록은 남긴다
+            Start();game.DamageBoss(game.bossHp);
+            {
+                int gold=game.save.gold,history=game.save.history.Count;
+                Check(game.save.learning.Count==1&&game.save.Learning("arakus").battles==1,"Victory records DDA learning");
+                game.save.ResetDdaLearning();
+                Check(game.save.learning.Count==0&&game.save.gold==gold&&game.save.history.Count==history&&game.save.cleared[0],"DDA reset clears learning but keeps gold, history and progression");
+                Check(SaveStore.Save(game.save)&&SaveStore.Load().learning.Count==0,"DDA reset survives save and load");
+                game.ReturnLobby();game.StartBattle(0);
+                Check(game.save.Learning("arakus").battles==0&&game.Stat("cleave").level==0,"Battle after DDA reset starts as a first encounter");
+            }
             TestLobbyCards();
             Console.WriteLine("HEADLESS_TESTS_PASSED "+passed+" assertions. Rendering/audio require a real Unity player.");return 0;
         }

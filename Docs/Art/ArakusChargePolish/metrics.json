@@ -1,0 +1,130 @@
+{
+  "method": "nearest-neighbor uniform 1.25x; opaque crop, fixed foot baseline; no runtime scale or metadata change",
+  "frames": [
+    {
+      "frame": 0,
+      "before_bounds": [
+        76,
+        100,
+        127,
+        160
+      ],
+      "before_size": [
+        51,
+        60
+      ],
+      "after_bounds": [
+        71,
+        85,
+        135,
+        160
+      ],
+      "after_size": [
+        64,
+        75
+      ],
+      "scale": 1.25,
+      "feet_exclusive_y": 160
+    },
+    {
+      "frame": 1,
+      "before_bounds": [
+        93,
+        96,
+        145,
+        160
+      ],
+      "before_size": [
+        52,
+        64
+      ],
+      "after_bounds": [
+        92,
+        80,
+        157,
+        160
+      ],
+      "after_size": [
+        65,
+        80
+      ],
+      "scale": 1.25,
+      "feet_exclusive_y": 160
+    },
+    {
+      "frame": 2,
+      "before_bounds": [
+        57,
+        95,
+        111,
+        160
+      ],
+      "before_size": [
+        54,
+        65
+      ],
+      "after_bounds": [
+        47,
+        79,
+        115,
+        160
+      ],
+      "after_size": [
+        68,
+        81
+      ],
+      "scale": 1.25,
+      "feet_exclusive_y": 160
+    },
+    {
+      "frame": 3,
+      "before_bounds": [
+        93,
+        96,
+        146,
+        160
+      ],
+      "before_size": [
+        53,
+        64
+      ],
+      "after_bounds": [
+        92,
+        80,
+        158,
+        160
+      ],
+      "after_size": [
+        66,
+        80
+      ],
+      "scale": 1.25,
+      "feet_exclusive_y": 160
+    },
+    {
+      "frame": 4,
+      "before_bounds": [
+        74,
+        96,
+        122,
+        160
+      ],
+      "before_size": [
+        48,
+        64
+      ],
+      "after_bounds": [
+        68,
+        80,
+        128,
+        160
+      ],
+      "after_size": [
+        60,
+        80
+      ],
+      "scale": 1.25,
+      "feet_exclusive_y": 160
+    }
+  ]
+}

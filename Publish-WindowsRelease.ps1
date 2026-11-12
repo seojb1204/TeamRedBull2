@@ -69,6 +69,9 @@ if (-not (Test-Path -LiteralPath $exe -PathType Leaf) -or
 if ((Get-Item -LiteralPath $exe).LastWriteTimeUtc -lt $buildStart.AddSeconds(-5)) {
     throw '이번 실행에서 새로 빌드된 exe를 확인하지 못했습니다.'
 }
+if (Invoke-RepoGit -Arguments @('status', '--porcelain')) {
+    throw 'Unity 빌드가 소스·설정 파일을 변경했습니다. 배포 전에 변경을 확인하세요.'
+}
 
 # 사전에 지정한 게임 실행 구성요소만 ZIP에 포함합니다.
 $includeNames = @(

@@ -110,7 +110,7 @@ class PixelAgentTests(unittest.TestCase):
             data=root/'Tower_Data';managed=data/'Managed';managed.mkdir(parents=True)
             dll=managed/'Assembly-CSharp.dll';dll.write_bytes(b'old build')
             with self.assertRaises(ValueError):validate_build(exe)
-            dll.write_bytes(('-towerPixelAgent\0�ڵ�����: ��Ʈ��ũ ����').encode('utf-16-le'))
+            dll.write_bytes(('-towerPixelAgent\0자동검증: 네트워크 꺼짐').encode('utf-16-le'))
             streaming=data/'StreamingAssets';(streaming/'Art').mkdir(parents=True)
             (streaming/'Art'/'test.png').write_bytes(b'keep-art')
             self.assertEqual(validate_build(exe)[0],exe)
@@ -123,4 +123,3 @@ class PixelAgentTests(unittest.TestCase):
         self.assertLess(result['random_success_rate'],.25)
 
 if __name__=='__main__':unittest.main()
-

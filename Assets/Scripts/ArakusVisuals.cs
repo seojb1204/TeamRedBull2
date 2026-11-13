@@ -78,7 +78,7 @@ namespace ReversalTower
                 if(bp.struck&&(newPattern||!lastStruck))
                 {
                     if(p.id=="throw")Emit("FX_SwordAttack",g.boss+new Vector2(g.bossFace*.7f,.25f),g.bossFace);
-                    if(p.id=="slam")Emit("FX_LeapingSlam",g.boss,g.bossFace);
+                    if(p.id=="slam"&&!SkillEffectVisuals.HasLanding)Emit("FX_LeapingSlam",g.boss,g.bossFace);
                 }
             }
             if(bp.rageActive&&!lastRage)Emit("FX_WrathRing",g.boss,g.bossFace);

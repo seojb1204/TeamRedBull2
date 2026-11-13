@@ -43,6 +43,9 @@ namespace ReversalTower
 
         void Awake()
         {
+            // Boot order is unspecified: inspect command line, not AutoRunArgs.Active.
+            if(AutoRunArgs.IsAutomationProcess)
+            {CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
             config = LoadConfig();
             if (config == null) { CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
             playerId = PlayerPrefs.GetString(PlayerKey, "");

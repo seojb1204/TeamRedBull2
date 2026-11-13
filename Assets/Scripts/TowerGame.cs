@@ -67,20 +67,24 @@ namespace ReversalTower
             sound=gameObject.AddComponent<Soundscape>();sound.Initialize();
             artist=gameObject.AddComponent<WorldArtist>();artist.Initialize(this);
             InitGui();
-            var args=Environment.GetCommandLineArgs();demo=Array.IndexOf(args,"-towerDemo")>=0;
+            var args=Environment.GetCommandLineArgs();demo=Array.IndexOf(args,"-towerDemo")>=0||AutoRunArgs.AgentProfile!=null;
             capturePath=AutoRunArgs.CapturePath;
-            if(demo)StartBattle(0);
+            if(demo)
+            {
+                if(AutoRunArgs.AgentProfile!=null&&SaveStore.IsIsolated)save.unlockedBoss=Mathf.Max(save.unlockedBoss,AutoRunArgs.AgentBoss);
+                StartBattle(AutoRunArgs.AgentProfile!=null?AutoRunArgs.AgentBoss:0);
+            }
         }
         void Update()
         {
             float raw=Mathf.Min(Time.unscaledDeltaTime,.05f);realClock+=raw;
             noticeTime=Mathf.Max(0,noticeTime-raw);flash=Mathf.Max(0,flash-raw*2);phaseFlash=Mathf.Max(0,phaseFlash-raw*.8f);
             shake=Mathf.Max(0,shake-raw*12);
-            if(Input.GetKeyDown(KeyCode.F12))Capture();
+            if(!AutoRunArgs.Active&&Input.GetKeyDown(KeyCode.F12))Capture();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DevKeys();
+            if(!AutoRunArgs.Active)DevKeys();
 #endif
-            HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
+            if(!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
                 Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
             // 역경직 동안에는 전투 시간을 0으로 흘린다 (입력은 계속 읽어서 그 사이 누른 키를 놓치지 않음)
             float battleDt=raw;bool fighting=mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;
@@ -173,7 +177,7 @@ namespace ReversalTower
             maxHp=LobbyCards.Health(save);playerHp=maxHp;bossHp=spec.hp;ult=0;seconds=0;hits=parries=sealParries=0;
             horizontalSpeed=0;pvY=0;playerInv=stun=parryLock=dashTime=dashRecharge=actionTime=attackAnim=healing=skillQ=skillW=skillE=0;parryAge=99;
             phaseTwo=false;thirdPhase=false;seal=index==4;dashes=2;potions=3;combo=0;comboGap=0;bossStagger=0;rest=1.8f;current=null;bossState="입장";
-            BossPatterns.Reset();rewards.Reset();playerAction="";healing=0;
+            BossPatterns.Reset();ResetTestAgent();rewards.Reset();playerAction="";healing=0;
             barrier=false;barrierTime=0;pillarLeft=pillarRight=index==0;hazards.Clear();shots.Clear();minions.Clear();motes.Clear();impacts.Clear();hitStop=slowMo=zoomPunch=whiteFlash=bossRecoil=0;
             dda.Prepare(save,spec,AutoRunArgs.DisableDda);
             Say(spec.name+" — "+spec.lesson,5);sound.Play("confirm");
@@ -331,6 +335,7 @@ namespace ReversalTower
         void OnApplicationQuit(){if(mode==ScreenMode.Battle&&!ended){abandoning=true;EndBattle(false);}if(save!=null)SaveStore.Save(save);}
         void DemoInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,ref bool q,ref bool w,ref bool e,ref bool r,ref bool f,float dt)
         {
+            if(AutoRunArgs.AgentProfile!=null){TestAgentInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);return;}
             float distance=boss.x-player.x;move=Mathf.Abs(distance)>2?Mathf.Sign(distance):0;demoAction-=dt;
             attack=demoAction<=0;if(attack)demoAction=.37f;q=skillQ<=0&&Mathf.Abs(distance)>4;w=skillW<=0&&Mathf.Abs(distance)<3;e=skillE<=0&&bossStagger>1;
             parry=current!=null&&current.parryable&&patternAge>windup-.14f&&patternAge<windup-.09f;

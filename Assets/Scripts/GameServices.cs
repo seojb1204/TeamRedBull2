@@ -9,6 +9,7 @@ namespace ReversalTower
     public sealed class DdaBattleSession
     {
         public bool Enabled { get; private set; }
+        bool completed;
         public List<PatternStats> Stats { get; private set; } = new List<PatternStats>();
         public Dictionary<string,double[]> Contexts { get; private set; } = new Dictionary<string,double[]>();
         // 패턴마다 이번 난이도를 고른 이유 (DDA 패널·발표용)
@@ -16,6 +17,7 @@ namespace ReversalTower
 
         public void Prepare(SaveData save, BossSpec boss, bool disable)
         {
+            completed=false;save.NormalizeDda();
             Enabled = save.dda && !disable;
             Stats = new List<PatternStats>();
             Contexts = new Dictionary<string,double[]>();
@@ -70,23 +72,29 @@ namespace ReversalTower
         // 테스트하다 끈 판이 쌓여 연패 보호가 걸리거나, 반쯤 싸운 기록이 학습되는 것을 막는다.
         public void Complete(SaveData save, BossSpec boss, bool clear, bool abandoned = false)
         {
+            if(completed)return;completed=true;
             if (!Enabled || abandoned) return;
             BossLearning learning = save.Learning(boss.id);
             float sum = 0;
             int observed = 0;
             foreach (PatternStats stats in Stats)
             {
-                if (stats.opportunities < 1) continue;
+                if(stats==null||stats.opportunities<1||stats.hits<0||stats.parries<0||stats.dodges<0||
+                    (long)stats.hits+stats.parries+stats.dodges!=stats.opportunities||stats.level< -2||stats.level>2)continue;
+                double[] context;
+                if(stats.id==null||!Contexts.TryGetValue(stats.id,out context)||!BanditModel.ValidContext(context))continue;
                 PatternMemory memory = learning.Pattern(stats.id);
-                learning.model.Update(stats.level, Contexts[stats.id], BanditModel.Reward(stats.Success));
+                learning.model.Update(stats.level, context, BanditModel.Reward(stats.Success));
                 memory.success = memory.observations == 0 ? stats.Success : Mathf.Lerp(memory.success,stats.Success,.5f);
                 memory.level = stats.level;
-                memory.observations++;
+                memory.observations=memory.observations==int.MaxValue?int.MaxValue:memory.observations+1;
                 sum += stats.Success;
                 observed++;
             }
-            learning.battles++;
-            learning.lossStreak = clear ? 0 : learning.lossStreak + 1;
+            // No eligible observation means no evidence for either learning or loss protection.
+            if(observed==0)return;
+            learning.battles=learning.battles==int.MaxValue?int.MaxValue:learning.battles+1;
+            learning.lossStreak=clear?0:learning.lossStreak==int.MaxValue?int.MaxValue:learning.lossStreak+1;
             if (observed > 0) learning.globalSuccess = sum / observed;
         }
     }

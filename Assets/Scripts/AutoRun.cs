@@ -26,6 +26,18 @@ namespace ReversalTower
         public static int ForcedFrameRate;     // 0 이면 지정 안 함
         public static bool DisableDda;
         public static bool LobbySmoke;
+        public static string AgentProfile;
+        public static int AgentSeed=17, AgentBoss;
+        // Usable before TowerGame.Awake: CloudSync may initialize first.
+        public static bool HasAutomationArguments(string[] args)
+        {
+            foreach(var arg in args)if(arg.StartsWith("-tower",StringComparison.Ordinal))return true;
+            return false;
+        }
+
+        // Raw process flags protect preferences even before Parse/Awake initializes Active.
+        public static bool IsAutomationProcess => Active || ProcessHasAutomationArguments;
+        static readonly bool ProcessHasAutomationArguments = HasAutomationArguments(Environment.GetCommandLineArgs());
 
         static string Value(string[] args, string key)
         {
@@ -41,6 +53,11 @@ namespace ReversalTower
             try { args = Environment.GetCommandLineArgs(); }
             catch { return; }
 
+            AgentProfile=Value(args,"-towerAgent");AgentSeed=17;AgentBoss=0;
+            if(AgentProfile!=null&&AgentProfile!="novice"&&AgentProfile!="balanced"&&AgentProfile!="expert")throw new ArgumentException("towerAgent: novice, balanced or expert required");
+            string seed=Value(args,"-towerSeed"),boss=Value(args,"-towerBoss");
+            if(seed!=null&&!int.TryParse(seed,out AgentSeed))throw new ArgumentException("Invalid towerSeed");
+            if(boss!=null&&(!int.TryParse(boss,out AgentBoss)||AgentBoss<0||AgentBoss>=Catalog.Bosses.Length))throw new ArgumentException("towerBoss must be 0..4");
             DataRoot = Value(args, "-towerDataRoot");
             ReportPath = Value(args, "-towerReport");
             CapturePath = Value(args, "-towerCapture");
@@ -53,7 +70,7 @@ namespace ReversalTower
             string fps = Value(args, "-towerFrameRate");
             if (fps != null) int.TryParse(fps, NumberStyles.Integer, CultureInfo.InvariantCulture, out ForcedFrameRate);
 
-            Active = SecondsLimit > 0 || ReportPath != null || DataRoot != null || CapturePath != null ||
+            Active = AgentProfile!=null || SecondsLimit > 0 || ReportPath != null || DataRoot != null || CapturePath != null ||
                 ForcedFrameRate>0 || DisableDda || LobbySmoke || Array.IndexOf(args,"-towerDemo")>=0;
             if(Active&&(SecondsLimit<=0||float.IsNaN(SecondsLimit)||float.IsInfinity(SecondsLimit)))SecondsLimit=30;
 
@@ -75,6 +92,41 @@ namespace ReversalTower
 
     public sealed partial class TowerGame
     {
+        System.Random agentRandom;
+        Pattern agentPattern;float agentLastAge=-1;bool agentRespond,agentDefended;
+        void ResetTestAgent()
+        {
+            agentRandom=new System.Random(AutoRunArgs.AgentSeed);agentPattern=null;agentLastAge=-1;agentDefended=false;demoAction=0;
+            if(AutoRunArgs.AgentProfile!=null)BossPatterns.SetTestSeed(AutoRunArgs.AgentSeed);
+        }
+        // Privileged, deterministic rule policy; emits inputs only, never edits combat outcomes.
+        void TestAgentInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,
+            ref bool q,ref bool w,ref bool e,ref bool r,ref bool f,float dt)
+        {
+            float distance=boss.x-player.x;move=Mathf.Abs(distance)>1.8f?Mathf.Sign(distance):0;
+            jump=dash=parry=q=w=e=r=f=attack=false;
+            if(agentRandom==null)ResetTestAgent();
+            if(current!=agentPattern||patternAge<agentLastAge)
+            {
+                agentPattern=current;agentDefended=false;
+                double chance=AutoRunArgs.AgentProfile=="novice"?.35:AutoRunArgs.AgentProfile=="expert"?.95:.70;
+                agentRespond=agentRandom.NextDouble()<chance;
+            }
+            agentLastAge=patternAge;
+            float until=current==null?99:windup-patternAge;
+            bool guarding=current!=null&&agentRespond&&until<.45f&&until>-.15f;
+            if(guarding&&!agentDefended&&until<=.12f&&until>=-.05f)
+            {
+                if(current.parryable)parry=true;
+                else if(current.kind==AttackKind.Wave)jump=true;
+                else{dash=true;move=-Mathf.Sign(distance);}
+                agentDefended=true;
+            }
+            demoAction-=dt;
+            if(!guarding){attack=demoAction<=0;if(attack)demoAction=AutoRunArgs.AgentProfile=="novice"?.65f:.37f;
+                q=skillQ<=0&&Mathf.Abs(distance)>4;w=skillW<=0&&Mathf.Abs(distance)<3;e=skillE<=0&&bossStagger>1;r=ult>=100;f=playerHp<maxHp*.5f;}
+        }
+
         float autoElapsed;
         readonly System.Diagnostics.Stopwatch autoWatch=System.Diagnostics.Stopwatch.StartNew();
         readonly DateTime autoStartedUtc=DateTime.UtcNow;
@@ -144,7 +196,12 @@ namespace ReversalTower
             var sb = new StringBuilder();
             Action<string, string> line = (k, v) => sb.Append(k).Append('\t').Append(v).Append('\n');
 
-            line("schema", "towerAutoRun/1");
+            line("schema", "towerAutoRun/2");
+            line("agent.profile",AutoRunArgs.AgentProfile??"legacy-demo");
+            line("agent.seed",AutoRunArgs.AgentSeed.ToString(ci));
+            line("agent.observation","instrumented state incl. windup; NOT pixels/human reaction");
+            line("agent.network","automation args disable CloudSync before config load");
+            line("agent.fixture","boss unlock only in isolated save; no HP/damage corrections");
             line("startedUtc", autoStartedUtc.ToString("yyyy-MM-dd HH:mm:ss"));
             line("unityVersion", Application.unityVersion);
             line("platform", Application.platform.ToString());
@@ -178,6 +235,14 @@ namespace ReversalTower
             line("battle.hitsTaken", hits.ToString(ci));
             line("battle.parries", parries.ToString(ci));
             line("battle.ddaEnabled", battleDda ? "true" : "false");
+            foreach(var st in stats)
+            {
+                string key="pattern."+st.id+".";
+                line(key+"level",st.level.ToString(ci));line(key+"opportunities",st.opportunities.ToString(ci));
+                line(key+"hits",st.hits.ToString(ci));line(key+"parries",st.parries.ToString(ci));line(key+"dodges",st.dodges.ToString(ci));
+                line(key+"success",st.Success.ToString("F4",ci));
+                line(key+"reason",dda.Reasons.ContainsKey(st.id)?dda.Reasons[st.id]:"unknown");
+            }
             line("build.version", "0.5-arakus-editor-foundation");
             line("progression.cardPurchases", save.cardPurchases.ToString(ci));
             line("progression.effectiveAttack", LobbyCards.Attack(save).ToString("F2",ci));

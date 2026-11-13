@@ -1,0 +1,65 @@
+{
+  "arakus-landing": {
+    "rgbaSize": [
+      2592,
+      2288
+    ],
+    "cell": [
+      288,
+      208
+    ],
+    "sourceFrames": 97,
+    "gifFrames": 91,
+    "gifDurationMs": 3830,
+    "pivotTopLeft": [
+      144,
+      164
+    ],
+    "unityPivot": [
+      0.5,
+      0.21153846153846156
+    ]
+  },
+  "player-w-spin": {
+    "rgbaSize": [
+      832,
+      728
+    ],
+    "cell": [
+      208,
+      104
+    ],
+    "sourceFrames": 25,
+    "gifFrames": 23,
+    "gifDurationMs": 1430,
+    "pivotTopLeft": [
+      104,
+      84
+    ],
+    "unityPivot": [
+      0.5,
+      0.1923076923076923
+    ]
+  },
+  "player-e-execution": {
+    "rgbaSize": [
+      1248,
+      1160
+    ],
+    "cell": [
+      208,
+      116
+    ],
+    "sourceFrames": 58,
+    "gifFrames": 56,
+    "gifDurationMs": 2530,
+    "pivotTopLeft": [
+      68,
+      96
+    ],
+    "unityPivot": [
+      0.3269230769230769,
+      0.1724137931034483
+    ]
+  }
+}

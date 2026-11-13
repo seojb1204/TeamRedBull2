@@ -40,6 +40,7 @@ class Program {
   TestRuntime.loop.MoveNext();
   var state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
   string episode=state.GetProperty("episode").GetString();
+  Check(File.ReadAllText(Path.Combine(exchange,"transition_0.json"))==File.ReadAllText(Path.Combine(exchange,"transition.json")),"numbered initial transition matches summary");
   Check(state.GetProperty("step").GetInt32()==0&&state.GetProperty("reward").GetSingle()==0,"initial step and reward");
   Check(!state.TryGetProperty("playerHp",out _)&&!state.TryGetProperty("boss",out _),"no privileged observations");
   byte[] ppm=File.ReadAllBytes(Path.Combine(exchange,state.GetProperty("frame").GetString()));
@@ -50,6 +51,7 @@ class Program {
   Action(episode,-1,3);Check(!b.BeforeTick(),"stale step rejected");
   Action(episode,0,7);Check(!b.BeforeTick(),"out-of-range action rejected");
   Action(episode,0,3);Check(b.BeforeTick(),"valid action accepted");
+  Check(!File.Exists(Path.Combine(exchange,"transition_0.json")),"acknowledged numbered transition removed");
   float move=99;bool jump=true,dash=true,attack=false,parry=true,q=true,w=true,e=true,r=true,f=true;
   b.ApplyInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f);
   Check(move==0&&attack&&!jump&&!dash&&!parry&&!q&&!w&&!e&&!r&&!f,"only chosen action; physical input cleared");
@@ -60,10 +62,13 @@ class Program {
   state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
   Check(state.GetProperty("step").GetInt32()==1&&Math.Abs(state.GetProperty("reward").GetSingle()-.099f)<.00001,"reward transition matched to action");
   Check(Directory.GetFiles(exchange,"*.ppm").Length==1,"acknowledged frame removed");
+  Check(File.Exists(Path.Combine(exchange,"transition_1.json")),"next numbered transition published");
   Action(episode,1,1);Check(b.BeforeTick(),"next step accepted");game.mode=ReversalTower.ScreenMode.Result;game.result=new ReversalTower.Result{clear=true};TestRuntime.loop.MoveNext();
   state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
   Check(state.GetProperty("terminated").GetBoolean()&&!state.GetProperty("truncated").GetBoolean(),"terminal state emitted even mid-repeat");
   Check(!b.BeforeTick(),"terminal simulation stopped");TestRuntime.loop.MoveNext();Check(TestRuntime.exit==0,"normal exit after final observation grace");
+  var watchdog=new ReversalTower.PixelAgentBridge();ReversalTower.AutoRunArgs.SecondsLimit=-4;TestRuntime.exit=-1;
+  Check(!watchdog.BeforeTick()&&TestRuntime.exit==2,"independent Update watchdog fails closed");
   Console.WriteLine("BRIDGE_SHIM_CHECKS "+checks+"; NOT Unity rendering validation");
  }
 }

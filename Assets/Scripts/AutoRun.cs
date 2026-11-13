@@ -70,7 +70,7 @@ namespace ReversalTower
             string fps = Value(args, "-towerFrameRate");
             if (fps != null) int.TryParse(fps, NumberStyles.Integer, CultureInfo.InvariantCulture, out ForcedFrameRate);
 
-            Active = AgentProfile!=null || SecondsLimit > 0 || ReportPath != null || DataRoot != null || CapturePath != null ||
+            Active = Array.IndexOf(args,"-towerPixelAgent")>=0 || AgentProfile!=null || SecondsLimit > 0 || ReportPath != null || DataRoot != null || CapturePath != null ||
                 ForcedFrameRate>0 || DisableDda || LobbySmoke || Array.IndexOf(args,"-towerDemo")>=0;
             if(Active&&(SecondsLimit<=0||float.IsNaN(SecondsLimit)||float.IsInfinity(SecondsLimit)))SecondsLimit=30;
 

@@ -15,6 +15,14 @@ p.add_argument('--no-dda',action='store_true')
 a=p.parse_args()
 exe=a.exe.resolve();out=a.output.resolve()
 if not exe.is_file():p.error('Executable not found')
+# Fail before launching old/unrelated binaries or a configured production build.
+data=exe.with_name(exe.stem+'_Data')
+if (data/'StreamingAssets'/'supabase.json').exists():p.error('Refusing a DB-configured build; use an independent copy without supabase.json')
+assembly=data/'Managed'/'Assembly-CSharp.dll'
+if not assembly.is_file():p.error('Requires this branch’s Mono Windows build with inspectable Assembly-CSharp.dll')
+blob=assembly.read_bytes()
+for marker in ['towerAutoRun/2','-towerAgent','자동검증: 네트워크 꺼짐']:
+    if marker.encode('utf-16-le') not in blob:p.error('Missing automation safety marker; refusing old/unrelated build')
 if not 1<=a.rounds<=50 or not 5<=a.seconds<=600:p.error('rounds 1..50, seconds 5..600 required')
 out.mkdir(parents=True,exist_ok=True)
 # Never accept a user-supplied save root. Keep evidence, not delete it automatically.

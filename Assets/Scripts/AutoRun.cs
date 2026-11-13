@@ -35,6 +35,10 @@ namespace ReversalTower
             return false;
         }
 
+        // Raw process flags protect preferences even before Parse/Awake initializes Active.
+        public static bool IsAutomationProcess => Active || ProcessHasAutomationArguments;
+        static readonly bool ProcessHasAutomationArguments = HasAutomationArguments(Environment.GetCommandLineArgs());
+
         static string Value(string[] args, string key)
         {
             int i = Array.IndexOf(args, key);

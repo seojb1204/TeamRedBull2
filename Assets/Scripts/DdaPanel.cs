@@ -20,7 +20,7 @@ namespace ReversalTower
 
         void DdaPanelInput()
         {
-            if(AutoRunArgs.Active){ddaPanelLoaded=true;showDdaPanel=false;return;}
+            if(AutoRunArgs.IsAutomationProcess){ddaPanelLoaded=true;showDdaPanel=false;return;}
             if (!ddaPanelLoaded) { showDdaPanel = PlayerPrefs.GetInt(DdaPanelPref, 0) == 1; ddaPanelLoaded = true; }
             Event e = Event.current;
             if (e != null && e.type == EventType.KeyDown && e.keyCode == KeyCode.F8)

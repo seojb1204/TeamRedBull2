@@ -260,7 +260,7 @@ namespace ReversalTower
             if(bossIn&&damage>0)DamageBoss(damage,playerAction=="R"?2.6f:playerAction=="E"?2.2f:playerAction=="Q"?1.5f:playerAction=="W"?1.3f:1);
             for(int i=minions.Count-1;i>=0;i--)
             {var m=minions[i];if(Mathf.Abs(player.x-m.x)<range&&(radial||(m.x-player.x)*face>-.5f)){m.hp-=damage;if(m.hp<=0){Burst(new Vector2(m.x,1),.8f,Palette.Gold,12);minions.RemoveAt(i);}}}
-            if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){barrier=false;bossStagger=3;Say("결계 파괴 · 파네스가 추락했습니다",2);}}
+            if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){BossPatterns.BreakPhanesBarrier();Say("결계 파괴 · 파네스가 추락했습니다",2);}}
             Burst(player+new Vector2(face*.9f,1),.25f,Palette.Teal,4);
         }
         public float BossWidth=>bossIndex==0?ArakusGeometry.HalfWidth:bossIndex==3?.8f:.65f;

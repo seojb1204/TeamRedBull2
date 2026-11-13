@@ -1,0 +1,355 @@
+{
+  "schema": "tower-pixel-iteration2/1",
+  "date": "2026-11-13",
+  "unity": "6000.4.0f1",
+  "code_commit": "fb0bcb33051b1060f74ab21a8c2d5809370a8c68",
+  "assembly_sha256": "62452c79a9da9919a034646a1992f98ac829d31bea073cea4230bbf5c2c17918",
+  "episode_budget": 8,
+  "actual_episodes": 8,
+  "training_seeds": [
+    17,
+    18,
+    19,
+    20
+  ],
+  "evaluation_seeds": [
+    101,
+    102
+  ],
+  "paired_baseline_seed": 101,
+  "episodes": [
+    {
+      "policy": "rule-v2",
+      "seed": 101,
+      "training": false,
+      "steps": 685,
+      "reward": -2.119897495373152,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 49.408,
+      "actions": {
+        "idle": 80,
+        "left": 10,
+        "right": 28,
+        "attack": 460,
+        "parry": 106,
+        "jump": 0,
+        "dash": 0
+      },
+      "missing_actor_fraction": 0.11678832116788321,
+      "online_updates": 0,
+      "replay_updates": 0,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 40.91954040527344,
+        "wallSeconds": 46.818214416503906,
+        "bossDamage": 440.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 11,
+        "parries": 3,
+        "decisions": 684,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    },
+    {
+      "policy": "random-v2",
+      "seed": 101,
+      "training": false,
+      "steps": 536,
+      "reward": -2.397179536987096,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 39.251,
+      "actions": {
+        "idle": 79,
+        "left": 82,
+        "right": 75,
+        "attack": 77,
+        "parry": 63,
+        "jump": 87,
+        "dash": 72
+      },
+      "missing_actor_fraction": 0.04291044776119403,
+      "online_updates": 0,
+      "replay_updates": 0,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 33.71297836303711,
+        "wallSeconds": 36.600608825683594,
+        "bossDamage": 107.5,
+        "playerDamage": 100.0,
+        "hitsTaken": 9,
+        "parries": 2,
+        "decisions": 535,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    },
+    {
+      "policy": "tabular",
+      "seed": 17,
+      "training": true,
+      "steps": 593,
+      "reward": -2.4253333527594805,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 43.307,
+      "actions": {
+        "idle": 87,
+        "left": 104,
+        "right": 76,
+        "attack": 94,
+        "parry": 79,
+        "jump": 77,
+        "dash": 75
+      },
+      "missing_actor_fraction": 0.050590219224283306,
+      "online_updates": 592,
+      "replay_updates": 4736,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 37.916259765625,
+        "wallSeconds": 40.66915512084961,
+        "bossDamage": 130.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 11,
+        "parries": 0,
+        "decisions": 592,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    },
+    {
+      "policy": "tabular",
+      "seed": 18,
+      "training": true,
+      "steps": 606,
+      "reward": -2.399871808825992,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 44.093,
+      "actions": {
+        "idle": 79,
+        "left": 102,
+        "right": 107,
+        "attack": 100,
+        "parry": 69,
+        "jump": 84,
+        "dash": 64
+      },
+      "missing_actor_fraction": 0.036303630363036306,
+      "online_updates": 1197,
+      "replay_updates": 9576,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 38.38960647583008,
+        "wallSeconds": 41.46446990966797,
+        "bossDamage": 160.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 8,
+        "parries": 1,
+        "decisions": 605,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    },
+    {
+      "policy": "tabular",
+      "seed": 19,
+      "training": true,
+      "steps": 442,
+      "reward": -2.235871823388152,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 32.856,
+      "actions": {
+        "idle": 43,
+        "left": 73,
+        "right": 69,
+        "attack": 114,
+        "parry": 50,
+        "jump": 60,
+        "dash": 32
+      },
+      "missing_actor_fraction": 0.020361990950226245,
+      "online_updates": 1638,
+      "replay_updates": 13104,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 27.81641387939453,
+        "wallSeconds": 30.21274185180664,
+        "bossDamage": 160.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 8,
+        "parries": 0,
+        "decisions": 441,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    },
+    {
+      "policy": "tabular",
+      "seed": 20,
+      "training": true,
+      "steps": 480,
+      "reward": -2.261051334673539,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 35.354,
+      "actions": {
+        "idle": 81,
+        "left": 78,
+        "right": 97,
+        "attack": 87,
+        "parry": 47,
+        "jump": 59,
+        "dash": 30
+      },
+      "missing_actor_fraction": 0.08125,
+      "online_updates": 2117,
+      "replay_updates": 16936,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 29.923051834106445,
+        "wallSeconds": 32.70671844482422,
+        "bossDamage": 170.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 8,
+        "parries": 1,
+        "decisions": 479,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    },
+    {
+      "policy": "tabular",
+      "seed": 101,
+      "training": false,
+      "steps": 470,
+      "reward": -2.084384620655328,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 34.924,
+      "actions": {
+        "idle": 0,
+        "left": 11,
+        "right": 29,
+        "attack": 257,
+        "parry": 84,
+        "jump": 49,
+        "dash": 39
+      },
+      "missing_actor_fraction": 0.014893617021276596,
+      "online_updates": 2117,
+      "replay_updates": 16936,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 28.599735260009766,
+        "wallSeconds": 32.28090286254883,
+        "bossDamage": 300.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 11,
+        "parries": 0,
+        "decisions": 469,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    },
+    {
+      "policy": "tabular",
+      "seed": 102,
+      "training": false,
+      "steps": 768,
+      "reward": -2.077897504786961,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 54.85,
+      "actions": {
+        "idle": 0,
+        "left": 24,
+        "right": 54,
+        "attack": 388,
+        "parry": 156,
+        "jump": 97,
+        "dash": 48
+      },
+      "missing_actor_fraction": 0.0234375,
+      "online_updates": 2117,
+      "replay_updates": 16936,
+      "evaluation_only_game_metrics": {
+        "outcome": "loss",
+        "simulationSeconds": 46.296138763427734,
+        "wallSeconds": 52.23109436035156,
+        "bossDamage": 537.5,
+        "playerDamage": 100.0,
+        "hitsTaken": 10,
+        "parries": 2,
+        "decisions": 767,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      }
+    }
+  ],
+  "evaluation_checkpoint_unchanged": true,
+  "gpu": {
+    "scope": "system-wide, includes other apps; game rendering only, no ML GPU compute",
+    "sample_interval_seconds": 5,
+    "samples": 76,
+    "utilization_percent_min_max": [
+      0.0,
+      4.0
+    ],
+    "utilization_percent_mean": 2.3157894736842106,
+    "memory_mib_max": 1895.0,
+    "power_watts_max": 57.58,
+    "temperature_c_max": 49.0
+  },
+  "conclusions": [
+    "Both held-out evaluations used no idle without banning idle or forcing attacks.",
+    "Seed101: learned damage300 exceeds random107.5, but died sooner and parried0; rule damage440/parries3 remains stronger.",
+    "Seed102: learned damage537.5/parries2, still lost. No same-seed102 baseline was run in this bounded budget.",
+    "All8 fights lost. No win-rate, generalization or human-level claim.",
+    "Current per-decision penalty can rank shorter losing fights above longer fights with more damage; reward alone is insufficient."
+  ],
+  "next_diagnostic": {
+    "not_a_new_training_result": true,
+    "counterfactual_only_penalty_0_0001": [
+      {
+        "policy": "rule-v2",
+        "seed": 101,
+        "score": -1.504297495373152
+      },
+      {
+        "policy": "random-v2",
+        "seed": 101,
+        "score": -1.915679536987096
+      },
+      {
+        "policy": "tabular",
+        "seed": 101,
+        "score": -1.6622846206553281
+      },
+      {
+        "policy": "tabular",
+        "seed": 102,
+        "score": -1.3875975047869606
+      }
+    ]
+  },
+  "limits": [
+    "8 total fights, 4 training and 2 held-out evaluation; statistically insufficient",
+    "actor missing fraction is detection availability, not labeled detection accuracy",
+    "7 single actions; no skills/potions, no oracle observations",
+    "lockstep simulation pauses while processing; not human real-time reaction",
+    "normal saves and DB config excluded; own test processes ended"
+  ]
+}

@@ -6,14 +6,14 @@ namespace ReversalTower
     public static class Palette
     {
         public static readonly Color Ink=new Color(.035f,.05f,.075f),Slate=new Color(.12f,.16f,.21f),Stone=new Color(.22f,.28f,.33f),Teal=new Color(.33f,.89f,.83f),Gold=new Color(1,.76f,.37f),Red=new Color(1,.30f,.32f),Purple=new Color(.69f,.49f,1),White=new Color(.91f,.92f,.87f);
-        // �и� ��ȣ (�Ķ� ��): �׵θ� �� / �� �� �������� �߽�
+        // 패링 신호 (파란 빛): 테두리 빛 / 몸 위 빛·별빛 중심
         public static readonly Color ParryRim=new Color(.28f,.62f,1f),ParryCore=new Color(.72f,.88f,1f);
         public static Color Alpha(Color c,float a){c.a=a;return c;}
     }
     public sealed class WorldArtist : MonoBehaviour
     {
         TowerGame g;Sprite box,disk,triangle;readonly List<SpriteRenderer> pool=new List<SpriteRenderer>();int cursor;
-        bool glowing;int layerBoost;   // ����(�߱�) ������ �׸��� / �ƶ����� �׸�(���� 1000) ���� �׸���
+        bool glowing;int layerBoost;   // 가산(발광) 재질로 그리기 / 아라쿠스 그림(정렬 1000) 위에 그리기
 #if !DESKTOP_PREVIEW
         Material spriteMaterial;
 #endif
@@ -100,7 +100,7 @@ namespace ReversalTower
                 if(!spriteArakus&&(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage)))RageAura(time);
                 foreach(var h in g.hazards)
                 {
-                    Color hc=h.parry?Palette.ParryRim:h.color;   // �и� ������ �ܻ��� �Ķ� ����
+                    Color hc=h.parry?Palette.ParryRim:h.color;   // 패링 가능한 잔상은 파란 예고
                     if(h.delay>0){Rect(h.x,.04f,h.width,.07f,hc);Rect(h.x,3,h.width,6,Palette.Alpha(hc,.055f));for(int i=0;i<3;i++)Tri(h.x,1.2f+i*.8f,.2f,.22f,Palette.Alpha(hc,.3f),180);}
                     else{Rect(h.x,4,h.width,8,Palette.Alpha(hc,.7f));Rect(h.x,4,h.width*.35f,8,Palette.White);}
                 }
@@ -109,7 +109,7 @@ namespace ReversalTower
                 foreach(var m in g.minions)Minion(m.x,time);
                 Character(g.player,1,g.face,g.stun>0?"hit":g.dashTime>0?"dash":g.attackAnim>0?g.playerAction:Mathf.Abs(g.pvY)>1?"jump":Mathf.Abs(g.horizontalSpeed)>.3f?"run":"idle",false,time,g.hitFlash>0?Palette.Red:Palette.Teal);
                 ParryAura();
-                Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="����"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
+                Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
                 foreach(var s in g.shots)
                 {
                     if(s.returns){if(!spriteArakus)Shield(s,time);continue;}
@@ -191,7 +191,7 @@ namespace ReversalTower
             if(p.kind==AttackKind.Balance)
             {Rect(g.safeSide*6,.04f,11.2f,.1f,Palette.Teal);Rect(g.safeSide*6,1,11.2f,2,Palette.Alpha(Palette.Teal,.08f));}
         }
-        // ���� �ƶ����� ��ȹ ���� ������ȿ��: �Ķ��� = �и� ����, ������ = ���ϰų� �Ÿ� ������ ����
+        // ── 아라쿠스 기획 패턴 예고·효과: 파란빛 = 패링 가능, 붉은빛 = 피하거나 거리 벌리기 ──
         void ArakusCues(float time)
         {
             var bp=g.BossPatterns;var p=g.current;float t=g.patternAge,w=g.windup,pulse=.5f+.5f*Mathf.Sin(time*16);
@@ -200,7 +200,7 @@ namespace ReversalTower
             {
                 if(t<w)
                 {
-                    // �� ������ ���� ���� (��������): ���а� ���ư� ��
+                    // 두 패턴이 같은 예고 (이지선다): 방패가 날아갈 길
                     Vector2 hand=g.boss+new Vector2(face*.75f,1.25f);Vector2 aim=(g.player+Vector2.up*.9f-hand).normalized;
                     for(int i=1;i<=7;i++){Vector2 q=hand+aim*i;Disc(q.x,q.y,.18f,.18f,Palette.Alpha(Palette.ParryRim,.18f+.25f*pulse*(i/7f)));}
                     return;
@@ -211,7 +211,7 @@ namespace ReversalTower
                     else if(t<w+1.1f){float x=bx+face*1.2f;Line(new Vector2(x-face*.9f,2.1f),new Vector2(x+face*.5f,.3f),.12f,Palette.Alpha(Palette.White,.8f));}
                     return;
                 }
-                // �������: ���� �� ������(�ݰ� 1.5m), ���� �� �����
+                // 내려찍기: 도약 중 착지점(반경 1.5m), 착지 뒤 충격파
                 if(bp.leaping||!bp.struck)
                 {
                     float x=bp.leaping?bp.leapTo:g.player.x,a=bp.leaping?.16f+.12f*pulse:.05f;
@@ -301,9 +301,9 @@ namespace ReversalTower
                 if(hero!=null){Shape(hero,pos.x,pos.y+.89f*scale,6.7f*scale*face,6.7f*scale,Palette.White);return;}
             }
             var bp=g.BossPatterns;bool battle=enemy&&g.mode==ScreenMode.Battle;
-            if(battle)pos.x+=g.bossRecoil;   // ������ ��¦ �з� ����
+            if(battle)pos.x+=g.bossRecoil;   // 맞으면 살짝 밀려 보임
             var sprite=PixelSprites.Get(actor,action,frame);float cy=pos.y+1.4f*scale,w=3.36f*scale*face,h=3.36f*scale;
-            // �и� ��ȣ: ���� �׸��� 8�������� ��¦ ��߳��� ���� �� �׵θ� ��, �� ���� �� �� �� �� ���� �����
+            // 패링 신호: 같은 그림을 8방향으로 살짝 어긋나게 가산 → 테두리 빛, 몸 위에 한 장 더 → 몸이 밝아짐
             float level=battle?bp.parryGlow:0,flash=battle?Mathf.Clamp01(1-bp.parryFlash/BossPatternSystem.ParryFlashTime):0;
             float k=Mathf.Max(level*(.85f+.15f*Mathf.Sin(t*22)),flash);
             if(level>.01f||flash>0)for(int i=0;i<16;i++)
@@ -313,10 +313,10 @@ namespace ReversalTower
             }
             Shape(sprite,pos.x,cy,w,h,Palette.White);
             if(level>.01f||flash>0)GlowShape(sprite,pos.x,cy,w,h,Palette.Alpha(Palette.ParryCore,.16f*level+.45f*flash));
-            float hit=battle?Mathf.Clamp01(g.bossFlash/.1f):0;   // �¾��� �� �Ͼ�� ��½
+            float hit=battle?Mathf.Clamp01(g.bossFlash/.1f):0;   // 맞았을 때 하얗게 번쩍
             if(hit>0)GlowShape(sprite,pos.x,cy,w,h,Palette.Alpha(Palette.White,.8f*hit));
         }
-        // ���� Ÿ�ݰ�: �浹 �Ҳ� (Į�ڱ����и� �浹���ǰ�) + ȭ�� �Ͼ� ��½��. ���ΰ����ƶ����� �׸�(���� 1000)���� ���� �׸���. ����
+        // ── 타격감: 충돌 불꽃 (칼자국·패링 충돌·피격) + 화면 하얀 번쩍임. 주인공·아라쿠스 그림(정렬 1000)보다 위에 그린다. ──
         void Impacts()
         {
             layerBoost=2000;
@@ -325,7 +325,7 @@ namespace ReversalTower
                 float u=Mathf.Clamp01(im.age/im.life),k=1-u,s=im.size;Vector2 p=im.pos;
                 if(im.kind==2)
                 {
-                    // �и� �浹: �ձ� �� �� �� ���� ���� + ������ + X�� �� �� ������ ����� ������ ����� ��
+                    // 패링 충돌: 둥근 빛 → 긴 가로 섬광 + 세로줄 + X자 별 → 퍼지는 충격파 고리와 방사형 선
                     GlowShape(disk,p.x,p.y,(1.4f+3.4f*u)*s,(1.4f+3.4f*u)*s,Palette.Alpha(Palette.Gold,.28f*k));
                     GlowShape(box,p.x,p.y,(2+13*k)*s,.1f*s,Palette.Alpha(Palette.White,k));
                     GlowShape(box,p.x,p.y,(1+6*k)*s,.05f*s,Palette.Alpha(Palette.Gold,k));
@@ -339,14 +339,14 @@ namespace ReversalTower
                 }
                 else if(im.kind==3)
                 {
-                    // �÷��̾� �ǰ�: ���� ���� + X��
+                    // 플레이어 피격: 붉은 고리 + X자
                     float ring=(.3f+1.1f*u)*s;
                     for(int i=0;i<16;i++){float a=i*Mathf.PI/8;GlowShape(box,p.x+Mathf.Cos(a)*ring,p.y+Mathf.Sin(a)*ring,.22f,.06f,Palette.Alpha(Palette.Red,.8f*k),a*Mathf.Rad2Deg+90);}
                     GlowShape(box,p.x,p.y,1.2f*s*(.5f+.5f*k),.1f,Palette.Alpha(Palette.Red,k),40);GlowShape(box,p.x,p.y,1.2f*s*(.5f+.5f*k),.1f,Palette.Alpha(Palette.Red,k),-40);
                 }
                 else
                 {
-                    // Į�ڱ�: �񽺵��� �Ͼ� ���� ��(ó���� ��� ���ٰ� ���þ���) + �ݺ� �׵θ� + ���� �� + Ƣ�� ��Ƽ
+                    // 칼자국: 비스듬한 하얀 베기 줄(처음엔 길고 굵다가 가늘어짐) + 금빛 테두리 + 작은 별 + 튀는 불티
                     bool heavy=im.kind==1;float len=(heavy?2.6f:1.8f)*s*(.55f+.45f*k),th=(heavy?.2f:.13f)*s*k;
                     GlowShape(box,p.x,p.y,len*1.08f,th*2.2f,Palette.Alpha(Palette.Gold,.55f*k),im.angle);
                     GlowShape(box,p.x,p.y,len,th,Palette.Alpha(Palette.White,k),im.angle);
@@ -359,7 +359,7 @@ namespace ReversalTower
             if(g.whiteFlash>0){layerBoost=3000;Rect(0,5,90,50,Palette.Alpha(Palette.White,g.whiteFlash*.45f));}
             layerBoost=0;
         }
-        // �и� ��ȣ: ���� �� Ǫ�� �� ���� (�� �׵θ� ���� �Բ� '�� ������ �޾�ĥ �� �ִ�'�� �˸�)
+        // 패링 신호: 보스 뒤 푸른 빛 번짐 (몸 테두리 빛과 함께 '이 공격은 받아칠 수 있다'를 알림)
         void ParryAura()
         {
             var bp=g.BossPatterns;float level=bp.parryGlow;if(level<=.01f)return;
@@ -372,7 +372,7 @@ namespace ReversalTower
                 GlowShape(disk,x+Mathf.Sin(i*2.4f+g.realClock*2)*.9f,g.boss.y+.3f+u*3.2f,.09f,.09f,Palette.Alpha(Palette.ParryCore,.7f*level*(1-u)));
             }
         }
-        // �и� ��ȣ: �޾�ĥ ���� ���� Ǫ�� ���� (���� = ���� ���� ��, ����ü���ܻ� = �� �ڸ�). �ƶ����� �׸����� ���� �׸���.
+        // 패링 신호: 받아칠 순간 직전 푸른 별빛 (근접 = 보스 무기 앞, 투사체·잔상 = 그 자리). 아라쿠스 그림보다 위에 그린다.
         void ParryGlints()
         {
             var bp=g.BossPatterns;float span=BossPatternSystem.ParryFlashTime;
@@ -383,7 +383,7 @@ namespace ReversalTower
             foreach(var hz in g.hazards)if(hz.cueAt>=0){float k=Mathf.Clamp01(1-(g.seconds-hz.cueAt)/span);if(k>0)Glint(hz.x,1.3f,k,.9f);}
             layerBoost=0;
         }
-        // Ǫ�� ���� �� �� (k: �� ������ �� 1 �� 0). �� ������ + ������ + X�� �� + ������ ����
+        // 푸른 별빛 한 번 (k: 막 터졌을 때 1 → 0). 긴 가로줄 + 세로줄 + X자 별 + 퍼지는 고리
         void Glint(float x,float y,float k,float size)
         {
             float pop=Mathf.Clamp01((1-k)/.18f),grow=size*(.6f+.4f*pop);

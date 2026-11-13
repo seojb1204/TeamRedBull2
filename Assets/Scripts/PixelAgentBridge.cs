@@ -19,6 +19,13 @@ namespace ReversalTower
             public float reward;
             public bool terminated,truncated;
         }
+        [Serializable] sealed class EpisodeMetrics
+        {
+            public string schema="towerPixelMetrics/1",episode,outcome;
+            public float simulationSeconds,wallSeconds,bossDamage,playerDamage;
+            public int hitsTaken,parries,decisions;
+            public bool saveRootIsolated,ddaDisabled;
+        }
         const int Width=160,Height=90,FramesPerAction=4;
         TowerGame game;
         string directory,episode,lastFrame;
@@ -145,6 +152,11 @@ namespace ReversalTower
                 published=true;waitStarted=watch.Elapsed.TotalSeconds;
                 if(terminal||truncated)
                 {
+                    var metrics=new EpisodeMetrics{episode=episode,outcome=t.reason,simulationSeconds=game.seconds,
+                        wallSeconds=(float)watch.Elapsed.TotalSeconds,bossDamage=Mathf.Max(0,game.spec.hp-Mathf.Max(0,game.bossHp)),
+                        playerDamage=Mathf.Max(0,game.maxHp-Mathf.Max(0,game.playerHp)),hitsTaken=game.hits,parries=game.parries,
+                        decisions=step,saveRootIsolated=SaveStore.IsIsolated,ddaDisabled=AutoRunArgs.DisableDda};
+                    File.WriteAllText(Path.Combine(directory,"episode_metrics.json"),JsonUtility.ToJson(metrics));
                     finished=true;
                     // Give polling client time to read final state before process exit.
                     yield return new WaitForSecondsRealtime(2);

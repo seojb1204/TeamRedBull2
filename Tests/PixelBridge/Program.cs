@@ -5,6 +5,7 @@ namespace UnityEngine {
  public class WaitForEndOfFrame{} public class WaitForSecondsRealtime {public WaitForSecondsRealtime(float v){}}
  public struct Color32 {public byte r,g,b;}
  public class Texture2D {public int width=160,height=90;public Color32[] GetPixels32(){var a=new Color32[width*height];for(int y=0;y<height;y++)for(int x=0;x<width;x++)a[y*width+x]=new Color32{r=(byte)x,g=(byte)y,b=7};return a;}}
+ public static class Mathf {public static float Max(float a,float b)=>Math.Max(a,b);}
  public static class ScreenCapture {public static Texture2D CaptureScreenshotAsTexture()=>new Texture2D();}
  public static class Application {public static string streamingAssetsPath="/path-not-present";public static bool runInBackground;public static void Quit(int n){TestRuntime.exit=n;}}
  public static class Debug {public static void LogError(string s){Console.WriteLine(s);}}
@@ -12,7 +13,7 @@ namespace UnityEngine {
 }
 namespace ReversalTower {
  public enum ScreenMode{Battle,Result}
- public class TowerGame:UnityEngine.MonoBehaviour {public BossPatternSystem BossPatterns {get;}=new BossPatternSystem();public ScreenMode mode=ScreenMode.Battle;public float playerHp=100,bossHp=100,maxHp=100,seconds;public Spec spec=new Spec();public Result result;}
+ public class TowerGame:UnityEngine.MonoBehaviour {public BossPatternSystem BossPatterns {get;}=new BossPatternSystem();public ScreenMode mode=ScreenMode.Battle;public float playerHp=100,bossHp=100,maxHp=100,seconds;public int hits,parries;public Spec spec=new Spec();public Result result;}
  public class Spec {public float hp=100;}public class Result {public bool clear;}
  public static class SaveStore {public static bool IsIsolated=true;}
  public static class AutoRunArgs {public static bool DisableDda=true;public static string AgentProfile;public static int AgentBoss,AgentSeed=17;public static float SecondsLimit=180;}
@@ -43,6 +44,8 @@ class Program {
   Check(File.ReadAllText(Path.Combine(exchange,"transition_0.json"))==File.ReadAllText(Path.Combine(exchange,"transition.json")),"numbered initial transition matches summary");
   Check(state.GetProperty("step").GetInt32()==0&&state.GetProperty("reward").GetSingle()==0,"initial step and reward");
   Check(!state.TryGetProperty("playerHp",out _)&&!state.TryGetProperty("boss",out _),"no privileged observations");
+  string metricsPath=Path.Combine(exchange,"episode_metrics.json");
+  Check(!File.Exists(metricsPath)&&!state.TryGetProperty("bossDamage",out _)&&!state.TryGetProperty("playerDamage",out _)&&!state.TryGetProperty("hitsTaken",out _)&&!state.TryGetProperty("parries",out _),"metrics unavailable before terminal and excluded from transition");
   byte[] ppm=File.ReadAllBytes(Path.Combine(exchange,state.GetProperty("frame").GetString()));
   int header=System.Text.Encoding.ASCII.GetByteCount("P6\n160 90\n255\n");
   Check(ppm.Length==header+160*90*3&&ppm[header+1]==89&&ppm[^2]==0,"RGB top-down framebuffer");
@@ -63,9 +66,11 @@ class Program {
   Check(state.GetProperty("step").GetInt32()==1&&Math.Abs(state.GetProperty("reward").GetSingle()-.099f)<.00001,"reward transition matched to action");
   Check(Directory.GetFiles(exchange,"*.ppm").Length==1,"acknowledged frame removed");
   Check(File.Exists(Path.Combine(exchange,"transition_1.json")),"next numbered transition published");
-  Action(episode,1,1);Check(b.BeforeTick(),"next step accepted");game.mode=ReversalTower.ScreenMode.Result;game.result=new ReversalTower.Result{clear=true};TestRuntime.loop.MoveNext();
+  Action(episode,1,1);Check(b.BeforeTick(),"next step accepted");game.hits=2;game.parries=3;game.mode=ReversalTower.ScreenMode.Result;game.result=new ReversalTower.Result{clear=true};TestRuntime.loop.MoveNext();
   state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
   Check(state.GetProperty("terminated").GetBoolean()&&!state.GetProperty("truncated").GetBoolean(),"terminal state emitted even mid-repeat");
+  var metrics=JsonDocument.Parse(File.ReadAllText(metricsPath)).RootElement;
+  Check(metrics.GetProperty("schema").GetString()=="towerPixelMetrics/1"&&metrics.GetProperty("episode").GetString()==episode&&metrics.GetProperty("bossDamage").GetSingle()==20&&metrics.GetProperty("playerDamage").GetSingle()==10&&metrics.GetProperty("hitsTaken").GetInt32()==2&&metrics.GetProperty("parries").GetInt32()==3&&metrics.GetProperty("decisions").GetInt32()==2&&metrics.GetProperty("saveRootIsolated").GetBoolean()&&metrics.GetProperty("ddaDisabled").GetBoolean()&&!state.TryGetProperty("bossDamage",out _)&&!state.TryGetProperty("playerDamage",out _)&&!state.TryGetProperty("hitsTaken",out _)&&!state.TryGetProperty("parries",out _),"terminal metrics emitted separately without policy telemetry");
   Check(!b.BeforeTick(),"terminal simulation stopped");TestRuntime.loop.MoveNext();Check(TestRuntime.exit==0,"normal exit after final observation grace");
   var watchdog=new ReversalTower.PixelAgentBridge();ReversalTower.AutoRunArgs.SecondsLimit=-4;TestRuntime.exit=-1;
   Check(!watchdog.BeforeTick()&&TestRuntime.exit==2,"independent Update watchdog fails closed");

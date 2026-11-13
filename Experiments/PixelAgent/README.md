@@ -80,3 +80,24 @@ python run_campaign.py --exe C:\TowerPixelBuild\ReversalTower.exe --output C:\To
 `bridge_error.json`이 있으면 클라이언트는 즉시 실패로 종료한다. 같은 step의 timeout을 새 보상으로 학습하지 않는다. 도우미는 게임 종료 코드·클라이언트 종료 코드·최종 transition을 확인하고 실패를 `campaign.json`에 남긴다. **도우미 실행 경로는 코드/가짜 빌드 검사까지만 검증했으며 실제 Windows Unity 구동 검증은 별도다.**
 
 실제 화면 진단을 위해 보고서와 함께 120관찰마다 RGB PPM을 저장한다(최대32장). 게임 framebuffer만 저장하며 바탕화면/다른 앱은 캡처하지 않는다. 행동별 횟수도 보고서에 기록한다.
+
+
+## 두 번째 제한 실험: 실제 색상 추적 + 표 기반 학습
+
+초기 색상 가정이 잘못됐다. 실제 주인공은 청록색이 아닌 회백색 머리이며, 보스는 금갈색이고 붉은색은 배경이다. 청록색은 보스의 패링 경고다. 저장 프레임의 pooled RGB 특징 cosine유사도0.967~0.999로 정적 배경이 지배했다. v1 선형모델과 결과는 보존하고 v2를 별도로 추가했다.
+
+- `visual_tracker.py`: 원본픽셀의 색상 연결영역·직전 위치로 주인공/보스 후보를 추적. 3관찰 이상 놓치면unknown. confidence는 보정된 확률이 아니고 휴리스틱 점수다. HUD/바닥을 제외한다.
+- `visual_agent_v2.py`: 검출가능 여부/상대방향·거리bin/시각경고 + 자신의 마지막 이동방향·패링입력 경과bin만 상태로 사용한다.
+- `tabular_learning.py`: Q표, gamma.995, alpha.2. 종료 후 최대5000전이×10회 replay로 제한. 실제실험은8회 역순 replay. 내부HP/패턴은 정책 상태에 넣지 않는다.
+- `rule-v2`는 시각적으로 접근/공격/패링하며 검출실패시idle. `tabular` 학습정책에는 강제공격이나idle금지를 넣지 않는다.
+- `random-v2`는 같은 입력/관찰/평가 조건의 무작위 기준선이다.
+
+실행예:
+
+```powershell
+python run_campaign.py --exe <independent-build.exe> --output <new-folder> --policy rule-v2 --seed 101 --episodes 1 --seconds 120
+python run_campaign.py --exe <independent-build.exe> --output <new-folder> --policy tabular --train --seed 17 --episodes 3 --seconds 120 --epsilon 0.4
+python run_campaign.py --exe <independent-build.exe> --output <new-folder> --policy tabular --checkpoint <training-folder>/checkpoint.json --seed 101 --episodes 2 --seconds 120
+```
+
+종료후 `episode_metrics.json`은 실제 피해량/패링/전투시간/격리여부를 평가 보고서에만 제공한다. 이 파일은 정책이 읽지 않으며 transition에도 포함되지 않는다. GPU로그는5초간격 시스템전체 측정이므로 다른 앱 사용량도 포함된다. ML은 CPU표연산이며GPU모델 학습/외부API는 사용하지 않는다. 최대8전(기준선2+훈련4+평가2) 실험수치는 ITERATION2_RESULTS.json에 별도로 기록한다.

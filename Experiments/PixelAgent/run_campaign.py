@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading,time
 from pixel_agent import atomic_json
 
 
@@ -48,7 +49,7 @@ def campaign(args):
     out.mkdir(parents=True,exist_ok=False)
     runroot=Path(tempfile.mkdtemp(prefix='tower-pixel-campaign-'))
     checkpoint=Path(args.checkpoint).resolve() if args.checkpoint else out/'checkpoint.json'
-    if args.policy=='learned' and not args.train and not checkpoint.is_file():
+    if args.policy in ('learned','tabular') and not args.train and not checkpoint.is_file():
         raise ValueError('Learned evaluation requires --checkpoint from an earlier training run')
     rows=[]
     summary={'schema':'tower-pixel-campaign/1','exe':str(exe),
@@ -70,15 +71,25 @@ def campaign(args):
                      '-towerSeed',str(seed),'-towerFrameRate','60',
                      '-screen-fullscreen','0','-screen-width','960','-screen-height','540',
                      '-logFile',str(out/f'episode-{i+1}-unity.log')]
-            client_command=[sys.executable,str(Path(__file__).with_name('pixel_agent.py')),
+            client_command=[sys.executable,str(Path(__file__).with_name('visual_agent_v2.py' if args.policy in ('random-v2','rule-v2','tabular') else 'pixel_agent.py')),
                             '--bridge',str(bridge),'--policy',args.policy,'--seed',str(seed),
                             '--max-seconds',str(args.seconds+15),'--timeout',str(args.seconds),
                             '--report',str(result)]
-            if args.policy=='learned':client_command+=['--checkpoint',str(checkpoint)]
+            if args.policy in ('learned','tabular'):client_command+=['--checkpoint',str(checkpoint)]
             if args.train:client_command+=['--train','--epsilon',str(args.epsilon)]
             game=client=None
+            gpu_samples=[];stop_gpu=threading.Event()
+            def sample_gpu():
+                while not stop_gpu.is_set():
+                    try:
+                        raw=subprocess.check_output(['nvidia-smi','--query-gpu=utilization.gpu,memory.used,power.draw,temperature.gpu','--format=csv,noheader,nounits'],text=True,timeout=3,creationflags=subprocess.CREATE_NO_WINDOW)
+                        gpu_samples.append({'utc':time.time(),'system_wide_gpu_percent_mib_watts_celsius':raw.strip()})
+                    except (OSError,subprocess.SubprocessError) as error:gpu_samples.append({'error':type(error).__name__})
+                    stop_gpu.wait(5)
+            sampler=threading.Thread(target=sample_gpu,daemon=True)
             with (out/f'episode-{i+1}-client.log').open('w',encoding='utf-8') as client_log:
                 try:
+                    sampler.start()
                     game=subprocess.Popen(command,cwd=exe.parent,stdin=subprocess.DEVNULL)
                     client=subprocess.Popen(client_command,stdout=client_log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)
                     client_code=client.wait(timeout=args.seconds+25)
@@ -88,12 +99,20 @@ def campaign(args):
                     if game_code!=0:
                         raise RuntimeError(f'Episode {i+1}: game failed ({game_code}); see Unity log')
                 finally:
-                    stop_owned(client);stop_owned(game)
+                    try:
+                        try:stop_owned(client)
+                        finally:stop_owned(game)
+                    finally:
+                        stop_gpu.set()
+                        if sampler.ident is not None:sampler.join(timeout=4)
+                        atomic_json(out/f'episode-{i+1}-gpu.json',{'scope':'system-wide, includes unrelated apps; not isolated game utilization','samples':gpu_samples})
             if not result.is_file():raise RuntimeError('Missing client report')
             row=json.loads(result.read_text(encoding='utf-8'))
             if not row.get('completed'):raise RuntimeError('Episode did not reach a terminal/truncated transition')
             final=json.loads((bridge/'transition.json').read_text(encoding='utf-8-sig'))
             row['game_outcome']=final.get('reason','unknown')
+            metrics=bridge/'episode_metrics.json'
+            if metrics.exists():row['evaluation_only_game_metrics']=json.loads(metrics.read_text(encoding='utf-8-sig'))
             rows.append(row)
             atomic_json(out/'campaign.json',summary)
         summary['status']='complete'
@@ -109,7 +128,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--exe',required=True,type=Path)
     p.add_argument('--output',required=True,type=Path)
-    p.add_argument('--policy',choices=['random','rule','learned'],default='random')
+    p.add_argument('--policy',choices=['random','rule','learned','random-v2','rule-v2','tabular'],default='random')
     p.add_argument('--train',action='store_true')
     p.add_argument('--checkpoint',type=Path)
     p.add_argument('--episodes',type=int,default=1)
@@ -119,7 +138,7 @@ def main():
     a=p.parse_args()
     if not 1<=a.episodes<=3 or not 10<=a.seconds<=180 or not 0<=a.epsilon<=1:
         p.error('episodes 1..3, seconds 10..180, epsilon 0..1 required')
-    if a.train and a.policy!='learned':p.error('--train requires --policy learned')
+    if a.train and a.policy not in ('learned','tabular'):p.error('--train requires --policy learned or tabular')
     campaign(a)
 
 if __name__=='__main__':main()

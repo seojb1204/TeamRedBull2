@@ -62,10 +62,10 @@ namespace ReversalTower
             {
                 var dir=Path.Combine(Root,"Battles");Directory.CreateDirectory(dir);
                 string path=Path.Combine(dir,DateTime.UtcNow.ToString("yyyyMMdd_HHmmss_fff")+"_"+Guid.NewGuid().ToString("N").Substring(0,6)+".csv");
-                var sb=new StringBuilder("boss,clear,seconds,dda,pattern,level,opportunities,hits,parries,dodges,ignored,damage,attack,maxHp,potionHeal,cardPurchases,cards\n");
+                var sb=new StringBuilder("boss,clear,seconds,dda,pattern,level,opportunities,hits,parries,dodges,ignored,damage,attack,maxHp,potionHeal,cardPurchases,cards,abandoned\n");
                 var ci=System.Globalization.CultureInfo.InvariantCulture;
                 var cards=new StringBuilder();if(progression!=null)foreach(var c in LobbyCards.All){int n=LobbyCards.Count(progression,c.id);if(n>0){if(cards.Length>0)cards.Append('|');cards.Append(c.id).Append(':').Append(n);}}
-                foreach(var s in stats)sb.AppendFormat(ci,"{0},{1},{2:F2},{3},{4},{5},{6},{7},{8},{9},{10},{11:F2},{12:F2},{13:F1},{14:F1},{15},{16}\n",h.boss,h.clear,h.seconds,h.dda,s.id,s.level,s.opportunities,s.hits,s.parries,s.dodges,s.ignored,s.damage,progression==null?0:LobbyCards.Attack(progression),progression==null?0:LobbyCards.Health(progression),progression==null?0:LobbyCards.Heal(progression),progression==null?0:progression.cardPurchases,cards);
+                foreach(var s in stats)sb.AppendFormat(ci,"{0},{1},{2:F2},{3},{4},{5},{6},{7},{8},{9},{10},{11:F2},{12:F2},{13:F1},{14:F1},{15},{16},{17}\n",h.boss,h.clear,h.seconds,h.dda,s.id,s.level,s.opportunities,s.hits,s.parries,s.dodges,s.ignored,s.damage,progression==null?0:LobbyCards.Attack(progression),progression==null?0:LobbyCards.Health(progression),progression==null?0:LobbyCards.Heal(progression),progression==null?0:progression.cardPurchases,cards,h.abandoned);
                 File.WriteAllText(path,sb.ToString(),Encoding.UTF8);
             }
             catch(Exception e){Debug.LogWarning("Battle log write failed: "+e.Message);}

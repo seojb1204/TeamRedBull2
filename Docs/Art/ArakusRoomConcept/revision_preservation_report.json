@@ -1,0 +1,36 @@
+{
+  "baseline": "b7210c075badc9533c7418f5410bf0d74983d820",
+  "checks": [
+    {
+      "name": "meta_bytes_and_GUIDs",
+      "files": 15,
+      "pass": true
+    },
+    {
+      "name": "IronWarworks_bytes",
+      "files": 21,
+      "pass": true
+    },
+    {
+      "name": "only_approved_art_and_documentation_modified",
+      "pass": true
+    },
+    {
+      "name": "style_refinement_alpha_silhouettes_unchanged",
+      "files": 6,
+      "pass": true
+    },
+    {
+      "name": "style_finite_authored_palette",
+      "pass": true
+    },
+    {
+      "name": "deterministic_regeneration",
+      "files": 34,
+      "pass": true
+    }
+  ],
+  "passed": 6,
+  "failed": 0,
+  "scope_note": "Git diff checks tracked paths; inspect git status before staging new documents as well."
+}

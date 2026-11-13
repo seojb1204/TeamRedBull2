@@ -97,7 +97,14 @@ namespace ReversalTower
             if(cursor==pool.Count){var child=new GameObject("Arakus sprite effect "+cursor);child.transform.SetParent(transform,false);pool.Add(child.AddComponent<SpriteRenderer>());}
             var r=pool[cursor++];r.enabled=true;r.sprite=sprites[Mathf.Clamp(frame,0,sprites.Length-1)];r.sharedMaterial=owner.body.sharedMaterial;
             r.sortingLayerID=owner.body.sortingLayerID;r.sortingOrder=owner.body.sortingOrder+order;r.color=color??Color.white;
-            r.transform.position=new Vector3(pos.x,pos.y,0);r.transform.localScale=new Vector3(face*(transform.localScale.x<0?-1:1),1,1);r.transform.localRotation=Quaternion.identity;
+            r.transform.position=new Vector3(pos.x,pos.y,0);r.transform.localScale=new Vector3(face*ArakusGeometry.LegacyEffectScale/transform.lossyScale.x,ArakusGeometry.LegacyEffectScale/Mathf.Abs(transform.lossyScale.y),1);r.transform.localRotation=Quaternion.identity;
+        }
+        void DrawPillar(TowerGame g,int frame,Vector2 pos,int face,ActorView owner,float alpha)
+        {
+            // Presentation only: muted red, no additive shader, bloom, blinking or hitbox changes.
+            bool charging=g.mode==ScreenMode.Battle&&g.current!=null&&g.current.kind==AttackKind.Dash;
+            Draw("Pillar_Outline",frame,pos,face,owner,new Color(.65f,.12f,.18f,alpha*(charging?.55f:.25f)),-31);
+            Draw("Pillar",frame,pos,face,owner,new Color(1,1,1,alpha),-30);
         }
         void Loop(string id,Vector2 pos,int face,ActorView owner,int order=10)
         {Draw(id,ArakusAnimationSelection.NativeFrame(id,clock,true),pos,face,owner,null,order);}
@@ -106,10 +113,10 @@ namespace ReversalTower
             cursor=0;
             if(battle)
             {
-                if(g.pillarLeft)Draw("Pillar",0,new Vector2(-4,0),1,owner,null,-30);
-                else if(clock-pillarLeftAt<.6f)Draw("Pillar",1,new Vector2(-4,0),leftImpactFace,owner,new Color(1,1,1,Mathf.Clamp01(1-(clock-pillarLeftAt)/.6f)),-30);
-                if(g.pillarRight)Draw("Pillar",0,new Vector2(4,0),1,owner,null,-30);
-                else if(clock-pillarRightAt<.6f)Draw("Pillar",1,new Vector2(4,0),rightImpactFace,owner,new Color(1,1,1,Mathf.Clamp01(1-(clock-pillarRightAt)/.6f)),-30);
+                if(g.pillarLeft)DrawPillar(g,0,new Vector2(-4,0),1,owner,1);
+                else if(clock-pillarLeftAt<.6f)DrawPillar(g,1,new Vector2(-4,0),leftImpactFace,owner,Mathf.Clamp01(1-(clock-pillarLeftAt)/.6f));
+                if(g.pillarRight)DrawPillar(g,0,new Vector2(4,0),1,owner,1);
+                else if(clock-pillarRightAt<.6f)DrawPillar(g,1,new Vector2(4,0),rightImpactFace,owner,Mathf.Clamp01(1-(clock-pillarRightAt)/.6f));
                 foreach(var s in g.shots)if(s.returns)Draw("Shield_Spin",ArakusAnimationSelection.NativeFrame("Shield_Spin",clock,true),s.pos,1,owner,s.friendly?Palette.Teal:Color.white);
                 if(g.bossHp<=0&&!g.BossPatterns.shieldOut&&poseState=="Death")
                 {

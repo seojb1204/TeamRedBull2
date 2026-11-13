@@ -21,7 +21,8 @@ namespace ReversalTower
             int facing = bossActor ? game.bossFace : game.face;
             if (!battle) { position=new Vector2(bossActor?6:-5.3f,0); facing=bossActor?-1:1; }
             transform.position=new Vector3(position.x+(battle&&bossActor?game.bossRecoil:0),position.y,0);   // 맞으면 살짝 밀려 보임
-            transform.localScale=new Vector3(1.4f*facing,1.4f,1);
+            float scale=bossActor&&game.bossIndex==0?ArakusGeometry.VisualScale:1.4f;
+            transform.localScale=new Vector3(scale*facing,scale,1);
             body.color=(bossActor?game.bossFlash:game.hitFlash)>0?Color.white:new Color(.99f,.99f,.99f,1);
             if(bossActor&&battle&&game.bossFlash<=0)
             {

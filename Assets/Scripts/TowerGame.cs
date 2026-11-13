@@ -31,6 +31,7 @@ namespace ReversalTower
         public void AddImpact(Vector2 pos,int kind,float size,float angle){impacts.Add(new Impact{pos=pos,kind=kind,size=size,angle=angle,life=kind==2?.42f:kind==1?.24f:.17f});if(impacts.Count>24)impacts.RemoveAt(0);}
         public HistoryEntry result;public bool wasFirstClear;public float realClock;
         float comboGap;int combo;bool skillFired,ended;float dodgeBuffer,coyote;
+        bool abandoning;   // Abandon()·OnApplicationQuit()이 EndBattle 직전에 켠다 (끝까지 싸우지 않은 판 표시)
         readonly DdaBattleSession dda=new DdaBattleSession();
         readonly RewardLedger rewards=new RewardLedger();
         public List<PatternStats> stats => dda.Stats;
@@ -187,8 +188,12 @@ namespace ReversalTower
             if(player.y<=.001f){coyote=.1f;if(dashes<2){dashRecharge+=dt;if(dashRecharge>=2.5f){dashes++;dashRecharge=0;}}}else coyote-=dt;
             bool left=Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.LeftArrow),right=Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow);
             bool jump=Input.GetKeyDown(KeyCode.Space),dash=Input.GetKeyDown(KeyCode.LeftShift)||Input.GetKeyDown(KeyCode.RightShift);
-            bool attack=Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||Input.GetMouseButtonDown(0);
-            bool parry=Input.GetKeyDown(KeyCode.K)||Input.GetKeyDown(KeyCode.X)||Input.GetMouseButtonDown(1);
+            bool panelMouse=false;
+#if !HEADLESS && !DESKTOP_PREVIEW
+            panelMouse=DdaPanelConsumesMouse();
+#endif
+            bool attack=Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||(!panelMouse&&Input.GetMouseButtonDown(0));
+            bool parry=Input.GetKeyDown(KeyCode.K)||Input.GetKeyDown(KeyCode.X)||(!panelMouse&&Input.GetMouseButtonDown(1));
             bool q=Input.GetKeyDown(KeyCode.Q),w=Input.GetKeyDown(KeyCode.W),e=Input.GetKeyDown(KeyCode.E),r=Input.GetKeyDown(KeyCode.R),f=Input.GetKeyDown(KeyCode.F);
             float move=(right?1:0)-(left?1:0);
             if(demo)DemoInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);
@@ -251,14 +256,20 @@ namespace ReversalTower
                 if(u==4){range=30;damage*=2;playerInv=1;}
                 Burst(player+Vector2.up,3,Palette.Gold,45);shake=4;
             }
-            bool bossIn=Mathf.Abs(player.x-boss.x)<range+BossWidth&&Mathf.Abs(player.y-boss.y)<2.2f&&(radial||(boss.x-player.x)*face>-.5f);
+            bool bossIn=Mathf.Abs(player.x-boss.x)<range+BossWidth&&BossAttackHeightOverlap(player.y)&&(radial||(boss.x-player.x)*face>-.5f);
             if(bossIn&&damage>0)DamageBoss(damage,playerAction=="R"?2.6f:playerAction=="E"?2.2f:playerAction=="Q"?1.5f:playerAction=="W"?1.3f:1);
             for(int i=minions.Count-1;i>=0;i--)
             {var m=minions[i];if(Mathf.Abs(player.x-m.x)<range&&(radial||(m.x-player.x)*face>-.5f)){m.hp-=damage;if(m.hp<=0){Burst(new Vector2(m.x,1),.8f,Palette.Gold,12);minions.RemoveAt(i);}}}
             if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){barrier=false;bossStagger=3;Say("결계 파괴 · 파네스가 추락했습니다",2);}}
             Burst(player+new Vector2(face*.9f,1),.25f,Palette.Teal,4);
         }
-        public float BossWidth=>bossIndex==0?.9f:bossIndex==3?.8f:.65f;
+        public float BossWidth=>bossIndex==0?ArakusGeometry.HalfWidth:bossIndex==3?.8f:.65f;
+        public float BossHeight=>bossIndex==0?ArakusGeometry.Height:2.2f;
+        public bool BossAttackHeightOverlap(float feetY)
+            =>bossIndex==0?feetY<boss.y+BossHeight&&feetY+2.2f>boss.y:Mathf.Abs(feetY-boss.y)<2.2f;
+        public bool BossShotOverlap(Vector2 point,float radius)
+            =>bossIndex==0?Mathf.Abs(point.x-boss.x)<BossWidth+radius&&point.y+radius>boss.y&&point.y-radius<boss.y+BossHeight
+                :Vector2.Distance(point,boss+Vector2.up*1.2f)<1.2f;
         // 패링 성공 연출: 멈춤 → 슬로모션, 화면 번쩍임, 부딪힌 곳으로 카메라 펀치, 큰 충돌 불꽃, 보스가 크게 밀려 보임
         public void ParryFeedback(float attackerX)
         {
@@ -307,16 +318,17 @@ namespace ReversalTower
         {for(int i=0;i<count;i++){float a=UnityEngine.Random.value*Mathf.PI*2;motes.Add(new Mote{pos=position,velocity=new Vector2(Mathf.Cos(a),Mathf.Sin(a))*UnityEngine.Random.Range(.4f,3f)*force,life=UnityEngine.Random.Range(.18f,.6f),color=color,size=UnityEngine.Random.Range(.035f,.12f)});}if(motes.Count>350)motes.RemoveRange(0,motes.Count-350);}
         void EndBattle(bool clear)
         {
+            bool abandoned=abandoning;abandoning=false;
             if(ended)return;
             if(!rewards.TrySettle(save,spec,bossIndex,clear,bossHp,seconds,hits,parries,battleDda,out result,out wasFirstClear))return;
-            ended=true;
-            dda.Complete(save,spec,clear);
+            ended=true;result.abandoned=abandoned;
+            dda.Complete(save,spec,clear,abandoned);
             SaveStore.Log(result,stats,save);SaveStore.Save(save);mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;
             sound.Play(clear?"parry":"death");
         }
         public void ReturnLobby(){mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}
-        public void Abandon(){EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}
-        void OnApplicationQuit(){if(mode==ScreenMode.Battle&&!ended)EndBattle(false);if(save!=null)SaveStore.Save(save);}
+        public void Abandon(){abandoning=true;EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}
+        void OnApplicationQuit(){if(mode==ScreenMode.Battle&&!ended){abandoning=true;EndBattle(false);}if(save!=null)SaveStore.Save(save);}
         void DemoInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,ref bool q,ref bool w,ref bool e,ref bool r,ref bool f,float dt)
         {
             float distance=boss.x-player.x;move=Mathf.Abs(distance)>2?Mathf.Sign(distance):0;demoAction-=dt;

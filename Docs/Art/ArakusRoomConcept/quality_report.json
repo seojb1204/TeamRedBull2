@@ -1,0 +1,599 @@
+{
+  "passed": 80,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "StoneFortress/room_far.png/format",
+      "pass": true,
+      "detail": "(768, 512)"
+    },
+    {
+      "name": "StoneFortress/room_far.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/room_far.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/room_mid.png/format",
+      "pass": true,
+      "detail": "(768, 512)"
+    },
+    {
+      "name": "StoneFortress/room_mid.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/room_mid.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/floor_tile.png/format",
+      "pass": true,
+      "detail": "(128, 48)"
+    },
+    {
+      "name": "StoneFortress/floor_tile.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/floor_tile.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/pillar_intact.png/format",
+      "pass": true,
+      "detail": "(192, 192)"
+    },
+    {
+      "name": "StoneFortress/pillar_intact.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/pillar_intact.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/pillar_broken.png/format",
+      "pass": true,
+      "detail": "(192, 192)"
+    },
+    {
+      "name": "StoneFortress/pillar_broken.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/pillar_broken.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/pillar_sheet.png/format",
+      "pass": true,
+      "detail": "(384, 192)"
+    },
+    {
+      "name": "StoneFortress/pillar_sheet.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/pillar_sheet.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/far_opaque",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/mid_transparent",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/floor_opaque",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/floor_repeat_edge_delta_zero",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "StoneFortress/sheet_intact_matches",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/sheet_broken_matches",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/intact/foot_baseline",
+      "pass": true,
+      "detail": "(65, 40, 126, 160)"
+    },
+    {
+      "name": "StoneFortress/intact/no_clipping",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/broken/foot_baseline",
+      "pass": true,
+      "detail": "(65, 84, 133, 160)"
+    },
+    {
+      "name": "StoneFortress/broken/no_clipping",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/pillar_height",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "StoneFortress/cue_band_red_at_least_3",
+      "pass": true,
+      "detail": "3.108949166066888"
+    },
+    {
+      "name": "StoneFortress/cue_band_blue_at_least_3",
+      "pass": true,
+      "detail": "3.690522120072882"
+    },
+    {
+      "name": "StoneFortress/camera_640x360_covered",
+      "pass": true,
+      "detail": "(64.0, 76.2439024390244, 704.0, 436.2439024390244)"
+    },
+    {
+      "name": "StoneFortress/camera_480x360_covered",
+      "pass": true,
+      "detail": "(70.09756097560972, 20.817073170731646, 697.9024390243903, 491.67073170731715)"
+    },
+    {
+      "name": "IronWarworks/room_far.png/format",
+      "pass": true,
+      "detail": "(768, 512)"
+    },
+    {
+      "name": "IronWarworks/room_far.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/room_far.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/room_mid.png/format",
+      "pass": true,
+      "detail": "(768, 512)"
+    },
+    {
+      "name": "IronWarworks/room_mid.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/room_mid.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/floor_tile.png/format",
+      "pass": true,
+      "detail": "(128, 48)"
+    },
+    {
+      "name": "IronWarworks/floor_tile.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/floor_tile.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/pillar_intact.png/format",
+      "pass": true,
+      "detail": "(192, 192)"
+    },
+    {
+      "name": "IronWarworks/pillar_intact.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/pillar_intact.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/pillar_broken.png/format",
+      "pass": true,
+      "detail": "(192, 192)"
+    },
+    {
+      "name": "IronWarworks/pillar_broken.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/pillar_broken.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/pillar_sheet.png/format",
+      "pass": true,
+      "detail": "(384, 192)"
+    },
+    {
+      "name": "IronWarworks/pillar_sheet.png/alpha_binary",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/pillar_sheet.png/meta",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/far_opaque",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/mid_transparent",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/floor_opaque",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/floor_repeat_edge_delta_zero",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "IronWarworks/sheet_intact_matches",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/sheet_broken_matches",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/intact/foot_baseline",
+      "pass": true,
+      "detail": "(65, 40, 128, 160)"
+    },
+    {
+      "name": "IronWarworks/intact/no_clipping",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/broken/foot_baseline",
+      "pass": true,
+      "detail": "(65, 80, 133, 160)"
+    },
+    {
+      "name": "IronWarworks/broken/no_clipping",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/pillar_height",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IronWarworks/cue_band_red_at_least_3",
+      "pass": true,
+      "detail": "3.108949166066888"
+    },
+    {
+      "name": "IronWarworks/cue_band_blue_at_least_3",
+      "pass": true,
+      "detail": "3.690522120072882"
+    },
+    {
+      "name": "IronWarworks/camera_640x360_covered",
+      "pass": true,
+      "detail": "(64.0, 76.2439024390244, 704.0, 436.2439024390244)"
+    },
+    {
+      "name": "IronWarworks/camera_480x360_covered",
+      "pass": true,
+      "detail": "(70.09756097560972, 20.817073170731646, 697.9024390243903, 491.67073170731715)"
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/floor_tile.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/pillar_broken.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/pillar_intact.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/pillar_sheet.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/room_far.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/IronWarworks/room_mid.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/floor_tile.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_broken.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_intact.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/pillar_sheet.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/room_far.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Assets/StreamingAssets/Art/ArakusRoom/StoneFortress/room_mid.png/manifest_sha",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "existing_code_scenes_prefabs_character_castle_pillar_unchanged",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "new_meta_GUIDs_unique",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "metrics": {
+    "StoneFortress": {
+      "room_far.png": {
+        "size": [
+          768,
+          512
+        ],
+        "colors": 15,
+        "bbox": [
+          0,
+          0,
+          768,
+          512
+        ]
+      },
+      "room_mid.png": {
+        "size": [
+          768,
+          512
+        ],
+        "colors": 11,
+        "bbox": [
+          75,
+          0,
+          694,
+          368
+        ]
+      },
+      "floor_tile.png": {
+        "size": [
+          128,
+          48
+        ],
+        "colors": 7,
+        "bbox": [
+          0,
+          0,
+          128,
+          48
+        ]
+      },
+      "pillar_intact.png": {
+        "size": [
+          192,
+          192
+        ],
+        "colors": 6,
+        "bbox": [
+          65,
+          40,
+          126,
+          160
+        ]
+      },
+      "pillar_broken.png": {
+        "size": [
+          192,
+          192
+        ],
+        "colors": 6,
+        "bbox": [
+          65,
+          84,
+          133,
+          160
+        ]
+      },
+      "pillar_sheet.png": {
+        "size": [
+          384,
+          192
+        ],
+        "colors": 7,
+        "bbox": [
+          65,
+          40,
+          325,
+          160
+        ]
+      },
+      "cue_band_metrics": {
+        "red_min_luminance_ratio": 3.108949166066888,
+        "blue_min_luminance_ratio": 3.690522120072882,
+        "sample_source_rect": [
+          220,
+          364,
+          548,
+          368
+        ],
+        "note": "Static background band, no characters/pillars/shaders; not a game accessibility certification."
+      }
+    },
+    "IronWarworks": {
+      "room_far.png": {
+        "size": [
+          768,
+          512
+        ],
+        "colors": 262,
+        "bbox": [
+          0,
+          0,
+          768,
+          512
+        ]
+      },
+      "room_mid.png": {
+        "size": [
+          768,
+          512
+        ],
+        "colors": 30,
+        "bbox": [
+          20,
+          11,
+          762,
+          367
+        ]
+      },
+      "floor_tile.png": {
+        "size": [
+          128,
+          48
+        ],
+        "colors": 34,
+        "bbox": [
+          0,
+          0,
+          128,
+          48
+        ]
+      },
+      "pillar_intact.png": {
+        "size": [
+          192,
+          192
+        ],
+        "colors": 43,
+        "bbox": [
+          65,
+          40,
+          128,
+          160
+        ]
+      },
+      "pillar_broken.png": {
+        "size": [
+          192,
+          192
+        ],
+        "colors": 18,
+        "bbox": [
+          65,
+          80,
+          133,
+          160
+        ]
+      },
+      "pillar_sheet.png": {
+        "size": [
+          384,
+          192
+        ],
+        "colors": 50,
+        "bbox": [
+          65,
+          40,
+          325,
+          160
+        ]
+      },
+      "cue_band_metrics": {
+        "red_min_luminance_ratio": 3.108949166066888,
+        "blue_min_luminance_ratio": 3.690522120072882,
+        "sample_source_rect": [
+          220,
+          364,
+          548,
+          368
+        ],
+        "note": "Static background band, no characters/pillars/shaders; not a game accessibility certification."
+      }
+    }
+  },
+  "manual_review": [
+    "Both full-size concept mockups, actual 4:3 camera, repeated floor, pillar comparison reviewed"
+  ],
+  "not_run": [
+    "Unity import/rendering",
+    "Windows build",
+    "real combat/VFX/HUD overlap",
+    "ultrawide/portrait camera integration"
+  ]
+}

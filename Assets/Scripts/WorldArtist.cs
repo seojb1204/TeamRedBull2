@@ -58,6 +58,10 @@ namespace ReversalTower
 #endif
             cursor=0;bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;float time=g.realClock;
             Rect(0,5,70,40,Palette.Ink);
+            Color accent=g.bossIndex==4?Palette.Purple:g.bossIndex==1?Palette.Teal:Palette.Gold;
+            bool throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom();
+            if(!throneRoom)
+            {
             Disc(4,7.5f,19,19,new Color(.055f,.09f,.125f));Disc(4,7.5f,14,14,new Color(.075f,.12f,.15f));
             // Repeated arches, a broken celestial dial, and a deep lower vault.
             for(int i=-3;i<=3;i++)
@@ -72,7 +76,6 @@ namespace ReversalTower
             var pillars=ExternalAssets.Picture("Art/Castle/parallaxBG-interior2.png");
             if(pillars!=null)for(int i=-1;i<=1;i++)Shape(pillars,i*11.2f,6.7f,11.2f,14,new Color(.65f,.7f,.8f,.75f));
             if(castle!=null)for(int i=-1;i<=1;i++)Shape(castle,i*14,7,14,14,new Color(.8f,.85f,.95f,.75f));
-            Color accent=g.bossIndex==4?Palette.Purple:g.bossIndex==1?Palette.Teal:Palette.Gold;
             for(int i=0;i<48;i++)
             {
                 float a=i*Mathf.PI*2/48,rad=3.3f;
@@ -88,6 +91,7 @@ namespace ReversalTower
             for(int i=-15;i<15;i++){Rect(i*1.1f,-.45f,.018f,.7f,new Color(.07f,.10f,.13f));Rect(i*1.7f,-.15f,.7f,.018f,Palette.Alpha(accent,.16f));}
             var floor=ExternalAssets.Picture("Art/Castle/twilight-tiles.png",0,240,48,16);
             if(floor!=null)for(int i=-5;i<=5;i++)Shape(floor,i*3,-.48f,3,1,Palette.White);
+            }
             if(fight)
             {
                 if(!spriteArakus){if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);}
@@ -124,8 +128,32 @@ namespace ReversalTower
             }
             foreach(var m in g.motes)Rect(m.pos.x,m.pos.y,m.size,m.size,Palette.Alpha(m.color,Mathf.Clamp01(m.life*3)),time*300);
             // Low drifting foreground mist.
-            for(int i=0;i<6;i++)Disc(-15+i*6+Mathf.Sin(time*.07f+i)*2,-.6f,12,.55f,new Color(.12f,.22f,.25f,.12f));
+            if(!throneRoom)for(int i=0;i<6;i++)Disc(-15+i*6+Mathf.Sin(time*.07f+i)*2,-.6f,12,.55f,new Color(.12f,.22f,.25f,.12f));
             for(int i=cursor;i<pool.Count;i++)pool[i].gameObject.SetActive(false);
+        }
+        bool DrawThroneRoom()
+        {
+            const string path="Art/ArakusRoom/Arakus_Throne_Background_Game.png";
+            var room=ExternalAssets.Picture(path);if(room==null)return false;
+            var camera=Camera.main;if(!camera||!camera.orthographic)return false;
+            float pixelWidth=camera.pixelWidth,pixelHeight=camera.pixelHeight;
+            if(pixelWidth<1||pixelHeight<1)return false;
+            float pixelsPerWorld=pixelHeight/(2*camera.orthographicSize);
+            float sourceWidth=room.rect.width,sourceHeight=room.rect.height;
+            const float groundRow=608f;
+            // Width-first fit: preserve both side columns, allow a small crop above the room.
+            // Use the actual viewport width, not Screen.width or a quantized texel multiplier.
+            float unit=pixelWidth/sourceWidth/pixelsPerWorld,width=sourceWidth*unit;
+            float centerX=camera.transform.position.x;
+            // Source walk line stays exactly on world y=0; never snap the floor away from the actors.
+            float centerY=(groundRow-sourceHeight*.5f)*unit,bottom=(groundRow-sourceHeight)*unit;
+            Shape(room,centerX,centerY,width,width,Color.white);
+            // Continue the same lower masonry below the authored image into the visible floor area.
+            var lower=ExternalAssets.Picture(path,0,0,1248,62);
+            float stripHeight=62*unit;
+            int strips=Mathf.CeilToInt(Mathf.Max(0,bottom-(camera.transform.position.y-camera.orthographicSize))/stripHeight)+1;
+            for(int i=0;i<strips;i++)Shape(lower,centerX,bottom-(i+.5f)*stripHeight,width,width,Color.white);
+            return true;
         }
         void Pillar(float x)
         {Rect(x,.85f,.65f,1.7f,Palette.Stone);Rect(x,1.75f,.9f,.18f,Palette.Slate);Rect(x,.15f,.9f,.3f,Palette.Slate);Rect(x-.18f,.95f,.07f,1.3f,Palette.Alpha(Palette.Gold,.5f));}
@@ -135,7 +163,15 @@ namespace ReversalTower
             if(remaining<=0)return;
             Color c=p.parryable?Palette.ParryRim:Palette.Red;float opacity=.08f+.05f*Mathf.Sin(g.realClock*14);
             if(p.kind==AttackKind.Slash)
-            {bool radial=p.id=="spin";float x=radial?g.boss.x:g.boss.x+g.bossFace*p.range*.5f;Rect(x,.8f,radial?p.range*2:p.range,1.6f,Palette.Alpha(c,opacity));Rect(x,.05f,radial?p.range*2:p.range,.04f,c);}
+            {
+                if(g.bossIndex==0)
+                {
+                    float reach=ArakusGeometry.Reach(g.spec,p),height=ArakusGeometry.AttackHeight(g.spec,p),width=reach+.3f;
+                    float x=g.boss.x+g.bossFace*(reach-.3f)*.5f;
+                    Rect(x,g.boss.y+height*.5f,width,height,Palette.Alpha(c,opacity));Rect(x,g.boss.y+.05f,width,.04f,c);
+                }
+                else{bool radial=p.id=="spin";float x=radial?g.boss.x:g.boss.x+g.bossFace*p.range*.5f;Rect(x,.8f,radial?p.range*2:p.range,1.6f,Palette.Alpha(c,opacity));Rect(x,.05f,radial?p.range*2:p.range,.04f,c);}
+            }
             if(p.kind==AttackKind.Dash){Rect(0,.06f,24,.05f,Palette.Red);for(int i=0;i<8;i++)Tri(-10+i*3,.4f,.35f,.45f,Palette.Alpha(c,.4f),g.bossFace>0?-90:90);}
             if(p.kind==AttackKind.Balance)
             {Rect(g.safeSide*6,.04f,11.2f,.1f,Palette.Teal);Rect(g.safeSide*6,1,11.2f,2,Palette.Alpha(Palette.Teal,.08f));}
@@ -176,7 +212,13 @@ namespace ReversalTower
             }
             if(p.kind==AttackKind.ShieldRush)
             {
-                if(t<w){float x=bx+face*3;Rect(x,.9f,6.4f,1.8f,Palette.Alpha(Palette.Red,.07f+.06f*pulse));Rect(x,.05f,6.4f,.05f,Palette.Red);for(int i=0;i<4;i++)Tri(bx+face*(1+i*1.4f),1,.35f,.45f,Palette.Alpha(Palette.Red,.45f),face>0?-90:90);}
+                if(t<w)
+                {
+                    if(g.bossIndex==0){float reach=5+ArakusGeometry.Reach(g.spec,p),height=ArakusGeometry.AttackHeight(g.spec,p),span=reach+.3f;
+                        float x=bx+face*(reach-.3f)*.5f;Rect(x,g.boss.y+height*.5f,span,height,Palette.Alpha(Palette.Red,.07f+.06f*pulse));Rect(x,.05f,span,.05f,Palette.Red);}
+                    else{float x=bx+face*3;Rect(x,.9f,6.4f,1.8f,Palette.Alpha(Palette.Red,.07f+.06f*pulse));Rect(x,.05f,6.4f,.05f,Palette.Red);}
+                    for(int i=0;i<4;i++)Tri(bx+face*(1+i*1.4f),1,.35f,.45f,Palette.Alpha(Palette.Red,.45f),face>0?-90:90);
+                }
                 else if(!bp.struck)for(int i=1;i<4;i++)Rect(bx-face*i*.45f,1.2f,.35f,2,Palette.Alpha(Palette.Red,.14f/i));
                 return;
             }
@@ -229,7 +271,7 @@ namespace ReversalTower
         void Character(Vector2 pos,float scale,int face,string action,bool enemy,float t,Color accent)
         {
 #if !DESKTOP_PREVIEW
-            if(g.scenePresentation&&(!enemy?g.scenePresentation.player!=null:g.bossIndex==0&&g.scenePresentation.arakus!=null))return;
+            if(g.scenePresentation&&(!enemy?g.scenePresentation.player!=null:(g.bossIndex==0&&g.scenePresentation.arakus!=null)||(g.bossIndex==1&&PhanesView.HasArt)))return;
 #endif
             int frame=action=="run"?(int)(t*9)%4:(int)(t*3)%2;
             bool attack=action=="attack"||action=="J"||action=="Q"||action=="W"||action=="E"||action=="R";

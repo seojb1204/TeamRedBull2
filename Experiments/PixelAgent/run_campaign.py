@@ -49,7 +49,7 @@ def campaign(args):
     out.mkdir(parents=True,exist_ok=False)
     runroot=Path(tempfile.mkdtemp(prefix='tower-pixel-campaign-'))
     checkpoint=Path(args.checkpoint).resolve() if args.checkpoint else out/'checkpoint.json'
-    if args.policy in ('learned','tabular') and not args.train and not checkpoint.is_file():
+    if args.policy in ('learned','tabular','tabular-v3') and not args.train and not checkpoint.is_file():
         raise ValueError('Learned evaluation requires --checkpoint from an earlier training run')
     rows=[]
     summary={'schema':'tower-pixel-campaign/1','exe':str(exe),
@@ -62,6 +62,13 @@ def campaign(args):
     atomic_json(out/'campaign.json',summary)
     try:
         for i in range(args.episodes):
+            # Do not compete with another Unity editor/game or an already busy GPU.
+            busy=subprocess.check_output(['powershell','-NoProfile','-Command',"Get-Process Unity,ReversalTower -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id; exit 0"],text=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW).strip()
+            if busy:raise RuntimeError('Another Unity/game process is active; refusing campaign')
+            gpu=subprocess.check_output(['nvidia-smi','--query-gpu=utilization.gpu,temperature.gpu','--format=csv,noheader,nounits'],text=True,timeout=3,creationflags=subprocess.CREATE_NO_WINDOW)
+            for line in gpu.strip().splitlines():
+                use,temp=map(float,line.split(','))
+                if use>50 or temp>=70:raise RuntimeError('GPU busy/hot before episode; refusing campaign')
             seed=args.seed+i
             data=runroot/f'episode-{i+1}'
             bridge=data/'bridge';bridge.mkdir(parents=True)
@@ -71,20 +78,22 @@ def campaign(args):
                      '-towerSeed',str(seed),'-towerFrameRate','60',
                      '-screen-fullscreen','0','-screen-width','960','-screen-height','540',
                      '-logFile',str(out/f'episode-{i+1}-unity.log')]
-            client_command=[sys.executable,str(Path(__file__).with_name('visual_agent_v2.py' if args.policy in ('random-v2','rule-v2','tabular') else 'pixel_agent.py')),
+            client_command=[sys.executable,str(Path(__file__).with_name('visual_agent_v3.py' if args.policy in ('random-v3','rule-v3','tabular-v3') else 'visual_agent_v2.py' if args.policy in ('random-v2','rule-v2','tabular') else 'pixel_agent.py')),
                             '--bridge',str(bridge),'--policy',args.policy,'--seed',str(seed),
                             '--max-seconds',str(args.seconds+15),'--timeout',str(args.seconds),
                             '--report',str(result)]
-            if args.policy in ('learned','tabular'):client_command+=['--checkpoint',str(checkpoint)]
+            if args.policy in ('learned','tabular','tabular-v3'):client_command+=['--checkpoint',str(checkpoint)]
             if args.train:client_command+=['--train','--epsilon',str(args.epsilon)]
             game=client=None
-            gpu_samples=[];stop_gpu=threading.Event()
+            gpu_samples=[];stop_gpu=threading.Event();gpu_abort=threading.Event()
             def sample_gpu():
                 while not stop_gpu.is_set():
                     try:
                         raw=subprocess.check_output(['nvidia-smi','--query-gpu=utilization.gpu,memory.used,power.draw,temperature.gpu','--format=csv,noheader,nounits'],text=True,timeout=3,creationflags=subprocess.CREATE_NO_WINDOW)
                         gpu_samples.append({'utc':time.time(),'system_wide_gpu_percent_mib_watts_celsius':raw.strip()})
-                    except (OSError,subprocess.SubprocessError) as error:gpu_samples.append({'error':type(error).__name__})
+                        if any(float(line.split(',')[3])>=75 for line in raw.strip().splitlines()):gpu_abort.set()
+                    except (OSError,subprocess.SubprocessError,ValueError,IndexError) as error:
+                        gpu_samples.append({'error':type(error).__name__});gpu_abort.set()
                     stop_gpu.wait(5)
             sampler=threading.Thread(target=sample_gpu,daemon=True)
             with (out/f'episode-{i+1}-client.log').open('w',encoding='utf-8') as client_log:
@@ -92,7 +101,12 @@ def campaign(args):
                     sampler.start()
                     game=subprocess.Popen(command,cwd=exe.parent,stdin=subprocess.DEVNULL)
                     client=subprocess.Popen(client_command,stdout=client_log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)
-                    client_code=client.wait(timeout=args.seconds+25)
+                    deadline=time.monotonic()+args.seconds+25
+                    while client.poll() is None:
+                        if gpu_abort.is_set():raise RuntimeError('GPU guard: temperature >=75C or monitoring failed; stop owned experiment')
+                        if time.monotonic()>deadline:raise subprocess.TimeoutExpired(client_command,args.seconds+25)
+                        time.sleep(.2)
+                    client_code=client.returncode
                     if client_code!=0:
                         raise RuntimeError(f'Episode {i+1}: client failed ({client_code}); see client log')
                     game_code=game.wait(timeout=15)
@@ -128,7 +142,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--exe',required=True,type=Path)
     p.add_argument('--output',required=True,type=Path)
-    p.add_argument('--policy',choices=['random','rule','learned','random-v2','rule-v2','tabular'],default='random')
+    p.add_argument('--policy',choices=['random','rule','learned','random-v2','rule-v2','tabular','random-v3','rule-v3','tabular-v3'],default='random')
     p.add_argument('--train',action='store_true')
     p.add_argument('--checkpoint',type=Path)
     p.add_argument('--episodes',type=int,default=1)
@@ -138,7 +152,7 @@ def main():
     a=p.parse_args()
     if not 1<=a.episodes<=3 or not 10<=a.seconds<=180 or not 0<=a.epsilon<=1:
         p.error('episodes 1..3, seconds 10..180, epsilon 0..1 required')
-    if a.train and a.policy not in ('learned','tabular'):p.error('--train requires --policy learned or tabular')
+    if a.train and a.policy not in ('learned','tabular','tabular-v3'):p.error('--train requires --policy learned or tabular')
     campaign(a)
 
 if __name__=='__main__':main()

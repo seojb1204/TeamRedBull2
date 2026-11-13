@@ -22,7 +22,7 @@ for i in range(2):
 for f in ['WorldArtist.cs','ArakusVisuals.cs']:check(f+'_meta_unchanged',(ROOT/'Assets/Scripts'/f'{f}.meta').read_bytes()==original('Assets/Scripts/'+f+'.meta'))
 protected=['Assets/Scripts/BossPatternSystem.cs','Assets/Scripts/TowerGame.cs','Assets/Scripts/BossCombat.cs','Assets/Scripts/GameData.cs','Assets/Scripts/GameServices.cs','Assets/Scripts/SaveStore.cs','Assets/Scripts/CloudSync.cs','Assets/Scripts/ActorView.cs','Assets/Scripts/ScenePresentation.cs','Assets/Scenes','Assets/Prefabs','Assets/Data','ProjectSettings','Assets/StreamingAssets/Art/Castle']
 check('combat_DDA_DB_input_camera_scene_prefab_settings_unchanged',subprocess.run(['git','diff','--quiet','HEAD','--',*protected],cwd=ROOT).returncode==0)
-world=(ROOT/'Assets/Scripts/WorldArtist.cs').read_text();visual=(ROOT/'Assets/Scripts/ArakusVisuals.cs').read_text()
+world=(ROOT/'Assets/Scripts/WorldArtist.cs').read_text(encoding='utf-8');visual=(ROOT/'Assets/Scripts/ArakusVisuals.cs').read_text(encoding='utf-8')
 check('battle_result_only_gate','bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;' in world and 'throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom()' in world)
 check('legacy_world_has_fallback','if(!throneRoom)' in world and 'if(room==null)return false;' in world)
 check('fade_kept_both_sides',all('clock-pillar'+s+'At<.6f' in visual and '1-(clock-pillar'+s+'At)/.6f' in visual for s in ['Left','Right']))
@@ -37,7 +37,8 @@ check('background_edits_confined_to_baked_posts',difference.getbbox() is None)
 # Offline camera projection, explicitly not Unity rendering or a shader simulation.
 spec=importlib.util.spec_from_file_location('roomart',ROOT/'Docs/Art/ArakusRoomConcept/create_assets.py');helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
 metrics=[]
-check('width_fit_uses_actual_viewport','unit=pixelWidth/sourceWidth/pixelsPerWorld' in world and 'centerX=camera.transform.position.x' in world)
+check('width_fit_uses_actual_viewport','unit=pixelWidth/sourceWidth/pixelsPerWorld' in world and 'centerX=g.zoomFocus.x*g.zoomPunch*.12f' in world)
+check('room_does_not_cancel_camera_shake','centerX=camera.transform.position.x' not in world)
 check('no_integer_scale_or_floor_snap','Mathf.Floor(fit)' not in world and 'Mathf.Round(groundPixel)' not in world)
 check('art_and_pillar_resources_unchanged',subprocess.run(['git','diff','--quiet','HEAD','--','Assets/Resources','Assets/StreamingAssets'],cwd=ROOT).returncode==0)
 # Independent numerical projection oracle; not Unity Camera/GPU execution.
@@ -86,5 +87,23 @@ for width,height in [(1920,1080),(1280,720),(2560,1440),(1024,768),(2520,1080),(
    after=render(False);x0=round(510*scale);y0=round(top+485*scale)
    after.crop((x0,y0,x0+500,y0+200)).save(args.output/'offline_stairs_width_fit.png')
 (args.output/'width-fit-metrics.json').write_text(json.dumps(metrics,indent=2))
+# Fixed zoom focus plus camera shake moves room and world pillars equally.
+# Same unit and edge padding as WorldArtist; authored width/aspect stay unchanged.
+for width,height in [(1920,1080),(1280,720),(2560,1440),(1024,768),(2520,1080),(640,360)]:
+ for zoom,focus in [(0,0),(.8,-3),(.8,3)]:
+  for sx,sy in [(-.3,.2),(.3,-.2),(0,0)]:
+   center=focus*zoom*.12; ortho=max(8.2,14.3/(width/height))-zoom
+   ppu=height/(2*ortho); unit=width/1248/ppu
+   room_shift=((center-(center+sx))*ppu,-sy*ppu)
+   pillar_shift=((-4-(center+sx))*ppu-(-4-center)*ppu,-sy*ppu)
+   key=f'shake_{width}x{height}_zoom{zoom}_focus{focus}_x{sx}'
+   check(key+'_room_pillar_equal_delta',all(abs(a-b)<1e-8 for a,b in zip(room_shift,pillar_shift)))
+   padding=abs(sx)+unit
+   left=(center-width/ppu/2-padding-(center+sx))*ppu
+   right=(center+width/ppu/2+padding-(center+sx))*ppu
+   check(key+'_outside_gutters_cover_viewport',left<=-width/2 and right>=width/2)
 report={'passed':sum(c['pass'] for c in checks),'failed':sum(not c['pass'] for c in checks),'checks':checks,'not_verified':['Unity compilation/rendering','real combat visuals and HUD','Windows build'],'note':'Source/asset checks and independent numeric projection only; no DB connection.'}
-(args.output/'resource-checks.json').write_text(json.dumps(report,indent=2));print(report['passed'],'PASS',report['failed'],'FAIL');sys.exit(bool(report['failed']))
+(args.output/'resource-checks.json').write_text(json.dumps(report,indent=2));print(report['passed'],'PASS',report['failed'],'FAIL')
+
+
+sys.exit(bool(report['failed']))

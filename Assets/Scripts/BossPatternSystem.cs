@@ -68,7 +68,8 @@ namespace ReversalTower
             parryGlow=0;parryFlash=99;cueKey=-1;cueSoundAt=-9;
         }
         readonly Dictionary<string,float> cooldowns=new Dictionary<string,float>();
-        readonly System.Random combatRandom=new System.Random();
+        System.Random combatRandom=new System.Random();
+        internal void SetTestSeed(int seed){combatRandom=new System.Random(seed);}
         string previousPattern="";
         public void TickBoss(float dt)
         {

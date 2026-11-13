@@ -24,8 +24,8 @@ namespace ReversalTower
                 try
                 {
                     var data=JsonUtility.FromJson<SaveData>(File.ReadAllText(p));
-                    if(data==null||(data.version!=1&&data.version!=2)||data.cleared==null||data.cleared.Length!=5||data.learning==null||data.history==null)throw new InvalidDataException("Invalid save structure");
-                    LobbyCards.Normalize(data);data.version=2;
+                    if(data==null||(data.version!=1&&data.version!=2)||data.cleared==null||data.cleared.Length!=5||data.history==null)throw new InvalidDataException("Invalid save structure");
+                    LobbyCards.Normalize(data);data.NormalizeDda();data.version=2;
                     data.gold=Math.Max(0,data.gold);data.unlockedBoss=Math.Max(0,Math.Min(4,data.unlockedBoss));
                     data.attackLevel=Math.Max(0,Math.Min(10,data.attackLevel));data.healthLevel=Math.Max(0,Math.Min(10,data.healthLevel));
                     if(data.equippedUltimate< -1||data.equippedUltimate>4||(data.equippedUltimate>=0&&!data.cleared[data.equippedUltimate]))data.equippedUltimate=-1;

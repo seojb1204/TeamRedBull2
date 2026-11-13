@@ -30,6 +30,7 @@ namespace ReversalTower
         // Update polls mouse buttons before OnGUI: Event.Use alone cannot shield combat input.
         bool DdaPanelConsumesMouse()
         {
+            if(AutoRunArgs.Active)return false;
             if (!(ddaPanelLoaded ? showDdaPanel : PlayerPrefs.GetInt(DdaPanelPref, 0) == 1) ||
                 (mode != ScreenMode.Battle && mode != ScreenMode.Result) || save == null || spec == null ||
                 stats == null || stats.Count == 0) return false;

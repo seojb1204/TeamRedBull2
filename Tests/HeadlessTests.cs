@@ -72,7 +72,7 @@ public static class HeadlessTests
             Start();game.boss=new Vector2(-5,0);game.player=new Vector2(2,0);Call("BeginPattern",game.spec.patterns[3]);game.patternAge=game.windup;Call("ExecutePattern");Call("TickBoss",.1f);Check(game.bossStagger>3&&!game.pillarLeft,"Arakus charge collides with a pillar and staggers");
             Start(2);game.safeSide=-1;game.player=new Vector2(-7,0);Call("BeginPattern",game.spec.patterns[5]);game.patternAge=game.windup;Call("ExecutePattern");hp=game.playerHp;Call("TickHazards",.04f);Check(game.playerHp==hp,"Judgement safe side avoids damage");
             Start(1);game.barrier=true;game.barrierHp=5;game.player=new Vector2(-1,0);game.face=1;Call("BeginAction","J",.35f);Call("TickAction",.2f);Check(!game.barrier&&game.bossStagger==3,"Breaking Phanes barrier grants stagger");
-            Start();game.save.dda=false;game.DamageBoss(game.bossHp);Check(game.result.dda&&game.save.Learning("arakus").battles==1,"DDA setting is snapshotted for a running battle");
+            Start();game.Stat("cleave").opportunities=1;game.Stat("cleave").dodges=1;game.save.dda=false;game.DamageBoss(game.bossHp);Check(game.result.dda&&game.save.Learning("arakus").battles==1,"DDA setting is snapshotted for a running battle");
             Check(game.save.cleared[0]&&game.save.equippedUltimate==0&&game.save.gold>=130,"First victory unlocks inherited ultimate and gold");
             Check(game.mode==ScreenMode.Result,"Victory enters result screen");
             game.ReturnLobby();Check(game.mode==ScreenMode.Lobby&&game.hazards.Count==0,"Returning to lobby clears battle hazards");
@@ -109,7 +109,7 @@ public static class HeadlessTests
             var saved=new SaveData{gold=123};Check(SaveStore.Save(saved),"Save writes successfully");saved.gold=234;Check(SaveStore.Save(saved),"Atomic save replacement succeeds");Check(SaveStore.Load().gold==234,"Save reload restores progress");
             File.WriteAllText(SaveStore.SavePath,"broken-json");Check(SaveStore.Load().gold==123,"Corrupt main save recovers backup");
             // DDA 기록 초기화 (설정 화면 버튼): 학습만 지우고 진행·골드·기록은 남긴다
-            Start();game.DamageBoss(game.bossHp);
+            Start();game.Stat("cleave").opportunities=1;game.Stat("cleave").dodges=1;game.DamageBoss(game.bossHp);
             {
                 int gold=game.save.gold,history=game.save.history.Count;
                 Check(game.save.learning.Count==1&&game.save.Learning("arakus").battles==1,"Victory records DDA learning");

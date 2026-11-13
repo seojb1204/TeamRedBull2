@@ -105,8 +105,16 @@ namespace ReversalTower
         public List<BossLearning> learning=new List<BossLearning>();
         // DDA가 보스별로 기억한 학습(판 수·연패·패턴별 레벨·성공률·LinUCB 행렬)만 지운다. 골드·카드·클리어·전투 기록은 그대로.
         // 다음 전투는 그 보스와의 첫 만남(레벨 0, DB 통계가 있으면 그 값)으로 시작한다.
-        public void ResetDdaLearning() {learning.Clear();}
-        public BossLearning Learning(string id) {var b=learning.Find(x=>x.id==id);if(b==null){b=new BossLearning{id=id};learning.Add(b);}return b;}
+        public void ResetDdaLearning() {if(learning==null)learning=new List<BossLearning>();else learning.Clear();}
+        // Repair only DDA state; progression, history and inventory are preserved.
+        public void NormalizeDda()
+        {
+            if(learning==null)learning=new List<BossLearning>();
+            var seen=new HashSet<string>();
+            learning.RemoveAll(b=>b==null||string.IsNullOrEmpty(b.id)||!seen.Add(b.id));
+            foreach(var b in learning)b.Normalize();
+        }
+        public BossLearning Learning(string id) {if(learning==null)learning=new List<BossLearning>();var b=learning.Find(x=>x!=null&&x.id==id);if(b==null){b=new BossLearning{id=id};learning.Add(b);}return b;}
         public int UpgradeCost(bool attack) => 80+(attack?attackLevel:healthLevel)*55;
     }
     [Serializable] public class PatternStats
@@ -122,7 +130,17 @@ namespace ReversalTower
         public string id;public int battles,lossStreak;public float globalSuccess=.7f;
         public List<PatternMemory> patterns=new List<PatternMemory>();
         public BanditModel model=new BanditModel();
-        public PatternMemory Pattern(string key){var p=patterns.Find(x=>x.id==key);if(p==null){p=new PatternMemory{id=key};patterns.Add(p);}return p;}
+        public void Normalize()
+        {
+            battles=Math.Max(0,battles);lossStreak=Math.Max(0,lossStreak);
+            globalSuccess=BanditModel.Unit(globalSuccess,.7f);
+            if(patterns==null)patterns=new List<PatternMemory>();
+            var seen=new HashSet<string>();
+            patterns.RemoveAll(p=>p==null||string.IsNullOrEmpty(p.id)||!seen.Add(p.id));
+            foreach(var p in patterns){p.level=Math.Max(-2,Math.Min(2,p.level));p.observations=Math.Max(0,p.observations);p.success=BanditModel.Unit(p.success,.7f);}
+            if(model==null)model=new BanditModel();model.Init();
+        }
+        public PatternMemory Pattern(string key){if(patterns==null)patterns=new List<PatternMemory>();var p=patterns.Find(x=>x!=null&&x.id==key);if(p==null){p=new PatternMemory{id=key};patterns.Add(p);}return p;}
     }
     // Disjoint LinUCB: six context features, five bounded difficulty arms.
     // Models learn only after battle completion; a running pattern never changes.
@@ -134,11 +152,34 @@ namespace ReversalTower
         public const int D=6,N=5;
         public double[] matrices=new double[N*D*D], vectors=new double[N*D];
         public bool initialized;
-        public void Init(){if(initialized&&matrices!=null&&matrices.Length==N*D*D&&vectors!=null&&vectors.Length==N*D)return;matrices=new double[N*D*D];vectors=new double[N*D];for(int a=0;a<N;a++)for(int i=0;i<D;i++)matrices[a*D*D+i*D+i]=1;initialized=true;}
+        public static bool Finite(double value)=>!double.IsNaN(value)&&!double.IsInfinity(value);
+        public static float Unit(float value,float fallback)=>Finite(value)?Math.Max(0,Math.Min(1,value)):fallback;
+        bool Healthy()
+        {
+            if(!initialized||matrices==null||matrices.Length!=N*D*D||vectors==null||vectors.Length!=N*D)return false;
+            foreach(double v in vectors)if(!Finite(v))return false;
+            foreach(double v in matrices)if(!Finite(v))return false;
+            // Valid LinUCB A = I + sum(xx^T) is symmetric positive definite.
+            for(int arm=0;arm<N;arm++)
+            {
+                var l=new double[D,D];int offset=arm*D*D;
+                for(int i=0;i<D;i++)for(int j=0;j<=i;j++)
+                {
+                    double v=matrices[offset+i*D+j],other=matrices[offset+j*D+i];
+                    if(Math.Abs(v-other)>1e-8*Math.Max(1,Math.Max(Math.Abs(v),Math.Abs(other))))return false;
+                    for(int k=0;k<j;k++)v-=l[i,k]*l[j,k];
+                    if(!Finite(v))return false;
+                    if(i==j){if(v<=1e-12)return false;l[i,j]=Math.Sqrt(v);}else l[i,j]=v/l[j,j];
+                }
+            }
+            return true;
+        }
+        public void Init(){if(Healthy())return;matrices=new double[N*D*D];vectors=new double[N*D];for(int a=0;a<N;a++)for(int i=0;i<D;i++)matrices[a*D*D+i*D+i]=1;initialized=true;}
         public double[] Context(float success,float global,int level,float power,int retries)
-            => new double[]{1,1-success,1-global,level/2.0,Math.Min(1,power/2),Math.Min(1,retries/5.0)};
+            => new double[]{1,1-Unit(success,.7f),1-Unit(global,.7f),Math.Max(-2,Math.Min(2,level))/2.0,Finite(power)?Math.Max(0,Math.Min(1,power/2)):0,Math.Max(0,Math.Min(1,retries/5.0))};
         public double Value(int arm,double[] x)
         {
+            if(arm<0||arm>=N||!ValidContext(x))return 0;
             Init();var ax=Solve(arm,x);var b=new double[D];Array.Copy(vectors,arm*D,b,0,D);
             var theta=Solve(arm,b);double mean=0,uncertainty=0;
             for(int i=0;i<D;i++){mean+=theta[i]*x[i];uncertainty+=x[i]*ax[i];}
@@ -146,7 +187,9 @@ namespace ReversalTower
         }
         public int Choose(double[] context,int current,int battles,float success,int lossStreak)
         {
-            if(battles==0)return 0;
+            current=Math.Max(-2,Math.Min(2,current));success=Unit(success,.7f);
+            if(!ValidContext(context))return current;
+            if(battles<=0)return 0;
             if(lossStreak>=3)return Math.Max(-2,current-1);
             if(success<.45f)return Math.Max(-2,current-1);
             if(success>.9f)return Math.Min(2,current+1);
@@ -160,8 +203,10 @@ namespace ReversalTower
             }
             return best;
         }
+        public static bool ValidContext(double[] x)
+        {if(x==null||x.Length!=D)return false;foreach(double v in x)if(!Finite(v)||Math.Abs(v)>1)return false;return true;}
         public void Update(int level,double[] x,double reward)
-        {Init();int a=level+2;for(int i=0;i<D;i++){vectors[a*D+i]+=reward*x[i];for(int j=0;j<D;j++)matrices[a*D*D+i*D+j]+=x[i]*x[j];}}
+        {if(level< -2||level>2||!ValidContext(x)||!Finite(reward)||reward<0||reward>1)return;Init();int a=level+2;for(int i=0;i<D;i++){vectors[a*D+i]+=reward*x[i];for(int j=0;j<D;j++)matrices[a*D*D+i*D+j]+=x[i]*x[j];}}
         double[] Solve(int arm,double[] rhs)
         {
             var a=new double[D,D+1];for(int i=0;i<D;i++){for(int j=0;j<D;j++)a[i,j]=matrices[arm*D*D+i*D+j];a[i,D]=rhs[i];}
@@ -175,6 +220,6 @@ namespace ReversalTower
             }
             var result=new double[D];for(int i=0;i<D;i++)result[i]=a[i,D];return result;
         }
-        public static double Reward(float success){if(success>=.6f&&success<=.8f)return 1;return Math.Max(0,1-Math.Min(Math.Abs(success-.6f),Math.Abs(success-.8f))*2.5);}
+        public static double Reward(float success){if(!Finite(success)||success<0||success>1)return 0;if(success>=.6f&&success<=.8f)return 1;return Math.Max(0,1-Math.Min(Math.Abs(success-.6f),Math.Abs(success-.8f))*2.5);}
     }
 }

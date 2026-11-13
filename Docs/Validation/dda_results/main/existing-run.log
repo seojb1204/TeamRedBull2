@@ -1,0 +1,138 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.427
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+PASS Five distinct boss definitions
+PASS arakus unique cleave
+PASS arakus unique shield
+PASS arakus unique kick
+PASS arakus unique charge
+PASS arakus unique throw
+PASS arakus unique slam
+PASS arakus unique slash
+PASS arakus unique rush
+PASS arakus unique sweep
+PASS arakus unique step
+PASS arakus unique rage
+PASS arakus multiple parry opportunities
+PASS phanes unique orb
+PASS phanes unique fan
+PASS phanes unique beam
+PASS phanes unique rain
+PASS phanes unique barrier
+PASS phanes unique pulse
+PASS phanes multiple parry opportunities
+PASS adicus unique scythe
+PASS adicus unique cross
+PASS adicus unique chain
+PASS adicus unique fall
+PASS adicus unique prisoner
+PASS adicus unique judgement
+PASS adicus unique spin
+PASS adicus multiple parry opportunities
+PASS aethelos unique blade
+PASS aethelos unique lance
+PASS aethelos unique rift
+PASS aethelos unique thunder
+PASS aethelos unique creation
+PASS aethelos unique heaven
+PASS aethelos multiple parry opportunities
+PASS kharos unique twelve
+PASS kharos unique draw
+PASS kharos unique echo
+PASS kharos unique eclipse
+PASS kharos unique rain
+PASS kharos unique phantom
+PASS kharos unique end
+PASS kharos multiple parry opportunities
+PASS Neutral first encounter
+PASS Three-loss protection
+PASS Easy lower bound
+PASS Cold-start support for struggling players
+PASS Cold-start progression for skilled players
+PASS 1000 finite LinUCB updates with one-step bounds
+PASS Learned matrices survive serialization
+PASS Parry prevents damage and grants 15 ultimate
+PASS Late parry receives damage
+PASS Post-hit invulnerability prevents repeated damage
+PASS Unparryable attack bypasses parry
+PASS Dash evasion counts as a dodge, not ignored hit
+PASS Single-hit damage capped at 30 percent max HP
+PASS Normal attack applies damage after windup
+PASS Dash consumes one stack
+PASS Grounded dash stack recharges
+PASS Potion applies 40 HP after delay
+PASS Potion inventory resets on retry
+PASS Kharos starts with dash sealed
+PASS Three successful parries release dash seal
+PASS Phanes orb reflects and increases damage
+PASS Phase transition grants breathing room
+PASS Arakus charge collides with a pillar and staggers
+PASS Judgement safe side avoids damage
+PASS Breaking Phanes barrier grants stagger
+PASS DDA setting is snapshotted for a running battle
+PASS First victory unlocks inherited ultimate and gold
+PASS Victory enters result screen
+PASS Returning to lobby clears battle hazards
+PASS Boss 1 can complete and persist progression
+PASS Boss 2 can complete and persist progression
+PASS Boss 3 can complete and persist progression
+PASS Boss 4 can complete and persist progression
+PASS Immediate abandon does not generate free gold
+PASS 180-second boss simulation arakus
+PASS 180-second boss simulation phanes
+PASS 180-second boss simulation adicus
+PASS 180-second boss simulation aethelos
+PASS 180-second boss simulation kharos
+PASS Save writes successfully
+PASS Atomic save replacement succeeds
+PASS Save reload restores progress
+저장 복구: There was an error deserializing the object of type ReversalTower.SaveData. Encountered unexpected character 'b'.
+PASS Corrupt main save recovers backup
+PASS Legacy fixture saved
+PASS V1 migration preserves gold, old upgrades and progression
+PASS V1 migration preserves DDA memory
+PASS Old permanent stats still contribute
+PASS Exactly three distinct known cards offered
+PASS Reopening does not reroll offers
+PASS Offers survive application restart
+PASS Original v1 save is archived before migration writes
+PASS Offered card purchase succeeds
+PASS Purchase deducts once and adds one permanent stack
+PASS Double selection blocked without consuming gold
+PASS Chosen state and permanent effect survive restart
+PASS Completed lobby cannot open another selection
+PASS Battle entry hides cards and uses accumulated health
+PASS Battle settlement unlocks next lobby offer
+PASS Death preserves permanent cards
+PASS Repeated settlement preserves result and grants no extra gold
+PASS Next lobby offers three cards
+PASS Enter behind card modal does not start battle
+PASS Lobby controller accepts a visible offered card
+PASS Repeated card stacks additively
+PASS Repeated battle start does not reapply card effects
+PASS Cards cannot be selected during battle
+PASS Skip strengthening enters battle directly
+PASS Insufficient funds grants no effect
+PASS Unknown or non-offered card rejected
+저장 실패: The file '/tmp/dda-learning-execution-ywi_jm2x/work/headless-save/Cards_1eb42617e25c4b76869c7fdb9c593265/blocked-root' already exists.
+PASS Failed disk write rolls back gold and card effect
+PASS Health and potion effects sum across stacks
+PASS Skill cards affect only specified action
+PASS DDA context includes card power
+PASS Combat consumes effective health and healing stats
+PASS Automated input has no hidden healing
+PASS Malformed cards normalize without duplicate stat application
+HEADLESS_TESTS_PASSED 119 assertions. Rendering/audio require a real Unity player.

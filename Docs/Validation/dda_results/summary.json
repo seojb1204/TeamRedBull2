@@ -1,0 +1,196 @@
+{
+  "main": {
+    "status_counts": {
+      "PASS": 219,
+      "FAIL": 29,
+      "OBSERVED": 3
+    },
+    "failures": [
+      {
+        "source": "main",
+        "check": "desired_post_warmup_low_success_reduces_level",
+        "status": "FAIL",
+        "detail": ""
+      },
+      {
+        "source": "main",
+        "check": "desired_post_warmup_high_success_increases_level",
+        "status": "FAIL",
+        "detail": ""
+      },
+      {
+        "source": "main",
+        "check": "desired_game_abandon_does_not_learn",
+        "status": "FAIL",
+        "detail": "actual learning.battles=1; event count=1"
+      },
+      {
+        "source": "main",
+        "check": "desired_game_quit_does_not_learn",
+        "status": "FAIL",
+        "detail": "actual learning.battles=1; event count=1"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_arakus_low_00",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_arakus_low_30",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_arakus_high_95",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_arakus_high_100",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_reacts_to_improvement_arakus",
+        "status": "FAIL",
+        "detail": "After 12 consecutive 100% synthetic outcomes, next attack assignments should reach +2"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_phanes_low_00",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_phanes_low_30",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_phanes_high_95",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_phanes_high_100",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_reacts_to_improvement_phanes",
+        "status": "FAIL",
+        "detail": "After 12 consecutive 100% synthetic outcomes, next attack assignments should reach +2"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_adicus_low_00",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_adicus_low_30",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_adicus_high_95",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_adicus_high_100",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_reacts_to_improvement_adicus",
+        "status": "FAIL",
+        "detail": "After 12 consecutive 100% synthetic outcomes, next attack assignments should reach +2"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_aethelos_low_00",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_aethelos_low_30",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_aethelos_high_95",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_aethelos_high_100",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_reacts_to_improvement_aethelos",
+        "status": "FAIL",
+        "detail": "After 12 consecutive 100% synthetic outcomes, next attack assignments should reach +2"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_kharos_low_00",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_kharos_low_30",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_kharos_high_95",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_extreme_direction_kharos_high_100",
+        "status": "FAIL",
+        "detail": "Synthetic fixed-success feedback with clear=true, not human performance"
+      },
+      {
+        "source": "main",
+        "check": "desired_reacts_to_improvement_kharos",
+        "status": "FAIL",
+        "detail": "After 12 consecutive 100% synthetic outcomes, next attack assignments should reach +2"
+      }
+    ],
+    "simulated_sessions": 1320,
+    "pattern_rows": 9768
+  },
+  "pr13": {
+    "status_counts": {
+      "PASS": 248,
+      "OBSERVED": 3
+    },
+    "failures": [],
+    "simulated_sessions": 1320,
+    "pattern_rows": 9768
+  }
+}

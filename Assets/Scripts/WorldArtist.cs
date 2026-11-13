@@ -144,16 +144,31 @@ namespace ReversalTower
             // Width-first fit: preserve both side columns, allow a small crop above the room.
             // Use the actual viewport width, not Screen.width or a quantized texel multiplier.
             float unit=pixelWidth/sourceWidth/pixelsPerWorld,width=sourceWidth*unit;
-            float centerX=camera.transform.position.x;
+            // Follow the zoom focus, not the camera shake: room and world pillars must move together.
+            float centerX=g.zoomFocus.x*g.zoomPunch*.12f;
             // Source walk line stays exactly on world y=0; never snap the floor away from the actors.
             float centerY=(groundRow-sourceHeight*.5f)*unit,bottom=(groundRow-sourceHeight)*unit;
             Shape(room,centerX,centerY,width,width,Color.white);
+            // Extend only the outside edge texels into the shake margin, without resizing the authored room.
+            float padding=Mathf.Abs(camera.transform.position.x-centerX)+unit;
+            RoomEdges(path,centerX,centerY,width,unit,padding,0,(int)sourceHeight);
             // Continue the same lower masonry below the authored image into the visible floor area.
             var lower=ExternalAssets.Picture(path,0,0,1248,62);
             float stripHeight=62*unit;
             int strips=Mathf.CeilToInt(Mathf.Max(0,bottom-(camera.transform.position.y-camera.orthographicSize))/stripHeight)+1;
-            for(int i=0;i<strips;i++)Shape(lower,centerX,bottom-(i+.5f)*stripHeight,width,width,Color.white);
+            for(int i=0;i<strips;i++)
+            {
+                float y=bottom-(i+.5f)*stripHeight;
+                Shape(lower,centerX,y,width,width,Color.white);
+                RoomEdges(path,centerX,y,width,unit,padding,0,62);
+            }
             return true;
+        }
+        void RoomEdges(string path,float x,float y,float width,float unit,float padding,int sourceY,int height)
+        {
+            // Picture's pixels-per-unit equals the crop width (1), hence the vertical scale is unit.
+            Shape(ExternalAssets.Picture(path,0,sourceY,1,height),x-(width+padding)*.5f,y,padding,unit,Color.white);
+            Shape(ExternalAssets.Picture(path,1247,sourceY,1,height),x+(width+padding)*.5f,y,padding,unit,Color.white);
         }
         void Pillar(float x)
         {Rect(x,.85f,.65f,1.7f,Palette.Stone);Rect(x,1.75f,.9f,.18f,Palette.Slate);Rect(x,.15f,.9f,.3f,Palette.Slate);Rect(x-.18f,.95f,.07f,1.3f,Palette.Alpha(Palette.Gold,.5f));}

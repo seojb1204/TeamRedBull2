@@ -41,6 +41,34 @@ namespace ReversalTower
         public Pattern current;
         public float patternAge,windup,recovery,rest,patternDamage,targetX,safeSide,nextHit,bossStagger,barrierHp,barrierTime;
         public int patternCount,attackStep;
+        // Barrier knockdown is distinct from a short parry flinch.
+        public int phanesDownStage { get; private set; } // 0 hover, 1 fall, 2 down, 3 rise, 4 ascend
+        public float phanesDownAge { get; private set; }
+        float phanesFallFrom;
+        public void BreakPhanesBarrier()
+        {
+            barrier=false;bossStagger=3;
+            if(!g.spec.airborne)return;
+            phanesDownStage=1;phanesDownAge=0;phanesFallFrom=g.boss.y;
+            current=null;rest=.5f;poseFrame=-1;parryGlow=0;
+        }
+        bool TickPhanesDown(float dt)
+        {
+            if(phanesDownStage==0)return false;
+            // Consume leftover time across stages: reward lasts three full grounded seconds.
+            while(dt>0&&phanesDownStage!=0)
+            {
+                float duration=phanesDownStage==1?.3f:phanesDownStage==2?3f:phanesDownStage==3?.3f:.4f;
+                float used=Mathf.Min(dt,duration-phanesDownAge);
+                phanesDownAge+=used;dt-=used;
+                float t=Mathf.Clamp01(phanesDownAge/duration);
+                g.boss.y=phanesDownStage==1?phanesFallFrom*(1-t*t):phanesDownStage==4?(1.05f+Mathf.Sin(g.seconds*1.5f)*.18f)*t:0;
+                bossStagger=phanesDownStage==1?3:phanesDownStage==2?Mathf.Max(0,3-phanesDownAge):0;
+                g.bossState=phanesDownStage==1?"추락":phanesDownStage==2?"그로기":"회복";
+                if(phanesDownAge>=duration){phanesDownStage++;phanesDownAge=0;if(phanesDownStage>4)phanesDownStage=0;}
+            }
+            return true;
+        }
         public Vector2 origin;
         public bool phaseTwo,thirdPhase,pillarLeft,pillarRight,barrier;
         // 아라쿠스 기획 패턴 상태 (다른 보스는 쓰지 않음)
@@ -62,6 +90,7 @@ namespace ReversalTower
         public BossPatternSystem(TowerGame game) { g = game; }
         public void Reset()
         {
+            phanesDownStage=0;phanesDownAge=0;phanesFallFrom=0;
             cooldowns.Clear(); previousPattern=""; dashHit=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
             shieldOut=shieldCaught=leaping=struck=touched=false;forceNext=null;
@@ -74,6 +103,7 @@ namespace ReversalTower
         public void TickBoss(float dt)
         {
             if(g.bossHp<=0)return;
+            if(TickPhanesDown(dt))return;
             if(!phaseTwo&&g.bossHp<g.spec.hp*g.spec.phaseThreshold)
             {
                 phaseTwo=true;g.phaseFlash=1;current=null;rest=2;bossStagger=0;g.bossState="페이즈 전환";g.shake=4;
@@ -101,12 +131,19 @@ namespace ReversalTower
                 if(g.spec.hasPillars&&behindTime>=BehindLimit)
                 {var step=Find(AttackKind.Step);if(step!=null&&Ready(step)){BeginPattern(step);return;}}
                 rest-=dt;g.bossState=rest>0?"빈틈":"추적";
+                // Reposition throughout the idle window, not once on the attack-selection frame.
+                if(g.spec.airborne&&!barrier)
+                {
+                    float side=g.boss.x>=g.player.x?1:-1;
+                    float target=Mathf.Clamp(g.player.x+side*4.5f,TowerGame.Left+1,TowerGame.Right-1);
+                    g.boss.x=Mathf.MoveTowards(g.boss.x,target,dt*g.spec.speed);
+                    g.bossFace=g.player.x>=g.boss.x?1:-1;
+                }
                 if(rest>0)return;
                 float distance=Mathf.Abs(g.boss.x-g.player.x);
                 g.bossFace=g.player.x>=g.boss.x?1:-1;
                 float chase=g.spec.speed*(g.spec.hasPillars?(rageActive?RageTempo:1):(phaseTwo?1.18f:1));
                 if(distance>3.1f&&!g.spec.airborne){g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase);if(distance>5&&combatRandom.NextDouble()>.015)return;}
-                if(g.spec.airborne&&distance<3){g.boss.x=Mathf.MoveTowards(g.boss.x,-Mathf.Sign(g.player.x)*7,dt*4);}
                 SelectPattern(distance);return;
             }
             patternAge+=dt;

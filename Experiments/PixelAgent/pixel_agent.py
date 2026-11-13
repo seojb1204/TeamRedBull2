@@ -192,10 +192,10 @@ class BridgeClient:
             # Game writes a failure marker when no valid action can be consumed.
             # Do not convert the same transition into another reward update.
             raise RuntimeError('Game bridge reported an error; inspect bridge_error.json')
-        path = self.root/'transition.json'
+        path = self.root/f'transition_{0 if self.last is None else self.last+1}.json'
         try:
             msg = json.loads(path.read_text(encoding='utf-8-sig'))
-        except (FileNotFoundError,json.JSONDecodeError):
+        except (FileNotFoundError,PermissionError,json.JSONDecodeError):
             return None
         ep, step = msg['episode'], msg['step']
         if not isinstance(ep,(str,int)) or isinstance(ep,bool) or not isinstance(step,int) or isinstance(step,bool) or step<0:
@@ -242,6 +242,7 @@ def run_bridge(args):
     previous = None
     start = last_seen = time.monotonic()
     count = 0
+    action_counts = [0]*7
     total_reward = 0.0
     terminal = truncated = False
     while time.monotonic()-start < args.max_seconds and count<args.max_steps:
@@ -252,6 +253,11 @@ def run_bridge(args):
             time.sleep(.01)
             continue
         msg,frame = item
+        if args.report and (count%120==0 or msg['terminated'] or msg['truncated']):
+            samples=Path(args.report).with_suffix('.frames');samples.mkdir(exist_ok=True)
+            if len(list(samples.glob('*.ppm')))<32:
+                fw,fh,rgb=frame
+                (samples/f'{count:05d}.ppm').write_bytes(f'P6\n{fw} {fh}\n255\n'.encode()+rgb)
         last_seen = time.monotonic()
         x = encoder.observe(frame)
         terminal,truncated = msg['terminated'],msg['truncated']
@@ -265,6 +271,7 @@ def run_bridge(args):
             break
         a = policy.choose(x,args.epsilon if args.train else 0) if args.policy=='learned' else policy.choose(x)
         bridge.act(msg,a)
+        action_counts[a]+=1
         previous = (x,a)
     if args.train:
         model.save(args.checkpoint)
@@ -272,7 +279,7 @@ def run_bridge(args):
               'observations':'PPM RGB pixels only; rewards only for learning/scoring',
               'training':args.train,'steps':count,'reward':total_reward,
               'terminated':terminal,'truncated':truncated,'outcome':msg.get('reason','unknown') if count else 'no_observations','wall_seconds':round(time.monotonic()-start,3),
-              'updates':model.updates,'completed':terminal or truncated}
+              'actions':dict(zip(ACTIONS,action_counts)),'updates':model.updates,'completed':terminal or truncated}
     if args.report:
         atomic_json(args.report,report)
     print(json.dumps(report,ensure_ascii=False))
@@ -299,3 +306,4 @@ def main():
 
 if __name__=='__main__':
     main()
+

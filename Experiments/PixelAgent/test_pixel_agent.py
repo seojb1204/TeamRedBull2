@@ -52,13 +52,14 @@ class PixelAgentTests(unittest.TestCase):
             root=Path(d); (root/'observation_e_0.ppm').write_bytes(b'P6\n20 12\n255\n'+frame()[2])
             msg={'episode':'e','step':0,'frame':'observation_e_0.ppm','reward':0,
                  'terminated':False,'truncated':False,'bossHp':99999,'windup':0.01}
-            atomic_json(root/'transition.json',msg)
+            (root/'transition.json').write_text('not a valid pointer; must never be read')
+            atomic_json(root/'transition_0.json',msg)
             c=BridgeClient(root);m,f=c.read();self.assertEqual(f,frame())
             self.assertIsNone(c.read());c.act(m,3)
             self.assertEqual(json.loads((root/'action.json').read_text()),{'episode':'e','step':0,'action':3})
             with self.assertRaises(ValueError):c.act(dict(m,step=1),3)
             # Even frame traversal in game-emitted files fails closed.
-            atomic_json(root/'transition.json',dict(msg,step=1,frame='../secret.ppm'))
+            atomic_json(root/'transition_1.json',dict(msg,step=1,frame='../secret.ppm'))
             with self.assertRaises(ValueError):c.read()
     def test_game_error_marker_fails_before_duplicate_reward(self):
         with tempfile.TemporaryDirectory() as d:
@@ -79,7 +80,7 @@ class PixelAgentTests(unittest.TestCase):
             def transition(step):
                 return {'episode':'e','step':step,'frame':f'observation_e_{step}.ppm',
                         'reward':float(step),'terminated':step==1,'truncated':False}
-            atomic_json(root/'transition.json',transition(0))
+            atomic_json(root/'transition_0.json',transition(0))
             errors=[]
             def mock_game():
                 until=time.monotonic()+2
@@ -89,7 +90,7 @@ class PixelAgentTests(unittest.TestCase):
                     errors.append('No client action');return
                 action=json.loads((root/'action.json').read_text())
                 if action['episode']!='e' or action['step']!=0:errors.append('Wrong action ID')
-                atomic_json(root/'transition.json',transition(1))
+                atomic_json(root/'transition_1.json',transition(1))
             worker=threading.Thread(target=mock_game);worker.start()
             args=SimpleNamespace(bridge=str(root),checkpoint=str(root/'q.json'),seed=17,
                  train=True,policy='learned',max_seconds=3,max_steps=10,timeout=2,
@@ -109,7 +110,7 @@ class PixelAgentTests(unittest.TestCase):
             data=root/'Tower_Data';managed=data/'Managed';managed.mkdir(parents=True)
             dll=managed/'Assembly-CSharp.dll';dll.write_bytes(b'old build')
             with self.assertRaises(ValueError):validate_build(exe)
-            dll.write_bytes(('-towerPixelAgent\0자동검증: 네트워크 꺼짐').encode('utf-16-le'))
+            dll.write_bytes(('-towerPixelAgent\0�ڵ�����: ��Ʈ��ũ ����').encode('utf-16-le'))
             streaming=data/'StreamingAssets';(streaming/'Art').mkdir(parents=True)
             (streaming/'Art'/'test.png').write_bytes(b'keep-art')
             self.assertEqual(validate_build(exe)[0],exe)
@@ -122,3 +123,4 @@ class PixelAgentTests(unittest.TestCase):
         self.assertLess(result['random_success_rate'],.25)
 
 if __name__=='__main__':unittest.main()
+

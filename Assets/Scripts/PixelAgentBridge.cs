@@ -63,7 +63,9 @@ namespace ReversalTower
         // Called by TowerGame.Update, not MonoBehaviour.Update: ordering is explicit.
         public bool BeforeTick()
         {
-            if(finished||game.mode!=ScreenMode.Battle)return false;
+            if(finished)return false;
+            if(watch.Elapsed.TotalSeconds>AutoRunArgs.SecondsLimit+3){finished=true;Application.Quit(2);return false;}
+            if(game.mode!=ScreenMode.Battle)return false;
             if(watch.Elapsed.TotalSeconds>=AutoRunArgs.SecondsLimit||game.seconds>=60)return false;
             if(framesRemaining>0){frameIndex=FramesPerAction-framesRemaining;framesRemaining--;return true;}
             if(!published)return false;
@@ -79,6 +81,8 @@ namespace ReversalTower
             catch(IOException){return false;}
             catch(ArgumentException){return false;}
             File.Delete(path);
+            string oldTransition=Path.Combine(directory,"transition_"+step+".json");
+            if(File.Exists(oldTransition))File.Delete(oldTransition);
             // The matching action acknowledges that the client consumed this frame.
             if(lastFrame!=null&&File.Exists(lastFrame))File.Delete(lastFrame);
             action=message.action;step++;published=false;framesRemaining=FramesPerAction-1;frameIndex=0;
@@ -134,7 +138,10 @@ namespace ReversalTower
                 var t=new Transition{episode=episode,step=step,frame=filename,reward=reward,terminated=terminal,truncated=truncated,
                     reason=terminal?(game.result!=null&&game.result.clear?"win":"loss"):truncated?"time_or_client_timeout":"running"};
                 string state=Path.Combine(directory,"transition.json");
-                File.WriteAllText(state+".tmp",JsonUtility.ToJson(t));ReplaceFile(state+".tmp",state);
+                string json=JsonUtility.ToJson(t);
+                File.WriteAllText(state+".tmp",json);ReplaceFile(state+".tmp",state);
+                string numbered=Path.Combine(directory,"transition_"+step+".json");
+                File.WriteAllText(numbered+".tmp",json);ReplaceFile(numbered+".tmp",numbered);
                 published=true;waitStarted=watch.Elapsed.TotalSeconds;
                 if(terminal||truncated)
                 {
@@ -151,9 +158,13 @@ namespace ReversalTower
         }
         static void ReplaceFile(string temp,string destination)
         {
-            if(File.Exists(destination))File.Replace(temp,destination,null);
-            else File.Move(temp,destination);
+            for(int attempt=0;;attempt++)
+            {
+                try { if(File.Exists(destination))File.Replace(temp,destination,null);else File.Move(temp,destination);return; }
+                catch(IOException) { if(attempt>=19)throw;System.Threading.Thread.Sleep(5); }
+            }
         }
     }
 }
 #endif
+

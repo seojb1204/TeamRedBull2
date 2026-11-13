@@ -97,9 +97,42 @@ class V3Tests(unittest.TestCase):
                  patch.object(v3,"save_v3",side_effect=AssertionError("eval saved")):
                 report=v3.run(self.args(root,False))
             self.assertEqual((root/"q.json").read_bytes(),before)
-            self.assertFalse((root/"report.trajectory.json").exists())
+            saved=json.loads((root/"report.trajectory.json").read_text())
+            self.assertFalse(saved["training"])
+            self.assertEqual(saved["policy"],"tabular-v3")
+            self.assertEqual(len(saved["transitions"]),1)
+            self.assertEqual(saved["transitions"][0]["raw_reward"],-.101)
             self.assertEqual(report["evaluation_epsilon"],0)
             self.assertIsNone(report["training_reward"])
+
+    def test_rule_and_random_record_without_learning(self):
+        for policy in ("rule-v3","random-v3"):
+            with self.subTest(policy=policy),tempfile.TemporaryDirectory() as d:
+                root=Path(d);args=self.args(root,False)
+                args.policy=policy;args.checkpoint=None
+                with patch.object(v3,"BridgeClient",return_value=FakeClient()),patch.object(v3,"Tracker",FakeTracker),\
+                     patch.object(TabularQ,"update",side_effect=AssertionError("nontraining update")),\
+                     patch.object(TabularQ,"replay",side_effect=AssertionError("nontraining replay")),\
+                     patch.object(v3,"save_v3",side_effect=AssertionError("nontraining save")):
+                    report=v3.run(args)
+                saved=json.loads((root/"report.trajectory.json").read_text())
+                self.assertEqual(saved["policy"],policy)
+                self.assertFalse(saved["training"])
+                self.assertEqual(len(saved["transitions"]),1)
+                self.assertFalse((root/"q.json").exists())
+                self.assertEqual(report["online_updates"],0)
+                self.assertEqual(report["replay_updates"],0)
+
+    def test_locally_bounded_recording_marks_incomplete(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);args=self.args(root,False)
+            args.policy="random-v3";args.checkpoint=None;args.max_steps=1
+            with patch.object(v3,"BridgeClient",return_value=FakeClient()),patch.object(v3,"Tracker",FakeTracker):
+                report=v3.run(args)
+            saved=json.loads((root/"report.trajectory.json").read_text())
+            self.assertFalse(saved["completed"])
+            self.assertEqual(saved["transitions"],[])
+            self.assertFalse(report["completed"])
 
     def test_invalid_bound_and_missing_checkpoint_rejected(self):
         with tempfile.TemporaryDirectory() as d:

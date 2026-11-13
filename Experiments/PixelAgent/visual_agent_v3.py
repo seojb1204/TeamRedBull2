@@ -130,13 +130,14 @@ def run(args):
         raw_total += raw
         shaped = raw+(.001 if previous is not None else 0)
         shaped_total += shaped
-        if previous is not None and args.train:
-            if len(trajectory) >= MAX_TRANSITIONS:
-                raise ValueError("Training trajectory exceeded 5000 transitions")
+        if previous is not None:
+            if len(saved_transitions) >= MAX_TRANSITIONS:
+                raise ValueError("Recorded trajectory exceeded 5000 transitions")
             old, action = previous
-            transition = (old, action, shaped, state, terminal or truncated)
-            model.update(*transition)
-            trajectory.append(transition)
+            if args.train:
+                transition = (old, action, shaped, state, terminal or truncated)
+                model.update(*transition)
+                trajectory.append(transition)
             saved_transitions.append({
                 "state": old, "action": action, "raw_reward": raw,
                 "shaped_reward": shaped, "next_state": state,
@@ -164,14 +165,17 @@ def run(args):
         actions[action] += 1
         previous = (state, action)
         memory.acted(action)
-    if args.train:
-        # Preserve actual observations even on a locally bounded incomplete run.
+    if args.report:
+        # Record all policies without learning from evaluation or rule demonstrations.
+        # This does not reconstruct trajectories from older episodes.
         atomic_json(Path(args.report).with_suffix(".trajectory.json"), {
             "schema":"tower-pixel-v3-trajectory/1", "seed":args.seed,
+            "policy":args.policy, "training":args.train,
             "completed":terminal or truncated,
-            "reward_transform":"raw + 0.001; training only",
+            "reward_transform":"raw + 0.001; applied to learning only in training",
             "transitions":saved_transitions
         })
+    if args.train:
         if not (terminal or truncated):
             raise RuntimeError("Incomplete episode: no replay or checkpoint save")
         model.replay(trajectory, sweeps=8)

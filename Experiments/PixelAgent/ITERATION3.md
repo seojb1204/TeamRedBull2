@@ -39,3 +39,6 @@ Repeat evaluation with random-v3 and rule-v3 at seeds201/202 for fair comparison
 
 ## Recommended next decision
 Do not spend longer on the same sparse table without better evidence. Prefer a small fixed visual defense/approach curriculum and recorded successful demonstrations before full-combat RL. Verify actual facing from sprite pixels, collect successful parry transitions, and test warning timing separately. Such a curriculum/behavior-cloning stage is proposed, not implemented or demonstrated here. A human-like general screen learner is not complete.
+
+## Post-trial offline-only instrumentation
+After the9games, trajectory recording was extended to random/rule/read-only evaluation as well as training. This allows future comparison or demonstration collection; it does not reconstruct the missing earlier evaluation traces, and no imitation learner was trained. Updates/replay/checkpoint saving remain training-only. Latest Python33tests pass, including evaluation checkpoint immutability plus saved trajectory, rule/random no-update, and bounded incomplete trace recording. No further game/GPU trials were run after this change. The9game results above describe code401140a; this later change only improves records, not proven play quality.

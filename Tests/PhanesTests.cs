@@ -20,6 +20,10 @@ public static class PhanesTests {
  g=Start();g.boss.y=1.2f;g.bossStagger=.45f;g.BossPatterns.TickBoss(dt);Check(g.boss.y==1.2f&&g.BossPatterns.phanesDownStage==0,"parry does not drop boss");
  g.BossPatterns.BreakPhanesBarrier();g.StartBattle(1);Check(g.BossPatterns.phanesDownStage==0,"restart resets down");
  }
+ foreach(float side in new[]{-1f,1f}){var g=Start();g.player.x=side*10;g.boss.x=side*9;g.rest=100;for(int j=0;j<300;j++)g.BossPatterns.TickBoss(.016f);Check(g.boss.x>=TowerGame.Left+1&&g.boss.x<=TowerGame.Right-1,"arena bound");}
+ {var g=Start();g.current=g.spec.patterns[0];g.windup=1;g.patternAge=0;float x=g.boss.x;g.BossPatterns.TickBoss(.01f);Check(x==g.boss.x,"windup position locked");}
+ {var g=Start();g.boss.y=1.5f;g.BossPatterns.BreakPhanesBarrier();g.BossPatterns.TickBoss(3.9f);Check(g.BossPatterns.phanesDownStage==4,"large dt carries across stages");g.bossHp=0;float y=g.boss.y;g.BossPatterns.TickBoss(.2f);Check(g.boss.y==y,"dead simulation frozen");}
+ {var g=Start();g.barrier=true;g.barrierHp=5;g.player=new Vector2(-1,0);g.face=1;typeof(TowerGame).GetMethod("BeginAction",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(g,new object[]{"J",.35f});typeof(TowerGame).GetMethod("TickAction",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(g,new object[]{.2f});Check(!g.barrier&&g.BossPatterns.phanesDownStage==1,"real wall attack enters fall");}
  Check(PhanesPose.Sample(null,0,1,1,1,false,true,false,false,false).index==6,"parry pose");
  Check(PhanesPose.Sample(null,0,1,1,1,false,false,false,false,false,2,1).index==10,"down pose");
  Check(PhanesPose.Sample(null,0,1,1,1,false,false,false,false,false,3,.1f).index==11,"recovery pose");

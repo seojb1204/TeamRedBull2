@@ -62,7 +62,7 @@ namespace ReversalTower
                 float used=Mathf.Min(dt,duration-phanesDownAge);
                 phanesDownAge+=used;dt-=used;
                 float t=Mathf.Clamp01(phanesDownAge/duration);
-                g.boss.y=phanesDownStage==1?phanesFallFrom*(1-t*t):phanesDownStage==4?1.05f*t:0;
+                g.boss.y=phanesDownStage==1?phanesFallFrom*(1-t*t):phanesDownStage==4?(1.05f+Mathf.Sin(g.seconds*1.5f)*.18f)*t:0;
                 bossStagger=phanesDownStage==1?3:phanesDownStage==2?Mathf.Max(0,3-phanesDownAge):0;
                 g.bossState=phanesDownStage==1?"추락":phanesDownStage==2?"그로기":"회복";
                 if(phanesDownAge>=duration){phanesDownStage++;phanesDownAge=0;if(phanesDownStage>4)phanesDownStage=0;}

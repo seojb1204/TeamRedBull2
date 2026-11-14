@@ -52,13 +52,14 @@ def campaign(args):
     out.mkdir(parents=True,exist_ok=False)
     runroot=Path(tempfile.mkdtemp(prefix='tower-pixel-campaign-'))
     checkpoint=Path(args.checkpoint).resolve() if args.checkpoint else out/'checkpoint.json'
-    if args.policy in ('learned','tabular','tabular-v3') and not args.train and not checkpoint.is_file():
+    if args.policy in ('learned','tabular','tabular-v3','tabular-v4') and not args.train and not checkpoint.is_file():
         raise ValueError('Learned evaluation requires --checkpoint from an earlier training run')
     rows=[]
     summary={'schema':'tower-pixel-campaign/1','exe':str(exe),
              'exe_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),
              'assembly_sha256':assembly_hash,'isolated_root':str(runroot),
              'policy':args.policy,'training':args.train,'dda':False,
+             'action_set':'native12' if args.policy.endswith('-v4') else 'legacy7',
              'capture_mode':'camera-texture-no-hud' if getattr(args,'offscreen',False) else 'framebuffer',
              'hidden_window':getattr(args,'hidden',False),
              'initial_checkpoint_sha256':hashlib.sha256(checkpoint.read_bytes()).hexdigest() if checkpoint.is_file() else None,
@@ -84,11 +85,12 @@ def campaign(args):
                      '-screen-fullscreen','0','-screen-width','960','-screen-height','540',
                      '-logFile',str(out/f'episode-{i+1}-unity.log')]
             if getattr(args,'offscreen',False):command+=['-towerPixelOffscreen']
-            client_command=[sys.executable,str(Path(__file__).with_name('visual_agent_v3.py' if args.policy in ('random-v3','rule-v3','tabular-v3') else 'visual_agent_v2.py' if args.policy in ('random-v2','rule-v2','tabular') else 'pixel_agent.py')),
+            if args.policy in ('random-v4','rule-v4','tabular-v4'):command+=['-towerPixelFullActions']
+            client_command=[sys.executable,str(Path(__file__).with_name('visual_agent_v4.py' if args.policy in ('random-v4','rule-v4','tabular-v4') else 'visual_agent_v3.py' if args.policy in ('random-v3','rule-v3','tabular-v3') else 'visual_agent_v2.py' if args.policy in ('random-v2','rule-v2','tabular') else 'pixel_agent.py')),
                             '--bridge',str(bridge),'--policy',args.policy,'--seed',str(seed),
                             '--max-seconds',str(args.seconds+15),'--timeout',str(args.seconds),
                             '--report',str(result)]
-            if args.policy in ('learned','tabular','tabular-v3'):client_command+=['--checkpoint',str(checkpoint)]
+            if args.policy in ('learned','tabular','tabular-v3','tabular-v4'):client_command+=['--checkpoint',str(checkpoint)]
             if args.train:client_command+=['--train','--epsilon',str(args.epsilon)]
             if getattr(args,'anchor_checkpoint',None):client_command+=['--anchor-checkpoint',str(Path(args.anchor_checkpoint).resolve())]
             game=client=None;host=None
@@ -156,7 +158,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--exe',required=True,type=Path)
     p.add_argument('--output',required=True,type=Path)
-    p.add_argument('--policy',choices=['random','rule','learned','random-v2','rule-v2','tabular','random-v3','rule-v3','tabular-v3'],default='random')
+    p.add_argument('--policy',choices=['random','rule','learned','random-v2','rule-v2','tabular','random-v3','rule-v3','tabular-v3','random-v4','rule-v4','tabular-v4'],default='random')
     p.add_argument('--train',action='store_true')
     p.add_argument('--offscreen',action='store_true',help='Render camera texture, excludes IMGUI/HUD')
     p.add_argument('--hidden',action='store_true',help='Hide game window; requires --offscreen')
@@ -169,7 +171,7 @@ def main():
     a=p.parse_args()
     if not 1<=a.episodes<=3 or not 10<=a.seconds<=180 or not 0<=a.epsilon<=1:
         p.error('episodes 1..3, seconds 10..180, epsilon 0..1 required')
-    if a.train and a.policy not in ('learned','tabular','tabular-v3'):p.error('--train requires --policy learned or tabular')
+    if a.train and a.policy not in ('learned','tabular','tabular-v3','tabular-v4'):p.error('--train requires --policy learned or tabular')
     campaign(a)
 
 if __name__=='__main__':main()

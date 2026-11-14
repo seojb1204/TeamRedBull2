@@ -57,7 +57,9 @@ class Program {
   void Action(string ep,int step,int action){File.WriteAllText(Path.Combine(exchange,"action.json"),JsonSerializer.Serialize(new{episode=ep,step,action}));}
   Action("stale",0,3);Check(!b.BeforeTick(),"stale episode rejected");
   Action(episode,-1,3);Check(!b.BeforeTick(),"stale step rejected");
-  Action(episode,0,7);Check(!b.BeforeTick(),"out-of-range action rejected");
+  bool full=Array.IndexOf(Environment.GetCommandLineArgs(),"-towerPixelFullActions")>=0;
+  Check(state.GetProperty("actionSet").GetString()==(full?"native12":"legacy7"),"explicit action set metadata");
+  Action(episode,0,full?12:7);Check(!b.BeforeTick(),"out-of-range action rejected");
   Action(episode,0,3);Check(b.BeforeTick(),"valid action accepted");
   Check(!File.Exists(Path.Combine(exchange,"transition_0.json")),"acknowledged numbered transition removed");
   float move=99;bool jump=true,dash=true,attack=false,parry=true,q=true,w=true,e=true,r=true,f=true;
@@ -71,7 +73,9 @@ class Program {
   Check(state.GetProperty("step").GetInt32()==1&&Math.Abs(state.GetProperty("reward").GetSingle()-.099f)<.00001,"reward transition matched to action");
   Check(Directory.GetFiles(exchange,"*.ppm").Length==1,"acknowledged frame removed");
   Check(File.Exists(Path.Combine(exchange,"transition_1.json")),"next numbered transition published");
-  Action(episode,1,1);Check(b.BeforeTick(),"next step accepted");game.hits=2;game.parries=3;game.mode=ReversalTower.ScreenMode.Result;game.result=new ReversalTower.Result{clear=true};TestRuntime.loop.MoveNext();
+  Action(episode,1,full?11:1);Check(b.BeforeTick(),"next step accepted");
+  if(full){b.ApplyInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f);Check(f&&!q&&!w&&!e&&!r&&!attack&&move==0,"native F input only; no injected healing");}
+  game.hits=2;game.parries=3;game.mode=ReversalTower.ScreenMode.Result;game.result=new ReversalTower.Result{clear=true};TestRuntime.loop.MoveNext();
   state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
   Check(state.GetProperty("terminated").GetBoolean()&&!state.GetProperty("truncated").GetBoolean(),"terminal state emitted even mid-repeat");
   var metrics=JsonDocument.Parse(File.ReadAllText(metricsPath)).RootElement;

@@ -15,6 +15,7 @@ namespace ReversalTower
         [Serializable] sealed class Transition
         {
             public string schema="towerPixel/1",episode,frame,reason;
+            public string actionSet="legacy7";
             public int step;
             public float reward;
             public bool terminated,truncated;
@@ -83,7 +84,7 @@ namespace ReversalTower
             {
                 if(new FileInfo(path).Length>1024)throw new IOException("Oversized action");
                 message=JsonUtility.FromJson<ActionMessage>(File.ReadAllText(path));
-                if(message==null||message.episode!=episode||message.step!=step||message.action<0||message.action>6)return false;
+                if(message==null||message.episode!=episode||message.step!=step||message.action<0||message.action>(FullActions?11:6))return false;
             }
             catch(IOException){return false;}
             catch(ArgumentException){return false;}
@@ -95,13 +96,15 @@ namespace ReversalTower
             action=message.action;step++;published=false;framesRemaining=FramesPerAction-1;frameIndex=0;
             return true;
         }
+        bool FullActions=>Array.IndexOf(Environment.GetCommandLineArgs(),"-towerPixelFullActions")>=0;
         public void ApplyInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,
             ref bool q,ref bool w,ref bool e,ref bool r,ref bool f)
         {
             move=action==1?-1:action==2?1:0;
             jump=frameIndex==0&&action==5;dash=frameIndex==0&&action==6;
             attack=frameIndex==0&&action==3;parry=frameIndex==0&&action==4;
-            q=w=e=r=f=false;
+            q=FullActions&&frameIndex==0&&action==7;w=FullActions&&frameIndex==0&&action==8;
+            e=FullActions&&frameIndex==0&&action==9;r=FullActions&&frameIndex==0&&action==10;f=FullActions&&frameIndex==0&&action==11;
         }
         // Explicit camera render keeps sprite observations available when the window is hidden.
         // Opt-in experiment: excludes IMGUI/HUD; compare all policies with the same mode.
@@ -135,7 +138,7 @@ namespace ReversalTower
             {
                 yield return endOfFrame;
                 bool terminal=game.mode==ScreenMode.Result;
-                bool truncated=!terminal&&(watch.Elapsed.TotalSeconds>=AutoRunArgs.SecondsLimit||game.seconds>=60||
+                bool truncated=!terminal&&(watch.Elapsed.TotalSeconds>=AutoRunArgs.SecondsLimit||game.seconds>=(FullActions?120:60)||
                     (published&&watch.Elapsed.TotalSeconds-waitStarted>15));
                 if(published&&truncated)
                 {
@@ -167,7 +170,7 @@ namespace ReversalTower
                 float reward=step==0?0:(previousBossHp-game.bossHp)/game.spec.hp-(previousPlayerHp-game.playerHp)/game.maxHp-.001f;
                 if(terminal)reward+=game.result!=null&&game.result.clear?1:-1;
                 previousBossHp=game.bossHp;previousPlayerHp=game.playerHp;
-                var t=new Transition{episode=episode,step=step,frame=filename,reward=reward,terminated=terminal,truncated=truncated,
+                var t=new Transition{actionSet=FullActions?"native12":"legacy7",episode=episode,step=step,frame=filename,reward=reward,terminated=terminal,truncated=truncated,
                     reason=terminal?(game.result!=null&&game.result.clear?"win":"loss"):truncated?"time_or_client_timeout":"running"};
                 string state=Path.Combine(directory,"transition.json");
                 string json=JsonUtility.ToJson(t);

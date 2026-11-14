@@ -243,6 +243,15 @@ namespace ReversalTower
                 line(key+"success",st.Success.ToString("F4",ci));
                 line(key+"reason",dda.Reasons.ContainsKey(st.id)?dda.Reasons[st.id]:"unknown");
             }
+            // Bounded diagnostics, only in the existing explicitly requested autorun report.
+            foreach(var e in BossPatterns.SelectionLog)
+            {
+                string key="selection."+e.decision.ToString(ci)+"."+e.id+".";
+                line(key+"seconds",e.seconds.ToString("F2",ci));line(key+"selected",e.selected?"true":"false");
+                line(key+"opportunities",e.opportunities.ToString(ci));line(key+"success",e.success.ToString("F4",ci));
+                line(key+"weight",e.weight.ToString("F4",ci));line(key+"probability",e.probability.ToString("F4",ci));
+                line(key+"reason",e.reason);
+            }
             line("build.version", "0.5-arakus-editor-foundation");
             line("progression.cardPurchases", save.cardPurchases.ToString(ci));
             line("progression.effectiveAttack", LobbyCards.Attack(save).ToString("F2",ci));

@@ -91,7 +91,7 @@ namespace ReversalTower
         public void Reset()
         {
             phanesDownStage=0;phanesDownAge=0;phanesFallFrom=0;
-            cooldowns.Clear(); previousPattern=""; dashHit=false;
+            cooldowns.Clear(); previousPattern=""; dashHit=false; recentSelections.Clear(); selectionLog.Clear(); meleeThreatened=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
             shieldOut=shieldCaught=leaping=struck=touched=false;forceNext=null;
             parryGlow=0;parryFlash=99;cueKey=-1;cueSoundAt=-9;
@@ -100,6 +100,13 @@ namespace ReversalTower
         System.Random combatRandom=new System.Random();
         internal void SetTestSeed(int seed){combatRandom=new System.Random(seed);}
         string previousPattern="";
+        bool meleeThreatened; Vector2 meleeThreatPosition;
+        readonly Queue<string> recentSelections=new Queue<string>();
+        readonly List<PatternSelectionEvidence> selectionLog=new List<PatternSelectionEvidence>();
+        public IReadOnlyList<PatternSelectionEvidence> SelectionLog => selectionLog;
+        int RecentCount(string id){int n=0;foreach(string x in recentSelections)if(x==id)n++;return n;}
+        void RememberSelection(string id){recentSelections.Enqueue(id);while(recentSelections.Count>6)recentSelections.Dequeue();}
+
         public void TickBoss(float dt)
         {
             if(g.bossHp<=0)return;
@@ -146,6 +153,13 @@ namespace ReversalTower
                 if(distance>3.1f&&!g.spec.airborne){g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase);if(distance>5&&combatRandom.NextDouble()>.015)return;}
                 SelectPattern(distance);return;
             }
+            // Conservative positional evidence: player occupied this melee hit region during
+            // the final visible warning. Unknown/missed attacks are not automatic dodges.
+            if(current.kind==AttackKind.Slash&&patternAge<nextHit&&nextHit-patternAge<=ParryCueLead)
+                if(!meleeThreatened&&Mathf.Abs(g.player.x-g.boss.x)<ArakusGeometry.Reach(g.spec,current)&&
+                    Mathf.Abs(g.player.y-g.boss.y)<ArakusGeometry.AttackHeight(g.spec,current)&&
+                    (current.id=="spin"||(g.player.x-g.boss.x)*g.bossFace>-.3f))
+                {meleeThreatened=true;meleeThreatPosition=g.player;}
             patternAge+=dt;
             g.bossState=patternAge<windup?"공격 예고":patternAge<nextHit?"연격":"공격";
             if(current.kind>=AttackKind.Step){TickArakus(dt);return;}
@@ -347,15 +361,36 @@ namespace ReversalTower
                 candidates.Add(p);
             }
             if(candidates.Count==0){rest=.2f;return;}
-            float total=0;foreach(var p in candidates)total+=p.weight>0?p.weight:1;
+            // Preserve authored gates. Prefer alternatives once a pattern occupied 2 of
+            // the last 6 selections; never deadlock if every eligible pattern is capped.
+            var excluded=new List<Pattern>();
+            if(g.battleDda&&candidates.Exists(p=>RecentCount(p.id)<2))
+            {excluded=candidates.FindAll(p=>RecentCount(p.id)>=2);candidates.RemoveAll(p=>RecentCount(p.id)>=2);}
+            var weights=new List<float>();var evidence=new List<PatternSelectionEvidence>();float total=0;
+            foreach(var p in candidates)
+            {
+                var stat=g.Stat(p.id);string reason;
+                float multiplier=DdaPatternFrequency.Multiplier(stat,g.battleDda,g.playerHp<=g.maxHp*.3f,out reason);
+                float weight=(p.weight>0&&BanditModel.Finite(p.weight)?p.weight:1)*multiplier;
+                weights.Add(weight);total+=weight;
+                evidence.Add(new PatternSelectionEvidence{id=p.id,opportunities=stat==null?0:stat.opportunities,
+                    success=stat==null?.7f:stat.Success,weight=weight,reason=reason});
+            }
             double roll=combatRandom.NextDouble()*total;Pattern selected=candidates[candidates.Count-1];
-            foreach(var p in candidates){roll-=p.weight>0?p.weight:1;if(roll<0){selected=p;break;}}
-            if(g.seconds<4)selected=g.spec.patterns[0];
+            for(int i=0;i<candidates.Count;i++){roll-=weights[i];if(roll<0){selected=candidates[i];break;}}
+            bool opening=g.seconds<4&&candidates.Contains(g.spec.patterns[0]);
+            if(opening)selected=g.spec.patterns[0];
+            foreach(var e in evidence){e.probability=opening?(e.id==selected.id?1:0):e.weight/total;
+                e.selected=e.id==selected.id;e.seconds=g.seconds;e.decision=patternSerial+1;
+                if(opening)e.reason+="; eligible authored opening";selectionLog.Add(e);}
+            foreach(var p in excluded)selectionLog.Add(new PatternSelectionEvidence{id=p.id,seconds=g.seconds,
+                decision=patternSerial+1,reason="recent repetition limit: 2 in last 6",weight=0,probability=0});
+            while(selectionLog.Count>128)selectionLog.RemoveAt(0);
             BeginPattern(selected);
         }
         public void BeginPattern(Pattern p)
         {
-            current=p;patternAge=0;attackStep=0;dashHit=false;patternSerial++;g.bossFace=g.player.x>=g.boss.x?1:-1;
+            current=p;meleeThreatened=false;RememberSelection(p.id);patternAge=0;attackStep=0;dashHit=false;patternSerial++;g.bossFace=g.player.x>=g.boss.x?1:-1;
             origin=g.boss;targetX=g.player.x;
             int level=g.Stat(p.id).level;
             float[] telegraph={1.3f,1.15f,1,.9f,.8f},damage={.8f,.9f,1,1.1f,1.2f},cooldown={1.25f,1.12f,1,.9f,.8f};   // 레벨 -2~+2 쿨타임 배율 (예전에 1.12f가 phaseSpeedScale로 잘못 바뀌어 아라쿠스 -1이 1.0이었음)
@@ -388,7 +423,7 @@ namespace ReversalTower
                 bool radial=p.id=="spin";
                 bool overlap=Mathf.Abs(g.player.x-g.boss.x)<ArakusGeometry.Reach(g.spec,p)&&Mathf.Abs(g.player.y-g.boss.y)<ArakusGeometry.AttackHeight(g.spec,p)&&(radial||(g.player.x-g.boss.x)*g.bossFace>-.3f);
                 int hitsBefore=g.hits;
-                g.PlayerHit(patternDamage,p.parryable,p.id,g.boss.x,overlap);
+                g.PlayerHit(patternDamage,p.parryable,p.id,g.boss.x,overlap,false,meleeThreatened&&Vector2.Distance(meleeThreatPosition,g.player)>=.2f);meleeThreatened=false;
                 // 거검 휘두르기: 맞으면 1m 날아감 (PlayerHit 기본 0.45m + 0.55m)
                 if(g.spec.hasPillars&&p.id=="cleave"&&g.hits>hitsBefore)g.player.x=Mathf.Clamp(g.player.x+g.bossFace*.55f,TowerGame.Left+.4f,TowerGame.Right-.4f);
                 if(g.spec.hasPillars)g.shake=Mathf.Max(g.shake,p.id=="shield"?3.5f:2);
@@ -528,12 +563,16 @@ namespace ReversalTower
             }
             for(int i=g.hazards.Count-1;i>=0;i--)
             {
-                var h=g.hazards[i];h.delay-=dt;
+                var h=g.hazards[i];
+                if(!h.hit&&h.delay>0&&h.delay<=ParryCueLead)
+                    if(!h.threatened&&Mathf.Abs(g.player.x-h.x)<h.width*.5f+.3f)
+                    {h.threatened=true;h.threatX=g.player.x;}
+                h.delay-=dt;
                 if(h.delay>0)continue;
                 if(!h.hit)
                 {
                     h.hit=true;bool overlaps=Mathf.Abs(g.player.x-h.x)<h.width*.5f+.3f;
-                    g.PlayerHit(h.damage,h.parry,h.pattern,h.x,overlaps);
+                    g.PlayerHit(h.damage,h.parry,h.pattern,h.x,overlaps,false,h.threatened&&Mathf.Abs(g.player.x-h.threatX)>=.2f);
                     if(overlaps)g.Burst(g.player+Vector2.up,1,h.color,12);
                 }
                 h.life-=dt;if(h.life<=0)g.hazards.RemoveAt(i);

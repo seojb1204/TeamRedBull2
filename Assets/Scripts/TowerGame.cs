@@ -42,6 +42,9 @@ namespace ReversalTower
         public ScenePresentation scenePresentation;
         public NativeGameUI nativeUI;
 #endif
+        #if !HEADLESS && !DESKTOP_PREVIEW
+        PixelAgentBridge pixelBridge;
+#endif
         bool demo;float demoAction;string capturePath;bool captureDone;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap(){if(FindAnyObjectByType<TowerGame>()==null)new GameObject("Reversal Tower").AddComponent<TowerGame>();}
@@ -67,17 +70,27 @@ namespace ReversalTower
             sound=gameObject.AddComponent<Soundscape>();sound.Initialize();
             artist=gameObject.AddComponent<WorldArtist>();artist.Initialize(this);
             InitGui();
-            var args=Environment.GetCommandLineArgs();demo=Array.IndexOf(args,"-towerDemo")>=0||AutoRunArgs.AgentProfile!=null;
+            var args=Environment.GetCommandLineArgs();demo=Array.IndexOf(args,"-towerDemo")>=0||AutoRunArgs.AgentProfile!=null||Array.IndexOf(args,"-towerPixelAgent")>=0;
             capturePath=AutoRunArgs.CapturePath;
             if(demo)
             {
                 if(AutoRunArgs.AgentProfile!=null&&SaveStore.IsIsolated)save.unlockedBoss=Mathf.Max(save.unlockedBoss,AutoRunArgs.AgentBoss);
                 StartBattle(AutoRunArgs.AgentProfile!=null?AutoRunArgs.AgentBoss:0);
             }
+#if !HEADLESS && !DESKTOP_PREVIEW
+            try { pixelBridge=PixelAgentBridge.AttachIfRequested(this); }
+            catch(Exception ex) { demo=false;paused=true;enabled=false;Debug.LogError(ex.Message);Application.Quit(2); }
+#endif
         }
         void Update()
         {
-            float raw=Mathf.Min(Time.unscaledDeltaTime,.05f);realClock+=raw;
+            #if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelBridge!=null&&!pixelBridge.BeforeTick())return;
+            float raw=pixelBridge!=null?1f/60f:Mathf.Min(Time.unscaledDeltaTime,.05f);
+#else
+            float raw=Mathf.Min(Time.unscaledDeltaTime,.05f);
+#endif
+            realClock+=raw;
             noticeTime=Mathf.Max(0,noticeTime-raw);flash=Mathf.Max(0,flash-raw*2);phaseFlash=Mathf.Max(0,phaseFlash-raw*.8f);
             shake=Mathf.Max(0,shake-raw*12);
             if(!AutoRunArgs.Active&&Input.GetKeyDown(KeyCode.F12))Capture();
@@ -96,6 +109,9 @@ namespace ReversalTower
             for(int i=motes.Count-1;i>=0;i--){var m=motes[i];m.life-=fx;m.pos+=m.velocity*fx;m.velocity+=Vector2.down*fx*3;if(m.life<=0)motes.RemoveAt(i);}
             sound.tension=mode==ScreenMode.Battle&&!paused?(phaseTwo?.95f:.65f):.08f;
             if(!captureDone&&!string.IsNullOrEmpty(capturePath)&&realClock>5){ScreenCapture.CaptureScreenshot(capturePath);captureDone=true;}
+            #if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelBridge==null)
+#endif
             AutoRunTick(Time.unscaledDeltaTime);
         }
         void LateUpdate()
@@ -200,6 +216,10 @@ namespace ReversalTower
             bool parry=Input.GetKeyDown(KeyCode.K)||Input.GetKeyDown(KeyCode.X)||(!panelMouse&&Input.GetMouseButtonDown(1));
             bool q=Input.GetKeyDown(KeyCode.Q),w=Input.GetKeyDown(KeyCode.W),e=Input.GetKeyDown(KeyCode.E),r=Input.GetKeyDown(KeyCode.R),f=Input.GetKeyDown(KeyCode.F);
             float move=(right?1:0)-(left?1:0);
+            #if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelBridge!=null)pixelBridge.ApplyInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f);
+            else
+#endif
             if(demo)DemoInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);
             if(jump)dodgeBuffer=.12f;else dodgeBuffer-=dt;
             if(dash&&stun<=0&&dashes>0&&!seal&&(actionTime<=0||healing>0||skillFired))

@@ -36,7 +36,7 @@ namespace ReversalTower
         readonly RewardLedger rewards=new RewardLedger();
         public List<PatternStats> stats => dda.Stats;
         public Dictionary<string,double[]> contexts => dda.Contexts;
-        bool battleDda => dda.Enabled;
+        internal bool battleDda => dda.Enabled;
         Soundscape sound;WorldArtist artist;Camera cam;
 #if !HEADLESS && !DESKTOP_PREVIEW
         public ScenePresentation scenePresentation;
@@ -297,10 +297,10 @@ namespace ReversalTower
             if(bossHp<=0)EndBattle(true);
         }
         // ignoreDash: 대시 무적을 무시하는 공격 (아라쿠스 일대 휩쓸기). 맞은 뒤의 무적은 그대로 지킨다.
-        public void PlayerHit(float damage,bool canParry,string pattern,float attackerX,bool overlap=true,bool ignoreDash=false)
+        public void PlayerHit(float damage,bool canParry,string pattern,float attackerX,bool overlap=true,bool ignoreDash=false,bool threatened=false)
         {
             if(ended)return;var s=Stat(pattern);if(s==null)return;
-            if(!overlap){s.opportunities++;s.dodges++;return;}
+            if(!overlap){if(threatened){s.opportunities++;s.dodges++;}else s.ignored++;return;}
             // Intentional parry can override post-hit invulnerability; dash invulnerability cannot.
             bool activeParry=canParry&&parryAge>=.05f&&parryAge<=.2f&&dashTime<=0;
             if(activeParry)
@@ -341,7 +341,7 @@ namespace ReversalTower
             parry=current!=null&&current.parryable&&patternAge>windup-.14f&&patternAge<windup-.09f;
             jump=current!=null&&current.kind==AttackKind.Wave&&patternAge>windup-.2f;dash=false;r=ult>=100;f=playerHp<maxHp*.5f;
         }
-        public sealed class Hazard{public float x,width,delay,life,damage;public string pattern;public bool parry,hit,wide;public float cueAt=-1;public Color color;}
+        public sealed class Hazard{public float x,width,delay,life,damage,threatX;public string pattern;public bool parry,hit,wide,threatened;public float cueAt=-1;public Color color;}
         public sealed class Shot{public Vector2 pos,vel;public float damage,life=6,radius=.22f,maxTravel,travelled;public bool parry,friendly,returns,returning,hitDone;public float cueAt=-1;public string pattern;}
         public sealed class Minion{public float x,hp=25,attack;public string pattern;}
         public sealed class Mote{public Vector2 pos,velocity;public float life,size;public Color color;}

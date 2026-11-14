@@ -124,6 +124,28 @@ namespace ReversalTower
         public float damage;
         public float Success => opportunities==0 ? .7f : (float)(parries+dodges)/opportunities;
     }
+    // Frequency is independent of damage/timing difficulty. Only observed battle outcomes
+    // are used: old persisted success rates included unthreatened misses and are not reused.
+    public static class DdaPatternFrequency
+    {
+        public static float Multiplier(PatternStats s, bool enabled, bool pressureRelief, out string reason)
+        {
+            if(!enabled){reason="DDA off";return 1;}
+            if(pressureRelief){reason="low HP: no extra practice pressure";return 1;}
+            if(s==null||s.opportunities<4){reason="fewer than 4 valid opportunities";return 1;}
+            if(s.hits<0||s.parries<0||s.dodges<0||(long)s.hits+s.parries+s.dodges!=s.opportunities)
+            {reason="invalid evidence ignored";return 1;}
+            // Eight neutral pseudo-observations prevent one unlucky event dominating.
+            double success=((double)s.parries+s.dodges+5.6)/(s.opportunities+8.0);
+            float result=(float)(1+Math.Min(.35,Math.Max(0,.7-success)*.5));
+            reason=result>1?"smoothed success below 70%; practice boost capped at 35%":"success sufficient; base frequency";
+            return result;
+        }
+    }
+    public sealed class PatternSelectionEvidence
+    {
+        public string id,reason; public int opportunities,decision; public bool selected; public float success,weight,probability,seconds;
+    }
     [Serializable] public class PatternMemory {public string id;public int level,observations;public float success=.7f;}
     [Serializable] public class BossLearning
     {

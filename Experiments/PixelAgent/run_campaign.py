@@ -10,6 +10,7 @@ import sys
 import tempfile
 import threading,time
 from pixel_agent import atomic_json
+from windows_hidden import HiddenUnityHost
 
 
 def validate_build(exe):
@@ -67,7 +68,7 @@ def campaign(args):
     try:
         for i in range(args.episodes):
             # Do not compete with another Unity editor/game or an already busy GPU.
-            busy=subprocess.check_output(['powershell','-NoProfile','-Command',"Get-Process Unity,ReversalTower -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id; exit 0"],text=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW).strip()
+            busy=subprocess.check_output(['powershell','-NoProfile','-Command',"Get-Process Unity,ReversalTower,EternalReturn -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id; exit 0"],text=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW).strip()
             if busy:raise RuntimeError('Another Unity/game process is active; refusing campaign')
             gpu=subprocess.check_output(['nvidia-smi','--query-gpu=utilization.gpu,temperature.gpu','--format=csv,noheader,nounits'],text=True,timeout=3,creationflags=subprocess.CREATE_NO_WINDOW)
             for line in gpu.strip().splitlines():
@@ -89,7 +90,7 @@ def campaign(args):
                             '--report',str(result)]
             if args.policy in ('learned','tabular','tabular-v3'):client_command+=['--checkpoint',str(checkpoint)]
             if args.train:client_command+=['--train','--epsilon',str(args.epsilon)]
-            game=client=None
+            game=client=None;host=None
             gpu_samples=[];stop_gpu=threading.Event();gpu_abort=threading.Event()
             def sample_gpu():
                 while not stop_gpu.is_set():
@@ -107,10 +108,13 @@ def campaign(args):
                     startup=None
                     if getattr(args,'hidden',False):
                         startup=subprocess.STARTUPINFO();startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
+                    if getattr(args,'hidden',False):
+                        host=HiddenUnityHost();command+=['-parentHWND',str(host.hwnd),'delayed']
                     game=subprocess.Popen(command,cwd=exe.parent,stdin=subprocess.DEVNULL,startupinfo=startup)
-                    client=subprocess.Popen(client_command,stdout=client_log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)
+                    client=subprocess.Popen(client_command,stdout=client_log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL,creationflags=subprocess.CREATE_NO_WINDOW)
                     deadline=time.monotonic()+args.seconds+25
                     while client.poll() is None:
+                        if host:host.pump_and_guard(game.pid)
                         if gpu_abort.is_set():raise RuntimeError('GPU guard: temperature >=75C or monitoring failed; stop owned experiment')
                         if time.monotonic()>deadline:raise subprocess.TimeoutExpired(client_command,args.seconds+25)
                         time.sleep(.2)
@@ -125,6 +129,7 @@ def campaign(args):
                         try:stop_owned(client)
                         finally:stop_owned(game)
                     finally:
+                        if host:host.close()
                         stop_gpu.set()
                         if sampler.ident is not None:sampler.join(timeout=4)
                         atomic_json(out/f'episode-{i+1}-gpu.json',{'scope':'system-wide, includes unrelated apps; not isolated game utilization','samples':gpu_samples})

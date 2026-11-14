@@ -109,7 +109,7 @@ def run(args):
     client, tracker, random = BridgeClient(args.bridge), Tracker(), RandomPolicy(args.seed)
     memory = DecisionMemory()
     start = seen = time.monotonic()
-    count = missing = warning = 0
+    count = missing = warning = consecutive_missing = 0
     raw_total = shaped_total = 0.0
     previous = None
     trajectory, saved_transitions = [], []
@@ -129,7 +129,16 @@ def run(args):
         state = memory.observe(visual)
         key = ",".join(map(str, state))
         state_counts[key] = state_counts.get(key, 0)+1
-        missing += int(not visual[0] or not visual[1])
+        undetected = not visual[0] or not visual[1]
+        missing += int(undetected)
+        consecutive_missing = consecutive_missing + 1 if undetected else 0
+        if consecutive_missing >= 30:
+            if args.report:
+                atomic_json(Path(args.report).with_suffix(".observation-error.json"), {
+                    "error":"30 consecutive observations without both actors", "completed":False,
+                    "training_checkpoint_saved":False, "steps":count+1,
+                    "diagnostic":diag, "reason":"Do not train on blind/idle demonstrations"})
+            raise RuntimeError("Visual observation failure: both actors missing for 30 steps")
         warning += int(bool(visual[3]))
         terminal, truncated = msg["terminated"], msg["truncated"]
         raw = msg["reward"]

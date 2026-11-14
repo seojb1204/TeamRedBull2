@@ -71,6 +71,18 @@ class V3Tests(unittest.TestCase):
             checkpoint=str(root/"q.json"),report=str(root/"report.json"),
             seed=17,epsilon=.4,max_steps=10,max_seconds=3,timeout=2)
 
+    def test_missing_frames_fail_without_checkpoint(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);args=self.args(root,True);args.max_steps=40
+            client=FakeClient()
+            client.items=[({"episode":"e","step":i,"reward":0.0,"terminated":False,"truncated":False},(20,20,bytes(1200))) for i in range(35)]
+            with patch.object(v3,"BridgeClient",return_value=client), patch.object(v3,"Tracker") as tracker:
+                tracker.return_value.observe.return_value=((0,0,0,0),{"detection_failed":True})
+                with self.assertRaisesRegex(RuntimeError,"observation failure"):v3.run(args)
+            self.assertFalse((root/"q.json").exists())
+            self.assertEqual(len(client.actions),29)
+            self.assertTrue((root/"report.observation-error.json").exists())
+
     def test_training_shaping_trajectory_and_update_counts(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);client=FakeClient()

@@ -103,6 +103,31 @@ namespace ReversalTower
             attack=frameIndex==0&&action==3;parry=frameIndex==0&&action==4;
             q=w=e=r=f=false;
         }
+        // Explicit camera render keeps sprite observations available when the window is hidden.
+        // Opt-in experiment: excludes IMGUI/HUD; compare all policies with the same mode.
+        Texture2D CaptureObservation()
+        {
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"-towerPixelOffscreen")<0)
+                return ScreenCapture.CaptureScreenshotAsTexture();
+            var camera=Camera.main;
+            if(camera==null)throw new InvalidOperationException("Offscreen capture needs main camera");
+            var previousTarget=camera.targetTexture;var previousActive=RenderTexture.active;
+            var target=RenderTexture.GetTemporary(640,360,24);
+            Texture2D capture=null;
+            try
+            {
+                camera.targetTexture=target;camera.Render();RenderTexture.active=target;
+                capture=new Texture2D(640,360,TextureFormat.RGB24,false);
+                capture.ReadPixels(new Rect(0,0,640,360),0,0);capture.Apply();
+                return capture;
+            }
+            catch { if(capture!=null)Destroy(capture);throw; }
+            finally
+            {
+                camera.targetTexture=previousTarget;RenderTexture.active=previousActive;
+                RenderTexture.ReleaseTemporary(target);
+            }
+        }
         IEnumerator CaptureLoop()
         {
             var endOfFrame=new WaitForEndOfFrame();
@@ -120,7 +145,7 @@ namespace ReversalTower
                 }
                 if(published&&!truncated&&!terminal)continue;
                 if(framesRemaining>0&&!terminal&&!truncated)continue;
-                Texture2D capture=ScreenCapture.CaptureScreenshotAsTexture();
+                Texture2D capture=CaptureObservation();
                 if(capture==null){Debug.LogError("PixelAgent framebuffer capture failed");Application.Quit(2);yield break;}
                 var pixels=capture.GetPixels32();
                 var rgb=new byte[Width*Height*3];

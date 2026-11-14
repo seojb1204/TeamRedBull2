@@ -4,7 +4,11 @@ namespace UnityEngine {
  public class Coroutine{} public class GameObject {public T AddComponent<T>() where T:new()=>new T();}
  public class WaitForEndOfFrame{} public class WaitForSecondsRealtime {public WaitForSecondsRealtime(float v){}}
  public struct Color32 {public byte r,g,b;}
- public class Texture2D {public int width=160,height=90;public Color32[] GetPixels32(){var a=new Color32[width*height];for(int y=0;y<height;y++)for(int x=0;x<width;x++)a[y*width+x]=new Color32{r=(byte)x,g=(byte)y,b=7};return a;}}
+ public enum TextureFormat {RGB24}
+ public struct Rect {public Rect(int x,int y,int w,int h){}}
+ public class RenderTexture {public static RenderTexture active;public static RenderTexture GetTemporary(int w,int h,int d)=>new RenderTexture();public static void ReleaseTemporary(RenderTexture t){}}
+ public class Camera {public static Camera main=new Camera();public RenderTexture targetTexture;public void Render(){}}
+ public class Texture2D {public Texture2D(){} public Texture2D(int w,int h,TextureFormat f,bool m){width=w;height=h;} public void ReadPixels(Rect r,int x,int y){}public void Apply(){}public int width=160,height=90;public Color32[] GetPixels32(){var a=new Color32[width*height];for(int y=0;y<height;y++)for(int x=0;x<width;x++)a[y*width+x]=new Color32{r=(byte)x,g=(byte)y,b=7};return a;}}
  public static class Mathf {public static float Max(float a,float b)=>Math.Max(a,b);}
  public static class ScreenCapture {public static Texture2D CaptureScreenshotAsTexture()=>new Texture2D();}
  public static class Application {public static string streamingAssetsPath="/path-not-present";public static bool runInBackground;public static void Quit(int n){TestRuntime.exit=n;}}
@@ -48,7 +52,8 @@ class Program {
   Check(!File.Exists(metricsPath)&&!state.TryGetProperty("bossDamage",out _)&&!state.TryGetProperty("playerDamage",out _)&&!state.TryGetProperty("hitsTaken",out _)&&!state.TryGetProperty("parries",out _),"metrics unavailable before terminal and excluded from transition");
   byte[] ppm=File.ReadAllBytes(Path.Combine(exchange,state.GetProperty("frame").GetString()));
   int header=System.Text.Encoding.ASCII.GetByteCount("P6\n160 90\n255\n");
-  Check(ppm.Length==header+160*90*3&&ppm[header+1]==89&&ppm[^2]==0,"RGB top-down framebuffer");
+  bool offscreen=Array.IndexOf(Environment.GetCommandLineArgs(),"-towerPixelOffscreen")>=0;
+  Check(ppm.Length==header+160*90*3&&ppm[header+1]==(offscreen?103:89)&&ppm[^2]==(offscreen?3:0),"RGB top-down framebuffer");
   void Action(string ep,int step,int action){File.WriteAllText(Path.Combine(exchange,"action.json"),JsonSerializer.Serialize(new{episode=ep,step,action}));}
   Action("stale",0,3);Check(!b.BeforeTick(),"stale episode rejected");
   Action(episode,-1,3);Check(!b.BeforeTick(),"stale step rejected");

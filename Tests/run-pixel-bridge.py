@@ -10,6 +10,8 @@ with tempfile.TemporaryDirectory(prefix='pixel-bridge-test-') as t:
  subprocess.run(exe+['--case','invalid','-towerPixelAgent',str(d/'invalid')],check=True)
  subprocess.run(exe+['-towerPixelAgent',str(d/'run/exchange'),'-towerDataRoot',str(d/'run'),'-towerAutoSeconds','180'],check=True)
 
+ subprocess.run(exe+['-towerPixelOffscreen','-towerPixelAgent',str(d/'offscreen/exchange'),'-towerDataRoot',str(d/'offscreen'),'-towerAutoSeconds','180'],check=True)
+
  for case in ['oracle','dda','database']:
   subprocess.run(exe+['--case',case,'-towerPixelAgent',str(d/case/'exchange'),'-towerDataRoot',str(d/case),'-towerAutoSeconds','180'],check=True)
  subprocess.run(exe+['--case','outside-root','-towerPixelAgent',str(d/'outside'),'-towerDataRoot',str(d/'inside'),'-towerAutoSeconds','180'],check=True)

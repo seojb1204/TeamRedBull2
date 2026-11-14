@@ -72,6 +72,7 @@ def load_v3(path, seed):
     model = TabularQ.load(path, seed=seed)
     if any(len(json.loads(key)) != STATE_LENGTH for key in model.q):
         raise ValueError("V3 checkpoint state width mismatch")
+    model.initialization = metadata.get("initialization")
     return model
 
 
@@ -83,6 +84,8 @@ def save_v3(model, path):
     data["experiment"] = EXPERIMENT
     data["reward_transform"] = "raw + 0.001 per observed action transition; training only"
     data["state_length"] = STATE_LENGTH
+    if getattr(model, "initialization", None):
+        data["initialization"] = model.initialization
     atomic_json(path, data)
     staging.unlink()
 
@@ -100,6 +103,9 @@ def run(args):
     if args.policy == "tabular-v3" and not args.train and not exists:
         raise ValueError("Evaluation requires an existing V3 checkpoint")
     model = load_v3(args.checkpoint, args.seed) if exists and args.policy == "tabular-v3" else TabularQ(seed=args.seed)
+    provenance = getattr(model, "initialization", None)
+    if provenance and not args.train and args.seed in {source["seed"] for source in provenance.get("sources", [])}:
+        raise ValueError("Demonstration/evaluation seed overlap; choose held-out seed")
     client, tracker, random = BridgeClient(args.bridge), Tracker(), RandomPolicy(args.seed)
     memory = DecisionMemory()
     start = seen = time.monotonic()
@@ -181,7 +187,7 @@ def run(args):
         model.replay(trajectory, sweeps=8)
         save_v3(model, args.checkpoint)
     report = {
-        "schema":EXPERIMENT, "policy":args.policy, "seed":args.seed, "training":args.train,
+        "schema":EXPERIMENT, "initialization":provenance, "policy":args.policy, "seed":args.seed, "training":args.train,
         "observation":"RGB tracker + own action history + consecutive visual warning age",
         "steps":count, "reward":raw_total, "raw_reward":raw_total,
         "shaped_reward":shaped_total, "training_reward":shaped_total if args.train else None,

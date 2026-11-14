@@ -90,6 +90,7 @@ def campaign(args):
                             '--report',str(result)]
             if args.policy in ('learned','tabular','tabular-v3'):client_command+=['--checkpoint',str(checkpoint)]
             if args.train:client_command+=['--train','--epsilon',str(args.epsilon)]
+            if getattr(args,'anchor_checkpoint',None):client_command+=['--anchor-checkpoint',str(Path(args.anchor_checkpoint).resolve())]
             game=client=None;host=None
             gpu_samples=[];stop_gpu=threading.Event();gpu_abort=threading.Event()
             def sample_gpu():
@@ -160,6 +161,7 @@ def main():
     p.add_argument('--offscreen',action='store_true',help='Render camera texture, excludes IMGUI/HUD')
     p.add_argument('--hidden',action='store_true',help='Hide game window; requires --offscreen')
     p.add_argument('--checkpoint',type=Path)
+    p.add_argument('--anchor-checkpoint',type=Path)
     p.add_argument('--episodes',type=int,default=1)
     p.add_argument('--seconds',type=int,default=180)
     p.add_argument('--seed',type=int,default=17)

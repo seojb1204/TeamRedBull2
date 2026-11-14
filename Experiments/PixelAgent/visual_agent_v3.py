@@ -73,6 +73,7 @@ def load_v3(path, seed):
     if any(len(json.loads(key)) != STATE_LENGTH for key in model.q):
         raise ValueError("V3 checkpoint state width mismatch")
     model.initialization = metadata.get("initialization")
+    model.demonstration_anchor = metadata.get("demonstration_anchor")
     return model
 
 
@@ -86,6 +87,8 @@ def save_v3(model, path):
     data["state_length"] = STATE_LENGTH
     if getattr(model, "initialization", None):
         data["initialization"] = model.initialization
+    if getattr(model, "demonstration_anchor", None):
+        data["demonstration_anchor"] = model.demonstration_anchor
     atomic_json(path, data)
     staging.unlink()
 
@@ -106,6 +109,12 @@ def run(args):
     provenance = getattr(model, "initialization", None)
     if provenance and not args.train and args.seed in {source["seed"] for source in provenance.get("sources", [])}:
         raise ValueError("Demonstration/evaluation seed overlap; choose held-out seed")
+    anchor=None
+    if getattr(args,"anchor_checkpoint",None):
+        if not args.train:raise ValueError("Anchor is training-only; evaluation uses frozen Q values")
+        from demonstration_anchor import DemonstrationAnchor
+        anchor=DemonstrationAnchor(args.anchor_checkpoint,args.seed)
+        model.demonstration_anchor=anchor.metadata
     client, tracker, random = BridgeClient(args.bridge), Tracker(), RandomPolicy(args.seed)
     memory = DecisionMemory()
     start = seen = time.monotonic()
@@ -152,6 +161,7 @@ def run(args):
             if args.train:
                 transition = (old, action, shaped, state, terminal or truncated)
                 model.update(*transition)
+                if anchor:anchor.apply(model)
                 trajectory.append(transition)
             saved_transitions.append({
                 "state": old, "action": action, "raw_reward": raw,
@@ -194,9 +204,11 @@ def run(args):
         if not (terminal or truncated):
             raise RuntimeError("Incomplete episode: no replay or checkpoint save")
         model.replay(trajectory, sweeps=8)
+        if anchor:
+            for _ in range(8):anchor.apply(model)
         save_v3(model, args.checkpoint)
     report = {
-        "schema":EXPERIMENT, "initialization":provenance, "policy":args.policy, "seed":args.seed, "training":args.train,
+        "schema":EXPERIMENT, "initialization":provenance, "demonstration_anchor":getattr(model,"demonstration_anchor",None), "anchor_updates_this_run":anchor.updates if anchor else 0, "policy":args.policy, "seed":args.seed, "training":args.train,
         "observation":"RGB tracker + own action history + consecutive visual warning age",
         "steps":count, "reward":raw_total, "raw_reward":raw_total,
         "shaped_reward":shaped_total, "training_reward":shaped_total if args.train else None,
@@ -219,6 +231,7 @@ def main():
     p.add_argument("--bridge", required=True)
     p.add_argument("--policy", choices=["random-v3","rule-v3","tabular-v3"], required=True)
     p.add_argument("--checkpoint")
+    p.add_argument("--anchor-checkpoint")
     p.add_argument("--report")
     p.add_argument("--train", action="store_true")
     p.add_argument("--seed", type=int, default=17)

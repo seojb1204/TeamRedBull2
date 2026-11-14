@@ -43,6 +43,8 @@ def stop_owned(process):
 def campaign(args):
     if os.name!='nt':
         raise ValueError('Actual game launch is supported on Windows only; synthetic tests run anywhere')
+    if getattr(args,'hidden',False) and not getattr(args,'offscreen',False):
+        raise ValueError('Hidden window requires explicit offscreen rendering; framebuffer may be black')
     exe,assembly_hash=validate_build(args.exe)
     out=Path(args.output).resolve()
     # New directory only: prevents overwriting existing evidence/checkpoint.
@@ -56,6 +58,8 @@ def campaign(args):
              'exe_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),
              'assembly_sha256':assembly_hash,'isolated_root':str(runroot),
              'policy':args.policy,'training':args.train,'dda':False,
+             'capture_mode':'camera-texture-no-hud' if getattr(args,'offscreen',False) else 'framebuffer',
+             'hidden_window':getattr(args,'hidden',False),
              'initial_checkpoint_sha256':hashlib.sha256(checkpoint.read_bytes()).hexdigest() if checkpoint.is_file() else None,
              'observation':'Actual rendered RGB only; environment rewards/termination for learning/scoring',
              'episodes':rows,'status':'running'}
@@ -78,6 +82,7 @@ def campaign(args):
                      '-towerSeed',str(seed),'-towerFrameRate','60',
                      '-screen-fullscreen','0','-screen-width','960','-screen-height','540',
                      '-logFile',str(out/f'episode-{i+1}-unity.log')]
+            if getattr(args,'offscreen',False):command+=['-towerPixelOffscreen']
             client_command=[sys.executable,str(Path(__file__).with_name('visual_agent_v3.py' if args.policy in ('random-v3','rule-v3','tabular-v3') else 'visual_agent_v2.py' if args.policy in ('random-v2','rule-v2','tabular') else 'pixel_agent.py')),
                             '--bridge',str(bridge),'--policy',args.policy,'--seed',str(seed),
                             '--max-seconds',str(args.seconds+15),'--timeout',str(args.seconds),
@@ -99,7 +104,10 @@ def campaign(args):
             with (out/f'episode-{i+1}-client.log').open('w',encoding='utf-8') as client_log:
                 try:
                     sampler.start()
-                    game=subprocess.Popen(command,cwd=exe.parent,stdin=subprocess.DEVNULL)
+                    startup=None
+                    if getattr(args,'hidden',False):
+                        startup=subprocess.STARTUPINFO();startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
+                    game=subprocess.Popen(command,cwd=exe.parent,stdin=subprocess.DEVNULL,startupinfo=startup)
                     client=subprocess.Popen(client_command,stdout=client_log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)
                     deadline=time.monotonic()+args.seconds+25
                     while client.poll() is None:
@@ -144,6 +152,8 @@ def main():
     p.add_argument('--output',required=True,type=Path)
     p.add_argument('--policy',choices=['random','rule','learned','random-v2','rule-v2','tabular','random-v3','rule-v3','tabular-v3'],default='random')
     p.add_argument('--train',action='store_true')
+    p.add_argument('--offscreen',action='store_true',help='Render camera texture, excludes IMGUI/HUD')
+    p.add_argument('--hidden',action='store_true',help='Hide game window; requires --offscreen')
     p.add_argument('--checkpoint',type=Path)
     p.add_argument('--episodes',type=int,default=1)
     p.add_argument('--seconds',type=int,default=180)

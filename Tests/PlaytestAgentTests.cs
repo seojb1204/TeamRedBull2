@@ -14,10 +14,15 @@ public static class PlaytestAgentTests
     {
         AutoRunArgs.Active=false;AutoRunArgs.DisableDda=!enabled;AutoRunArgs.AgentProfile=profile;AutoRunArgs.AgentSeed=seed;
         var g=new TowerGame{save=save};Set(g,"sound",new Soundscape());Set(g,"demo",true);g.StartBattle(boss);
-        Time.unscaledDeltaTime=1f/60;Input.Clear();int steps=0;
-        while(g.mode==ScreenMode.Battle&&steps++<60*120)
+        Time.unscaledDeltaTime=1f/60;Input.Clear();int steps=0,stationary=0,noDamage=0,longestNoDamage=0;
+        float lastX=g.player.x,lastPlayerHp=g.playerHp,lastBossHp=g.bossHp;
+        while(g.mode==ScreenMode.Battle&&steps<60*120)
         {
-            update.Invoke(g,null);Input.Clear();
+            steps++;update.Invoke(g,null);Input.Clear();
+            if(Math.Abs(g.player.x-lastX)<0.001f)stationary++;
+            noDamage=(g.playerHp==lastPlayerHp&&g.bossHp==lastBossHp)?noDamage+1:0;
+            longestNoDamage=Math.Max(longestNoDamage,noDamage);
+            lastX=g.player.x;lastPlayerHp=g.playerHp;lastBossHp=g.bossHp;
             if(float.IsNaN(g.playerHp)||float.IsNaN(g.bossHp)||float.IsNaN(g.player.x))throw new Exception("Non-finite combat state");
             foreach(var st in g.stats)if(st.level < -2||st.level > 2)throw new Exception("DDA out of bounds");
         }
@@ -25,8 +30,8 @@ public static class PlaytestAgentTests
         // Timeout is an abandoned battle, never counted as a human failure for learning.
         if(outcome=="timeout")g.Abandon();
         var ci=CultureInfo.InvariantCulture;var rows=new StringBuilder();
-        foreach(var st in g.stats)rows.AppendFormat(ci,"{0},{1},{2},{3},{4},{5},{6},{7:F3},{8:F3},{9:F3},{10},{11},{12},{13},{14},{15},{16:F4}\n",
-            profile,seed,boss,enabled,round,outcome,steps,g.seconds,g.playerHp,g.bossHp,g.hits,st.id,st.level,st.opportunities,st.parries,st.hits,st.Success);
+        foreach(var st in g.stats)rows.AppendFormat(ci,"{0},{1},{2},{3},{4},{5},{6},{7:F3},{8:F3},{9:F3},{10},{11},{12},{13},{14},{15},{16:F4},{17:F3},{18:F4}\n",
+            profile,seed,boss,enabled,round,outcome,steps,g.seconds,g.playerHp,g.bossHp,g.hits,st.id,st.level,st.opportunities,st.parries,st.hits,st.Success,longestNoDamage/60f,steps>0?(float)stationary/steps:0);
         return rows.ToString();
     }
     public static int Main(string[] args)
@@ -40,7 +45,7 @@ public static class PlaytestAgentTests
             string first=Trial(new SaveData{unlockedBoss=4},0,"balanced",17,1,true);
             string second=Trial(new SaveData{unlockedBoss=4},0,"balanced",17,1,true);
             if(first!=second)throw new Exception("Same-seed replay differs");
-            var csv=new StringBuilder("profile,seed,boss,dda,round,outcome,steps,seconds,playerHp,bossHp,hits,pattern,level,opportunities,parries,patternHits,success\n");int count=0;
+            var csv=new StringBuilder("profile,seed,boss,dda,round,outcome,steps,seconds,playerHp,bossHp,hits,pattern,level,opportunities,parries,patternHits,success,longestNoDamageSeconds,stationaryFraction\n");int count=0;
             foreach(string profile in new[]{"novice","balanced","expert"})foreach(int seed in new[]{17,42})foreach(bool dda in new[]{false,true})for(int boss=0;boss<5;boss++)
             {
                 var save=new SaveData{unlockedBoss=4};

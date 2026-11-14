@@ -31,3 +31,18 @@ DDA OFF 비교는 `--no-dda`를 붙이고 별도 결과 폴더를 사용한다. 
 - 현재 반응 정책은 모든 연속공격·투사체·안전지대 기믹을 능숙하게 풀지 않는다. 에이전트 실패가 곧 게임 결함은 아니다.
 - 렌더링, 입력 지연, 좌우 반전, 체감 공정성과 재미, 사람의 60~80% 성공률 수렴은 별도 사람 플레이테스트가 필요하다.
 - 기준 수치/보스 기믹은 유지하며, 손상된 학습 데이터·중복 완료·관측 없는 완료의 안전성만 강화한다.
+
+## 캠페인 보고서 자동 생성 (2026-11-14)
+
+```sh
+python Tests/run-playtest-agent.py --output /tmp/tower-agent-results.csv
+python Tests/test-playtest-summary.py
+python Tests/summarize-playtest.py /tmp/tower-agent-results.csv --output /tmp/tower-agent-summary
+```
+
+- `REPORT.md`: 보스 × 초보/보통/숙련 × DDA별 승리·사망·시간초과·전투시간·피격 집계.
+- `summary.json`: 같은 보스/실력/초기 시드/회차의 DDA ON/OFF 대응표, 패턴별 기회·피격·패링, 승률 구간. CSV 한 행은 패턴이므로 행 수를 전투 수로 세지 않는다.
+- `longestNoDamageSeconds`: 양쪽 모두 HP 변화가 없었던 가장 긴 구간. `stationaryFraction`: 이동하지 않은 프레임 비율. 높은 값은 막힘/소극적 정책 **검토 후보**이며 버그 확정이 아니다. 근접 공격 중 정지도 포함한다.
+- 라운드 간 DDA 이력이 이어져 독립 표본이 아니다. Wilson 구간은 기술적 요약일 뿐 유의성/재미 증명이 아니다.
+- 도구는 원시 CSV를 변경하지 않고, 기존 보고서 출력 폴더는 덮어쓰지 않는다. 중복 패턴행·불일치 전투행·NaN·빈 자료를 거부한다.
+- 현재 자동 분석기는 headless CSV 전용이다. `run-unity-playtest-agent.py` 실제 Windows 기록과 혼합하지 않는다. 실게임 시각/물리/지연 검증과 사람의 재미 평가는 별도이며, 사용자의 실행 중인 게임에 입력을 보내지 않는다.

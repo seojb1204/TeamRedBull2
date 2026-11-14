@@ -1,0 +1,3636 @@
+{
+  "schema": "tower-playtest-summary/1",
+  "engine": "UnityShim",
+  "trials": 240,
+  "limitations": [
+    "Privileged state rule bots, not human or visual-learning players.",
+    "Fun is not measured. Timeouts, hits and duration only flag cases for human review.",
+    "Rounds share DDA history. Intervals are descriptive, not independent-sample statistical proof.",
+    "Matched initial seeds do not guarantee identical later RNG events under different actions.",
+    "No rendering, collision engine, device latency or Unity build verification."
+  ],
+  "groups": [
+    {
+      "boss": "0",
+      "profile": "balanced",
+      "dda": false,
+      "trials": 8,
+      "clears": 7,
+      "deaths": 1,
+      "timeouts": 0,
+      "clearRate": 0.875,
+      "descriptiveWilson95": [
+        0.5291,
+        0.9776
+      ],
+      "medianSeconds": 49.0695,
+      "medianHits": 5.5,
+      "median_longestNoDamageSeconds": 4.7085,
+      "median_stationaryFraction": 0.8945
+    },
+    {
+      "boss": "0",
+      "profile": "balanced",
+      "dda": true,
+      "trials": 8,
+      "clears": 7,
+      "deaths": 1,
+      "timeouts": 0,
+      "clearRate": 0.875,
+      "descriptiveWilson95": [
+        0.5291,
+        0.9776
+      ],
+      "medianSeconds": 51.957499999999996,
+      "medianHits": 5.5,
+      "median_longestNoDamageSeconds": 4.7085,
+      "median_stationaryFraction": 0.89435
+    },
+    {
+      "boss": "0",
+      "profile": "expert",
+      "dda": false,
+      "trials": 8,
+      "clears": 7,
+      "deaths": 1,
+      "timeouts": 0,
+      "clearRate": 0.875,
+      "descriptiveWilson95": [
+        0.5291,
+        0.9776
+      ],
+      "medianSeconds": 45.5145,
+      "medianHits": 1.0,
+      "median_longestNoDamageSeconds": 4.7085,
+      "median_stationaryFraction": 0.8746
+    },
+    {
+      "boss": "0",
+      "profile": "expert",
+      "dda": true,
+      "trials": 8,
+      "clears": 8,
+      "deaths": 0,
+      "timeouts": 0,
+      "clearRate": 1.0,
+      "descriptiveWilson95": [
+        0.6756,
+        1
+      ],
+      "medianSeconds": 48.2575,
+      "medianHits": 2.0,
+      "median_longestNoDamageSeconds": 4.525,
+      "median_stationaryFraction": 0.87975
+    },
+    {
+      "boss": "0",
+      "profile": "novice",
+      "dda": false,
+      "trials": 8,
+      "clears": 3,
+      "deaths": 5,
+      "timeouts": 0,
+      "clearRate": 0.375,
+      "descriptiveWilson95": [
+        0.1368,
+        0.6943
+      ],
+      "medianSeconds": 62.521,
+      "medianHits": 18.0,
+      "median_longestNoDamageSeconds": 3.0665,
+      "median_stationaryFraction": 0.91935
+    },
+    {
+      "boss": "0",
+      "profile": "novice",
+      "dda": true,
+      "trials": 8,
+      "clears": 1,
+      "deaths": 7,
+      "timeouts": 0,
+      "clearRate": 0.125,
+      "descriptiveWilson95": [
+        0.0224,
+        0.4709
+      ],
+      "medianSeconds": 63.3605,
+      "medianHits": 19.0,
+      "median_longestNoDamageSeconds": 4.342,
+      "median_stationaryFraction": 0.9185000000000001
+    },
+    {
+      "boss": "1",
+      "profile": "balanced",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 34.556,
+      "medianHits": 13.0,
+      "median_longestNoDamageSeconds": 3.0835,
+      "median_stationaryFraction": 0.8634
+    },
+    {
+      "boss": "1",
+      "profile": "balanced",
+      "dda": true,
+      "trials": 8,
+      "clears": 2,
+      "deaths": 6,
+      "timeouts": 0,
+      "clearRate": 0.25,
+      "descriptiveWilson95": [
+        0.0715,
+        0.5907
+      ],
+      "medianSeconds": 45.4165,
+      "medianHits": 14.0,
+      "median_longestNoDamageSeconds": 3.4915000000000003,
+      "median_stationaryFraction": 0.8642000000000001
+    },
+    {
+      "boss": "1",
+      "profile": "expert",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 43.701499999999996,
+      "medianHits": 13.0,
+      "median_longestNoDamageSeconds": 4.475,
+      "median_stationaryFraction": 0.84425
+    },
+    {
+      "boss": "1",
+      "profile": "expert",
+      "dda": true,
+      "trials": 8,
+      "clears": 1,
+      "deaths": 7,
+      "timeouts": 0,
+      "clearRate": 0.125,
+      "descriptiveWilson95": [
+        0.0224,
+        0.4709
+      ],
+      "medianSeconds": 51.8225,
+      "medianHits": 13.0,
+      "median_longestNoDamageSeconds": 5.1915,
+      "median_stationaryFraction": 0.8420000000000001
+    },
+    {
+      "boss": "1",
+      "profile": "novice",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 29.7365,
+      "medianHits": 12.0,
+      "median_longestNoDamageSeconds": 2.3,
+      "median_stationaryFraction": 0.8285
+    },
+    {
+      "boss": "1",
+      "profile": "novice",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 37.8515,
+      "medianHits": 14.5,
+      "median_longestNoDamageSeconds": 2.3,
+      "median_stationaryFraction": 0.8412
+    },
+    {
+      "boss": "2",
+      "profile": "balanced",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 48.956,
+      "medianHits": 16.0,
+      "median_longestNoDamageSeconds": 4.617,
+      "median_stationaryFraction": 0.9327000000000001
+    },
+    {
+      "boss": "2",
+      "profile": "balanced",
+      "dda": true,
+      "trials": 8,
+      "clears": 1,
+      "deaths": 7,
+      "timeouts": 0,
+      "clearRate": 0.125,
+      "descriptiveWilson95": [
+        0.0224,
+        0.4709
+      ],
+      "medianSeconds": 50.189499999999995,
+      "medianHits": 16.0,
+      "median_longestNoDamageSeconds": 4.6,
+      "median_stationaryFraction": 0.9306000000000001
+    },
+    {
+      "boss": "2",
+      "profile": "expert",
+      "dda": false,
+      "trials": 8,
+      "clears": 5,
+      "deaths": 3,
+      "timeouts": 0,
+      "clearRate": 0.625,
+      "descriptiveWilson95": [
+        0.3057,
+        0.8632
+      ],
+      "medianSeconds": 54.0295,
+      "medianHits": 15.5,
+      "median_longestNoDamageSeconds": 4.35,
+      "median_stationaryFraction": 0.9275
+    },
+    {
+      "boss": "2",
+      "profile": "expert",
+      "dda": true,
+      "trials": 8,
+      "clears": 5,
+      "deaths": 3,
+      "timeouts": 0,
+      "clearRate": 0.625,
+      "descriptiveWilson95": [
+        0.3057,
+        0.8632
+      ],
+      "medianSeconds": 53.196,
+      "medianHits": 14.5,
+      "median_longestNoDamageSeconds": 4.317,
+      "median_stationaryFraction": 0.9257
+    },
+    {
+      "boss": "2",
+      "profile": "novice",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 28.4095,
+      "medianHits": 13.0,
+      "median_longestNoDamageSeconds": 2.283,
+      "median_stationaryFraction": 0.908
+    },
+    {
+      "boss": "2",
+      "profile": "novice",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 37.0895,
+      "medianHits": 14.5,
+      "median_longestNoDamageSeconds": 2.283,
+      "median_stationaryFraction": 0.92655
+    },
+    {
+      "boss": "3",
+      "profile": "balanced",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 34.703,
+      "medianHits": 11.5,
+      "median_longestNoDamageSeconds": 4.0665000000000004,
+      "median_stationaryFraction": 0.9124000000000001
+    },
+    {
+      "boss": "3",
+      "profile": "balanced",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 47.541,
+      "medianHits": 14.0,
+      "median_longestNoDamageSeconds": 4.1,
+      "median_stationaryFraction": 0.9124000000000001
+    },
+    {
+      "boss": "3",
+      "profile": "expert",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 40.926500000000004,
+      "medianHits": 12.0,
+      "median_longestNoDamageSeconds": 3.45,
+      "median_stationaryFraction": 0.91845
+    },
+    {
+      "boss": "3",
+      "profile": "expert",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 50.141000000000005,
+      "medianHits": 14.0,
+      "median_longestNoDamageSeconds": 3.8834999999999997,
+      "median_stationaryFraction": 0.91895
+    },
+    {
+      "boss": "3",
+      "profile": "novice",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 24.306,
+      "medianHits": 10.0,
+      "median_longestNoDamageSeconds": 2.267,
+      "median_stationaryFraction": 0.8941
+    },
+    {
+      "boss": "3",
+      "profile": "novice",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 36.538,
+      "medianHits": 13.5,
+      "median_longestNoDamageSeconds": 3.4335,
+      "median_stationaryFraction": 0.88775
+    },
+    {
+      "boss": "4",
+      "profile": "balanced",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 28.991,
+      "medianHits": 14.0,
+      "median_longestNoDamageSeconds": 4.233,
+      "median_stationaryFraction": 0.91945
+    },
+    {
+      "boss": "4",
+      "profile": "balanced",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 30.9895,
+      "medianHits": 15.0,
+      "median_longestNoDamageSeconds": 4.483,
+      "median_stationaryFraction": 0.91735
+    },
+    {
+      "boss": "4",
+      "profile": "expert",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 27.343,
+      "medianHits": 13.0,
+      "median_longestNoDamageSeconds": 4.233,
+      "median_stationaryFraction": 0.92465
+    },
+    {
+      "boss": "4",
+      "profile": "expert",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 29.218,
+      "medianHits": 15.0,
+      "median_longestNoDamageSeconds": 4.483,
+      "median_stationaryFraction": 0.92275
+    },
+    {
+      "boss": "4",
+      "profile": "novice",
+      "dda": false,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 23.189999999999998,
+      "medianHits": 12.0,
+      "median_longestNoDamageSeconds": 2.742,
+      "median_stationaryFraction": 0.89135
+    },
+    {
+      "boss": "4",
+      "profile": "novice",
+      "dda": true,
+      "trials": 8,
+      "clears": 0,
+      "deaths": 8,
+      "timeouts": 0,
+      "clearRate": 0.0,
+      "descriptiveWilson95": [
+        0,
+        0.3244
+      ],
+      "medianSeconds": 23.9115,
+      "medianHits": 13.5,
+      "median_longestNoDamageSeconds": 2.267,
+      "median_stationaryFraction": 0.877
+    }
+  ],
+  "pairedDda": [
+    {
+      "profile": "novice",
+      "seed": "17",
+      "boss": "0",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "18",
+      "boss": "0",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 3.1440000000000055
+    },
+    {
+      "profile": "novice",
+      "seed": "19",
+      "boss": "0",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 11.201999999999998
+    },
+    {
+      "profile": "novice",
+      "seed": "20",
+      "boss": "0",
+      "round": "4",
+      "off": "clear",
+      "on": "death",
+      "secondsDelta": -18.083000000000006
+    },
+    {
+      "profile": "novice",
+      "seed": "17",
+      "boss": "1",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "18",
+      "boss": "1",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 1.6999999999999993
+    },
+    {
+      "profile": "novice",
+      "seed": "19",
+      "boss": "1",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 23.076
+    },
+    {
+      "profile": "novice",
+      "seed": "20",
+      "boss": "1",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 39.839
+    },
+    {
+      "profile": "novice",
+      "seed": "17",
+      "boss": "2",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "18",
+      "boss": "2",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 2.039999999999999
+    },
+    {
+      "profile": "novice",
+      "seed": "19",
+      "boss": "2",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 16.22
+    },
+    {
+      "profile": "novice",
+      "seed": "20",
+      "boss": "2",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 9.717000000000002
+    },
+    {
+      "profile": "novice",
+      "seed": "17",
+      "boss": "3",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "18",
+      "boss": "3",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 13.966000000000001
+    },
+    {
+      "profile": "novice",
+      "seed": "19",
+      "boss": "3",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 21.619
+    },
+    {
+      "profile": "novice",
+      "seed": "20",
+      "boss": "3",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 19.666999999999998
+    },
+    {
+      "profile": "novice",
+      "seed": "17",
+      "boss": "4",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "18",
+      "boss": "4",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -6.966000000000001
+    },
+    {
+      "profile": "novice",
+      "seed": "19",
+      "boss": "4",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -6.567
+    },
+    {
+      "profile": "novice",
+      "seed": "20",
+      "boss": "4",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 9.207
+    },
+    {
+      "profile": "novice",
+      "seed": "42",
+      "boss": "0",
+      "round": "1",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "43",
+      "boss": "0",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -3.8500000000000014
+    },
+    {
+      "profile": "novice",
+      "seed": "44",
+      "boss": "0",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 4.86699999999999
+    },
+    {
+      "profile": "novice",
+      "seed": "45",
+      "boss": "0",
+      "round": "4",
+      "off": "clear",
+      "on": "death",
+      "secondsDelta": -0.8329999999999984
+    },
+    {
+      "profile": "novice",
+      "seed": "42",
+      "boss": "1",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "43",
+      "boss": "1",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 4.59
+    },
+    {
+      "profile": "novice",
+      "seed": "44",
+      "boss": "1",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 30.116
+    },
+    {
+      "profile": "novice",
+      "seed": "45",
+      "boss": "1",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 9.963000000000001
+    },
+    {
+      "profile": "novice",
+      "seed": "42",
+      "boss": "2",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "43",
+      "boss": "2",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 8.866999999999997
+    },
+    {
+      "profile": "novice",
+      "seed": "44",
+      "boss": "2",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -14.065999999999999
+    },
+    {
+      "profile": "novice",
+      "seed": "45",
+      "boss": "2",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 15.043000000000003
+    },
+    {
+      "profile": "novice",
+      "seed": "42",
+      "boss": "3",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "43",
+      "boss": "3",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -6.150000000000002
+    },
+    {
+      "profile": "novice",
+      "seed": "44",
+      "boss": "3",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 8.849999999999998
+    },
+    {
+      "profile": "novice",
+      "seed": "45",
+      "boss": "3",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 11.334
+    },
+    {
+      "profile": "novice",
+      "seed": "42",
+      "boss": "4",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "novice",
+      "seed": "43",
+      "boss": "4",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 8.0
+    },
+    {
+      "profile": "novice",
+      "seed": "44",
+      "boss": "4",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 3.2500000000000018
+    },
+    {
+      "profile": "novice",
+      "seed": "45",
+      "boss": "4",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -2.683
+    },
+    {
+      "profile": "balanced",
+      "seed": "17",
+      "boss": "0",
+      "round": "1",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "18",
+      "boss": "0",
+      "round": "2",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 6.283000000000001
+    },
+    {
+      "profile": "balanced",
+      "seed": "19",
+      "boss": "0",
+      "round": "3",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": -0.13299999999999557
+    },
+    {
+      "profile": "balanced",
+      "seed": "20",
+      "boss": "0",
+      "round": "4",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 4.423000000000002
+    },
+    {
+      "profile": "balanced",
+      "seed": "17",
+      "boss": "1",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "18",
+      "boss": "1",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 6.434000000000001
+    },
+    {
+      "profile": "balanced",
+      "seed": "19",
+      "boss": "1",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -5.8430000000000035
+    },
+    {
+      "profile": "balanced",
+      "seed": "20",
+      "boss": "1",
+      "round": "4",
+      "off": "death",
+      "on": "clear",
+      "secondsDelta": 37.77000000000001
+    },
+    {
+      "profile": "balanced",
+      "seed": "17",
+      "boss": "2",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "18",
+      "boss": "2",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.2569999999999979
+    },
+    {
+      "profile": "balanced",
+      "seed": "19",
+      "boss": "2",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 3.213000000000001
+    },
+    {
+      "profile": "balanced",
+      "seed": "20",
+      "boss": "2",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -4.433
+    },
+    {
+      "profile": "balanced",
+      "seed": "17",
+      "boss": "3",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "18",
+      "boss": "3",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 3.399000000000001
+    },
+    {
+      "profile": "balanced",
+      "seed": "19",
+      "boss": "3",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 2.5
+    },
+    {
+      "profile": "balanced",
+      "seed": "20",
+      "boss": "3",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 36.423
+    },
+    {
+      "profile": "balanced",
+      "seed": "17",
+      "boss": "4",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "18",
+      "boss": "4",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -13.086000000000002
+    },
+    {
+      "profile": "balanced",
+      "seed": "19",
+      "boss": "4",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -0.5330000000000013
+    },
+    {
+      "profile": "balanced",
+      "seed": "20",
+      "boss": "4",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 5.222999999999999
+    },
+    {
+      "profile": "balanced",
+      "seed": "42",
+      "boss": "0",
+      "round": "1",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "43",
+      "boss": "0",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -7.6739999999999995
+    },
+    {
+      "profile": "balanced",
+      "seed": "44",
+      "boss": "0",
+      "round": "3",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "45",
+      "boss": "0",
+      "round": "4",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": -3.317
+    },
+    {
+      "profile": "balanced",
+      "seed": "42",
+      "boss": "1",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "43",
+      "boss": "1",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 13.046999999999997
+    },
+    {
+      "profile": "balanced",
+      "seed": "44",
+      "boss": "1",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -11.984000000000002
+    },
+    {
+      "profile": "balanced",
+      "seed": "45",
+      "boss": "1",
+      "round": "4",
+      "off": "death",
+      "on": "clear",
+      "secondsDelta": 20.72
+    },
+    {
+      "profile": "balanced",
+      "seed": "42",
+      "boss": "2",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "43",
+      "boss": "2",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -16.496000000000002
+    },
+    {
+      "profile": "balanced",
+      "seed": "44",
+      "boss": "2",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 5.573
+    },
+    {
+      "profile": "balanced",
+      "seed": "45",
+      "boss": "2",
+      "round": "4",
+      "off": "death",
+      "on": "clear",
+      "secondsDelta": 10.646
+    },
+    {
+      "profile": "balanced",
+      "seed": "42",
+      "boss": "3",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "43",
+      "boss": "3",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -11.577000000000002
+    },
+    {
+      "profile": "balanced",
+      "seed": "44",
+      "boss": "3",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 19.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "45",
+      "boss": "3",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 29.6
+    },
+    {
+      "profile": "balanced",
+      "seed": "42",
+      "boss": "4",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "balanced",
+      "seed": "43",
+      "boss": "4",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -11.759999999999998
+    },
+    {
+      "profile": "balanced",
+      "seed": "44",
+      "boss": "4",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 13.633000000000003
+    },
+    {
+      "profile": "balanced",
+      "seed": "45",
+      "boss": "4",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -2.283999999999999
+    },
+    {
+      "profile": "expert",
+      "seed": "17",
+      "boss": "0",
+      "round": "1",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "18",
+      "boss": "0",
+      "round": "2",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 1.216000000000001
+    },
+    {
+      "profile": "expert",
+      "seed": "19",
+      "boss": "0",
+      "round": "3",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": -1.277000000000001
+    },
+    {
+      "profile": "expert",
+      "seed": "20",
+      "boss": "0",
+      "round": "4",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 4.317
+    },
+    {
+      "profile": "expert",
+      "seed": "17",
+      "boss": "1",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "18",
+      "boss": "1",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 6.166999999999998
+    },
+    {
+      "profile": "expert",
+      "seed": "19",
+      "boss": "1",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 12.130000000000003
+    },
+    {
+      "profile": "expert",
+      "seed": "20",
+      "boss": "1",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -0.544000000000004
+    },
+    {
+      "profile": "expert",
+      "seed": "17",
+      "boss": "2",
+      "round": "1",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "18",
+      "boss": "2",
+      "round": "2",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": -2.0
+    },
+    {
+      "profile": "expert",
+      "seed": "19",
+      "boss": "2",
+      "round": "3",
+      "off": "clear",
+      "on": "death",
+      "secondsDelta": -4.1129999999999995
+    },
+    {
+      "profile": "expert",
+      "seed": "20",
+      "boss": "2",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -18.953
+    },
+    {
+      "profile": "expert",
+      "seed": "17",
+      "boss": "3",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "18",
+      "boss": "3",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 7.606000000000002
+    },
+    {
+      "profile": "expert",
+      "seed": "19",
+      "boss": "3",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 7.603999999999999
+    },
+    {
+      "profile": "expert",
+      "seed": "20",
+      "boss": "3",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -0.18700000000000472
+    },
+    {
+      "profile": "expert",
+      "seed": "17",
+      "boss": "4",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "18",
+      "boss": "4",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -12.486
+    },
+    {
+      "profile": "expert",
+      "seed": "19",
+      "boss": "4",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 1.4600000000000009
+    },
+    {
+      "profile": "expert",
+      "seed": "20",
+      "boss": "4",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 5.939999999999998
+    },
+    {
+      "profile": "expert",
+      "seed": "42",
+      "boss": "0",
+      "round": "1",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "43",
+      "boss": "0",
+      "round": "2",
+      "off": "death",
+      "on": "clear",
+      "secondsDelta": -45.733
+    },
+    {
+      "profile": "expert",
+      "seed": "44",
+      "boss": "0",
+      "round": "3",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 11.759999999999998
+    },
+    {
+      "profile": "expert",
+      "seed": "45",
+      "boss": "0",
+      "round": "4",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": -0.482999999999997
+    },
+    {
+      "profile": "expert",
+      "seed": "42",
+      "boss": "1",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "43",
+      "boss": "1",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 2.1400000000000006
+    },
+    {
+      "profile": "expert",
+      "seed": "44",
+      "boss": "1",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 5.412999999999997
+    },
+    {
+      "profile": "expert",
+      "seed": "45",
+      "boss": "1",
+      "round": "4",
+      "off": "death",
+      "on": "clear",
+      "secondsDelta": 22.919999999999995
+    },
+    {
+      "profile": "expert",
+      "seed": "42",
+      "boss": "2",
+      "round": "1",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "43",
+      "boss": "2",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -14.359000000000002
+    },
+    {
+      "profile": "expert",
+      "seed": "44",
+      "boss": "2",
+      "round": "3",
+      "off": "death",
+      "on": "clear",
+      "secondsDelta": 12.880000000000003
+    },
+    {
+      "profile": "expert",
+      "seed": "45",
+      "boss": "2",
+      "round": "4",
+      "off": "clear",
+      "on": "clear",
+      "secondsDelta": -1.4170000000000016
+    },
+    {
+      "profile": "expert",
+      "seed": "42",
+      "boss": "3",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "43",
+      "boss": "3",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -13.933000000000003
+    },
+    {
+      "profile": "expert",
+      "seed": "44",
+      "boss": "3",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 8.423000000000002
+    },
+    {
+      "profile": "expert",
+      "seed": "45",
+      "boss": "3",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 20.75
+    },
+    {
+      "profile": "expert",
+      "seed": "42",
+      "boss": "4",
+      "round": "1",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 0.0
+    },
+    {
+      "profile": "expert",
+      "seed": "43",
+      "boss": "4",
+      "round": "2",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": 11.540000000000003
+    },
+    {
+      "profile": "expert",
+      "seed": "44",
+      "boss": "4",
+      "round": "3",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -0.06700000000000017
+    },
+    {
+      "profile": "expert",
+      "seed": "45",
+      "boss": "4",
+      "round": "4",
+      "off": "death",
+      "on": "death",
+      "secondsDelta": -11.883000000000003
+    }
+  ],
+  "patterns": [
+    {
+      "boss": "0",
+      "pattern": "charge",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 7,
+      "hits": 4,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "charge",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 9,
+      "hits": 3,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "charge",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 6,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "charge",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 4,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "charge",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 11,
+      "hits": 9,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "charge",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 12,
+      "hits": 9,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "cleave",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 25,
+      "hits": 5,
+      "parries": 16
+    },
+    {
+      "boss": "0",
+      "pattern": "cleave",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 28,
+      "hits": 5,
+      "parries": 20
+    },
+    {
+      "boss": "0",
+      "pattern": "cleave",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 27,
+      "hits": 2,
+      "parries": 22
+    },
+    {
+      "boss": "0",
+      "pattern": "cleave",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 28,
+      "hits": 1,
+      "parries": 24
+    },
+    {
+      "boss": "0",
+      "pattern": "cleave",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 33,
+      "hits": 27,
+      "parries": 6
+    },
+    {
+      "boss": "0",
+      "pattern": "cleave",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 32,
+      "hits": 25,
+      "parries": 7
+    },
+    {
+      "boss": "0",
+      "pattern": "kick",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 16,
+      "hits": 3,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "kick",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 17,
+      "hits": 4,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "kick",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 23,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "kick",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 18,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "kick",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 38,
+      "hits": 22,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "kick",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 35,
+      "hits": 19,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rage",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rage",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rage",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rage",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rage",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rage",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rush",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 14,
+      "hits": 9,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rush",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 13,
+      "hits": 8,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rush",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 8,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rush",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 10,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rush",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 32,
+      "hits": 26,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "rush",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 31,
+      "hits": 24,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "shield",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 23,
+      "hits": 5,
+      "parries": 18
+    },
+    {
+      "boss": "0",
+      "pattern": "shield",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 21,
+      "hits": 7,
+      "parries": 14
+    },
+    {
+      "boss": "0",
+      "pattern": "shield",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 29,
+      "hits": 6,
+      "parries": 23
+    },
+    {
+      "boss": "0",
+      "pattern": "shield",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 22,
+      "hits": 5,
+      "parries": 17
+    },
+    {
+      "boss": "0",
+      "pattern": "shield",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 37,
+      "hits": 23,
+      "parries": 14
+    },
+    {
+      "boss": "0",
+      "pattern": "shield",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 30,
+      "hits": 20,
+      "parries": 10
+    },
+    {
+      "boss": "0",
+      "pattern": "slam",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 2,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slam",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 2,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slam",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slam",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slam",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slam",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 4,
+      "hits": 3,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slash",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 28,
+      "hits": 11,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slash",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 27,
+      "hits": 9,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slash",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 31,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slash",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 26,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slash",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 36,
+      "hits": 21,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "slash",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 37,
+      "hits": 23,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "step",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "step",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "step",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "step",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "step",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "step",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "sweep",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 13,
+      "hits": 13,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "sweep",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 13,
+      "hits": 13,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "sweep",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 12,
+      "hits": 12,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "sweep",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 13,
+      "hits": 13,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "sweep",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 15,
+      "hits": 15,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "sweep",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 20,
+      "hits": 20,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "throw",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 2,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "throw",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 2,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "throw",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "throw",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "0",
+      "pattern": "throw",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 1,
+      "hits": 0,
+      "parries": 1
+    },
+    {
+      "boss": "0",
+      "pattern": "throw",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 1,
+      "hits": 0,
+      "parries": 1
+    },
+    {
+      "boss": "1",
+      "pattern": "barrier",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "barrier",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "barrier",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 1,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "barrier",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 2,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "barrier",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "barrier",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 0,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "beam",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 47,
+      "hits": 3,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "beam",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 65,
+      "hits": 8,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "beam",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 48,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "beam",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 66,
+      "hits": 7,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "beam",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 35,
+      "hits": 6,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "beam",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 49,
+      "hits": 10,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "fan",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 52,
+      "hits": 47,
+      "parries": 2
+    },
+    {
+      "boss": "1",
+      "pattern": "fan",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 59,
+      "hits": 51,
+      "parries": 3
+    },
+    {
+      "boss": "1",
+      "pattern": "fan",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 63,
+      "hits": 50,
+      "parries": 4
+    },
+    {
+      "boss": "1",
+      "pattern": "fan",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 65,
+      "hits": 51,
+      "parries": 7
+    },
+    {
+      "boss": "1",
+      "pattern": "fan",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 38,
+      "hits": 35,
+      "parries": 1
+    },
+    {
+      "boss": "1",
+      "pattern": "fan",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 58,
+      "hits": 52,
+      "parries": 2
+    },
+    {
+      "boss": "1",
+      "pattern": "orb",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 33,
+      "hits": 24,
+      "parries": 9
+    },
+    {
+      "boss": "1",
+      "pattern": "orb",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 38,
+      "hits": 21,
+      "parries": 17
+    },
+    {
+      "boss": "1",
+      "pattern": "orb",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 38,
+      "hits": 26,
+      "parries": 12
+    },
+    {
+      "boss": "1",
+      "pattern": "orb",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 37,
+      "hits": 19,
+      "parries": 18
+    },
+    {
+      "boss": "1",
+      "pattern": "orb",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 30,
+      "hits": 25,
+      "parries": 5
+    },
+    {
+      "boss": "1",
+      "pattern": "orb",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 30,
+      "hits": 23,
+      "parries": 7
+    },
+    {
+      "boss": "1",
+      "pattern": "pulse",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 24,
+      "hits": 13,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "pulse",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 29,
+      "hits": 15,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "pulse",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 30,
+      "hits": 16,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "pulse",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 29,
+      "hits": 14,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "pulse",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 14,
+      "hits": 10,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "pulse",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 16,
+      "hits": 11,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "rain",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 56,
+      "hits": 23,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "rain",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 58,
+      "hits": 15,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "rain",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 68,
+      "hits": 10,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "rain",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 68,
+      "hits": 12,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "rain",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 33,
+      "hits": 16,
+      "parries": 0
+    },
+    {
+      "boss": "1",
+      "pattern": "rain",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 44,
+      "hits": 21,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "chain",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 22,
+      "hits": 13,
+      "parries": 9
+    },
+    {
+      "boss": "2",
+      "pattern": "chain",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 28,
+      "hits": 14,
+      "parries": 14
+    },
+    {
+      "boss": "2",
+      "pattern": "chain",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 26,
+      "hits": 9,
+      "parries": 17
+    },
+    {
+      "boss": "2",
+      "pattern": "chain",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 26,
+      "hits": 9,
+      "parries": 17
+    },
+    {
+      "boss": "2",
+      "pattern": "chain",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 11,
+      "hits": 6,
+      "parries": 5
+    },
+    {
+      "boss": "2",
+      "pattern": "chain",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 15,
+      "hits": 9,
+      "parries": 6
+    },
+    {
+      "boss": "2",
+      "pattern": "cross",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 26,
+      "hits": 17,
+      "parries": 9
+    },
+    {
+      "boss": "2",
+      "pattern": "cross",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 25,
+      "hits": 16,
+      "parries": 9
+    },
+    {
+      "boss": "2",
+      "pattern": "cross",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 37,
+      "hits": 20,
+      "parries": 17
+    },
+    {
+      "boss": "2",
+      "pattern": "cross",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 36,
+      "hits": 19,
+      "parries": 17
+    },
+    {
+      "boss": "2",
+      "pattern": "cross",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 15,
+      "hits": 10,
+      "parries": 5
+    },
+    {
+      "boss": "2",
+      "pattern": "cross",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 18,
+      "hits": 12,
+      "parries": 6
+    },
+    {
+      "boss": "2",
+      "pattern": "fall",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 64,
+      "hits": 22,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "fall",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 64,
+      "hits": 24,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "fall",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 81,
+      "hits": 26,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "fall",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 66,
+      "hits": 16,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "fall",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 35,
+      "hits": 21,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "fall",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 31,
+      "hits": 17,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "judgement",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 5,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "judgement",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 3,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "judgement",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 7,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "judgement",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 7,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "judgement",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 2,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "judgement",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 3,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "prisoner",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 41,
+      "hits": 39,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "prisoner",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 38,
+      "hits": 36,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "prisoner",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 40,
+      "hits": 37,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "prisoner",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 35,
+      "hits": 32,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "prisoner",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 26,
+      "hits": 25,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "prisoner",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 36,
+      "hits": 35,
+      "parries": 0
+    },
+    {
+      "boss": "2",
+      "pattern": "scythe",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 25,
+      "hits": 5,
+      "parries": 16
+    },
+    {
+      "boss": "2",
+      "pattern": "scythe",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 25,
+      "hits": 5,
+      "parries": 16
+    },
+    {
+      "boss": "2",
+      "pattern": "scythe",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 25,
+      "hits": 4,
+      "parries": 18
+    },
+    {
+      "boss": "2",
+      "pattern": "scythe",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 23,
+      "hits": 4,
+      "parries": 16
+    },
+    {
+      "boss": "2",
+      "pattern": "scythe",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 18,
+      "hits": 14,
+      "parries": 4
+    },
+    {
+      "boss": "2",
+      "pattern": "scythe",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 19,
+      "hits": 15,
+      "parries": 4
+    },
+    {
+      "boss": "2",
+      "pattern": "spin",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 39,
+      "hits": 30,
+      "parries": 9
+    },
+    {
+      "boss": "2",
+      "pattern": "spin",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 48,
+      "hits": 40,
+      "parries": 8
+    },
+    {
+      "boss": "2",
+      "pattern": "spin",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 39,
+      "hits": 27,
+      "parries": 12
+    },
+    {
+      "boss": "2",
+      "pattern": "spin",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 51,
+      "hits": 39,
+      "parries": 12
+    },
+    {
+      "boss": "2",
+      "pattern": "spin",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 28,
+      "hits": 25,
+      "parries": 3
+    },
+    {
+      "boss": "2",
+      "pattern": "spin",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 37,
+      "hits": 33,
+      "parries": 4
+    },
+    {
+      "boss": "3",
+      "pattern": "blade",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 48,
+      "hits": 22,
+      "parries": 13
+    },
+    {
+      "boss": "3",
+      "pattern": "blade",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 65,
+      "hits": 32,
+      "parries": 17
+    },
+    {
+      "boss": "3",
+      "pattern": "blade",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 53,
+      "hits": 21,
+      "parries": 15
+    },
+    {
+      "boss": "3",
+      "pattern": "blade",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 82,
+      "hits": 32,
+      "parries": 24
+    },
+    {
+      "boss": "3",
+      "pattern": "blade",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 32,
+      "hits": 28,
+      "parries": 4
+    },
+    {
+      "boss": "3",
+      "pattern": "blade",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 35,
+      "hits": 31,
+      "parries": 4
+    },
+    {
+      "boss": "3",
+      "pattern": "creation",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 44,
+      "hits": 6,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "creation",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 56,
+      "hits": 8,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "creation",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 45,
+      "hits": 6,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "creation",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 48,
+      "hits": 8,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "creation",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 28,
+      "hits": 0,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "creation",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 34,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "heaven",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 21,
+      "hits": 14,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "heaven",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 27,
+      "hits": 18,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "heaven",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 29,
+      "hits": 17,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "heaven",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 29,
+      "hits": 14,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "heaven",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 16,
+      "hits": 15,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "heaven",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 19,
+      "hits": 17,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "lance",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 36,
+      "hits": 26,
+      "parries": 10
+    },
+    {
+      "boss": "3",
+      "pattern": "lance",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 44,
+      "hits": 30,
+      "parries": 14
+    },
+    {
+      "boss": "3",
+      "pattern": "lance",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 47,
+      "hits": 32,
+      "parries": 15
+    },
+    {
+      "boss": "3",
+      "pattern": "lance",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 50,
+      "hits": 32,
+      "parries": 18
+    },
+    {
+      "boss": "3",
+      "pattern": "lance",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 17,
+      "hits": 12,
+      "parries": 5
+    },
+    {
+      "boss": "3",
+      "pattern": "lance",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 26,
+      "hits": 19,
+      "parries": 7
+    },
+    {
+      "boss": "3",
+      "pattern": "rift",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 8,
+      "hits": 2,
+      "parries": 6
+    },
+    {
+      "boss": "3",
+      "pattern": "rift",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 14,
+      "hits": 4,
+      "parries": 10
+    },
+    {
+      "boss": "3",
+      "pattern": "rift",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 12,
+      "hits": 1,
+      "parries": 11
+    },
+    {
+      "boss": "3",
+      "pattern": "rift",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 12,
+      "hits": 1,
+      "parries": 11
+    },
+    {
+      "boss": "3",
+      "pattern": "rift",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 10,
+      "hits": 6,
+      "parries": 4
+    },
+    {
+      "boss": "3",
+      "pattern": "rift",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 14,
+      "hits": 9,
+      "parries": 5
+    },
+    {
+      "boss": "3",
+      "pattern": "thunder",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 60,
+      "hits": 19,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "thunder",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 69,
+      "hits": 19,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "thunder",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 84,
+      "hits": 22,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "thunder",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 84,
+      "hits": 24,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "thunder",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 50,
+      "hits": 22,
+      "parries": 0
+    },
+    {
+      "boss": "3",
+      "pattern": "thunder",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 66,
+      "hits": 26,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "draw",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 11,
+      "hits": 2,
+      "parries": 9
+    },
+    {
+      "boss": "4",
+      "pattern": "draw",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 9,
+      "hits": 3,
+      "parries": 6
+    },
+    {
+      "boss": "4",
+      "pattern": "draw",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 9,
+      "hits": 0,
+      "parries": 9
+    },
+    {
+      "boss": "4",
+      "pattern": "draw",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 8,
+      "hits": 0,
+      "parries": 8
+    },
+    {
+      "boss": "4",
+      "pattern": "draw",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 8,
+      "hits": 3,
+      "parries": 5
+    },
+    {
+      "boss": "4",
+      "pattern": "draw",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 8,
+      "hits": 3,
+      "parries": 5
+    },
+    {
+      "boss": "4",
+      "pattern": "echo",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 19,
+      "hits": 8,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "echo",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 12,
+      "hits": 6,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "echo",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 16,
+      "hits": 7,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "echo",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 13,
+      "hits": 6,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "echo",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 14,
+      "hits": 7,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "echo",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 14,
+      "hits": 7,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "eclipse",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 5,
+      "hits": 3,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "eclipse",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 6,
+      "hits": 4,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "eclipse",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 4,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "eclipse",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 4,
+      "hits": 3,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "eclipse",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 3,
+      "hits": 1,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "eclipse",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 3,
+      "hits": 2,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "end",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 17,
+      "hits": 12,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "end",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 17,
+      "hits": 10,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "end",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 15,
+      "hits": 9,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "end",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 20,
+      "hits": 10,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "end",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 13,
+      "hits": 12,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "end",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 11,
+      "hits": 9,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "phantom",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 27,
+      "hits": 25,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "phantom",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 27,
+      "hits": 26,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "phantom",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 23,
+      "hits": 22,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "phantom",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 21,
+      "hits": 21,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "phantom",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 10,
+      "hits": 10,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "phantom",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 20,
+      "hits": 20,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "rain",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 40,
+      "hits": 17,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "rain",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 32,
+      "hits": 15,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "rain",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 39,
+      "hits": 18,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "rain",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 25,
+      "hits": 15,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "rain",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 44,
+      "hits": 23,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "rain",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 41,
+      "hits": 21,
+      "parries": 0
+    },
+    {
+      "boss": "4",
+      "pattern": "twelve",
+      "profile": "balanced",
+      "dda": false,
+      "opportunities": 64,
+      "hits": 45,
+      "parries": 11
+    },
+    {
+      "boss": "4",
+      "pattern": "twelve",
+      "profile": "balanced",
+      "dda": true,
+      "opportunities": 78,
+      "hits": 58,
+      "parries": 13
+    },
+    {
+      "boss": "4",
+      "pattern": "twelve",
+      "profile": "expert",
+      "dda": false,
+      "opportunities": 67,
+      "hits": 50,
+      "parries": 14
+    },
+    {
+      "boss": "4",
+      "pattern": "twelve",
+      "profile": "expert",
+      "dda": true,
+      "opportunities": 84,
+      "hits": 68,
+      "parries": 13
+    },
+    {
+      "boss": "4",
+      "pattern": "twelve",
+      "profile": "novice",
+      "dda": false,
+      "opportunities": 36,
+      "hits": 35,
+      "parries": 1
+    },
+    {
+      "boss": "4",
+      "pattern": "twelve",
+      "profile": "novice",
+      "dda": true,
+      "opportunities": 56,
+      "hits": 54,
+      "parries": 2
+    }
+  ]
+}

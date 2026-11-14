@@ -1,0 +1,561 @@
+{
+  "schema": "tower-pixel-iteration4/1",
+  "source_commit": "ea437c475283eb799489cf723db5850ee19c76d5",
+  "unity": "6000.4.0f1",
+  "build_succeeded": true,
+  "assembly_sha256": "b96ec8609f5713da5e1bb86c9722f05886892e836ba2791baf3e749c17bd027c",
+  "capture": "Camera.Render to RenderTexture, no IMGUI/HUD; actual Unity SpriteRenderer output",
+  "demonstrations": [
+    {
+      "seed": 301,
+      "policy": "rule-v3",
+      "outcome": "loss",
+      "steps": 588,
+      "missing_actor_fraction": 0.003401360544217687,
+      "actions": {
+        "idle": 2,
+        "left": 29,
+        "right": 49,
+        "attack": 496,
+        "parry": 11,
+        "jump": 0,
+        "dash": 0
+      },
+      "metrics": {
+        "schema": "towerPixelMetrics/1",
+        "outcome": "loss",
+        "simulationSeconds": 34.166316986083984,
+        "wallSeconds": 44.997798919677734,
+        "bossDamage": 600.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 12,
+        "parries": 0,
+        "decisions": 587,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      },
+      "capture_mode": "camera-texture-no-hud",
+      "hidden_window": true
+    },
+    {
+      "seed": 302,
+      "policy": "rule-v3",
+      "outcome": "loss",
+      "steps": 390,
+      "missing_actor_fraction": 0.005128205128205128,
+      "actions": {
+        "idle": 2,
+        "left": 24,
+        "right": 36,
+        "attack": 319,
+        "parry": 8,
+        "jump": 0,
+        "dash": 0
+      },
+      "metrics": {
+        "schema": "towerPixelMetrics/1",
+        "outcome": "loss",
+        "simulationSeconds": 22.433162689208984,
+        "wallSeconds": 29.87952995300293,
+        "bossDamage": 450.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 8,
+        "parries": 0,
+        "decisions": 389,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      },
+      "capture_mode": "camera-texture-no-hud",
+      "hidden_window": true
+    }
+  ],
+  "initialization": {
+    "method": "behavior-cloning-frequency/1",
+    "observation": "V3 RGB bins + own action history",
+    "label": "submitted rule-v3 action, not optimal/human action",
+    "samples": 976,
+    "states": 33,
+    "sources": [
+      {
+        "name": "episode-1.trajectory.json",
+        "sha256": "54c3c42fa00fb846d5004a18239571f276de5807ea17719bb50abd2e70119e8e",
+        "seed": 301,
+        "samples": 587
+      },
+      {
+        "name": "episode-1.trajectory.json",
+        "sha256": "76e4db037756e2e72404e7acec4213c2436b3055e3fdc887e4859c86d4a29512",
+        "seed": 302,
+        "samples": 389
+      }
+    ],
+    "reserved_evaluation_seeds": [
+      401,
+      402
+    ],
+    "limits": "Imitates visual rule behavior; unseen states use seeded random ties. Not combat success or generalization."
+  },
+  "checkpoint_sha256_before_evaluation": "6183eb9953b979937356ed413f9bf5a3d04cf25faf197e5afc6f9c6b91da0b2f",
+  "checkpoint_sha256_after_aborted_evaluation": "6183eb9953b979937356ed413f9bf5a3d04cf25faf197e5afc6f9c6b91da0b2f",
+  "evaluation": {
+    "status": "complete",
+    "completed_heldout_episodes": 6,
+    "seeds": [
+      401,
+      402
+    ],
+    "runs": [
+      {
+        "policy": "random-v3",
+        "seed": 401,
+        "outcome": "loss",
+        "completed": true,
+        "missing_actor_fraction": 0.03800475059382423,
+        "actions": {
+          "idle": 61,
+          "left": 66,
+          "right": 62,
+          "attack": 65,
+          "parry": 55,
+          "jump": 57,
+          "dash": 54
+        },
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 27.21642303466797,
+          "wallSeconds": 32.452796936035156,
+          "bossDamage": 40.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 8,
+          "parries": 0,
+          "decisions": 420,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        },
+        "capture_mode": "camera-texture-no-hud",
+        "dda": false,
+        "hidden_window": true,
+        "online_updates": 0,
+        "replay_updates": 0
+      },
+      {
+        "policy": "random-v3",
+        "seed": 402,
+        "outcome": "loss",
+        "completed": true,
+        "missing_actor_fraction": 0.05921052631578947,
+        "actions": {
+          "idle": 45,
+          "left": 63,
+          "right": 63,
+          "attack": 69,
+          "parry": 66,
+          "jump": 86,
+          "dash": 63
+        },
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 29.433055877685547,
+          "wallSeconds": 35.06188201904297,
+          "bossDamage": 60.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 8,
+          "parries": 0,
+          "decisions": 455,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        },
+        "capture_mode": "camera-texture-no-hud",
+        "dda": false,
+        "hidden_window": true,
+        "online_updates": 0,
+        "replay_updates": 0
+      },
+      {
+        "policy": "rule-v3",
+        "seed": 401,
+        "outcome": "loss",
+        "completed": true,
+        "missing_actor_fraction": 0.0032733224222585926,
+        "actions": {
+          "idle": 2,
+          "left": 15,
+          "right": 53,
+          "attack": 529,
+          "parry": 11,
+          "jump": 0,
+          "dash": 0
+        },
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 34.72296142578125,
+          "wallSeconds": 46.45346450805664,
+          "bossDamage": 690.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 9,
+          "parries": 1,
+          "decisions": 610,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        },
+        "capture_mode": "camera-texture-no-hud",
+        "dda": false,
+        "hidden_window": true,
+        "online_updates": 0,
+        "replay_updates": 0
+      },
+      {
+        "policy": "rule-v3",
+        "seed": 402,
+        "outcome": "loss",
+        "completed": true,
+        "missing_actor_fraction": 0.02145922746781116,
+        "actions": {
+          "idle": 10,
+          "left": 24,
+          "right": 56,
+          "attack": 366,
+          "parry": 9,
+          "jump": 0,
+          "dash": 0
+        },
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 26.799762725830078,
+          "wallSeconds": 35.546791076660156,
+          "bossDamage": 530.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 11,
+          "parries": 0,
+          "decisions": 465,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        },
+        "capture_mode": "camera-texture-no-hud",
+        "dda": false,
+        "hidden_window": true,
+        "online_updates": 0,
+        "replay_updates": 0
+      },
+      {
+        "policy": "tabular-v3",
+        "seed": 401,
+        "outcome": "loss",
+        "completed": true,
+        "missing_actor_fraction": 0.0025974025974025974,
+        "actions": {
+          "idle": 0,
+          "left": 14,
+          "right": 55,
+          "attack": 304,
+          "parry": 11,
+          "jump": 0,
+          "dash": 0
+        },
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 21.67317771911621,
+          "wallSeconds": 29.494657516479492,
+          "bossDamage": 470.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 7,
+          "parries": 1,
+          "decisions": 384,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        },
+        "capture_mode": "camera-texture-no-hud",
+        "dda": false,
+        "hidden_window": true,
+        "online_updates": 0,
+        "replay_updates": 0
+      },
+      {
+        "policy": "tabular-v3",
+        "seed": 402,
+        "outcome": "loss",
+        "completed": true,
+        "missing_actor_fraction": 0.012096774193548387,
+        "actions": {
+          "idle": 5,
+          "left": 24,
+          "right": 53,
+          "attack": 389,
+          "parry": 15,
+          "jump": 6,
+          "dash": 3
+        },
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 29.699718475341797,
+          "wallSeconds": 37.829986572265625,
+          "bossDamage": 390.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 11,
+          "parries": 0,
+          "decisions": 495,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        },
+        "capture_mode": "camera-texture-no-hud",
+        "dda": false,
+        "hidden_window": true,
+        "online_updates": 0,
+        "replay_updates": 0
+      }
+    ],
+    "means": {
+      "random-v3": {
+        "bossDamage": 50.0,
+        "wins": 0
+      },
+      "rule-v3": {
+        "bossDamage": 610.0,
+        "wins": 0
+      },
+      "tabular-v3": {
+        "bossDamage": 430.0,
+        "wins": 0
+      }
+    }
+  },
+  "gpu": {
+    "scope": "system-wide all completed trials; includes unrelated apps",
+    "samples": 118,
+    "max_utilization": 18.0,
+    "max_temperature": 32.0
+  },
+  "limits": [
+    "Two held-out seeds only, small demonstration dataset, not proof of general skill/fun or statistical superiority.",
+    "Demonstrations are visual rule actions, not human expert labels.",
+    "Camera-texture capture excludes HUD and differs from previous framebuffer trials.",
+    "Policy uses pixel-derived heuristic state and own actions; reward/metrics evaluation only.",
+    "Original gameplay, saves, DB settings and other apps preserved.",
+    "Imitation warm start only; no additional reinforcement learning updates during evaluation.",
+    "RL followup is a tiny predeclared pilot; repeated held-out seeds are regression comparison, not new independent generalization evidence."
+  ],
+  "checkpoint_sha256_after_evaluation": "6183eb9953b979937356ed413f9bf5a3d04cf25faf197e5afc6f9c6b91da0b2f",
+  "prior_failed_attempts": [
+    {
+      "mode": "STARTUPINFO hidden only",
+      "policy": "random-v3",
+      "seed": 401,
+      "reason": "visible-owned-window guard; no completed trial"
+    },
+    {
+      "mode": "hidden parent without message pump",
+      "policy": "random-v3",
+      "seed": 401,
+      "reason": "client timeout; no completed trial"
+    }
+  ],
+  "runner": "Own hidden STATIC parent + -parentHWND delayed + SetParent own PID windows + own message pump; no ShowWindow or foreground activation",
+  "reinforcement_followup": {
+    "predeclared_train_seeds": [
+      501,
+      502,
+      503
+    ],
+    "epsilon": 0.2,
+    "evaluation_seeds": [
+      401,
+      402
+    ],
+    "max_episodes": 5,
+    "runs": [
+      {
+        "seed": 501,
+        "training": true,
+        "outcome": "loss",
+        "raw_reward": -2.0044615989318117,
+        "missing_actor_fraction": 0.047109207708779445,
+        "actions": {
+          "idle": 20,
+          "left": 38,
+          "right": 94,
+          "attack": 261,
+          "parry": 26,
+          "jump": 14,
+          "dash": 13
+        },
+        "online_updates": 466,
+        "replay_updates": 3728,
+        "initial_checkpoint_sha256": "6183eb9953b979937356ed413f9bf5a3d04cf25faf197e5afc6f9c6b91da0b2f",
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 27.723068237304688,
+          "wallSeconds": 35.5192985534668,
+          "bossDamage": 360.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 9,
+          "parries": 1,
+          "decisions": 466,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        }
+      },
+      {
+        "seed": 502,
+        "training": true,
+        "outcome": "loss",
+        "raw_reward": -2.1590512776747346,
+        "missing_actor_fraction": 0.10582010582010581,
+        "actions": {
+          "idle": 68,
+          "left": 47,
+          "right": 60,
+          "attack": 104,
+          "parry": 21,
+          "jump": 44,
+          "dash": 33
+        },
+        "online_updates": 843,
+        "replay_updates": 6744,
+        "initial_checkpoint_sha256": "16b61ae039c05c69c3ebb19cdd8f380db16b60cf31b715ba1578a1fee227103c",
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 23.499813079833984,
+          "wallSeconds": 28.9290828704834,
+          "bossDamage": 170.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 8,
+          "parries": 0,
+          "decisions": 377,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        }
+      },
+      {
+        "seed": 503,
+        "training": true,
+        "outcome": "loss",
+        "raw_reward": -2.259615345275961,
+        "missing_actor_fraction": 0.19680851063829788,
+        "actions": {
+          "idle": 65,
+          "left": 87,
+          "right": 102,
+          "attack": 64,
+          "parry": 26,
+          "jump": 17,
+          "dash": 14
+        },
+        "online_updates": 1218,
+        "replay_updates": 9744,
+        "initial_checkpoint_sha256": "9886853d4401a519e61150e3fbde95256e08af7a47f03f6b8987972bd3229b62",
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 23.833141326904297,
+          "wallSeconds": 28.986806869506836,
+          "bossDamage": 90.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 9,
+          "parries": 0,
+          "decisions": 375,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        }
+      },
+      {
+        "seed": 401,
+        "training": false,
+        "outcome": "loss",
+        "raw_reward": -2.186256421962753,
+        "missing_actor_fraction": 0.0,
+        "actions": {
+          "idle": 2,
+          "left": 2,
+          "right": 23,
+          "attack": 40,
+          "parry": 8,
+          "jump": 197,
+          "dash": 4
+        },
+        "online_updates": 1218,
+        "replay_updates": 9744,
+        "initial_checkpoint_sha256": "83114b80d7dedda28930a3da36b4d3e9e4d16f7252622465b0ecd85ad0c90952",
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 17.483238220214844,
+          "wallSeconds": 21.442350387573242,
+          "bossDamage": 70.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 7,
+          "parries": 0,
+          "decisions": 276,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        }
+      },
+      {
+        "seed": 402,
+        "training": false,
+        "outcome": "loss",
+        "raw_reward": -2.3074359233723953,
+        "missing_actor_fraction": 0.10218978102189781,
+        "actions": {
+          "idle": 2,
+          "left": 24,
+          "right": 32,
+          "attack": 52,
+          "parry": 11,
+          "jump": 269,
+          "dash": 20
+        },
+        "online_updates": 1218,
+        "replay_updates": 9744,
+        "initial_checkpoint_sha256": "83114b80d7dedda28930a3da36b4d3e9e4d16f7252622465b0ecd85ad0c90952",
+        "metrics": {
+          "schema": "towerPixelMetrics/1",
+          "outcome": "loss",
+          "simulationSeconds": 26.116439819335938,
+          "wallSeconds": 31.544954299926758,
+          "bossDamage": 80.0,
+          "playerDamage": 100.0,
+          "hitsTaken": 11,
+          "parries": 0,
+          "decisions": 410,
+          "saveRootIsolated": true,
+          "ddaDisabled": true
+        }
+      }
+    ],
+    "trained_checkpoint_sha256": "83114b80d7dedda28930a3da36b4d3e9e4d16f7252622465b0ecd85ad0c90952",
+    "evaluation_checkpoint_unchanged": true,
+    "original_imitation_checkpoint_unchanged": true,
+    "mean_eval_boss_damage": 75.0,
+    "wins": 0,
+    "no_additional_experiments": true
+  },
+  "integrated_runner_smoke": {
+    "source_commit": "ab363a95b47f08cd32492e4f03d6932af53b2624",
+    "seed": 403,
+    "policy": "rule-v3",
+    "completed": true,
+    "outcome": "loss",
+    "missing_actor_fraction": 0.004282655246252677,
+    "metrics": {
+      "schema": "towerPixelMetrics/1",
+      "outcome": "loss",
+      "simulationSeconds": 26.799762725830078,
+      "wallSeconds": 35.78258514404297,
+      "bossDamage": 560.0,
+      "playerDamage": 100.0,
+      "hitsTaken": 10,
+      "parries": 0,
+      "decisions": 466,
+      "saveRootIsolated": true,
+      "ddaDisabled": true
+    }
+  }
+}

@@ -54,6 +54,27 @@ namespace ReversalTower
             catch(Exception e){LastError="저장 실패: "+e.Message;Debug.LogError(LastError);return false;}
         }
         // 전투 기록이 남을 때마다 알림 (CloudSync가 DB로 보냄). 저장 실패와 무관하게 호출된다.
+        // Local-only diagnostic stream. No CloudSync hook, no player identity, no existing-file deletion.
+        public static string LogSelections(string session,string boss,System.Collections.Generic.IReadOnlyList<PatternSelectionEvidence> rows,int decision)
+        {
+            try
+            {
+                string dir=Path.Combine(Root,"DdaDecisions");Directory.CreateDirectory(dir);
+                // A per-session GUID prevents overwriting another battle. Stop at a bounded size.
+                string path=Path.Combine(dir,session+".csv");
+                if(File.Exists(path)&&new FileInfo(path).Length>=16*1024*1024)return "로그 한도 도달 (16 MB); 화면 기록은 계속";
+                var sb=new StringBuilder();
+                if(!File.Exists(path))sb.AppendLine("boss,decision,seconds,pattern,selected,opportunities,hits,parries,dodges,ignored,success,baseWeight,multiplier,weight,probability,reason");
+                var ci=System.Globalization.CultureInfo.InvariantCulture;
+                foreach(var e in rows)if(e.decision==decision)
+                    sb.AppendFormat(ci,"{0},{1},{2:F3},{3},{4},{5},{6},{7},{8},{9},{10:F5},{11:F5},{12:F5},{13:F5},{14:F5},{15}\n",
+                        Csv(boss),e.decision,e.seconds,Csv(e.id),e.selected,e.opportunities,e.hits,e.parries,e.dodges,e.ignored,e.success,e.baseWeight,e.multiplier,e.weight,e.probability,Csv(e.reason));
+                File.AppendAllText(path,sb.ToString(),Encoding.UTF8);
+                return "로컬 CSV 기록 중 · DdaDecisions/"+session+".csv";
+            }
+            catch(Exception){return "CSV 기록 실패; 전투와 화면 기록은 계속";}
+        }
+        static string Csv(string value){return "\""+(value??"").Replace("\"","\"\"")+"\"";}
         public static event Action<HistoryEntry,System.Collections.Generic.List<PatternStats>,SaveData> BattleLogged;
         public static void Log(HistoryEntry h,System.Collections.Generic.List<PatternStats> stats,SaveData progression=null)
         {

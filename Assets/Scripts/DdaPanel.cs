@@ -83,7 +83,11 @@ namespace ReversalTower
             bool abandonedLine = full && result != null && result.abandoned;
             float w = Pad * 2 + NameW + LevelW + NowW + MemoryW + (full ? NextW + ReasonW : 0);
             float header = 86 + (abandonedLine ? 20 : 0);
-            float h = header + 30 + rows.Count * Row + 36;
+            int lastDecision=0;foreach(var e in BossPatterns.SelectionLog)lastDecision=System.Math.Max(lastDecision,e.decision);
+            var frequency=new List<PatternSelectionEvidence>();foreach(var e in BossPatterns.SelectionLog)if(e.decision==lastDecision)frequency.Add(e);
+            float frequencyHeight=120+frequency.Count*52;
+            float h = header + 30 + rows.Count * Row + 36+frequencyHeight;
+            w=Mathf.Max(w,1000);
             using (BeginDdaHistoryPanel(w, h))
             {
             w = ddaPanelContentWidth;
@@ -149,10 +153,32 @@ namespace ReversalTower
             cy += 8;
             Rule(cx, cy, inner);
             Text(cx, cy + 8, inner, 22, "레벨 -2 쉬움 ~ +2 어려움   ·   선딜 x1.3 ~ x0.8   ·   피해 x0.8 ~ x1.2   ·   쿨타임 x1.25 ~ x0.8", 13, muted);
+            cy+=42;
+            Text(cx,cy,inner,24,"실시간 빈도 · 직전 선택 #"+lastDecision+" (현재 공격을 바꾸지 않음)",16,Palette.Gold);cy+=26;
+            Text(cx,cy,inner,22,"패링/회피/피격/제외 · 기본 가중치 × 배수 → 최종 / 선택 확률 · ★ 실제 선택",12,muted);cy+=24;
+            foreach(var e in frequency)
+            {
+                string name=e.id;foreach(var p in spec.patterns)if(p.id==e.id){name=p.name;break;}
+                Text(cx,cy,inner,24,(e.selected?"★ ":"   ")+name+"  "+e.parries+"/"+e.dodges+"/"+e.hits+"/"+e.ignored+
+                    "   "+e.baseWeight.ToString("F2")+" × "+e.multiplier.ToString("F3")+" → "+e.weight.ToString("F2")+" / "+Pct(e.probability),15,e.selected?Palette.Gold:Palette.White);
+                Text(cx+12,cy+24,inner-12,22,FrequencyReason(e.reason),12,muted);cy+=52;
+            }
+            Text(cx,cy,inner,22,"후보가 아닌 거리/쿨다운/페이즈 제외 패턴은 표시하지 않음 · 확률과 실제 빈도는 다를 수 있음",12,muted);cy+=22;
+            Text(cx,cy,inner,22,BossPatterns.DiagnosticStatus,11,muted);
             if (ddaHistoryExpanded) DrawDdaDifficultyGraph(cx, h + 4, inner);
             }
         }
 
+        static string FrequencyReason(string reason)
+        {
+            return (reason??"").Replace("fewer than 4 valid opportunities","유효 관측 4회 미만: 기본 빈도")
+                .Replace("low HP: no extra practice pressure","체력 30% 이하: 추가 압박 없음")
+                .Replace("DDA off","DDA 꺼짐: 기본 빈도").Replace("invalid evidence ignored","유효하지 않은 통계 제외")
+                .Replace("smoothed success below 70%; practice boost capped at 35%","보정 성공률 70% 미만: 연습 가중치 (상한 35%)")
+                .Replace("success sufficient; base frequency","대응 충분: 기본 빈도")
+                .Replace("eligible authored opening","조건을 만족한 첫 공격")
+                .Replace("recent repetition limit: 2 in last 6","최근 6회 중 2회: 반복 제한으로 제외");
+        }
         static string Pct(float value) => Mathf.RoundToInt(value * 100) + "%";
         static string Level(int level) => level > 0 ? "+" + level : level.ToString();
         static Color LevelColor(int level) => level < 0 ? Palette.Teal : level > 0 ? Palette.Red : Palette.White;

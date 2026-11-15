@@ -144,7 +144,7 @@ namespace ReversalTower
     }
     public sealed class PatternSelectionEvidence
     {
-        public string id,reason; public int opportunities,decision; public bool selected; public float success,weight,probability,seconds;
+        public string id,reason; public int opportunities,decision,hits,parries,dodges,ignored; public bool selected; public float success,weight,probability,seconds,baseWeight,multiplier;
     }
     [Serializable] public class PatternMemory {public string id;public int level,observations;public float success=.7f;}
     [Serializable] public class BossLearning

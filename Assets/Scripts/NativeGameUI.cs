@@ -162,14 +162,15 @@ namespace ReversalTower
             ultHint=UiKit.Label(t,"Ultimate Hint",1156,278,344,30,UiKit.Body,UiKit.Muted);
             ultHint.text="보스를 쓰러뜨리면 늘어난다";
 
-            // 오른쪽 아래: 영구 강화(인장)
+            // 오른쪽 아래: 전용 강화 화면의 진입점 (상세 선택지는 로비에 노출하지 않는다)
             UiKit.Picture(t,"Upgrade Panel",1128,350,400,230,UiKit.Panel,Color.white);
-            UiKit.Label(t,"Upgrade Caption",1156,374,344,30,UiKit.Body,Palette.Gold).text="C  ·  맹세의 인장";
-            if(lobbyStats){lobbyStats.transform.SetAsLastSibling();UiKit.Place(lobbyStats,1156,412,344,70);UiKit.Dress(lobbyStats,UiKit.Body,Palette.White);}
+            UiKit.Label(t,"Upgrade Caption",1156,374,344,30,UiKit.Body,Palette.Gold).text="C  ·  영구 강화";
+            if(lobbyStats)lobbyStats.gameObject.SetActive(false);
+            UiKit.Label(t,"Upgrade Hint",1156,412,344,64,UiKit.Body,UiKit.Muted).text="세 장을 살펴보고\n하나를 선택하세요";
             if(upgradeButton)
             {
                 upgradeButton.transform.SetAsLastSibling();UiKit.Place(upgradeButton,1156,500,344,56);UiKit.Skin(upgradeButton,UiKit.Button);
-                upgradeLabel=UiKit.Caption(upgradeButton,"인장 고르기",UiKit.Body,Palette.White);
+                upgradeLabel=UiKit.Caption(upgradeButton,"강화하기",UiKit.Body,Palette.White);
             }
 
             // 작은 메뉴
@@ -180,9 +181,10 @@ namespace ReversalTower
         void BuildCards()
         {
             var t=cardsPage.transform;
-            UiKit.Dim(t,new Color(.01f,.015f,.025f,.88f),true);
+            // An opaque, standalone screen: no lobby controls or text behind the cards.
+            UiKit.Dim(t,new Color(.01f,.015f,.025f,1f),true);
             var title=Grab<Text>(cardsPage,"Title");
-            if(title){UiKit.Place(title,0,140,1600,60);UiKit.Dress(title,UiKit.Head,Palette.White,TextAnchor.UpperCenter,true,true);title.text="인장을 하나 고르세요";}
+            if(title){UiKit.Place(title,0,140,1600,60);UiKit.Dress(title,UiKit.Head,Palette.White,TextAnchor.UpperCenter,true,true);title.text="강화 선택 · 세 장 중 하나";}
             cardSub=UiKit.Label(t,"Subtitle",0,206,1600,30,UiKit.Body,UiKit.Muted,TextAnchor.UpperCenter);
             int n=cardButtons.Length;
             cardGlyph=new Text[n];cardAmount=new Text[n];cardDetail=new Text[n];cardOwned=new Text[n];
@@ -200,7 +202,7 @@ namespace ReversalTower
                 cardOwned[i]=UiKit.Label(b.transform,"Owned",0,344,340,30,UiKit.Body,Palette.Teal,TextAnchor.UpperCenter);
             }
             cardsClose=Grab<Button>(cardsPage,"선택하지 않고 돌아가기");
-            if(cardsClose){UiKit.Place(cardsClose,640,700,320,56);UiKit.Skin(cardsClose,UiKit.Button);UiKit.Caption(cardsClose,"이번엔 넘어가기",UiKit.Body,Palette.White,"Esc");}
+            if(cardsClose){UiKit.Place(cardsClose,580,700,440,56);UiKit.Skin(cardsClose,UiKit.Button);UiKit.Caption(cardsClose,"선택하지 않고 돌아가기",UiKit.Body,Palette.White,"Esc");}
         }
 
         void BuildBattle()
@@ -320,7 +322,7 @@ namespace ReversalTower
             pageClock+=dt;
 
             bool cardsVisible=mode==ScreenMode.Lobby&&(game.showCards||outro>=0);
-            titlePage.SetActive(mode==ScreenMode.Title);lobbyPage.SetActive(mode==ScreenMode.Lobby);
+            titlePage.SetActive(mode==ScreenMode.Title);lobbyPage.SetActive(mode==ScreenMode.Lobby&&!cardsVisible);
             battlePage.SetActive(mode==ScreenMode.Battle);resultPage.SetActive(mode==ScreenMode.Result);
             endingPage.SetActive(mode==ScreenMode.Ending);cardsPage.SetActive(cardsVisible);
             pausePage.SetActive(mode==ScreenMode.Battle&&game.paused);
@@ -397,7 +399,7 @@ namespace ReversalTower
             Set(lobbyStats,"공격 "+Num(LobbyCards.Attack(save))+"  ·  체력 "+Num(LobbyCards.Health(save))+"\n회복약 "+Num(LobbyCards.Heal(save))+"  ·  인장 "+save.cardPurchases+"장");
             int cost=LobbyCards.Cost(save);
             upgradeButton.interactable=!save.cardChosen;
-            Set(upgradeLabel,save.cardChosen?"다음 전투가 끝나면 다시":save.gold<cost?"골드 부족  ·  "+UiKit.Gold(cost):"인장 고르기  ·  "+UiKit.Gold(cost));
+            Set(upgradeLabel,save.cardChosen?"다음 전투가 끝나면 다시":save.gold<cost?"골드 부족  ·  "+UiKit.Gold(cost):"강화하기  ·  "+UiKit.Gold(cost));
         }
 
         void RefreshCards(float dt)

@@ -42,7 +42,7 @@ namespace ReversalTower
         Button ultButton;
         float shownGold=-1;
         // 카드
-        Text cardSub;
+        Text cardTitle,cardSub;
         Text[] cardGlyph,cardAmount,cardDetail,cardOwned;
         CanvasGroup[] cardGroups;
         RectTransform[] cardRects;
@@ -181,7 +181,7 @@ namespace ReversalTower
         {
             var t=cardsPage.transform;
             UiKit.Dim(t,new Color(.01f,.015f,.025f,.88f),true);
-            var title=Grab<Text>(cardsPage,"Title");
+            var title=cardTitle=Grab<Text>(cardsPage,"Title");
             if(title){UiKit.Place(title,0,140,1600,60);UiKit.Dress(title,UiKit.Head,Palette.White,TextAnchor.UpperCenter,true,true);title.text="인장을 하나 고르세요";}
             cardSub=UiKit.Label(t,"Subtitle",0,206,1600,30,UiKit.Body,UiKit.Muted,TextAnchor.UpperCenter);
             int n=cardButtons.Length;
@@ -414,6 +414,7 @@ namespace ReversalTower
             Tint(cardSub,afford||outro>=0?UiKit.Muted:Palette.Red);
 
             bool offer=save.cardOffer!=null&&save.cardOffer.Length>0&&save.cardOffer.Length<=cardButtons.Length;
+            Set(cardTitle,offer?"강화 선택 · "+(save.cardOffer.Length==1?"한 장":save.cardOffer.Length==2?"두 장":"세 장")+" 중 하나":"현재 선택할 강화가 없습니다");
             bool live=outro<0;
             for(int i=0;i<cardButtons.Length;i++)
             {

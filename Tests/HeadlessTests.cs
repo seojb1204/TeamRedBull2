@@ -237,6 +237,23 @@ public static class HeadlessTests
         Check(SaveStore.Save(roundtrip),"Save full new inventory succeeds");var reloaded=SaveStore.Load();
         foreach(var c in LobbyCards.All)Check(LobbyCards.Count(reloaded,c.id)==c.limit,"Upgrade survives restart "+c.id);
         Check(reloaded.gold==1234&&reloaded.attackLevel==3&&reloaded.healthLevel==4&&reloaded.cardPurchases==77,"New inventory preserves old progress and gold");
+        var two=new SaveData();for(int i=0;i<5;i++)two.cleared[i]=true;foreach(var c in LobbyCards.All)Give(two,c.id,c.limit);
+        two.cards.Find(c=>c.id=="blade").count--;two.cards.Find(c=>c.id=="vitality").count--;LobbyCards.EnsureOffer(two);
+        Check(two.cardOffer.Length==2&&two.cardOffer[0]!=two.cardOffer[1],"Two remaining upgrades offered without duplicates");string twoOffer=string.Join(",",two.cardOffer);LobbyCards.EnsureOffer(two);Check(string.Join(",",two.cardOffer)==twoOffer,"Two-card offer stable on reopen");
+        Start();Give(game.save,"riposte");game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);
+        game.player=new Vector2(-5,0);game.face=1;game.minions.Add(new TowerGame.Minion{x=-4,hp=100});
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.minions[0].hp,87.5f,"Riposte applies to minion hit");
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.minions[0].hp,77.5f,"Minion hit consumes riposte once");
+        Start(1);Give(game.save,"riposte");game.parryAge=.1f;game.PlayerHit(17,true,"orb",game.boss.x);game.barrier=true;game.barrierHp=100;game.player=new Vector2(-1,0);game.face=1;
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.barrierHp,87.5f,"Riposte applies to barrier");
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.barrierHp,77.5f,"Barrier hit consumes riposte once");
+        Start();Give(game.save,"flow");game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);game.skillQ=6;game.skillW=10;game.skillE=15;
+        game.seconds=2.999f;game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,6,"Flow blocked immediately before boundary");
+        game.seconds=3;game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,5.7f,"Flow reactivates exactly at 3 seconds");
+        game.seconds=6;game.skillQ=game.skillW=game.skillE=0;game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Check(game.skillQ==0&&game.skillW==0&&game.skillE==0,"Flow leaves all ready skills at zero");
+        Start(1);Give(game.save,"inherit",3);game.save.equippedUltimate=1;Call("BeginAction","R",.85f);Call("TickAction",.3f);hp=game.bossHp;
+        foreach(var shot in game.shots){shot.pos=game.boss+Vector2.up*1.2f;shot.vel=new Vector2(0,0);}Call("TickShots",.001f);
+        Near(hp-game.bossHp,124,"Five actual projectile collisions apply total upgraded R damage");Check(game.shots.Count==0,"Ultimate projectiles removed after hits");
         var model=new BanditModel();Check(model.Choose(model.Context(.7f,.7f,0,LobbyCards.Power(data),0),0,0,.7f,0)==0,"Upgrades do not raise first encounter DDA level");
     }
 

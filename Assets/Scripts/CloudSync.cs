@@ -154,9 +154,12 @@ namespace ReversalTower
                 if (!string.IsNullOrEmpty(p.card)) { yield return Post("card_picks", p.card, r => ok = r); if (!ok) break; }
                 TryDelete(file);
             }
-            yield return FetchDifficulty();
+            bool fetched=false;
+            yield return FetchDifficulty(r=>fetched=r);
             int left = Directory.GetFiles(queueDir, "*.json").Length;
-            CommunityStats.Status = !ok ? "DB 오프라인 · 대기 " + left + "건 (다음에 다시 보냄)"
+            CommunityStats.Status = !ok
+                ? "DB 전송 실패 · 대기 " + left + "건 · 통계 " + (fetched?"수신됨":"수신 실패 (이전 캐시)")
+                : !fetched ? "DB 전송 처리 완료 · 통계 수신 실패 (이전 캐시 " + CommunityStats.Count + "개)"
                 : "DB 동기화됨 " + (lastSync.HasValue ? lastSync.Value.ToString("HH:mm") : "") + " · 패턴 통계 " + CommunityStats.Count + "개";
             sending = false;
         }
@@ -178,17 +181,18 @@ namespace ReversalTower
             }
         }
 
-        IEnumerator FetchDifficulty()
+        IEnumerator FetchDifficulty(Action<bool> done)
         {
             string url = config.url + "/rest/v1/pattern_difficulty?select=boss,pattern,opportunities,players,success_rate,parry_rate,hit_rate,suggested_level";
             using (var req = UnityWebRequest.Get(url))
             {
                 Headers(req);
                 yield return req.SendWebRequest();
-                if (req.result != UnityWebRequest.Result.Success) { Debug.LogWarning("DB 통계 받기 실패 (" + req.responseCode + "): " + req.error); yield break; }
+                if (req.result != UnityWebRequest.Result.Success) { Debug.LogWarning("DB 통계 받기 실패 (" + req.responseCode + "): " + req.error); done(false); yield break; }
                 try
                 {
                     var list = JsonUtility.FromJson<DifficultyList>("{\"items\":" + req.downloadHandler.text + "}");
+                    if(list==null||list.items==null)throw new FormatException("Missing statistics array");
                     var entries = new List<CommunityStats.Entry>();
                     if (list != null && list.items != null)
                         foreach (var r in list.items)
@@ -196,8 +200,9 @@ namespace ReversalTower
                                 successRate = r.success_rate, parryRate = r.parry_rate, hitRate = r.hit_rate, suggestedLevel = r.suggested_level });
                     CommunityStats.Replace(entries);
                     lastSync = DateTime.Now;
+                    done(true);
                 }
-                catch (Exception e) { Debug.LogWarning("DB 통계 해석 실패: " + e.Message); }
+                catch (Exception e) { Debug.LogWarning("DB 통계 해석 실패: " + e.Message); done(false); }
             }
         }
 

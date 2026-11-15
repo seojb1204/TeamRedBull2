@@ -81,7 +81,7 @@ namespace UnityEngine
 }
 namespace ReversalTower
 {
-    public sealed class Soundscape:UnityEngine.MonoBehaviour {public float tension;public void Initialize(){}public void Play(string s){
+    public sealed class Soundscape:UnityEngine.MonoBehaviour {public float tension;public void SetBoss(int index){}public void Initialize(){}public void Play(string s){
 #if DESKTOP_PREVIEW
         PreviewAudio.Play(s);
 #endif

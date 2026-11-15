@@ -3,12 +3,16 @@ using System;
 
 namespace ReversalTower
 {
-    // Imported CC0 recordings with synthesized fallback effects and lobby ambience.
+    // Attributed boss recordings with preserved CC0 fallback effects and synthesized ambience.
     public sealed class Soundscape : MonoBehaviour
     {
         AudioSource music,fx;long sample;int rate;public volatile float tension;
         AudioClip hit,parry,dash,attack,heal,death,confirm,cue,clang,thud;
-        AudioClip battleMusic,carrier;bool externalMusic;
+        AudioClip battleMusic,carrier,bossMusic;volatile bool externalMusic;
+        int requestedBoss=-1,loadedBoss=-1;
+        static readonly string[] BossTracks={"boss_arakus","boss_phanes","boss_adicus","boss_aethelos","boss_kharos"};
+        // Identity only: no combat/DDA values are changed by presentation.
+        public void SetBoss(int index){requestedBoss=Mathf.Clamp(index,0,BossTracks.Length-1);}
         public void Initialize()
         {
             rate=AudioSettings.outputSampleRate;
@@ -21,8 +25,32 @@ namespace ReversalTower
             cue=Glint();clang=Clang();thud=Thud();
             attack=Imported("attack")??attack;parry=Imported("parry")??parry;hit=Imported("hit")??hit;dash=Imported("dash")??dash;
         }
-        AudioClip Imported(string name){var wave=ExternalAssets.Wave(name);if(wave==null)return null;var clip=AudioClip.Create(name,wave.samples.Length/wave.channels,wave.channels,wave.rate,false);clip.SetData(wave.samples,0);return clip;}
-        void Update(){bool wanted=tension>.3f&&battleMusic!=null;if(wanted!=externalMusic){externalMusic=wanted;music.Stop();music.clip=wanted?battleMusic:carrier;music.volume=wanted?.4f:1;music.Play();}}
+        AudioClip Imported(string name,bool cache=true){var wave=ExternalAssets.Wave(name,cache);if(wave==null)return null;var clip=AudioClip.Create(name,wave.samples.Length/wave.channels,wave.channels,wave.rate,false);clip.SetData(wave.samples,0);return clip;}
+        void Update()
+        {
+            bool battle=tension>.3f;
+            bool needsBoss=requestedBoss!=loadedBoss;
+            AudioClip wanted=battle?(bossMusic??battleMusic??carrier):carrier;
+            bool switching=music.clip!=wanted || (needsBoss&&battle);
+            float level=switching?0:(wanted==carrier?1:(tension>.8f?.34f:.29f));
+            music.volume=Mathf.MoveTowards(music.volume,level,Time.unscaledDeltaTime*1.8f);
+            if(switching&&music.volume>.001f)return;
+            // Read only the selected boss recording, never retain five decoded PCM copies.
+            if(needsBoss&&requestedBoss>=0)
+            {
+                music.Stop();
+                if(bossMusic!=null)Destroy(bossMusic);
+                bossMusic=Imported(BossTracks[requestedBoss],false);
+                loadedBoss=requestedBoss;
+                wanted=battle?(bossMusic??battleMusic??carrier):carrier;
+            }
+            if(music.clip!=wanted||!music.isPlaying)
+            {
+                music.Stop();externalMusic=wanted!=carrier;
+                music.clip=wanted;music.volume=0;music.Play();
+            }
+        }
+        void OnDestroy(){if(bossMusic!=null)Destroy(bossMusic);}
         AudioClip Tone(string name,float hz,float length,float volume,bool noise)
         {
             int n=(int)(rate*length);var data=new float[n];var rng=new System.Random(name.GetHashCode());

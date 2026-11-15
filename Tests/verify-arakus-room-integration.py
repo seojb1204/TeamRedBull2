@@ -23,7 +23,7 @@ for f in ['WorldArtist.cs','ArakusVisuals.cs']:check(f+'_meta_unchanged',(ROOT/'
 protected=['Assets/Scripts/BossPatternSystem.cs','Assets/Scripts/TowerGame.cs','Assets/Scripts/BossCombat.cs','Assets/Scripts/GameData.cs','Assets/Scripts/GameServices.cs','Assets/Scripts/SaveStore.cs','Assets/Scripts/CloudSync.cs','Assets/Scripts/ActorView.cs','Assets/Scripts/ScenePresentation.cs','Assets/Scenes','Assets/Prefabs','Assets/Data','ProjectSettings','Assets/StreamingAssets/Art/Castle']
 check('combat_DDA_DB_input_camera_scene_prefab_settings_unchanged',subprocess.run(['git','diff','--quiet','HEAD','--',*protected],cwd=ROOT).returncode==0)
 world=(ROOT/'Assets/Scripts/WorldArtist.cs').read_text();visual=(ROOT/'Assets/Scripts/ArakusVisuals.cs').read_text()
-check('battle_result_only_gate','bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;' in world and 'throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom()' in world)
+check('battle_result_only_gate','bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;' in world and ('throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom()' in world or 'throneRoom=fight&&(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom()))' in world))
 check('legacy_world_has_fallback','if(!throneRoom)' in world and 'if(room==null)return false;' in world)
 check('fade_kept_both_sides',all('clock-pillar'+s+'At<.6f' in visual and '1-(clock-pillar'+s+'At)/.6f' in visual for s in ['Left','Right']))
 check('glow_charge_kind_only','g.current.kind==AttackKind.Dash' in visual)

@@ -231,7 +231,7 @@ namespace ReversalTower
                 if(t<windup){poseFrame=0;g.bossState="분노 시전";return;}
                 if(!rageActive)
                 {
-                    rageActive=true;g.shake=6;g.flash=.35f;g.PlaySound("parry");
+                    rageActive=true;g.shake=6;g.flash=.35f;g.PlaySound("boss_0_Rage");
                     g.Burst(g.boss+Vector2.up*1.5f,3,Palette.Red,50);
                     g.Say("아라쿠스가 분노했다 · 이제부터 모든 동작이 1.5배 빠릅니다",3);
                 }
@@ -246,7 +246,7 @@ namespace ReversalTower
                 if(attackStep==0)
                 {
                     // 두 패턴 모두 같은 자세로 방패를 던진다 (이지선다)
-                    attackStep=1;shieldOut=true;shieldCaught=false;g.PlaySound("attack");
+                    attackStep=1;shieldOut=true;shieldCaught=false;g.PlaySound("boss_0_ShieldThrow");
                     Vector2 hand=g.boss+new Vector2(g.bossFace*.75f,1.25f);
                     Vector2 aim=(g.player+Vector2.up*.9f-hand).normalized;
                     var shot=new TowerGame.Shot{pos=hand,vel=aim*12*tempo,damage=7*patternDamage/Mathf.Max(1,p.damage),parry=true,pattern=p.id,
@@ -264,7 +264,7 @@ namespace ReversalTower
                     if(t<dashEnd){poseFrame=1;g.boss.x=Mathf.Lerp(moveFrom,moveTo,(t-dashStart)/(.6f*T));g.bossState="돌진";return;}
                     if(!struck)
                     {
-                        struck=true;g.boss.x=moveTo;
+                        struck=true;g.boss.x=moveTo;g.PlaySound("boss_0_Slash_throw");
                         g.PlayerHit(patternDamage,true,p.id,g.boss.x,InFront(p.range)&&g.player.y<2.2f);
                         g.Burst(g.boss+new Vector2(g.bossFace*1.3f,1.2f),.8f,Palette.ParryRim,10);g.shake=Mathf.Max(g.shake,2.5f);
                     }
@@ -288,7 +288,7 @@ namespace ReversalTower
                     g.boss.x=Mathf.Lerp(leapFrom,leapTo,u);g.boss.y=4*2.2f*u*(1-u);
                     poseFrame=u<.5f?2:3;g.bossState="도약";
                     if(u<1)return;
-                    leaping=false;struck=true;g.boss.y=0;leapStart=t;
+                    leaping=false;struck=true;g.boss.y=0;leapStart=t;g.PlaySound("boss_0_landing");
                     bool hit=Mathf.Abs(g.player.x-g.boss.x)<1.5f+.3f&&g.player.y<1.2f;
                     g.PlayerHit(patternDamage,false,p.id,g.boss.x,hit);
                     g.shake=6;g.Burst(g.boss+new Vector2(0,.2f),2.2f,Palette.Red,30);
@@ -307,6 +307,7 @@ namespace ReversalTower
                     poseFrame=1;g.bossState="방패 돌진";g.boss.x=Mathf.Lerp(moveFrom,moveTo,u);
                     while(attackStep<patternCount&&t>=windup+attackStep*.25f*T)
                     {
+                        if(attackStep==0)g.PlaySound("boss_0_ShieldRush");
                         attackStep++;
                         if(InFront(g.spec.id=="arakus"?ArakusGeometry.Reach(g.spec,p):1.4f)&&g.player.y<ArakusGeometry.AttackHeight(g.spec,p)){touched=true;g.PlayerHit(patternDamage,false,p.id,g.boss.x);g.Burst(g.boss+new Vector2(g.bossFace*1,1),.5f,Palette.Red,5);}
                     }
@@ -325,7 +326,7 @@ namespace ReversalTower
                 if(t<windup){poseFrame=0;return;}
                 if(attackStep==0)
                 {
-                    attackStep=1;
+                    attackStep=1;g.PlaySound("boss_0_Slash_sweep_low");
                     bool hit=Mathf.Abs(g.player.x-g.boss.x)<p.range&&g.player.y<1f;
                     g.PlayerHit(patternDamage,false,p.id,g.boss.x,hit,true);
                     g.shake=Mathf.Max(g.shake,3);g.Burst(g.boss+new Vector2(0,.6f),2.5f,Palette.Red,24);
@@ -333,7 +334,7 @@ namespace ReversalTower
                 if(t<second){poseFrame=t<windup+.3f*T?1:2;return;}
                 if(attackStep==1)
                 {
-                    attackStep=2;
+                    attackStep=2;g.PlaySound("boss_0_Slash_sweep_high");
                     bool hit=Mathf.Abs(g.player.x-g.boss.x)<p.range&&g.player.y<2.5f;
                     g.PlayerHit(patternDamage,false,p.id,g.boss.x,hit,true);
                     g.shake=Mathf.Max(g.shake,4.5f);g.Burst(g.boss+new Vector2(0,1.4f),2.5f,Palette.Red,24);
@@ -418,6 +419,7 @@ namespace ReversalTower
         public void ExecutePattern()
         {
             var p=current;
+            g.PlaySound("boss_"+g.bossIndex+"_"+p.kind+"_"+p.id);
             if(p.kind==AttackKind.Slash)
             {
                 bool radial=p.id=="spin";

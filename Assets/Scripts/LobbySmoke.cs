@@ -29,6 +29,17 @@ namespace ReversalTower
                     mode=ScreenMode.Lobby;save.gold=1000;save.tutorialSeen=true;
                     save.cardOffer=new[]{"blade","vitality","remedy"};save.cardChosen=false;
                     OpenCards();LobbyCheck(showCards&&save.cardOffer.Length==3,"lobby opens three-card selection");
+#if !HEADLESS && !DESKTOP_PREVIEW
+                    nativeUI.Refresh();
+                    LobbyCheck(nativeUI.cardsPage.activeSelf&&!nativeUI.lobbyPage.activeSelf,"upgrade is a separate screen, not a lobby overlay");
+                    LobbyCheck(!nativeUI.lobbyStats.gameObject.activeSelf,"lobby does not expose upgrade details");
+                    int beforeCloseGold=save.gold;
+                    string beforeCloseOffer=string.Join(",",save.cardOffer);
+                    nativeUI.CloseCards();nativeUI.Refresh();
+                    LobbyCheck(!nativeUI.cardsPage.activeSelf&&nativeUI.lobbyPage.activeSelf,"cancel returns to lobby");
+                    nativeUI.OpenCards();nativeUI.Refresh();
+                    LobbyCheck(save.gold==beforeCloseGold&&string.Join(",",save.cardOffer)==beforeCloseOffer,"cancel and reopen preserves gold and the same three offers");
+#endif
                     lobbySmokeStage=1;
                 }
                 else if(lobbySmokeStage==1&&autoElapsed>6&&

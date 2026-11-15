@@ -120,6 +120,7 @@ public static class HeadlessTests
                 Check(game.save.Learning("arakus").battles==0&&game.Stat("cleave").level==0,"Battle after DDA reset starts as a first encounter");
             }
             TestLobbyCards();
+            TestUpgradeBalance();
             Console.WriteLine("HEADLESS_TESTS_PASSED "+passed+" assertions. Rendering/audio require a real Unity player.");return 0;
         }
         catch(Exception e){Console.Error.WriteLine(e);return 1;}
@@ -170,7 +171,7 @@ public static class HeadlessTests
         SaveStore.UseIsolatedRoot(root);
         var statsData=new SaveData();statsData.cards.Add(new CardStack{id="vitality",count=2});statsData.cards.Add(new CardStack{id="remedy",count=2});statsData.cards.Add(new CardStack{id="rush",count=2});
         Check(LobbyCards.Health(statsData)==120&&LobbyCards.Heal(statsData)==50,"Health and potion effects sum across stacks");
-        Check(Math.Abs(LobbyCards.SkillMultiplier(statsData,"Q")-1.1f)<.001&&LobbyCards.SkillMultiplier(statsData,"W")==1,"Skill cards affect only specified action");
+        Check(Math.Abs(LobbyCards.SkillMultiplier(statsData,"Q")-1.16f)<.001&&LobbyCards.SkillMultiplier(statsData,"W")==1,"Skill cards affect only specified action");
         Check(LobbyCards.Power(statsData)>0,"DDA context includes card power");
         Start();game.save=statsData;game.StartBattle(0);game.playerHp=30;Call("BeginAction","F",.9f);Call("TickAction",.65f);
         Check(game.maxHp==120&&game.playerHp==80,"Combat consumes effective health and healing stats");
@@ -180,4 +181,80 @@ public static class HeadlessTests
         malformed.cards.Add(new CardStack{id="vitality",count=-2});malformed.cardOffer=new[]{"blade","blade","remedy"};LobbyCards.Normalize(malformed);
         Check(malformed.cards.Count==1&&LobbyCards.Count(malformed,"blade")==5&&malformed.cardOffer.Length==0,"Malformed cards normalize without duplicate stat application");
     }
+    static void Give(SaveData data,string id,int count=1){data.cards.Add(new CardStack{id=id,count=count});}
+    static void Near(float value,float expected,string title){Check(Math.Abs(value-expected)<.001f,title);}
+    static void TestUpgradeBalance()
+    {
+        Check(LobbyCards.All.Length==16,"Sixteen distinct upgrade definitions");
+        var ids=new System.Collections.Generic.HashSet<string>();foreach(var c in LobbyCards.All)Check(ids.Add(c.id),"Unique upgrade "+c.id);
+        var data=new SaveData();Near(LobbyCards.MoveSpeed(data),5.5f,"No upgrade movement unchanged");Check(LobbyCards.Potions(data)==3,"Baseline three potions");
+        for(int n=0;n<20;n++){data.cardPurchases=n;Check(LobbyCards.Cost(data)==80+Math.Min(5,n)*20,"Price ramp/cap "+n);}
+        for(int i=0;i<100;i++)
+        {
+            data.cardOffer=new string[0];LobbyCards.EnsureOffer(data);Check(data.cardOffer.Length==3,"Three eligible offers "+i);
+            var groups=new System.Collections.Generic.HashSet<int>();foreach(var id in data.cardOffer){var card=LobbyCards.Find(id);Check(LobbyCards.Available(data,card)&&card.unlock==0,"Offer excludes locked cards "+id);groups.Add(card.group);}
+            Check(groups.Count==3,"Attack survival utility choice "+i);
+        }
+        data.cleared[0]=true;Check(LobbyCards.Available(data,LobbyCards.Find("riposte")),"Arakus unlocks riposte");
+        Check(!LobbyCards.Available(data,LobbyCards.Find("flow")),"Flow remains locked until Phanes");
+        data.cleared[1]=true;Check(LobbyCards.Available(data,LobbyCards.Find("flow")),"Phanes unlocks flow");
+        data.cleared[2]=true;Check(LobbyCards.Available(data,LobbyCards.Find("flask")),"Adicus unlocks spare potion");
+        Give(data,"blade",37);float legacy=LobbyCards.Attack(data);LobbyCards.Normalize(data);Near(LobbyCards.Attack(data),legacy,"Over-cap legacy attack preserved");Check(!LobbyCards.Available(data,LobbyCards.Find("blade")),"Over-cap legacy cannot buy more");
+        data=new SaveData();for(int i=0;i<5;i++)data.cleared[i]=true;
+        foreach(var c in LobbyCards.All)Give(data,c.id,c.limit);
+        LobbyCards.EnsureOffer(data);Check(data.cardOffer.Length==0,"All capped pool terminates with no offers");
+        data.cards.Find(c=>c.id=="blade").count--;LobbyCards.EnsureOffer(data);Check(data.cardOffer.Length==1&&data.cardOffer[0]=="blade","Last available card offered without duplicates");
+        string error;data.gold=9999;Check(!LobbyCards.Purchase(data,"vitality",out error)&&data.gold==9999,"Maxed purchase does not consume gold");
+        data=new SaveData();Give(data,"qtempo",3);Give(data,"wtempo",3);Give(data,"etempo",3);Give(data,"stride",3);Give(data,"armor",3);Give(data,"flask");Give(data,"fervor",2);
+        Near(LobbyCards.Cooldown(data,"Q"),4.92f,"Q maximum cooldown reduction");Near(LobbyCards.Cooldown(data,"W"),8.2f,"W maximum cooldown reduction");Near(LobbyCards.Cooldown(data,"E"),12.3f,"E maximum cooldown reduction");Near(LobbyCards.MoveSpeed(data),6.16f,"Movement cap 12 percent");
+        Start();game.save=data;game.StartBattle(0);Check(game.PotionCount==4,"Extra potion applied on battle start");game.StartBattle(0);Check(game.PotionCount==4,"Retry does not accumulate potion count");
+        game.PlayerHit(100,false,"cleave",game.boss.x);Near(game.playerHp,72.7f,"Defense after existing 30 percent cap");Near(game.Stat("cleave").damage,27.3f,"Telemetry records actual reduced damage");
+        game.StartBattle(0);game.DamageBoss(10);Near(game.ult,.36f,"Attack gauge increased by 20 percent");
+        game.ult=0;game.parryAge=.1f;game.PlayerHit(10,true,"cleave",game.boss.x);Near(game.ult,15,"Fervor never amplifies parry gauge");
+        Start();Give(game.save,"riposte");Give(game.save,"flow");game.skillQ=6;game.skillW=10;game.skillE=15;
+        game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,5.7f,"Parry refunds Q");Near(game.skillW,9.5f,"Parry refunds W");Near(game.skillE,14.25f,"Parry refunds E");
+        game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,5.7f,"Repeated parry cannot bypass 3 second cooldown");
+        game.player=new Vector2(3,0);game.boss=new Vector2(5,0);game.face=1;float hp=game.bossHp;
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,12.5f,"Riposte empowers successful basic hit");hp=game.bossHp;
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,10,"Riposte consumed once");
+        game.seconds=4;game.parryAge=.1f;game.skillQ=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,0,"Flow cannot create negative cooldown");
+        game.player=new Vector2(-10,0);Call("BeginAction","J",.35f);Call("TickAction",.2f);game.player=new Vector2(3,0);hp=game.bossHp;
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,12.5f,"Miss does not consume riposte");
+        game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);game.seconds+=3.1f;hp=game.bossHp;
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,10,"Riposte expires after 3 seconds");
+        game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);game.StartBattle(0);game.player=new Vector2(3,0);hp=game.bossHp;
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,10,"Battle restart clears temporary bonuses");
+        Start();Give(game.save,"inherit",3);game.save.equippedUltimate=1;Call("BeginAction","R",.85f);Call("TickAction",.3f);
+        Check(game.shots.Count==5,"Phanes ultimate still has five shots");Near(game.shots[0].damage,24.8f,"Projectile ultimate receives damage upgrade");
+        Start();Give(game.save,"inherit",3);game.save.equippedUltimate=2;game.playerHp=50;Call("BeginAction","R",.85f);Call("TickAction",.3f);Near(game.playerHp,62,"Ultimate upgrade does not amplify healing");
+        Start();Give(game.save,"qtempo",3);Input.down.Add(KeyCode.Q);Tick(.001f);Near(game.skillQ,4.92f,"Actual Q input uses upgraded cooldown");
+        Start();Give(game.save,"wtempo",3);Input.down.Add(KeyCode.W);Tick(.001f);Near(game.skillW,8.2f,"Actual W input uses upgraded cooldown");
+        Start();Give(game.save,"etempo",3);Input.down.Add(KeyCode.E);Tick(.001f);Near(game.skillE,12.3f,"Actual E input uses upgraded cooldown");
+        game.PlayerHit(5,false,"cleave",game.boss.x);Near(game.skillE,6.15f,"Interrupted E refunds half upgraded cooldown");
+        var locked=new SaveData{gold=1000,cardOffer=new[]{"flow"}};Check(!LobbyCards.Purchase(locked,"flow",out error)&&locked.gold==1000,"Forged locked offer cannot buy upgrade");
+        var roundtrip=new SaveData{gold=1234,attackLevel=3,healthLevel=4,cardPurchases=77};foreach(var c in LobbyCards.All)Give(roundtrip,c.id,c.limit);
+        string root=Path.Combine(Path.GetTempPath(),"TowerUpgrade_"+Guid.NewGuid().ToString("N"));SaveStore.UseIsolatedRoot(root);
+        Check(SaveStore.Save(roundtrip),"Save full new inventory succeeds");var reloaded=SaveStore.Load();
+        foreach(var c in LobbyCards.All)Check(LobbyCards.Count(reloaded,c.id)==c.limit,"Upgrade survives restart "+c.id);
+        Check(reloaded.gold==1234&&reloaded.attackLevel==3&&reloaded.healthLevel==4&&reloaded.cardPurchases==77,"New inventory preserves old progress and gold");
+        var two=new SaveData();for(int i=0;i<5;i++)two.cleared[i]=true;foreach(var c in LobbyCards.All)Give(two,c.id,c.limit);
+        two.cards.Find(c=>c.id=="blade").count--;two.cards.Find(c=>c.id=="vitality").count--;LobbyCards.EnsureOffer(two);
+        Check(two.cardOffer.Length==2&&two.cardOffer[0]!=two.cardOffer[1],"Two remaining upgrades offered without duplicates");string twoOffer=string.Join(",",two.cardOffer);LobbyCards.EnsureOffer(two);Check(string.Join(",",two.cardOffer)==twoOffer,"Two-card offer stable on reopen");
+        Start();Give(game.save,"riposte");game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);
+        game.player=new Vector2(-5,0);game.face=1;game.minions.Add(new TowerGame.Minion{x=-4,hp=100});
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.minions[0].hp,87.5f,"Riposte applies to minion hit");
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.minions[0].hp,77.5f,"Minion hit consumes riposte once");
+        Start(1);Give(game.save,"riposte");game.parryAge=.1f;game.PlayerHit(17,true,"orb",game.boss.x);game.barrier=true;game.barrierHp=100;game.player=new Vector2(-1,0);game.face=1;
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.barrierHp,87.5f,"Riposte applies to barrier");
+        Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(game.barrierHp,77.5f,"Barrier hit consumes riposte once");
+        Start();Give(game.save,"flow");game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);game.skillQ=6;game.skillW=10;game.skillE=15;
+        game.seconds=2.999f;game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,6,"Flow blocked immediately before boundary");
+        game.seconds=3;game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,5.7f,"Flow reactivates exactly at 3 seconds");
+        game.seconds=6;game.skillQ=game.skillW=game.skillE=0;game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Check(game.skillQ==0&&game.skillW==0&&game.skillE==0,"Flow leaves all ready skills at zero");
+        Start(1);Give(game.save,"inherit",3);game.save.equippedUltimate=1;Call("BeginAction","R",.85f);Call("TickAction",.3f);hp=game.bossHp;
+        foreach(var shot in game.shots){shot.pos=game.boss+Vector2.up*1.2f;shot.vel=new Vector2(0,0);}Call("TickShots",.001f);
+        Near(hp-game.bossHp,124,"Five actual projectile collisions apply total upgraded R damage");Check(game.shots.Count==0,"Ultimate projectiles removed after hits");
+        var model=new BanditModel();Check(model.Choose(model.Context(.7f,.7f,0,LobbyCards.Power(data),0),0,0,.7f,0)==0,"Upgrades do not raise first encounter DDA level");
+    }
+
 }

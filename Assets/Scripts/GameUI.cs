@@ -144,16 +144,16 @@ namespace ReversalTower
         {
             Modal(230,205,1140,570,"맹세의 인장 · 하나를 선택하세요");
             Text(270,273,1060,40,"보유 "+save.gold+" G  /  선택 비용 "+LobbyCards.Cost(save)+" G  ·  강화는 영구 누적됩니다.",18,Palette.Gold);
-            if(save.cardOffer==null||save.cardOffer.Length!=3){Text(280,355,1000,80,"강화 후보를 불러오지 못했습니다. 닫고 다시 열어주세요.",20);}
-            else for(int i=0;i<3;i++)
+            if(save.cardOffer==null||save.cardOffer.Length==0){Text(280,355,1000,80,"강화 후보를 불러오지 못했습니다. 닫고 다시 열어주세요.",20);}
+            else for(int i=0;i<save.cardOffer.Length;i++)
             {
                 var card=LobbyCards.Find(save.cardOffer[i]);if(card==null)continue;float x=280+i*350;
                 Fill(new Rect(x,328,330,296),new Color(.075f,.10f,.14f));Rule(x,328,330,Palette.Gold);
                 Text(x+20,345,290,50,card.glyph,32,Palette.Gold,TextAnchor.UpperCenter);
                 Text(x+20,408,290,40,card.name,23,Palette.White,TextAnchor.UpperCenter);
                 Text(x+25,462,280,75,card.description,17,muted,TextAnchor.UpperCenter);
-                Text(x+20,550,290,30,"보유 "+LobbyCards.Count(save,card.id)+" → "+(LobbyCards.Count(save,card.id)+1),16,Palette.Teal,TextAnchor.UpperCenter);
-                if(Button(x,639,330,51,"이 카드 선택",true,save.gold>=LobbyCards.Cost(save)&&!save.cardChosen))
+                Text(x+20,550,290,30,LobbyCards.Preview(save,card.id),16,Palette.Teal,TextAnchor.UpperCenter);
+                if(Button(x,639,330,51,"이 카드 선택",true,save.gold>=LobbyCards.Cost(save)&&!save.cardChosen&&LobbyCards.Available(save,card)))
                 {if(ChooseCard(card.id))sound.Play("heal");return;}
             }
             if(Button(650,711,300,42,"선택하지 않고 돌아가기"))showCards=false;
@@ -247,7 +247,7 @@ namespace ReversalTower
         {
             Modal(260,110,1080,690,"검보다 먼저, 패턴을 읽으세요");
             string[] keys={"A / D · ← / →","SPACE","J / Z · 마우스 왼쪽","K / X · 마우스 오른쪽","SHIFT","Q / W / E","R","F"};
-            string[] actions={"이동","점프 · 지면 파동을 뛰어넘습니다","검격","푸른 신호에 맞춰 패링 · 궁극기 +15","무적 대시 · 2스택, 지상에서 스택당 2.5초 충전","돌진 베기 / 회전 베기 / 처형 베기","궁극기 · 게이지 100 소모","회복약 · "+LobbyCards.Heal(save).ToString("0")+" 회복, 한 전투에 3개"};
+            string[] actions={"이동","점프 · 지면 파동을 뛰어넘습니다","검격","푸른 신호에 맞춰 패링 · 궁극기 +15","무적 대시 · 2스택, 지상에서 스택당 2.5초 충전","돌진 베기 / 회전 베기 / 처형 베기","궁극기 · 게이지 100 소모","회복약 · "+LobbyCards.Heal(save).ToString("0")+" 회복, 한 전투에 "+LobbyCards.Potions(save)+"개"};
             for(int i=0;i<keys.Length;i++){float y=202+i*48;Text(298,y,320,32,keys[i],18,Palette.Gold);Text(650,y,640,34,actions[i],18,Palette.White);}
             Rule(298,608,1000);Text(298,632,1000,72,"파랗게 빛나면 받아치고, 붉게 빛나면 피하세요.\n별빛이 번쩍이는 순간이 받아칠 때입니다.",17,muted);
             if(Button(1070,726,230,44,"알겠습니다",true)){showHelp=false;save.tutorialSeen=true;SaveStore.Save(save);}

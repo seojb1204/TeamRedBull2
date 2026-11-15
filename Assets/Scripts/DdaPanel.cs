@@ -85,7 +85,7 @@ namespace ReversalTower
             float header = 86 + (abandonedLine ? 20 : 0);
             int lastDecision=0;foreach(var e in BossPatterns.SelectionLog)lastDecision=System.Math.Max(lastDecision,e.decision);
             var frequency=new List<PatternSelectionEvidence>();foreach(var e in BossPatterns.SelectionLog)if(e.decision==lastDecision)frequency.Add(e);
-            float frequencyHeight=120+frequency.Count*52;
+            float frequencyHeight=136+frequency.Count*90;
             float h = header + 30 + rows.Count * Row + 36+frequencyHeight;
             w=Mathf.Max(w,1000);
             using (BeginDdaHistoryPanel(w, h))
@@ -154,14 +154,18 @@ namespace ReversalTower
             Rule(cx, cy, inner);
             Text(cx, cy + 8, inner, 22, "레벨 -2 쉬움 ~ +2 어려움   ·   선딜 x1.3 ~ x0.8   ·   피해 x0.8 ~ x1.2   ·   쿨타임 x1.25 ~ x0.8", 13, muted);
             cy+=42;
-            Text(cx,cy,inner,24,"실시간 빈도 · 직전 선택 #"+lastDecision+" (현재 공격을 바꾸지 않음)",16,Palette.Gold);cy+=26;
+            Text(cx,cy,inner,32,"실시간 빈도 · 직전 선택 #"+lastDecision+" (현재 공격을 바꾸지 않음)",16,Palette.Gold);cy+=34;
             Text(cx,cy,inner,22,"패링/회피/피격/제외 · 기본 가중치 × 배수 → 최종 / 선택 확률 · ★ 실제 선택",12,muted);cy+=24;
             foreach(var e in frequency)
             {
                 string name=e.id;foreach(var p in spec.patterns)if(p.id==e.id){name=p.name;break;}
-                Text(cx,cy,inner,24,(e.selected?"★ ":"   ")+name+"  "+e.parries+"/"+e.dodges+"/"+e.hits+"/"+e.ignored+
-                    "   "+e.baseWeight.ToString("F2")+" × "+e.multiplier.ToString("F3")+" → "+e.weight.ToString("F2")+" / "+Pct(e.probability),15,e.selected?Palette.Gold:Palette.White);
-                Text(cx+12,cy+24,inner-12,22,FrequencyReason(e.reason),12,muted);cy+=52;
+                // Pixel UI snaps 15px to 22px. Give each line its full glyph height
+                // and split the evidence so names/numbers never clip or wrap into the reason.
+                Color ink=e.selected?Palette.Gold:Palette.White;
+                Text(cx,cy,inner,32,(e.selected?"★ ":"   ")+name+"  "+e.parries+"/"+e.dodges+"/"+e.hits+"/"+e.ignored+
+                    "   성공 "+(e.opportunities>0?Pct(e.success):"관측 없음"),15,ink);
+                Text(cx+12,cy+30,inner-12,32,e.baseWeight.ToString("F2")+" × "+e.multiplier.ToString("F3")+" → "+e.weight.ToString("F2")+"   선택 확률 "+Pct(e.probability),15,ink);
+                Text(cx+12,cy+62,inner-12,22,FrequencyReason(e.reason),12,muted);cy+=90;
             }
             Text(cx,cy,inner,22,"후보가 아닌 거리/쿨다운/페이즈 제외 패턴은 표시하지 않음 · 확률과 실제 빈도는 다를 수 있음",12,muted);cy+=22;
             Text(cx,cy,inner,22,BossPatterns.DiagnosticStatus,11,muted);

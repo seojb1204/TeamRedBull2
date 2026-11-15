@@ -43,9 +43,10 @@ namespace ReversalTower
             if(action=="parry"||action=="windup")frame=1;
             return Picture(file,frame*180,0,180,180);
         }
-        public static WaveAsset Wave(string name)
+        public static WaveAsset Wave(string name,bool cache=true)
         {
-            if(waves.TryGetValue(name,out var result))return result;
+            if(cache&&waves.TryGetValue(name,out var cached))return cached;
+            WaveAsset result;
             string path=Path.Combine(Root,"Audio",name+".wav");if(!File.Exists(path))return null;
             try
             {
@@ -63,7 +64,7 @@ namespace ReversalTower
                     }
                     if(format!=1||bits!=16||bytes==null)return null;
                     var samples=new float[bytes.Length/2];for(int i=0;i<samples.Length;i++)samples[i]=BitConverter.ToInt16(bytes,i*2)/32768f;
-                    result=new WaveAsset{samples=samples,channels=channels,rate=rate};waves[name]=result;return result;
+                    result=new WaveAsset{samples=samples,channels=channels,rate=rate};if(cache)waves[name]=result;return result;
                 }
             }
             catch(Exception e){Debug.LogWarning("Audio resource unavailable: "+e.Message);return null;}

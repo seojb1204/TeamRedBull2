@@ -94,6 +94,7 @@ namespace ReversalTower
             zoomPunch=Mathf.MoveTowards(zoomPunch,0,raw*3.5f);whiteFlash=Mathf.Max(0,whiteFlash-raw*5);bossRecoil=Mathf.MoveTowards(bossRecoil,0,fx*3.5f);
             for(int i=impacts.Count-1;i>=0;i--){impacts[i].age+=fx;if(impacts[i].age>=impacts[i].life)impacts.RemoveAt(i);}
             for(int i=motes.Count-1;i>=0;i--){var m=motes[i];m.life-=fx;m.pos+=m.velocity*fx;m.velocity+=Vector2.down*fx*3;if(m.life<=0)motes.RemoveAt(i);}
+            sound.SetBoss(bossIndex);
             sound.tension=mode==ScreenMode.Battle&&!paused?(phaseTwo?.95f:.65f):.08f;
             if(!captureDone&&!string.IsNullOrEmpty(capturePath)&&realClock>5){ScreenCapture.CaptureScreenshot(capturePath);captureDone=true;}
             AutoRunTick(Time.unscaledDeltaTime);

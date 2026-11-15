@@ -59,7 +59,7 @@ namespace ReversalTower
             cursor=0;bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;float time=g.realClock;
             Rect(0,5,70,40,Palette.Ink);
             Color accent=g.bossIndex==4?Palette.Purple:g.bossIndex==1?Palette.Teal:Palette.Gold;
-            bool throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom();
+            bool throneRoom=fight&&(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom()));
             if(!throneRoom)
             {
             Disc(4,7.5f,19,19,new Color(.055f,.09f,.125f));Disc(4,7.5f,14,14,new Color(.075f,.12f,.15f));
@@ -130,6 +130,32 @@ namespace ReversalTower
             // Low drifting foreground mist.
             if(!throneRoom)for(int i=0;i<6;i++)Disc(-15+i*6+Mathf.Sin(time*.07f+i)*2,-.6f,12,.55f,new Color(.12f,.22f,.25f,.12f));
             for(int i=cursor;i<pool.Count;i++)pool[i].gameObject.SetActive(false);
+        }
+        static readonly string[] arenaNames={"arakus","phanes","adicus","aethelos","kharos"};
+        // Measured walk lines in the generated 1672 x 941 originals, not guessed from a prompt.
+        static readonly float[] arenaGroundRows={696f,677f,750f,716f,725f};
+        bool DrawBossArena()
+        {
+            if(g.bossIndex<0||g.bossIndex>=arenaNames.Length)return false;
+            string path="Art/BossArenas/"+arenaNames[g.bossIndex]+".png";
+            var room=ExternalAssets.Picture(path);if(room==null)return false;
+            var camera=Camera.main;if(!camera||!camera.orthographic||camera.pixelHeight<1)return false;
+            float sourceWidth=room.rect.width,sourceHeight=room.rect.height;
+            float groundRow=arenaGroundRows[g.bossIndex];
+            float viewportHeight=2*camera.orthographicSize;
+            float viewportWidth=viewportHeight*camera.pixelWidth/camera.pixelHeight;
+            // Cover the area above the fixed world floor, including narrow/tall windows.
+            float unit=Mathf.Max(viewportWidth/sourceWidth,
+                Mathf.Max(0,camera.transform.position.y+camera.orthographicSize)/groundRow);
+            float width=sourceWidth*unit,centerX=camera.transform.position.x;
+            float centerY=(groundRow-sourceHeight*.5f)*unit;
+            Shape(room,centerX,centerY,width,width,new Color(.82f,.82f,.82f,1));
+            float bottom=(groundRow-sourceHeight)*unit;
+            var lower=ExternalAssets.Picture(path,0,0,(int)sourceWidth,64);
+            float stripHeight=64*unit;
+            int strips=Mathf.CeilToInt(Mathf.Max(0,bottom-(camera.transform.position.y-camera.orthographicSize))/stripHeight);
+            for(int i=0;i<strips;i++)Shape(lower,centerX,bottom-(i+.5f)*stripHeight,width,width,new Color(.82f,.82f,.82f,1));
+            return true;
         }
         bool DrawThroneRoom()
         {

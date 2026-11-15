@@ -5,6 +5,16 @@ public static class ArakusAnimationTests
  static int n;static void Check(bool b,string s){if(!b)throw new Exception(s);n++;}
  public static void Main()
  {
+  var gait=new ArakusAnimationSelection.WalkCycle();
+  gait.Observe(0,0,true);gait.Observe(.35f,.1f,true);
+  Check(gait.Moving&&Math.Abs(gait.Elapsed-.2f)<.0001f,"walk follows distance instead of wall clock");
+  gait.Observe(.35f,.2f,true);Check(!gait.Moving,"chase label without translation is not walking");
+  gait.Observe(.7f,.3f,true);Check(Math.Abs(gait.Elapsed-.4f)<.0001f,"resume preserves gait phase");
+  gait.Observe(.7f,.3f,true);Check(Math.Abs(gait.Elapsed-.4f)<.0001f,"repeated render cannot advance gait");
+  gait.Observe(.35f,.4f,true);Check(Math.Abs(gait.Elapsed-.6f)<.0001f,"left-facing uses positive travel");
+  gait.Observe(7,.5f,true);Check(!gait.Moving,"teleport cannot look like a step");
+  gait.Observe(7.1f,.6f,false);Check(!gait.Moving,"attacks and stagger never use chase gait");
+  gait.Reset();gait.Observe(0,0,true);Check(!gait.Moving&&gait.Elapsed==0,"new battle resets gait");
   int body=0,all=0;foreach(var d in ArakusAnimationSelection.Definitions){all+=d.ms.Length;if(d.group=="캐릭터")body+=d.ms.Length;foreach(int ms in d.ms)Check(ms>0,"positive frame durations");}
   Check(all==179&&body==77,"supplied frame counts");
   var i=new ArakusAnimationSelection.Input{combat=true,windup=1,recovery=.8f,tempo=1};

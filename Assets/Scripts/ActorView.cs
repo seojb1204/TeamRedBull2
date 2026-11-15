@@ -31,12 +31,13 @@ namespace ReversalTower
                 if(casting){float k=.5f+.5f*Mathf.Sin(game.realClock*18);body.color=new Color(1,.55f+.25f*k,.5f+.25f*k,1);}
                 else if(bp.rageActive)body.color=new Color(1,.78f,.74f,1);
             }
+            int arakusFrame=-1;
             string state="Idle";
             float normalized=Mathf.Repeat(game.realClock*.25f,1);
             if(UsesArakusArt)
             {
                 if(!arakusVisuals)arakusVisuals=GetComponent<ArakusVisuals>()??gameObject.AddComponent<ArakusVisuals>();
-                var pose=arakusVisuals.Sample(game,battle);state=pose.state;normalized=pose.normalized;body.flipX=false;animator.speed=0;
+                var pose=arakusVisuals.Sample(game,battle);state=pose.state;arakusFrame=pose.frame;normalized=pose.normalized;body.flipX=false;animator.speed=0;
             }
             else if (battle && bossActor)
             {
@@ -92,6 +93,8 @@ namespace ReversalTower
                 animator.Play(state,0,Mathf.Min(.999f,normalized));
                 animator.Update(0);
             }
+            // Keep legacy Animator assets intact; the reviewed replacement uses identical state/frame contracts.
+            if(arakusFrame>=0){var sprites=ArakusVisuals.Sprites(state);if(sprites.Length>0)body.sprite=sprites[Mathf.Clamp(arakusFrame,0,sprites.Length-1)];}
             if(UsesArakusArt)arakusVisuals.Render(game,battle,this);
             RenderGlow(game,battle);
         }

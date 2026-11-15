@@ -39,6 +39,17 @@ public static class DdaFrequencyTests
         Check(evidence.Single(e=>e.id=="cleave").weight>g.spec.patterns[0].weight,"weak pattern boosted");
         Check(evidence.All(e=>!string.IsNullOrEmpty(e.reason)),"reasons recorded");
         var cooldowns=(Dictionary<string,float>)typeof(BossPatternSystem).GetField("cooldowns",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(g.BossPatterns);
+        Check(evidence.All(e=>e.baseWeight>0&&e.multiplier>=1&&e.multiplier<=1.35f),"diagnostic base and multiplier");
+        Check(evidence.Single(e=>e.id=="cleave").hits==20,"decision snapshots hit count");
+        var logs=Directory.GetFiles(Path.Combine(SaveStore.Root,"DdaDecisions"),"*.csv");
+        Check(logs.Length>0,"manual selection creates local csv");
+        Check(logs.Any(f=>File.ReadAllText(f).Contains("baseWeight,multiplier,weight,probability,reason")),"csv includes causal fields");
+        string session="test-explicit";SaveStore.LogSelections(session,"boss",evidence,evidence.Last().decision);
+        string log=Path.Combine(SaveStore.Root,"DdaDecisions",session+".csv");
+        Check(File.ReadAllLines(log).Length==evidence.Count+1,"one csv row per candidate");
+        var root=SaveStore.Root;string blocker=Path.Combine(root,"not-directory");File.WriteAllText(blocker,"preserve");SaveStore.UseIsolatedRoot(blocker);
+        Check(SaveStore.LogSelections("test","boss",evidence,1).Contains("실패"),"IO failure nonfatal");SaveStore.UseIsolatedRoot(root);
+        Check(File.ReadAllText(blocker)=="preserve","IO failure preserves existing data");
         string last="";for(int i=0;i<150;i++){g.seconds+=100;cooldowns.Clear();g.BossPatterns.SelectPattern(1);Check(g.BossPatterns.SelectionLog.Count<=128,"bounded log "+i);last=g.BossPatterns.current.id;}
         var recent=(Queue<string>)typeof(BossPatternSystem).GetField("recentSelections",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(g.BossPatterns);
         recent.Clear();recent.Enqueue("cleave");recent.Enqueue("cleave");cooldowns.Clear();g.BossPatterns.SelectPattern(1);

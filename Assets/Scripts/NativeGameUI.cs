@@ -394,7 +394,7 @@ namespace ReversalTower
             if(ultButton.gameObject.activeSelf!=any)ultButton.gameObject.SetActive(any);
             if(ultHint.gameObject.activeSelf==any)ultHint.gameObject.SetActive(!any);
 
-            Set(lobbyStats,"공격 "+Num(LobbyCards.Attack(save))+"  ·  체력 "+Num(LobbyCards.Health(save))+"\n회복약 "+Num(LobbyCards.Heal(save))+"  ·  인장 "+save.cardPurchases+"장");
+            Set(lobbyStats,"공격 "+Num(LobbyCards.Attack(save))+"  ·  체력 "+Num(LobbyCards.Health(save))+"\n포션 "+LobbyCards.Potions(save)+"개 × "+Num(LobbyCards.Heal(save))+"  ·  인장 "+save.cardPurchases+"장");
             int cost=LobbyCards.Cost(save);
             upgradeButton.interactable=!save.cardChosen;
             Set(upgradeLabel,save.cardChosen?"다음 전투가 끝나면 다시":save.gold<cost?"골드 부족  ·  "+UiKit.Gold(cost):"인장 고르기  ·  "+UiKit.Gold(cost));
@@ -413,17 +413,17 @@ namespace ReversalTower
                               :"골드가 모자라다   ·   "+UiKit.Gold(cost)+" 필요, 지금 "+UiKit.Gold(save.gold));
             Tint(cardSub,afford||outro>=0?UiKit.Muted:Palette.Red);
 
-            bool offer=save.cardOffer!=null&&save.cardOffer.Length==cardButtons.Length;
+            bool offer=save.cardOffer!=null&&save.cardOffer.Length>0&&save.cardOffer.Length<=cardButtons.Length;
             bool live=outro<0;
             for(int i=0;i<cardButtons.Length;i++)
             {
-                UpgradeCard card=offer?LobbyCards.Find(save.cardOffer[i]):null;
+                UpgradeCard card=offer&&i<save.cardOffer.Length?LobbyCards.Find(save.cardOffer[i]):null;
                 if(cardButtons[i].gameObject.activeSelf!=(card!=null))cardButtons[i].gameObject.SetActive(card!=null);
                 if(card==null)continue;
                 int owned=LobbyCards.Count(save,card.id);
                 Set(cardGlyph[i],card.glyph);Set(cardAmount[i],card.amount);Set(cardLabels[i],card.stat);Set(cardDetail[i],card.detail);
-                Set(cardOwned[i],!live&&i==chosen?"지금 "+owned+"장":"지금 "+owned+"장 → "+(owned+1)+"장");
-                cardButtons[i].interactable=live?!save.cardChosen&&afford:true;   // 사라지는 동안 흐려지지 않게
+                Set(cardOwned[i],!live&&i==chosen?"지금 "+owned+"장":LobbyCards.Preview(save,card.id));
+                cardButtons[i].interactable=live?!save.cardChosen&&afford&&LobbyCards.Available(save,card):true;   // 사라지는 동안 흐려지지 않게
 
                 // 등장: 한 장씩 아래에서 올라옴
                 float t=(cardsClock-i*.07f)/.32f;

@@ -8,8 +8,10 @@ namespace ReversalTower
     {
         AudioSource music,fx;long sample;int rate;public volatile float tension;
         AudioClip hit,parry,dash,attack,heal,death,confirm,cue,clang,thud;
-        AudioClip battleMusic,carrier,bossMusic;volatile bool externalMusic;
+        AudioClip battleMusic,carrier,bossMusic,lobbyMusic;volatile bool externalMusic;
         int requestedBoss=-1,loadedBoss=-1;
+        volatile bool pauseRequested;bool sourcePaused;
+        public void SetPaused(bool paused){pauseRequested=paused;}
         static readonly string[] BossTracks={"boss_arakus","boss_phanes","boss_adicus","boss_aethelos","boss_kharos"};
         // Identity only: no combat/DDA values are changed by presentation.
         public void SetBoss(int index){requestedBoss=Mathf.Clamp(index,0,BossTracks.Length-1);}
@@ -17,7 +19,7 @@ namespace ReversalTower
         {
             rate=AudioSettings.outputSampleRate;
             music=gameObject.AddComponent<AudioSource>();music.loop=true;
-            carrier=AudioClip.Create("Tower score carrier",rate,1,rate,false);music.clip=carrier;music.Play();battleMusic=Imported("battle");
+            carrier=AudioClip.Create("Tower score carrier",rate,1,rate,false);lobbyMusic=Imported("lobby",false);music.clip=lobbyMusic??carrier;externalMusic=lobbyMusic!=null;music.volume=0;music.Play();battleMusic=Imported("battle");
             var effects=new GameObject("Tower Effects");effects.transform.SetParent(transform);fx=effects.AddComponent<AudioSource>();
             hit=Tone("Impact",100,.16f,.3f,true);parry=Tone("Parry",920,.33f,.25f,false);
             dash=Tone("Dash",180,.18f,.12f,true);attack=Tone("Blade",370,.13f,.12f,true);
@@ -28,21 +30,28 @@ namespace ReversalTower
         AudioClip Imported(string name,bool cache=true){var wave=ExternalAssets.Wave(name,cache);if(wave==null)return null;var clip=AudioClip.Create(name,wave.samples.Length/wave.channels,wave.channels,wave.rate,false);clip.SetData(wave.samples,0);return clip;}
         void Update()
         {
+            // Pause preserves the clip and sample cursor. Never treat ESC as a scene change.
+            if(pauseRequested)
+            {
+                if(!sourcePaused){music.Pause();sourcePaused=true;}
+                return;
+            }
+            if(sourcePaused){music.UnPause();sourcePaused=false;}
             bool battle=tension>.3f;
             bool needsBoss=requestedBoss!=loadedBoss;
-            AudioClip wanted=battle?(bossMusic??battleMusic??carrier):carrier;
+            AudioClip wanted=battle?(bossMusic??battleMusic??carrier):(lobbyMusic??carrier);
             bool switching=music.clip!=wanted || (needsBoss&&battle);
-            float level=switching?0:(wanted==carrier?1:(tension>.8f?.34f:.29f));
+            float level=switching?0:(wanted==carrier?1:(!battle?.24f:(tension>.8f?.34f:.29f)));
             music.volume=Mathf.MoveTowards(music.volume,level,Time.unscaledDeltaTime*1.8f);
             if(switching&&music.volume>.001f)return;
             // Read only the selected boss recording, never retain five decoded PCM copies.
             if(needsBoss&&requestedBoss>=0)
             {
-                music.Stop();
+                if(music.clip==bossMusic)music.Stop();
                 if(bossMusic!=null)Destroy(bossMusic);
                 bossMusic=Imported(BossTracks[requestedBoss],false);
                 loadedBoss=requestedBoss;
-                wanted=battle?(bossMusic??battleMusic??carrier):carrier;
+                wanted=battle?(bossMusic??battleMusic??carrier):(lobbyMusic??carrier);
             }
             if(music.clip!=wanted||!music.isPlaying)
             {
@@ -50,7 +59,7 @@ namespace ReversalTower
                 music.clip=wanted;music.volume=0;music.Play();
             }
         }
-        void OnDestroy(){if(bossMusic!=null)Destroy(bossMusic);}
+        void OnDestroy(){if(bossMusic!=null)Destroy(bossMusic);if(lobbyMusic!=null)Destroy(lobbyMusic);}
         AudioClip Tone(string name,float hz,float length,float volume,bool noise)
         {
             int n=(int)(rate*length);var data=new float[n];var rng=new System.Random(name.GetHashCode());

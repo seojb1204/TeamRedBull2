@@ -38,6 +38,8 @@ namespace ReversalTower
     public sealed class BossPatternSystem
     {
         readonly TowerGame g;
+        string diagnosticSession=System.Guid.NewGuid().ToString("N");
+        public string DiagnosticStatus {get;private set;} = "아직 선택 기록 없음";
         public Pattern current;
         public float patternAge,windup,recovery,rest,patternDamage,targetX,safeSide,nextHit,bossStagger,barrierHp,barrierTime;
         public int patternCount,attackStep;
@@ -91,6 +93,7 @@ namespace ReversalTower
         public void Reset()
         {
             phanesDownStage=0;phanesDownAge=0;phanesFallFrom=0;
+            diagnosticSession=System.Guid.NewGuid().ToString("N");DiagnosticStatus="아직 선택 기록 없음";
             cooldowns.Clear(); previousPattern=""; dashHit=false; recentSelections.Clear(); selectionLog.Clear(); meleeThreatened=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
             shieldOut=shieldCaught=leaping=struck=touched=false;forceNext=null;
@@ -374,7 +377,9 @@ namespace ReversalTower
                 float weight=(p.weight>0&&BanditModel.Finite(p.weight)?p.weight:1)*multiplier;
                 weights.Add(weight);total+=weight;
                 evidence.Add(new PatternSelectionEvidence{id=p.id,opportunities=stat==null?0:stat.opportunities,
-                    success=stat==null?.7f:stat.Success,weight=weight,reason=reason});
+                    success=stat==null?.7f:stat.Success,weight=weight,reason=reason,
+                    baseWeight=weight/multiplier,multiplier=multiplier,hits=stat==null?0:stat.hits,
+                    parries=stat==null?0:stat.parries,dodges=stat==null?0:stat.dodges,ignored=stat==null?0:stat.ignored});
             }
             double roll=combatRandom.NextDouble()*total;Pattern selected=candidates[candidates.Count-1];
             for(int i=0;i<candidates.Count;i++){roll-=weights[i];if(roll<0){selected=candidates[i];break;}}
@@ -383,8 +388,16 @@ namespace ReversalTower
             foreach(var e in evidence){e.probability=opening?(e.id==selected.id?1:0):e.weight/total;
                 e.selected=e.id==selected.id;e.seconds=g.seconds;e.decision=patternSerial+1;
                 if(opening)e.reason+="; eligible authored opening";selectionLog.Add(e);}
-            foreach(var p in excluded)selectionLog.Add(new PatternSelectionEvidence{id=p.id,seconds=g.seconds,
-                decision=patternSerial+1,reason="recent repetition limit: 2 in last 6",weight=0,probability=0});
+            foreach(var p in excluded)
+            {
+                var st=g.Stat(p.id);string why;float mult=DdaPatternFrequency.Multiplier(st,g.battleDda,g.playerHp<=g.maxHp*.3f,out why);
+                selectionLog.Add(new PatternSelectionEvidence{id=p.id,seconds=g.seconds,decision=patternSerial+1,
+                    reason="recent repetition limit: 2 in last 6; "+why,weight=0,probability=0,
+                    baseWeight=p.weight>0&&BanditModel.Finite(p.weight)?p.weight:1,multiplier=mult,
+                    opportunities=st.opportunities,hits=st.hits,parries=st.parries,dodges=st.dodges,ignored=st.ignored,success=st.Success});
+            }
+            // Persist only this decision, before trimming the bounded in-memory panel history.
+            DiagnosticStatus=SaveStore.LogSelections(diagnosticSession,g.spec.id,selectionLog,patternSerial+1);
             while(selectionLog.Count>128)selectionLog.RemoveAt(0);
             BeginPattern(selected);
         }

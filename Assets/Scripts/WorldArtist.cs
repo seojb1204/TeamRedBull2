@@ -10,7 +10,7 @@ namespace ReversalTower
         public static readonly Color ParryRim=new Color(.28f,.62f,1f),ParryCore=new Color(.72f,.88f,1f);
         public static Color Alpha(Color c,float a){c.a=a;return c;}
     }
-    public sealed class WorldArtist : MonoBehaviour
+    public sealed partial class WorldArtist : MonoBehaviour
     {
         TowerGame g;Sprite box,disk,triangle;readonly List<SpriteRenderer> pool=new List<SpriteRenderer>();int cursor;
         bool glowing;int layerBoost;   // 가산(발광) 재질로 그리기 / 아라쿠스 그림(정렬 1000) 위에 그리기
@@ -95,6 +95,7 @@ namespace ReversalTower
             if(fight)
             {
                 if(!spriteArakus){if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);}
+                BossPatternAccents(); // Presentation layer below the unchanged gameplay warnings.
                 if(g.current!=null)Telegraph();
                 if(g.current!=null&&g.current.kind>=AttackKind.Step)ArakusCues(time);
                 if(!spriteArakus&&(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage)))RageAura(time);

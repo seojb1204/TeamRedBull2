@@ -10,6 +10,7 @@
 *.sln
 *.slnx
 
-# Python bytecode
+# Local pixel-agent experiment evidence / Python caches
 __pycache__/
 *.pyc
+/Experiments/PixelAgent/runs/

@@ -36,6 +36,22 @@ class RecognitionTests(unittest.TestCase):
         with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=(ScreenTemplate('lobby',(p,self.patch(1,20))),self.templates[1]))
     def test_nonstring_build_rejected(self):
         with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=None,templates=self.templates)
+    def test_known_modal_never_authorizes_enter(self):
+        from ui_recognition import BLOCKERS
+        for name in BLOCKERS:
+            with self.subTest(name=name):
+                modal=ScreenTemplate(name,(self.patch(0,40),self.patch(1,50)),self.patch(2,30))
+                self.r=TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=self.templates+(modal,))
+                r=self.check([40,50,30]);self.assertFalse(r.verified);self.assertFalse(r.enter_verified)
+                self.assertEqual(r.screen,'unknown');self.assertTrue(r.reason.startswith('blocking_overlay:'))
+    def test_modal_ambiguity_still_no_input(self):
+        modal=ScreenTemplate('blocked_cards',self.templates[0].anchors)
+        self.r=TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=self.templates+(modal,))
+        self.assertFalse(self.check([10,20,30]).enter_verified)
+    def test_visible_modal_vetoes_stronger_background_match(self):
+        modal=ScreenTemplate('blocked_cards',(self.patch(1,20),self.patch(2,31)))
+        self.r=TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=self.templates+(modal,),min_margin=.001)
+        r=self.check([10,20,30]);self.assertFalse(r.enter_verified);self.assertEqual(r.reason,'blocking_overlay:blocked_cards')
     def test_nan_threshold(self):
         with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=self.templates,max_distance=float('nan'))
 if __name__=='__main__':unittest.main()

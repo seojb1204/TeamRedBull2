@@ -3,6 +3,8 @@ No OCR model, screenshots, native input or internal gameplay state are accessed.
 Scores are pixel distances, NOT calibrated probabilities.
 """
 from dataclasses import dataclass
+
+BLOCKERS=frozenset({'blocked_cards','blocked_help','blocked_settings','blocked_history','blocked_transition'})
 import hashlib
 import math
 
@@ -67,7 +69,7 @@ class TemplateRecognizer:
         self.threshold=max_distance;self.margin=min_margin
         labels=set()
         for t in self.templates:
-            if t.screen not in {'lobby','battle','result','pause'} or t.screen in labels or len(t.anchors)<2:
+            if t.screen not in ({'lobby','battle','result','pause'}|BLOCKERS) or t.screen in labels or len(t.anchors)<2:
                 raise ValueError('Unique known screen with two anchors required')
             labels.add(t.screen)
             for i,a in enumerate(t.anchors):
@@ -90,9 +92,15 @@ class TemplateRecognizer:
             # Both anchors must agree: average would mask a wrong/missing anchor.
             score=max(patch_distance(rgb,width,height,p) for p in t.anchors)
             scored.append((score,t.screen,t))
+        # A visible known modal vetoes even a stronger background lobby match.
+        blockers=[entry for entry in scored if entry[1] in BLOCKERS and entry[0]<=self.threshold]
+        if blockers:
+            score,label,_=min(blockers,key=lambda x:(x[0],x[1]))
+            return Recognition('unknown',False,False,'blocking_overlay:'+label,score,0.0)
         scored.sort(key=lambda x:(x[0],x[1]))
         score,_,best=scored[0];margin=scored[1][0]-score
         if score>self.threshold:return Recognition('unknown',False,False,'anchor_mismatch',score,margin)
         if margin<self.margin:return Recognition('unknown',False,False,'ambiguous_screen',score,margin)
+        if best.screen in BLOCKERS:return Recognition('unknown',False,False,'blocking_overlay:'+best.screen,score,margin)
         enter=best.screen in {'lobby','result'} and best.enter_prompt is not None and patch_distance(rgb,width,height,best.enter_prompt)<=self.threshold
         return Recognition(best.screen,True,enter,'matched',score,margin)

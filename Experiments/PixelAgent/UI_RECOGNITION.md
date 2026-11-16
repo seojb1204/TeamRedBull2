@@ -14,3 +14,6 @@ Not implemented/validated: production screenshot capture, real game templates, b
 
 ## Operational sequence
 Recognition → two fresh-frame flow confirmation → current-frame binding validation → OS adapter safety gate → bounded input → post-input observation. User interruption, unknown/inconsistent observations, unexpected viewport/build and stale host evidence stop the session. Never auto-focus or act on another process.
+
+## Known modal vetoes
+`blocked_cards`, `blocked_help`, `blocked_settings`, `blocked_history`, and `blocked_transition` templates have veto priority over normal screens when their anchors pass the threshold. Thus even a stronger background lobby match cannot authorize Enter through a detected modal. A blocker always yields unknown/unverified/no Enter; ambiguous ordinary labels abstain. This handles only supplied templates, not arbitrary unseen overlays. The checked-in `Docs/Proof/lobby.png` visibly shows a three-card upgrade modal, not an idle actionable lobby: filenames are not ground truth. Historical captures without build provenance cannot be promoted to current-build test evidence.

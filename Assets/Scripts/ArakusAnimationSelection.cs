@@ -48,6 +48,25 @@ namespace ReversalTower
             new Definition("FX_Charge","이펙트",384,false,70,70,90,100,120,150),
             new Definition("FX_PillarImpact","이펙트",384,false,70,70,90,100,120,150),
         };
+        // Presentation only. One two-step cycle travels 1.4 world units; no foot shuffle at rest.
+        public sealed class WalkCycle
+        {
+            public const float Stride=1.4f;
+            float previousX,previousTime,travel;bool ready;
+            public bool Moving { get; private set; }
+            public float Elapsed=>travel/Stride*Find("Walk").Duration;
+            public void Reset(){ready=false;travel=0;Moving=false;}
+            public void Observe(float x,float time,bool eligible)
+            {
+                if(!ready||time<previousTime){previousX=x;previousTime=time;ready=true;Moving=false;travel=0;return;}
+                float dt=time-previousTime;
+                if(dt<=0)return; // Repeated renders and hit-stop must not advance the gait.
+                float dx=Math.Abs(x-previousX);
+                Moving=eligible&&dx>0.0001f&&dx<=Math.Max(.5f,dt*12);
+                if(Moving)travel=(travel+dx)%Stride;
+                previousX=x;previousTime=time;
+            }
+        }
         public static Definition Find(string id){foreach(var d in Definitions)if(d.id==id)return d;throw new ArgumentException(id);}
         public struct Input
         {

@@ -11,7 +11,9 @@ namespace ReversalTower
         public static Sprite[] Sprites(string id)
         {
             if(cache.TryGetValue(id,out var a))return a;
-            a=Resources.LoadAll<Sprite>("ArakusV1/"+id);Array.Sort(a,(x,y)=>string.CompareOrdinal(x.name,y.name));
+            // User-approved centered walk remains V1; other reviewed motions prefer V2.
+            a=Resources.LoadAll<Sprite>((id=="Walk"?"ArakusV1/":"ArakusV2/")+id);
+            if(a.Length==0)a=Resources.LoadAll<Sprite>("ArakusV1/"+id);Array.Sort(a,(x,y)=>string.CompareOrdinal(x.name,y.name));
             if(a.Length>0)cache[id]=a;return a;
         }
         public static bool HasArt=>Sprites("Idle").Length==4;
@@ -24,6 +26,7 @@ namespace ReversalTower
         Pattern previousPattern;float previousAge=-1,lastClock=-1,poseStarted,pillarLeftAt=-99,pillarRightAt=-99;
         bool initialized,lastBattle,left,right,lastRage,lastStruck,pillarStun;
         string poseState;int cursor,leftImpactFace=1,rightImpactFace=1;float clock;
+        readonly ArakusAnimationSelection.WalkCycle walkCycle=new ArakusAnimationSelection.WalkCycle();
         public bool PillarStun=>pillarStun;
         public int VisibleSprites{get{int n=0;foreach(var r in pool)if(r.enabled)n++;return n;}}
         void OnDisable(){foreach(var r in pool)if(r)r.enabled=false;effects.Clear();previousShots.Clear();initialized=false;}
@@ -32,7 +35,7 @@ namespace ReversalTower
             bool combat=battle&&g.mode==ScreenMode.Battle;
             clock=combat?g.seconds:g.realClock;
             bool restart=!initialized||battle!=lastBattle||clock<lastClock;
-            if(restart){effects.Clear();previousShots.Clear();left=g.pillarLeft;right=g.pillarRight;lastRage=g.BossPatterns.rageActive;pillarStun=false;pillarLeftAt=pillarRightAt=-99;poseState=null;previousPattern=null;previousAge=-1;lastStruck=false;}
+            if(restart){walkCycle.Reset();effects.Clear();previousShots.Clear();left=g.pillarLeft;right=g.pillarRight;lastRage=g.BossPatterns.rageActive;pillarStun=false;pillarLeftAt=pillarRightAt=-99;poseState=null;previousPattern=null;previousAge=-1;lastStruck=false;}
             initialized=true;lastBattle=battle;lastClock=clock;
             if(combat)
             {
@@ -43,14 +46,15 @@ namespace ReversalTower
             }
             left=g.pillarLeft;right=g.pillarRight;
             var bp=g.BossPatterns;
+            walkCycle.Observe(g.boss.x,clock,combat&&g.current==null&&g.bossStagger<=0&&g.bossState=="추적");
             var i=new ArakusAnimationSelection.Input{combat=combat,dead=battle&&g.bossHp<=0,groggy=pillarStun,
                 shieldOut=bp.shieldOut,shieldCaught=bp.shieldCaught,leaping=bp.leaping,struck=bp.struck,
-                walking=g.bossState=="추적",phase=g.bossState=="페이즈 전환",pattern=g.current!=null?g.current.id:null,
+                walking=walkCycle.Moving,phase=g.bossState=="페이즈 전환",pattern=g.current!=null?g.current.id:null,
                 age=g.patternAge,windup=g.windup,recovery=g.recovery,tempo=bp.tempo,leapStart=bp.leapStart,
                 stagger=Mathf.Max(g.bossStagger,g.bossState=="페이즈 전환"?g.rest:0),hurt=g.bossFlash,step=g.attackStep};
             string state=ArakusAnimationSelection.State(i);
             if(state!=poseState||restart||g.current!=previousPattern||g.patternAge<previousAge){poseState=state;poseStarted=clock;}
-            var pose=ArakusAnimationSelection.Sample(i,clock-poseStarted);
+            var pose=ArakusAnimationSelection.Sample(i,state=="Walk"?walkCycle.Elapsed:clock-poseStarted);
             previousPattern=g.current;previousAge=g.patternAge;return pose;
         }
         void Emit(string id,Vector2 pos,int face,float duration=.6f)

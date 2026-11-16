@@ -14,7 +14,9 @@ commands=[
  ('size-animation',['Tests/run-arakus-size.py','--dotnet',a.dotnet,'--output',str(out/'size')]),
  ('room-resources',['Tests/verify-arakus-room-integration.py','--output',str(out/'room')]),
  ('size-resources',['Tests/verify-arakus-size-art.py','--output',str(out/'size')]),
- ('charge-art',['Tests/verify-arakus-charge-art.py','--presentation-baseline','ccf9ba9313ef5050d3cdc75a46d162faf3f5bfaf'])]
+ # PR41 intentionally updates ActorView for distance-based V2 gait. Keep the exact
+ # approved presentation commit pinned; the original V1 charge pixel baseline remains unchanged.
+ ('charge-art',['Tests/verify-arakus-charge-art.py','--presentation-baseline','cc765da55daf170d110977d778eca41f452f5310'])]
 results={}
 for name,cmd in commands:
  result=subprocess.run([sys.executable,*cmd],cwd=r,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)

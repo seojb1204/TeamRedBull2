@@ -10,7 +10,7 @@ namespace ReversalTower
         public static readonly Color ParryRim=new Color(.28f,.62f,1f),ParryCore=new Color(.72f,.88f,1f);
         public static Color Alpha(Color c,float a){c.a=a;return c;}
     }
-    public sealed class WorldArtist : MonoBehaviour
+    public sealed partial class WorldArtist : MonoBehaviour
     {
         TowerGame g;Sprite box,disk,triangle;readonly List<SpriteRenderer> pool=new List<SpriteRenderer>();int cursor;
         bool glowing;int layerBoost;   // 가산(발광) 재질로 그리기 / 아라쿠스 그림(정렬 1000) 위에 그리기
@@ -95,6 +95,7 @@ namespace ReversalTower
             if(fight)
             {
                 if(!spriteArakus){if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);}
+                BossPatternAccents(); // Presentation layer below the unchanged gameplay warnings.
                 if(g.current!=null)Telegraph();
                 if(g.current!=null&&g.current.kind>=AttackKind.Step)ArakusCues(time);
                 if(!spriteArakus&&(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage)))RageAura(time);
@@ -147,14 +148,22 @@ namespace ReversalTower
             // Cover the area above the fixed world floor, including narrow/tall windows.
             float unit=Mathf.Max(viewportWidth/sourceWidth,
                 Mathf.Max(0,camera.transform.position.y+camera.orthographicSize)/groundRow);
-            float width=sourceWidth*unit,centerX=camera.transform.position.x;
+            float width=sourceWidth*unit;
+            float centerX=g.bossIndex==0?g.zoomFocus.x*g.zoomPunch*.12f:camera.transform.position.x;
+            float padding=Mathf.Abs(camera.transform.position.x-centerX)+unit;
             float centerY=(groundRow-sourceHeight*.5f)*unit;
             Shape(room,centerX,centerY,width,width,new Color(.82f,.82f,.82f,1));
+            if(g.bossIndex==0)RoomEdges(path,centerX,centerY,width,unit,padding,0,(int)sourceHeight,(int)sourceWidth,new Color(.82f,.82f,.82f,1));
             float bottom=(groundRow-sourceHeight)*unit;
             var lower=ExternalAssets.Picture(path,0,0,(int)sourceWidth,64);
             float stripHeight=64*unit;
             int strips=Mathf.CeilToInt(Mathf.Max(0,bottom-(camera.transform.position.y-camera.orthographicSize))/stripHeight);
-            for(int i=0;i<strips;i++)Shape(lower,centerX,bottom-(i+.5f)*stripHeight,width,width,new Color(.82f,.82f,.82f,1));
+            for(int i=0;i<strips;i++)
+            {
+                float y=bottom-(i+.5f)*stripHeight;
+                Shape(lower,centerX,y,width,width,new Color(.82f,.82f,.82f,1));
+                if(g.bossIndex==0)RoomEdges(path,centerX,y,width,unit,padding,0,64,(int)sourceWidth,new Color(.82f,.82f,.82f,1));
+            }
             return true;
         }
         bool DrawThroneRoom()
@@ -170,16 +179,31 @@ namespace ReversalTower
             // Width-first fit: preserve both side columns, allow a small crop above the room.
             // Use the actual viewport width, not Screen.width or a quantized texel multiplier.
             float unit=pixelWidth/sourceWidth/pixelsPerWorld,width=sourceWidth*unit;
-            float centerX=camera.transform.position.x;
+            // Follow the zoom focus, not the camera shake: room and world pillars must move together.
+            float centerX=g.zoomFocus.x*g.zoomPunch*.12f;
             // Source walk line stays exactly on world y=0; never snap the floor away from the actors.
             float centerY=(groundRow-sourceHeight*.5f)*unit,bottom=(groundRow-sourceHeight)*unit;
             Shape(room,centerX,centerY,width,width,Color.white);
+            // Extend only the outside edge texels into the shake margin, without resizing the authored room.
+            float padding=Mathf.Abs(camera.transform.position.x-centerX)+unit;
+            RoomEdges(path,centerX,centerY,width,unit,padding,0,(int)sourceHeight);
             // Continue the same lower masonry below the authored image into the visible floor area.
             var lower=ExternalAssets.Picture(path,0,0,1248,62);
             float stripHeight=62*unit;
             int strips=Mathf.CeilToInt(Mathf.Max(0,bottom-(camera.transform.position.y-camera.orthographicSize))/stripHeight)+1;
-            for(int i=0;i<strips;i++)Shape(lower,centerX,bottom-(i+.5f)*stripHeight,width,width,Color.white);
+            for(int i=0;i<strips;i++)
+            {
+                float y=bottom-(i+.5f)*stripHeight;
+                Shape(lower,centerX,y,width,width,Color.white);
+                RoomEdges(path,centerX,y,width,unit,padding,0,62);
+            }
             return true;
+        }
+        void RoomEdges(string path,float x,float y,float width,float unit,float padding,int sourceY,int height,int sourceWidth=1248,Color? tint=null)
+        {
+            // Picture's pixels-per-unit equals the crop width (1), hence the vertical scale is unit.
+            Shape(ExternalAssets.Picture(path,0,sourceY,1,height),x-(width+padding)*.5f,y,padding,unit,tint??Color.white);
+            Shape(ExternalAssets.Picture(path,sourceWidth-1,sourceY,1,height),x+(width+padding)*.5f,y,padding,unit,tint??Color.white);
         }
         void Pillar(float x)
         {Rect(x,.85f,.65f,1.7f,Palette.Stone);Rect(x,1.75f,.9f,.18f,Palette.Slate);Rect(x,.15f,.9f,.3f,Palette.Slate);Rect(x-.18f,.95f,.07f,1.3f,Palette.Alpha(Palette.Gold,.5f));}

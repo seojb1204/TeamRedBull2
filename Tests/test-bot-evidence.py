@@ -40,6 +40,15 @@ class EvidenceTests(unittest.TestCase):
     def test_wrong_parry_count(self):
         self.report['battle.parries']='2'
         with self.assertRaises(ValueError):self.run_check()
+    def test_fractional_counter_rejected(self):
+        self.report['evidence.parries']='1.001'
+        with self.assertRaises(ValueError):self.run_check()
+    def test_incomplete_report_rejected(self):
+        self.report['result']='AUTORUN_REPORT_PENDING'
+        with self.assertRaises(ValueError):self.run_check()
+    def test_unknown_event_rejected(self):
+        self.events=self.events.replace('heal,potion','unknown,potion')
+        with self.assertRaises(ValueError):self.run_check()
     def test_report_path_not_followed(self):
         self.report['evidence.eventsFile']='/not/authorized'
         self.assertTrue(self.run_check()['verified'])

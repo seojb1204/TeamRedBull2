@@ -29,7 +29,7 @@ Attribution is not required by CC0 and is kept voluntarily.
 | bd_boom | Snapper4298, freesound 157245 |
 | drum_heavy_kick | Zajo, freesound 4832 |
 | drum_roll | Heigh-hoo, freesound 19433 |
-| drum_tom_lo_hard, drum_tom_mid_hard, drum_cymbal_hard, drum_splash_hard, drum_snare_hard, drum_bass_hard, drum_bass_soft | menegass, freesound 100064, 100066, 100056, 100060, 100058, 100051, 100052 |
+| drum_tom_lo_hard, drum_cymbal_hard, drum_splash_hard, drum_snare_hard, drum_bass_hard, drum_bass_soft | menegass, freesound 100064, 100056, 100060, 100058, 100051, 100052 |
 
 The generator also layers the project's existing StarNinjas sword recordings
 (`Assets/StreamingAssets/Audio/attack.wav`, `parry.wav`, `hit.wav`; CC0, see CREDITS.md).

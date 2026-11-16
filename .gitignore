@@ -9,3 +9,7 @@
 *.csproj
 *.sln
 *.slnx
+
+# Python bytecode
+__pycache__/
+*.pyc

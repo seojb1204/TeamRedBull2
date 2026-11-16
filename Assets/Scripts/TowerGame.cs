@@ -183,7 +183,7 @@ namespace ReversalTower
             horizontalSpeed=0;pvY=0;playerInv=stun=parryLock=dashTime=dashRecharge=actionTime=attackAnim=healing=skillQ=skillW=skillE=0;parryAge=99;
             riposteUntil=0;flowReadyAt=0;
             phaseTwo=false;thirdPhase=false;seal=index==4;dashes=2;potions=LobbyCards.Potions(save);combo=0;comboGap=0;bossStagger=0;rest=1.8f;current=null;bossState="입장";
-            BossPatterns.Reset();ResetTestAgent();rewards.Reset();playerAction="";healing=0;
+            Evidence.Reset();BossPatterns.Reset();ResetTestAgent();rewards.Reset();playerAction="";healing=0;
             barrier=false;barrierTime=0;pillarLeft=pillarRight=index==0;hazards.Clear();shots.Clear();minions.Clear();motes.Clear();impacts.Clear();hitStop=slowMo=zoomPunch=whiteFlash=bossRecoil=0;
             dda.Prepare(save,spec,AutoRunArgs.DisableDda);
             Say(spec.name+" — "+spec.lesson,5);sound.Play("confirm");
@@ -207,15 +207,24 @@ namespace ReversalTower
             bool q=Input.GetKeyDown(KeyCode.Q),w=Input.GetKeyDown(KeyCode.W),e=Input.GetKeyDown(KeyCode.E),r=Input.GetKeyDown(KeyCode.R),f=Input.GetKeyDown(KeyCode.F);
             float move=(right?1:0)-(left?1:0);
             if(demo)DemoInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);
+            if(EvidenceEnabled)
+            {
+                if(jump)NoteEvidence("input_requested","jump");
+                if(dash)NoteEvidence("input_requested","dash");
+                if(parry)NoteEvidence("input_requested","parry");
+                if(attack)NoteEvidence("input_requested","J");
+                if(q)NoteEvidence("input_requested","Q");if(w)NoteEvidence("input_requested","W");
+                if(e)NoteEvidence("input_requested","E");if(r)NoteEvidence("input_requested","R");if(f)NoteEvidence("input_requested","F");
+            }
             if(jump)dodgeBuffer=.12f;else dodgeBuffer-=dt;
             if(dash&&stun<=0&&dashes>0&&!seal&&(actionTime<=0||healing>0||skillFired))
-            {dashes--;dashTime=.22f;playerInv=.18f;actionTime=0;healing=0;parryAge=99;sound.Play("dash");Burst(player+Vector2.up,.5f,Palette.Teal,9);}
+            {NoteEvidence("input_committed","dash");dashes--;dashTime=.22f;playerInv=.18f;actionTime=0;healing=0;parryAge=99;sound.Play("dash");Burst(player+Vector2.up,.5f,Palette.Teal,9);}
             if(parry&&stun<=0&&parryLock<=0&&actionTime<=0&&dashTime<=0)
-            {parryAge=0;parryLock=.55f;attackAnim=.22f;playerAction="parry";}
+            {NoteEvidence("input_committed","parry");parryAge=0;parryLock=.55f;attackAnim=.22f;playerAction="parry";}
             if(stun<=0&&dashTime<=0)
             {
                 if(move!=0&&actionTime<=0)face=move>0?1:-1;
-                if(dodgeBuffer>0&&coyote>0&&actionTime<=0){pvY=9f;dodgeBuffer=0;coyote=0;sound.Play("dash");}
+                if(dodgeBuffer>0&&coyote>0&&actionTime<=0){NoteEvidence("input_committed","jump");pvY=9f;dodgeBuffer=0;coyote=0;sound.Play("dash");}
                 if(actionTime<=0&&parryLock<=0)
                 {
                     if(r&&ult>=100)BeginAction("R",.85f);
@@ -242,7 +251,7 @@ namespace ReversalTower
         public int PotionCount=>potions;
         void BeginAction(string name,float duration)
         {
-            playerAction=name;actionTime=actionTotal=duration;skillFired=false;attackAnim=duration;
+            NoteEvidence("input_committed",name);playerAction=name;actionTime=actionTotal=duration;skillFired=false;attackAnim=duration;
             if(name=="R"){ult=0;playerInv=.5f;flash=.5f;sound.Play("parry");}
             else if(name!="F")sound.Play("attack");
         }
@@ -251,7 +260,7 @@ namespace ReversalTower
             actionTime-=dt;float elapsed=actionTotal-actionTime;
             float at=playerAction=="E"?.7f:playerAction=="W"?.35f:playerAction=="Q"?.2f:playerAction=="F"?.6f:playerAction=="R"?.25f:.15f;
             if(skillFired||elapsed<at)return;skillFired=true;
-            if(playerAction=="F"){playerHp=Mathf.Min(maxHp,playerHp+LobbyCards.Heal(save));healing=0;sound.Play("heal");Burst(player+Vector2.up,1,Palette.Teal,18);return;}
+            if(playerAction=="F"){HealPlayer(LobbyCards.Heal(save),"potion");healing=0;sound.Play("heal");Burst(player+Vector2.up,1,Palette.Teal,18);return;}
             float attack=LobbyCards.Attack(save);
             float damage=attack*(playerAction=="E"?3:playerAction=="Q"?1.8f:playerAction=="W"?1.2f:playerAction=="R"?10:1)*LobbyCards.SkillMultiplier(save,playerAction);
             bool empowered=playerAction=="J"&&riposteUntil>seconds;bool landed=false;
@@ -264,7 +273,7 @@ namespace ReversalTower
                 int u=save.equippedUltimate;
                 if(u==0){range=6;damage*=1.2f;bossStagger=Mathf.Max(bossStagger,.8f);}
                 if(u==1){for(int i=0;i<5;i++)FireShot(player+new Vector2(0,1+i*.12f),new Vector2(face*(7+i),.3f),attack*2*LobbyCards.SkillMultiplier(save,"R"),true,"ultimate",true);damage=0;}
-                if(u==2){range=4;damage*=1.4f;playerHp=Mathf.Min(maxHp,playerHp+12);}
+                if(u==2){range=4;damage*=1.4f;HealPlayer(12,"ultimate");}
                 if(u==3){range=30;damage*=1.7f;}
                 if(u==4){range=30;damage*=2;playerInv=1;}
                 Burst(player+Vector2.up,3,Palette.Gold,45);shake=4;
@@ -298,7 +307,7 @@ namespace ReversalTower
             if(ended||mode!=ScreenMode.Battle)return;
             if(barrier)damage*=.15f;
             damage*=BossPatterns.DamageTakenScale; // 아라쿠스 분노 시전 중에만 절반
-            bossHp=Mathf.Max(0,bossHp-damage);bossFlash=.1f;ult=Mathf.Min(100,ult+damage*.03f*LobbyCards.HitGaugeMultiplier(save));sound.Play("hit");if(weight>=2)sound.Play("thud");
+            float oldBossHp=bossHp;bossHp=Mathf.Max(0,bossHp-damage);NoteEvidence("damage_dealt",playerAction,oldBossHp-bossHp);bossFlash=.1f;ult=Mathf.Min(100,ult+damage*.03f*LobbyCards.HitGaugeMultiplier(save));sound.Play("hit");if(weight>=2)sound.Play("thud");
             float side=Mathf.Sign(boss.x-player.x);if(side==0)side=1;
             shake=Mathf.Max(shake,1.4f+weight*1.1f);HitStop(HitStopLight*(.8f+.4f*weight));bossRecoil=side*(.1f+.07f*weight);
             Vector2 at=new Vector2(boss.x-side*BossWidth*.55f,boss.y+1.25f+(hitCount%2==0?.15f:-.1f));hitCount++;
@@ -316,14 +325,14 @@ namespace ReversalTower
             if(activeParry)
             {
                 s.opportunities++;s.parries++;parries++;ult=Mathf.Min(100,ult+15);parryLock=.05f;parryAge=99;bossStagger=Mathf.Max(bossStagger,.45f);
-                ApplyParryUpgrades();
+                NoteEvidence("parry",pattern);ApplyParryUpgrades();
                 ParryFeedback(attackerX);
                 if(seal&&++sealParries>=3){seal=false;Say("회피 봉인 해제",2);}
                 return;
             }
             if(playerInv>0&&!(ignoreDash&&dashTime>0)){if(dashTime>0){s.opportunities++;s.dodges++;}else s.ignored++;return;}
             s.opportunities++;s.hits++;damage=Mathf.Min(damage,maxHp*.3f)*(1-LobbyCards.DamageReduction(save));s.damage+=damage;
-            playerHp=Mathf.Max(0,playerHp-damage);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=5;
+            float oldPlayerHp=playerHp;playerHp=Mathf.Max(0,playerHp-damage);NoteEvidence("damage_taken",pattern,oldPlayerHp-playerHp);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=5;
             HitStop(HitStopHurt);AddImpact(player+new Vector2(0,1.1f),3,1,0);
             if(playerAction=="E"&&actionTime>.6f)skillE=LobbyCards.Cooldown(save,"E")*.5f;
             actionTime=0;healing=0;parryAge=99;player.x=Mathf.Clamp(player.x+Mathf.Sign(player.x-attackerX)*.45f,Left+.4f,Right-.4f);

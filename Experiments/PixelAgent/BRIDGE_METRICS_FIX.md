@@ -18,3 +18,6 @@ TowerGame.cs PlayerHit 및 포션/궁극기 회복 지점은 PR47 계측과 같�
 
 
 `input_safety.py`는 Windows API를 호출하지 않는 순수 결정 계층이며 현재 실행기에 연결하지 않았다. 소유 PID+생성시각/HWND·전경창·해상도·캡처/전체프로세스 증거 신선도·GPU 안전 여부·사용자 입력 시퀀스를 검증한다. 불명확/변경/시간역행/포커스 상실 시 해당 세션을 중지 상태로 고정한다. 추후 네이티브 adapter가 실제 증거 수집 및 전송 직전 재검사를 담당해야 하며, 테스트의 True 값만으로 PC 안전이 증명되는 것은 아니다. 현재 파일은 입력을 전송하지 않으며 정상 입력 지원 완료를 의미하지 않는다. 실패한 전송의 부분 키다운은 adapter에서 별도 추적·해제해야 한다.
+
+## 입력 adapter 준비 계층
+`input_adapter.py`는 snapshot/transport/clock/sleep를 주입받는 단발 입력 제어기이며 **실제 Windows transport는 제공하지 않는다**. 기본 disabled, 명시 enabled 시에도 주입된 mock/후속 transport만 호출한다. 모든 키다운 직전 안전 snapshot 재확인, 허용키 제한, 10~100ms 요청 hold, 10ms 간격 중단 확인, 전달 불명/예외 후 자기 시도키만 정리, 해제실패 잔여키 보고를 포함한다. OS 스케줄링 지연은 실제 hold를 늘릴 수 있으므로 시간 상한을 하드 실시간 보장하지 않는다. 사용자 입력 감시는 외부 adapter가 자체 injected 이벤트와 실제 사용자 입력을 구분해야 한다. 실제 SendInput 구현·게임 연결·포커스 탈취는 없다. native 전송 전 확인과 실제 입력 사이의 OS race는 제거되지 않으며, `release_owned`의 대상/물리키 보존 계약을 검증하지 않은 단순 전역 SendInput wrapper로 실사용하면 안 된다.

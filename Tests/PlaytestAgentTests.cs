@@ -28,6 +28,32 @@ public static class PlaytestAgentTests
         float before=g.bossHp;g.DamageBoss(10,1);
         if(Math.Abs(g.Evidence.DamageDealt-(before-g.bossHp))>.001f)throw new Exception("Actual boss damage evidence");
     }
+    static void CombatEvidenceRegression()
+    {
+        AutoRunArgs.Active=false;AutoRunArgs.AgentProfile="balanced";AutoRunArgs.DisableDda=true;
+        var g=new TowerGame{save=new SaveData()};Set(g,"sound",new Soundscape());g.StartBattle(0);
+        string pattern=g.stats[0].id;
+        float start=g.playerHp;
+        g.PlayerHit(10,false,pattern,g.player.x+1);
+        if(g.Evidence.DamageTaken!=10)throw new Exception("Damage callback missing");
+        g.PlayerHit(10,false,pattern,g.player.x+1);
+        if(g.Evidence.DamageTaken!=10)throw new Exception("Invulnerability counted as damage");
+        typeof(TowerGame).GetMethod("HealPlayer",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(g,new object[]{6f,"regression"});
+        Set(g,"playerInv",0f);g.PlayerHit(10,false,pattern,g.player.x+1);
+        if(g.Evidence.DamageTaken!=20||g.Evidence.Healing!=6||Math.Abs(g.playerHp-(start-14))>.001f)throw new Exception("Heal-separated cumulative damage");
+        Set(g,"parryAge",.1f);Set(g,"dashTime",0f);
+        g.PlayerHit(10,true,pattern,g.player.x+1);
+        if(g.Evidence.Parries!=1||g.Evidence.DamageTaken!=20)throw new Exception("Parry counted as damage");
+        Set(g,"playerInv",0f);g.playerHp=3;
+        g.PlayerHit(10,false,pattern,g.player.x+1);
+        if(g.Evidence.DamageTaken!=23)throw new Exception("Overkill must be clipped");
+        g.StartBattle(0);
+        if(g.Evidence.DamageTaken!=0||g.Evidence.Events.Count!=0)throw new Exception("StartBattle evidence leak");
+        Time.unscaledDeltaTime=1f/60;Input.Clear();Input.down.Add(KeyCode.Q);update.Invoke(g,null);Input.Clear();
+        if(g.Evidence.RequestedInputs!=1||g.Evidence.CommittedInputs!=1)throw new Exception("Q request/commit callback");
+        Input.down.Add(KeyCode.Q);update.Invoke(g,null);Input.Clear();
+        if(g.Evidence.RequestedInputs!=2||g.Evidence.CommittedInputs!=1)throw new Exception("Cooldown/action lock must not commit Q");
+    }
     static string Trial(SaveData save,int boss,string profile,int seed,int round,bool enabled)
     {
         AutoRunArgs.Active=false;AutoRunArgs.DisableDda=!enabled;AutoRunArgs.AgentProfile=profile;AutoRunArgs.AgentSeed=seed;
@@ -60,7 +86,7 @@ public static class PlaytestAgentTests
         {
             if(!SaveStore.IsIsolated)throw new Exception("Isolation required");
             if(!AutoRunArgs.HasAutomationArguments(new[]{"game","-towerAgent","expert"})||AutoRunArgs.HasAutomationArguments(new[]{"game"}))throw new Exception("Network guard classification");
-            EvidenceRegression();
+            EvidenceRegression();CombatEvidenceRegression();
             string first=Trial(new SaveData{unlockedBoss=4},0,"balanced",17,1,true);
             string second=Trial(new SaveData{unlockedBoss=4},0,"balanced",17,1,true);
             if(first!=second)throw new Exception("Same-seed replay differs");

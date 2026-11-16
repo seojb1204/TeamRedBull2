@@ -4,7 +4,7 @@ Scores are pixel distances, NOT calibrated probabilities.
 """
 from dataclasses import dataclass
 
-BLOCKERS=frozenset({'blocked_cards','blocked_help','blocked_settings','blocked_history','blocked_transition'})
+BLOCKERS=frozenset({'blocked_cards','blocked_help','blocked_settings','blocked_history','blocked_transition','blocked_title'})
 import hashlib
 import math
 

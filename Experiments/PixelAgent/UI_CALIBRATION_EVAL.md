@@ -12,3 +12,23 @@
 `load_dataset(root, manifest_path='dataset.json')` accepts only JSON data with schema `tower-ui-dataset/1`, `samples` array, and Sample fields with `rgb_path` instead of `rgb`. RGB files are raw bytes, no image decompression/pickle/code import. Paths must resolve within dataset root, including symlinks. Read budget 64 MiB/file and 256 MiB/dataset, manifest 2 MiB. Hashes are verified before bytes are interpreted as RGB. Use immutable datasets to avoid file races.
 
 No real labelled frames were available for this implementation. Unit tests are synthetic contracts only, not accuracy results. Exact hashes cannot detect resized/cropped/near-duplicate leakage; session provenance and labels remain assertions requiring review. Correlated video frames are not independent users/trials. Zero observed false Enter is not a guarantee of safety. Unseen popups and overlays require additional negative samples. Production thresholds and safety acceptance criteria must be fixed before evaluating untouched held-out sessions.
+
+## Per-label and per-session diagnostics
+
+Reports additionally contain `per_truth_label` (all five truth labels, including
+unseen labels) and `per_test_session` (test sessions only, sorted by session ID).
+Each slice reports `test_frames`, `accepted`, `abstained`,
+`correct_nonabstained`, `coverage`, `accuracy_nonabstained`, `enter_grants`,
+`wrong_enter_grants`, and wrong-Enter rates per grant and per frame. Calibration
+frames never enter these slices. Zero denominators remain JSON null: an absent
+label is not 0% accurate, and an all-abstaining session is not 100% accurate.
+Unknown predictions are abstentions even when their truth label is unknown.
+Malformed Enter grants still count as wrong grants even on abstained frames.
+
+Inspect both slices before interpreting aggregate accuracy. A common lobby can
+hide complete battle failure; a long successful session can hide a short failed
+session. Counts reconcile with the aggregate but rates are frame-weighted within
+each slice, not session-balanced estimates. These diagnostics do not compensate
+for correlated frames or small samples and add no real-game performance evidence.
+No thresholds are automatically tuned from test results. Synthetic fixtures remain
+explicitly synthetic; real-data collection and independent labels are still needed.

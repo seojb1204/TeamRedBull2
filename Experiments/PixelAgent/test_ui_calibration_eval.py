@@ -27,6 +27,43 @@ class EvaluationTests(unittest.TestCase):
     def test_all_abstain(self):
         r=self.run_eval([row(0,'calibration'),row(2,truth='unknown',allowed=False)])
         self.assertIsNone(r['accuracy_nonabstained']);self.assertIsNone(r['wrong_enter_rate_per_grant']);self.assertEqual(r['abstain_rate'],1)
+    def test_slices_expose_hidden_label_and_session_failure(self):
+        r=self.run_eval([row(0,'calibration'),row(1,session='good'),
+                         row(2,truth='battle',allowed=False,session='bad'),
+                         row(3,truth='battle',allowed=False,session='bad')])
+        self.assertEqual(r['per_truth_label']['lobby']['accuracy_nonabstained'],1)
+        battle=r['per_truth_label']['battle']
+        self.assertEqual(battle['test_frames'],2)
+        self.assertEqual(battle['coverage'],.5)
+        self.assertEqual(battle['accuracy_nonabstained'],0)
+        self.assertEqual(battle['wrong_enter_grants'],1)
+        self.assertEqual(r['per_test_session']['bad'],battle)
+        self.assertEqual(r['per_test_session']['good']['accuracy_nonabstained'],1)
+        self.assertNotIn('c',r['per_test_session'])
+        for slices in [r['per_truth_label'],r['per_test_session']]:
+            for key in ['test_frames','accepted','abstained','correct_nonabstained','enter_grants','wrong_enter_grants']:
+                self.assertEqual(sum(v[key] for v in slices.values()),r[key])
+    def test_absent_labels_and_calibration_only_slices(self):
+        r=self.run_eval([row(0,'calibration')])
+        self.assertEqual(r['per_test_session'],{})
+        self.assertEqual(set(r['per_truth_label']),{'lobby','battle','result','pause','unknown'})
+        for group in r['per_truth_label'].values():
+            self.assertEqual(group['test_frames'],0)
+            for key in ['coverage','accuracy_nonabstained','wrong_enter_rate_per_grant','wrong_enter_rate_all_test']:
+                self.assertIsNone(group[key])
+    def test_unknown_abstention_slice_and_invalid_enter(self):
+        r=self.run_eval([row(0,'calibration'),row(2,truth='unknown',allowed=False,session='abstain'),
+                         row(4,truth='pause',allowed=False,session='bad')])
+        unknown=r['per_truth_label']['unknown']
+        self.assertEqual(unknown['coverage'],0)
+        self.assertIsNone(unknown['accuracy_nonabstained'])
+        self.assertIsNone(unknown['wrong_enter_rate_per_grant'])
+        pause=r['per_truth_label']['pause']
+        self.assertEqual(pause['wrong_enter_grants'],1)
+        self.assertEqual(pause['wrong_enter_rate_per_grant'],1)
+        self.assertEqual(pause['accepted'],0)
+        self.assertIsNone(pause['accuracy_nonabstained'])
+        self.assertEqual(r['per_test_session']['bad'],pause)
     def test_session_leakage(self):
         with self.assertRaisesRegex(ValueError,'session leakage'):self.run_eval([row(0,'calibration'),row(1,session='c')])
     def test_rgb_duplicate_leakage(self):

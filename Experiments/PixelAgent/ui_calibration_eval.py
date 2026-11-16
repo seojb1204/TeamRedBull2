@@ -12,6 +12,21 @@ def digest(data):return hashlib.sha256(data).hexdigest()
 def sha_ok(value):return isinstance(value,str) and len(value)==64 and all(c in '0123456789abcdef' for c in value)
 def ratio(n,d):return n/d if d else None
 
+
+def summarize_decisions(decisions):
+    """Frame-weighted diagnostic slice; empty ratios stay null, never zero accuracy."""
+    total=len(decisions)
+    accepted=sum(not d['abstained'] for d in decisions)
+    correct=sum(not d['abstained'] and d['prediction']==d['truth'] for d in decisions)
+    grants=sum(d['enter_granted'] for d in decisions)
+    wrong=sum(d['wrong_enter'] for d in decisions)
+    return {'test_frames':total,'accepted':accepted,'abstained':total-accepted,
+            'correct_nonabstained':correct,'coverage':ratio(accepted,total),
+            'accuracy_nonabstained':ratio(correct,accepted),
+            'enter_grants':grants,'wrong_enter_grants':wrong,
+            'wrong_enter_rate_per_grant':ratio(wrong,grants),
+            'wrong_enter_rate_all_test':ratio(wrong,total)}
+
 @dataclass(frozen=True)
 class Sample:
     session_id: str
@@ -92,6 +107,9 @@ def evaluate(samples, recognizer, *, build_sha256, width, height,
         'abstain_rate':ratio(abstain,total),'enter_grants':enter,'wrong_enter_grants':wrong_enter,
         'wrong_enter_rate_per_grant':ratio(wrong_enter,enter),'wrong_enter_rate_all_test':ratio(wrong_enter,total),
         'enter_contract_violations':invalid_enter_contract,'decisions':decisions,
+        'per_truth_label':{label:summarize_decisions([d for d in decisions if d['truth']==label]) for label in LABELS},
+        'per_test_session':{session:summarize_decisions([d for d in decisions if d['session']==session])
+                            for session in sorted(s for s,split in session_splits.items() if split=='test')},
         'limitations':['provenance/labels are asserted, not independently verified','exact hashes do not detect cropped or near-duplicate leakage','all template and threshold-tuning sessions must be declared','zero observed wrong Enter does not prove zero risk','correlated frames are not independent player trials']}
 
 

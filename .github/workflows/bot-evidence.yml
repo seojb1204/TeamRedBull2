@@ -1,0 +1,24 @@
+name: Offline bot evidence
+on:
+  pull_request:
+    paths: ['Assets/Scripts/**', 'Tests/**', '.github/workflows/bot-evidence.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  logic-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: python3 Tests/test-playtest-summary.py
+      - run: python3 Tests/run-playtest-agent.py --output /tmp/bot-results.csv
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: logic-qa-evidence
+          path: /tmp/bot-results.*
+          if-no-files-found: warn

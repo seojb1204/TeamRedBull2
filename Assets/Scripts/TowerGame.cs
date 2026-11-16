@@ -97,6 +97,9 @@ namespace ReversalTower
             sound.SetBoss(bossIndex);
             sound.SetPaused(mode==ScreenMode.Battle&&(paused||showHelp||showSettings));
             sound.tension=mode==ScreenMode.Battle?(phaseTwo?.95f:.65f):.08f;
+            // 빈사 심장 박동: 체력 35% 아래에서 시작, 0에 가까울수록 1.
+            float hpRatio=maxHp>0?playerHp/maxHp:1;
+            sound.danger=mode==ScreenMode.Battle&&!ended&&hpRatio<.35f?Mathf.Clamp01(.35f+.65f*(1-hpRatio/.35f)):0;
             if(!captureDone&&!string.IsNullOrEmpty(capturePath)&&realClock>5){ScreenCapture.CaptureScreenshot(capturePath);captureDone=true;}
             AutoRunTick(Time.unscaledDeltaTime);
         }
@@ -270,7 +273,7 @@ namespace ReversalTower
             if(bossIn&&damage>0){landed=true;DamageBoss(damage,playerAction=="R"?2.6f:playerAction=="E"?2.2f:playerAction=="Q"?1.5f:playerAction=="W"?1.3f:1);}
             for(int i=minions.Count-1;i>=0;i--)
             {var m=minions[i];if(Mathf.Abs(player.x-m.x)<range&&(radial||(m.x-player.x)*face>-.5f)){landed=true;m.hp-=damage;if(m.hp<=0){Burst(new Vector2(m.x,1),.8f,Palette.Gold,12);minions.RemoveAt(i);}}}
-            if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){landed=true;barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){BossPatterns.BreakPhanesBarrier();Say("결계 파괴 · 파네스가 추락했습니다",2);}}
+            if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){landed=true;barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){BossPatterns.BreakPhanesBarrier();sound.Play("barrier_break");Say("결계 파괴 · 파네스가 추락했습니다",2);}}
             if(empowered&&landed)riposteUntil=0;
             Burst(player+new Vector2(face*.9f,1),.25f,Palette.Teal,4);
         }
@@ -324,7 +327,7 @@ namespace ReversalTower
             HitStop(HitStopHurt);AddImpact(player+new Vector2(0,1.1f),3,1,0);
             if(playerAction=="E"&&actionTime>.6f)skillE=LobbyCards.Cooldown(save,"E")*.5f;
             actionTime=0;healing=0;parryAge=99;player.x=Mathf.Clamp(player.x+Mathf.Sign(player.x-attackerX)*.45f,Left+.4f,Right-.4f);
-            sound.Play("hit");Burst(player+Vector2.up,.9f,Palette.Red,15);
+            sound.Play("player_hurt");Burst(player+Vector2.up,.9f,Palette.Red,15);
         }
         void ApplyParryUpgrades()
         {
@@ -343,7 +346,7 @@ namespace ReversalTower
             ended=true;result.abandoned=abandoned;
             dda.Complete(save,spec,clear,abandoned);
             SaveStore.Log(result,stats,save);SaveStore.Save(save);mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;
-            sound.Play(clear?"parry":"death");
+            sound.Play(clear?"boss_death":"death");
         }
         public void ReturnLobby(){mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}
         public void Abandon(){abandoning=true;EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}

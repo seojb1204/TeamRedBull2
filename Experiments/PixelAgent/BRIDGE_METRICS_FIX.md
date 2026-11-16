@@ -21,3 +21,6 @@ TowerGame.cs PlayerHit 및 포션/궁극기 회복 지점은 PR47 계측과 같�
 
 ## 입력 adapter 준비 계층
 `input_adapter.py`는 snapshot/transport/clock/sleep를 주입받는 단발 입력 제어기이며 **실제 Windows transport는 제공하지 않는다**. 기본 disabled, 명시 enabled 시에도 주입된 mock/후속 transport만 호출한다. 모든 키다운 직전 안전 snapshot 재확인, 허용키 제한, 10~100ms 요청 hold, 10ms 간격 중단 확인, 전달 불명/예외 후 자기 시도키만 정리, 해제실패 잔여키 보고를 포함한다. OS 스케줄링 지연은 실제 hold를 늘릴 수 있으므로 시간 상한을 하드 실시간 보장하지 않는다. 사용자 입력 감시는 외부 adapter가 자체 injected 이벤트와 실제 사용자 입력을 구분해야 한다. 실제 SendInput 구현·게임 연결·포커스 탈취는 없다. native 전송 전 확인과 실제 입력 사이의 OS race는 제거되지 않으며, `release_owned`의 대상/물리키 보존 계약을 검증하지 않은 단순 전역 SendInput wrapper로 실사용하면 안 된다.
+
+## UI 흐름 mock 계층
+`flow_controller.py`는 새 캡처에서 분류한 화면 라벨을 받는 1전 한정 상태기계다. 로비2프레임확인→시작1회→전투2프레임확인→정산2프레임확인→로비복귀1회→완료. 시작/복귀 버튼을 반복 누르지 않고 unknown에서는 입력없음, pause/예상밖전이/신선도위반/중복프레임/시간초과에는 중단한다. 결과 승패를 읽지 못하면 unknown 그대로 보존한다. 현재 실제 화면 분류기·버튼좌표·입력어댑터에 연결하지 않았으며 이 테스트 통과는 실제 로비흐름 통과가 아니다. 장기보상·상점·강화·저장삭제는 범위 밖이다.

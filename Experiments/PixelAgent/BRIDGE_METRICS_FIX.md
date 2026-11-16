@@ -24,3 +24,5 @@ TowerGame.cs PlayerHit 및 포션/궁극기 회복 지점은 PR47 계측과 같�
 
 ## UI 흐름 mock 계층
 `flow_controller.py`는 새 캡처에서 분류한 화면 라벨을 받는 1전 한정 상태기계다. 로비2프레임확인→시작1회→전투2프레임확인→정산2프레임확인→로비복귀1회→완료. 시작/복귀 버튼을 반복 누르지 않고 unknown에서는 입력없음, pause/예상밖전이/신선도위반/중복프레임/시간초과에는 중단한다. 결과 승패를 읽지 못하면 unknown 그대로 보존한다. 현재 실제 화면 분류기·버튼좌표·입력어댑터에 연결하지 않았으며 이 테스트 통과는 실제 로비흐름 통과가 아니다. 장기보상·상점·강화·저장삭제는 범위 밖이다.
+
+`flow_coordinator.py`는 flow/adapter를 연결하는 오프라인 준비계층이다. 검증된 현재 화면 라벨·RGB 크기·해당 프레임 Enter바인딩 계약이 일치할 때만 시작/정산복귀 Enter를 1회 요청한다. battle policy는 RGB bytes/크기만 전달받고 Enter/Escape는 사용할 수 없다. unknown/pause/잘못된바인딩/입력실패 시 중단하며 미해제키를 보고한다. 실제 분류기·버튼검증기는 아직 없어 이 계약을 수동 True로 채워 실사용하면 안 된다. 실제 InputPulseAdapter+mock transport 조합을 포함해 테스트하며 OS 호출은 없다.

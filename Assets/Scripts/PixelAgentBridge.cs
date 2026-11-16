@@ -24,6 +24,8 @@ namespace ReversalTower
         {
             public string schema="towerPixelMetrics/1",episode,outcome;
             public float simulationSeconds,wallSeconds,bossDamage,playerDamage;
+            public float cumulativePlayerDamage, cumulativePlayerHealing;
+            public string playerDamageSemantics="legacy net HP deficit; cumulative fields are event-based";
             public int hitsTaken,parries,decisions;
             public bool saveRootIsolated,ddaDisabled;
         }
@@ -33,6 +35,16 @@ namespace ReversalTower
         int step,framesRemaining,action,frameIndex;
         bool published,finished;
         float previousPlayerHp,previousBossHp;
+        float cumulativePlayerDamage,cumulativePlayerHealing;
+        public float SimulationLimitSeconds=>FullActions?120:60;
+        // Called at damage/heal mutation sites, not sampled per rendered frame.
+        public void RecordPlayerHpChange(float before,float after)
+        {
+            if(float.IsNaN(before)||float.IsInfinity(before)||float.IsNaN(after)||float.IsInfinity(after))
+                throw new ArgumentException("Non-finite player HP evidence");
+            if(after<before)cumulativePlayerDamage+=before-after;
+            else cumulativePlayerHealing+=after-before;
+        }
         readonly System.Diagnostics.Stopwatch watch=System.Diagnostics.Stopwatch.StartNew();
         double waitStarted;
 
@@ -74,7 +86,7 @@ namespace ReversalTower
             if(finished)return false;
             if(watch.Elapsed.TotalSeconds>AutoRunArgs.SecondsLimit+3){finished=true;Application.Quit(2);return false;}
             if(game.mode!=ScreenMode.Battle)return false;
-            if(watch.Elapsed.TotalSeconds>=AutoRunArgs.SecondsLimit||game.seconds>=60)return false;
+            if(watch.Elapsed.TotalSeconds>=AutoRunArgs.SecondsLimit||game.seconds>=SimulationLimitSeconds)return false;
             if(framesRemaining>0){frameIndex=FramesPerAction-framesRemaining;framesRemaining--;return true;}
             if(!published)return false;
             string path=Path.Combine(directory,"action.json");
@@ -138,7 +150,7 @@ namespace ReversalTower
             {
                 yield return endOfFrame;
                 bool terminal=game.mode==ScreenMode.Result;
-                bool truncated=!terminal&&(watch.Elapsed.TotalSeconds>=AutoRunArgs.SecondsLimit||game.seconds>=(FullActions?120:60)||
+                bool truncated=!terminal&&(watch.Elapsed.TotalSeconds>=AutoRunArgs.SecondsLimit||game.seconds>=SimulationLimitSeconds||
                     (published&&watch.Elapsed.TotalSeconds-waitStarted>15));
                 if(published&&truncated)
                 {
@@ -182,7 +194,8 @@ namespace ReversalTower
                 {
                     var metrics=new EpisodeMetrics{episode=episode,outcome=t.reason,simulationSeconds=game.seconds,
                         wallSeconds=(float)watch.Elapsed.TotalSeconds,bossDamage=Mathf.Max(0,game.spec.hp-Mathf.Max(0,game.bossHp)),
-                        playerDamage=Mathf.Max(0,game.maxHp-Mathf.Max(0,game.playerHp)),hitsTaken=game.hits,parries=game.parries,
+                        playerDamage=Mathf.Max(0,game.maxHp-Mathf.Max(0,game.playerHp)),
+                        cumulativePlayerDamage=cumulativePlayerDamage,cumulativePlayerHealing=cumulativePlayerHealing,hitsTaken=game.hits,parries=game.parries,
                         decisions=step,saveRootIsolated=SaveStore.IsIsolated,ddaDisabled=AutoRunArgs.DisableDda};
                     File.WriteAllText(Path.Combine(directory,"episode_metrics.json"),JsonUtility.ToJson(metrics));
                     finished=true;

@@ -30,11 +30,16 @@ class Recognition:
     margin: float = 0.0
 
 
-def patch_distance(rgb, width, height, patch):
+def validate_patch(width, height, patch):
+    if any(type(v) is not int for v in (patch.x,patch.y,patch.width,patch.height)):
+        raise ValueError('Integer patch geometry required')
     if type(patch.rgb) is not bytes or patch.width<=0 or patch.height<=0 or len(patch.rgb)!=patch.width*patch.height*3:
         raise ValueError('Malformed patch')
     if patch.x<0 or patch.y<0 or patch.x+patch.width>width or patch.y+patch.height>height:
         raise ValueError('Patch outside capture')
+
+def patch_distance(rgb, width, height, patch):
+    validate_patch(width,height,patch)
     total=0;offset=0
     for y in range(patch.y,patch.y+patch.height):
         start=(y*width+patch.x)*3
@@ -51,7 +56,9 @@ class TemplateRecognizer:
     def __init__(self, *, width, height, build_sha256, templates, max_distance=.025, min_margin=.02):
         if type(width) is not int or type(height) is not int or width<=0 or height<=0:
             raise ValueError('Positive integer viewport required')
-        if len(build_sha256)!=64 or any(c not in '0123456789abcdef' for c in build_sha256):
+        if width>8192 or height>8192 or width*height>16777216:
+            raise ValueError('Viewport exceeds supported capture budget')
+        if type(build_sha256) is not str or len(build_sha256)!=64 or any(c not in '0123456789abcdef' for c in build_sha256):
             raise ValueError('Exact lowercase build SHA256 required')
         if not all(math.isfinite(x) for x in (max_distance,min_margin)) or not 0<=max_distance<.2 or not 0<min_margin<1:
             raise ValueError('Strict finite distance/margin thresholds required')
@@ -68,7 +75,7 @@ class TemplateRecognizer:
                     if max(a.x,b.x)<min(a.x+a.width,b.x+b.width) and max(a.y,b.y)<min(a.y+a.height,b.y+b.height):
                         raise ValueError('Screen anchors must not overlap')
             for p in t.anchors+((t.enter_prompt,) if t.enter_prompt else ()):
-                patch_distance(bytes(width*height*3),width,height,p)
+                validate_patch(width,height,p)
         # This checksum identifies templates, not their correctness or provenance.
         self.template_sha256=hashlib.sha256(repr((width,height,build_sha256,self.templates)).encode()).hexdigest()
 

@@ -29,6 +29,13 @@ class RecognitionTests(unittest.TestCase):
         with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=(ScreenTemplate('lobby',(self.patch(4,10),self.patch(1,20))),self.templates[1]))
     def test_duplicate_anchor_rejected(self):
         with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=(ScreenTemplate('lobby',(self.patch(0,10),self.patch(0,10))),self.templates[1]))
+    def test_huge_capture_rejected_before_allocation(self):
+        with self.assertRaises(ValueError):TemplateRecognizer(width=999999,height=999999,build_sha256=self.build,templates=self.templates)
+    def test_fractional_geometry_rejected(self):
+        p=Patch(.5,0,1,1,bytes([10]*3))
+        with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=(ScreenTemplate('lobby',(p,self.patch(1,20))),self.templates[1]))
+    def test_nonstring_build_rejected(self):
+        with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=None,templates=self.templates)
     def test_nan_threshold(self):
         with self.assertRaises(ValueError):TemplateRecognizer(width=3,height=1,build_sha256=self.build,templates=self.templates,max_distance=float('nan'))
 if __name__=='__main__':unittest.main()

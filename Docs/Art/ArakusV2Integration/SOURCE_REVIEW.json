@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-13",
+  "tool": "GIMP Animation Playback via native desktop",
+  "files": [
+    "Previews/Review_Page_1.gif",
+    "Previews/Review_Page_2.gif",
+    "Previews/Review_Page_3.gif",
+    "Previews/Review_Page_4.gif",
+    "Previews/Shield_Spin.gif"
+  ],
+  "observed": [
+    "Playback controls in running state and changed poses on successive observations",
+    "Basic shield lift and sword pose transitions",
+    "Shield absent in throw release and running poses",
+    "Sword swing shield on back",
+    "Leap/crouch and rage poses",
+    "Death transition from standing to kneeling to horizontal final corpse, final pose retained in review board",
+    "Shield rotation displayed against transparency checkerboard"
+  ],
+  "limits": [
+    "Observations are sampled playback states, not exhaustive frame-by-frame artistic certification",
+    "Review boards use native art timing, not a simulation of runtime attack logic",
+    "All PNG and GIF frames separately pass deterministic integrity verification",
+    "No saved desktop screenshots, screenshots were inspected in tool output",
+    "Unity and HTML browser playback not tested"
+  ],
+  "remainingArt": [
+    "Walk, ShieldDash and Charge need clearer alternating stride",
+    "Some equipment perspective/size and body proportions vary across generated poses",
+    "Throw windup arm/equipment orientation requires final art review",
+    "In-game hitbox and FX alignment not tested"
+  ]
+}

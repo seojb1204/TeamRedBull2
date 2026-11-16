@@ -6,6 +6,8 @@ namespace ReversalTower
     // Attributed boss recordings with preserved CC0 fallback effects and synthesized ambience.
     public sealed class Soundscape : MonoBehaviour
     {
+        readonly System.Collections.Generic.Dictionary<string,AudioClip> designed=new System.Collections.Generic.Dictionary<string,AudioClip>();
+        readonly System.Collections.Generic.Dictionary<string,float> lastPlayed=new System.Collections.Generic.Dictionary<string,float>();
         AudioSource music,fx;long sample;int rate;public volatile float tension;
         AudioClip hit,parry,dash,attack,heal,death,confirm,cue,clang,thud;
         AudioClip battleMusic,carrier,bossMusic,lobbyMusic;volatile bool externalMusic;
@@ -59,7 +61,7 @@ namespace ReversalTower
                 music.clip=wanted;music.volume=0;music.Play();
             }
         }
-        void OnDestroy(){if(bossMusic!=null)Destroy(bossMusic);if(lobbyMusic!=null)Destroy(lobbyMusic);}
+        void OnDestroy(){if(bossMusic!=null)Destroy(bossMusic);if(lobbyMusic!=null)Destroy(lobbyMusic);foreach(var c in designed.Values)if(c)Destroy(c);designed.Clear();}
         AudioClip Tone(string name,float hz,float length,float volume,bool noise)
         {
             int n=(int)(rate*length);var data=new float[n];var rng=new System.Random(name.GetHashCode());
@@ -99,7 +101,20 @@ namespace ReversalTower
             var c=AudioClip.Create("Heavy Thud",n,1,rate,false);c.SetData(data,0);return c;
         }
         public void Play(string sound)
-        {if(!fx)return;fx.PlayOneShot(sound=="clang"?clang:sound=="thud"?thud:sound=="cue"?cue:sound=="parry"?parry:sound=="hit"?hit:sound=="dash"?dash:sound=="heal"?heal:sound=="death"?death:sound=="confirm"?confirm:attack);}
+        {
+            if(!fx)return;
+            float now=Time.unscaledTime;
+            if(lastPlayed.TryGetValue(sound,out float previous)&&now-previous<.035f)return;
+            lastPlayed[sound]=now;
+            if(!designed.TryGetValue(sound,out var clip))
+            {
+                // This vocabulary is authored game events, never user or network strings.
+                if(designed.Count>=96)return;
+                var samples=CombatSoundDesign.Render(sound,rate);
+                clip=AudioClip.Create("Combat "+sound,samples.Length,1,rate,false);clip.SetData(samples,0);designed[sound]=clip;
+            }
+            fx.PlayOneShot(clip,sound=="cue"?1f:sound=="parry"?.65f:.85f);
+        }
         void OnAudioFilterRead(float[] data,int channels)
         {
             if(rate==0||externalMusic)return;

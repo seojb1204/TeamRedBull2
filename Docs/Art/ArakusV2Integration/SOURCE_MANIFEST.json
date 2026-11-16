@@ -1,0 +1,307 @@
+{
+  "status": "Complete motion coverage; review build, not Unity-integrated",
+  "cell": [
+    192,
+    192
+  ],
+  "pixelsPerUnit": 56,
+  "filter": "Point",
+  "mipmaps": false,
+  "compression": "None",
+  "characterPivot": [
+    0.5,
+    0.16666666666666666
+  ],
+  "propPivot": [
+    0.5,
+    0.5
+  ],
+  "source": "Built-in image generation based on approved stable idle derivative; fixed shared32 palette",
+  "animations": [
+    {
+      "id": "Idle",
+      "label": "대기",
+      "count": 4,
+      "durationsMs": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": true,
+      "sheet": "Sheets/Idle.png",
+      "gif": "Previews/Idle.gif",
+      "directive": "Stable idle"
+    },
+    {
+      "id": "NormalAttack_R",
+      "label": "거검 횡베기",
+      "count": 5,
+      "durationsMs": [
+        600,
+        450,
+        250,
+        400,
+        400
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/NormalAttack_R.png",
+      "gif": "Previews/NormalAttack_R.gif",
+      "directive": "HAND all cells. ready; sword drawn back over right shoulder; CONTACT horizontal cut forward; follow through sword tip low; ready. Hit1.05s end2.1s."
+    },
+    {
+      "id": "NormalAttack_L",
+      "label": "방패 내려찍기",
+      "count": 5,
+      "durationsMs": [
+        500,
+        350,
+        250,
+        400,
+        400
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/NormalAttack_L.png",
+      "gif": "Previews/NormalAttack_L.gif",
+      "directive": "HAND. ready; LEFT shield raised overhead; CONTACT shield rim strikes ground; crouched impact hold; lift shield ready. Sword remains held."
+    },
+    {
+      "id": "NormalAttack_F",
+      "label": "발차기",
+      "count": 4,
+      "durationsMs": [
+        600,
+        250,
+        150,
+        200
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/NormalAttack_F.png",
+      "gif": "Previews/NormalAttack_F.gif",
+      "directive": "HAND. ready; right knee chamber; short brutal right push kick forwards stomach height; foot down ready."
+    },
+    {
+      "id": "QuickStep",
+      "label": "퀵스텝",
+      "count": 5,
+      "durationsMs": [
+        150,
+        200,
+        150,
+        200,
+        250
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/QuickStep.png",
+      "gif": "Previews/QuickStep.gif",
+      "directive": "HAND. ready; crouch; low backward hop posture; land crouch; ready. IN PLACE, no backwards displacement."
+    },
+    {
+      "id": "Sword_Swinging",
+      "label": "양손 거검 휘두르기",
+      "count": 6,
+      "durationsMs": [
+        350,
+        500,
+        200,
+        300,
+        100,
+        150
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Sword_Swinging.png",
+      "gif": "Previews/Sword_Swinging.gif",
+      "directive": "Shield transitions HAND to BACK to HAND. left hand swings shield onto upper BACK; both hands grip sword heavy low windup; both hands swing CONTACT; followthrough; straighten; re-equip shield on left forearm. Shield ONLY on BACK cells2-5."
+    },
+    {
+      "id": "ShieldThrowing_DashAttack",
+      "label": "투척 후 돌진 베기",
+      "count": 6,
+      "durationsMs": [
+        600,
+        200,
+        200,
+        400,
+        200,
+        200
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/ShieldThrowing_DashAttack.png",
+      "gif": "Previews/ShieldThrowing_DashAttack.gif",
+      "directive": "HAND,NONE,NONE,NONE,NONE,HAND. 1 shield windup low pulled back; 2 release empty left hand extended no shield drawn anywhere; 3 sprint launch sword low;4 full sprint sword ready;5 diagonal sword slash;6 catch shield ready. No flying shield in sheet."
+    },
+    {
+      "id": "ShieldDash",
+      "label": "방패 돌진",
+      "count": 5,
+      "durationsMs": [
+        500,
+        950,
+        950,
+        100,
+        100
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/ShieldDash.png",
+      "gif": "Previews/ShieldDash.gif",
+      "directive": "HAND. shield front shoulder low ready; running right leg; running left leg; braking front foot; ready. Shield pressed close, no shield detachment."
+    },
+    {
+      "id": "Shield_Throwing_Fly_Attack",
+      "label": "투척 후 도약 내려찍기",
+      "count": 6,
+      "durationsMs": [
+        600,
+        150,
+        100,
+        250,
+        250,
+        450
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Shield_Throwing_Fly_Attack.png",
+      "gif": "Previews/Shield_Throwing_Fly_Attack.gif",
+      "directive": "1-2 COPY exact first2 poses of attached THROW sheet,3 catch shield crouch,4 leap launch,5 tucked airborne shield aimed down,6 deep squat shield rim impact. shield HAND,NONE,HAND,HAND,HAND,HAND. no root vertical shift within cells."
+    },
+    {
+      "id": "Aggressive_Attack",
+      "label": "일대 휩쓸기",
+      "count": 6,
+      "durationsMs": [
+        700,
+        300,
+        300,
+        700,
+        500,
+        500
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Aggressive_Attack.png",
+      "gif": "Previews/Aggressive_Attack.gif",
+      "directive": "HAND on left forearm while left hand can grip sword too. 1 both hands sword upright in front helmet;2 low windup;3 low horizontal slash contact;4 sword above head;5 huge downward vertical cut;6 recover. NO light effects."
+    },
+    {
+      "id": "Of_Wrath",
+      "label": "아라쿠스의 분노",
+      "count": 4,
+      "durationsMs": [
+        400,
+        2100,
+        500,
+        2000
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Of_Wrath.png",
+      "gif": "Previews/Of_Wrath.gif",
+      "directive": "HAND. kneel sword planted; kneel head bowed hold; rise roaring arms open sword still in right; wide aggressive ready. Normal skin NOT RED, NO aura."
+    },
+    {
+      "id": "Charge",
+      "label": "기믹 돌진",
+      "count": 5,
+      "durationsMs": [
+        1100,
+        150,
+        180,
+        180,
+        400
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Charge.png",
+      "gif": "Previews/Charge.gif",
+      "directive": "HAND. deep sprinter start; explosive launch; sprint right leg; sprint left leg; brake. identical scale no displacement."
+    },
+    {
+      "id": "Walk",
+      "label": "걷기",
+      "count": 4,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": true,
+      "sheet": "Sheets/Walk.png",
+      "gif": "Previews/Walk.gif",
+      "directive": "HAND. heavy WALK loop: right foot contact; passing; left foot contact; passing. not four identical ready stances. sword low shield close."
+    },
+    {
+      "id": "Stagger",
+      "label": "패링 경직",
+      "count": 3,
+      "durationsMs": [
+        150,
+        2000,
+        350
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Stagger.png",
+      "gif": "Previews/Stagger.gif",
+      "directive": "HAND. sword arm knocked upward SHORT recoil, off balance knees bent, regaining stance. attached limbs waist shoulder."
+    },
+    {
+      "id": "Groggy",
+      "label": "기둥 충돌 그로기",
+      "count": 4,
+      "durationsMs": [
+        150,
+        350,
+        2250,
+        2250
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Groggy.png",
+      "gif": "Previews/Groggy.gif",
+      "directive": "HAND. collision recoil; knees buckle sword tip dragging; dazed lean a little forwards; dazed recover slight sway. not falling."
+    },
+    {
+      "id": "Death",
+      "label": "사망",
+      "count": 5,
+      "durationsMs": [
+        120,
+        200,
+        200,
+        250,
+        400
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": false,
+      "sheet": "Sheets/Death.png",
+      "gif": "Previews/Death.gif",
+      "directive": "HAND,HAND,NONE,NONE,NONE. fatal jolt; both knees sword planted; shield slips entirely OFF BODY, no loose shield drawn; slumps forward over sword; collapsed face down corpse horizontal with sword by hand. NO shield prop, separate dropped shield handles it."
+    },
+    {
+      "id": "Shield_Spin",
+      "label": "회전 방패",
+      "count": 4,
+      "durationsMs": [
+        90,
+        90,
+        90,
+        90
+      ],
+      "previewTiming": "Native art timing; gameplay samples frames dynamically",
+      "gameplayLoop": true,
+      "sheet": "Sheets/Shield_Spin.png",
+      "gif": "Previews/Shield_Spin.gif",
+      "directive": "Prop"
+    }
+  ]
+}

@@ -15,6 +15,7 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - run: python3 Tests/test-playtest-summary.py
+      - run: python3 Tests/test-bot-evidence.py
       - run: python3 Tests/run-playtest-agent.py --output /tmp/bot-results.csv
       - uses: actions/upload-artifact@v4
         if: always()

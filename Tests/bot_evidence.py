@@ -52,6 +52,8 @@ def validate(report_path):
                'parry': 'parries', 'input_requested': 'requestedInputs', 'input_committed': 'committedInputs'}
     for kind, key in mapping.items():
         value = float(report['evidence.' + key])
+        if kind in ('parry', 'input_requested', 'input_committed') and value != totals[kind]:
+            raise ValueError('Counter/report mismatch: ' + key)
         if not math.isfinite(value) or value < 0 or not math.isclose(totals[kind], value, rel_tol=1e-5, abs_tol=.02):
             raise ValueError('Event/report mismatch: ' + key)
     if int(report['battle.parries']) != totals['parry']:

@@ -432,17 +432,56 @@
       "missing_actor_fraction": 0.014634146341463415,
       "warning_observations": 69,
       "online_updates": 1421,
-      "replay_upd…29250 tokens truncated…,type=int,default=17)
-    p.add_argument('--epsilon',type=float,default=.2)
-    p.add_argument('--timeout',type=float,default=20)
-    p.add_argument('--max-seconds',type=float,default=180)
-    p.add_argument('--max-steps',type=int,default=5000)
-    a = p.parse_args()
-    if a.train and (a.policy!='learned' or not a.checkpoint):
-        p.error('--train requires --policy learned and --checkpoint')
-    if not 0<=a.epsilon<=1 or not 0<a.max_seconds<=1800 or not 0<a.max_steps<=100000 or a.timeout<=0:
-        p.error('Invalid bounds (max-seconds <= 1800, max-steps <= 100000)')
-    run_bridge(a)
-
-if __name__=='__main__':
-    main()
+      "replay_updates": 11368,
+      "evaluation_epsilon": 0,
+      "completed": true,
+      "game_outcome": "loss",
+      "evaluation_only_game_metrics": {
+        "schema": "towerPixelMetrics/1",
+        "outcome": "loss",
+        "simulationSeconds": 26.59976577758789,
+        "wallSeconds": 28.053102493286133,
+        "bossDamage": 20.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 9,
+        "parries": 0,
+        "decisions": 409,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      },
+      "group": "iteration3-tabular-v3"
+    }
+  ],
+  "wall_seconds_total": 332.176,
+  "gpu": {
+    "scope": "systemwide includes other apps; CPU-only learner",
+    "samples": 76,
+    "utilization_max": 6.0,
+    "utilization_mean": 3.013157894736842,
+    "temperature_max_c": 50.0,
+    "memory_max_mib": 2082.0,
+    "power_max_w": 57.19
+  },
+  "training_diagnosis": {
+    "real_transitions": 1421,
+    "replay_updates": 11368,
+    "all_reward_shaping_verified": true,
+    "zero_reward_fraction": 0.9528501055594651,
+    "observed_state_action_pairs": 262,
+    "pairs_with_under5_visits": 186,
+    "parry_attempts": 128,
+    "parries_without_warning": 84,
+    "parries_in_own_cooldown_bin": 66,
+    "actual_successful_parries": 1,
+    "attack_attempts": 254,
+    "attacks_with_input_direction_mismatch_or_unknown": 94
+  },
+  "limits": [
+    "Tiny fixed sample; not generalization evidence",
+    "V2 vs V3 seeds differ; no causal reward-only ablation claim",
+    "Many visual states have little or no action coverage",
+    "Own input direction is not verified actual facing; warnings not exact attack impact",
+    "Longer survival does not imply goal completion",
+    "No paid API, installs, long training, production merge or user data writes"
+  ]
+}

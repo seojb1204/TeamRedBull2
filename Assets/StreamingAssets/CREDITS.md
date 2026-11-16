@@ -23,6 +23,6 @@ Boss sprites, UI, attack indicators, healing/death/confirmation fallback sounds 
 
 ## Boss combat sound effects (added 2026-11-16)
 
-`Audio/sfx_*.wav` (40 files: boss wind-ups, strikes, hazards, phase change, boss death, player hurt, heartbeat) are original to this project. They are synthesized from oscillators, filtered noise and a synthetic reverb by `Tools/sfx/generate_boss_sfx.py`; no recordings or third-party samples are used. Running the script again reproduces the same files. 44.1 kHz mono 16-bit PCM.
+`Audio/sfx_*.wav` (40 files: boss wind-ups, strikes, hazards, phase change, boss death, player hurt, heartbeat) are built by `Tools/sfx/generate_boss_sfx.py` from real recordings: CC0 Freesound recordings distributed with the Sonic Pi sample library (list and original links in `Tools/sfx/sources/README.md`) plus the StarNinjas CC0 sword recordings above. The script cuts, re-pitches, reverses, layers and reverberates them; running it again reproduces the same files. 44.1 kHz mono 16-bit PCM.
 
 Player-hurt now uses `sfx_player_hurt.wav`; StarNinjas `hit.wav` remains the sound of the player's blade landing on a boss.

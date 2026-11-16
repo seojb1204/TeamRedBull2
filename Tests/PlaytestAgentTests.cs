@@ -39,12 +39,12 @@ public static class PlaytestAgentTests
         g.PlayerHit(10,false,pattern,g.player.x+1);
         if(g.Evidence.DamageTaken!=10)throw new Exception("Invulnerability counted as damage");
         typeof(TowerGame).GetMethod("HealPlayer",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(g,new object[]{6f,"regression"});
-        Set(g,"playerInv",0f);g.PlayerHit(10,false,pattern,g.player.x+1);
+        g.playerInv=0f;g.PlayerHit(10,false,pattern,g.player.x+1);
         if(g.Evidence.DamageTaken!=20||g.Evidence.Healing!=6||Math.Abs(g.playerHp-(start-14))>.001f)throw new Exception("Heal-separated cumulative damage");
-        Set(g,"parryAge",.1f);Set(g,"dashTime",0f);
+        g.parryAge=.1f;g.dashTime=0f;
         g.PlayerHit(10,true,pattern,g.player.x+1);
         if(g.Evidence.Parries!=1||g.Evidence.DamageTaken!=20)throw new Exception("Parry counted as damage");
-        Set(g,"playerInv",0f);g.playerHp=3;
+        g.playerInv=0f;g.playerHp=3;
         g.PlayerHit(10,false,pattern,g.player.x+1);
         if(g.Evidence.DamageTaken!=23)throw new Exception("Overkill must be clipped");
         g.StartBattle(0);

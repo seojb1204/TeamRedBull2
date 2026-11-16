@@ -74,14 +74,15 @@ class InputPulseAdapter:
                 self.gate.commit(self.owned)
             start=self.clock()
             if not math.isfinite(start):return self._abort('invalid_clock')
+            deadline=start+hold_seconds
             # Bounded polling also prevents an injected/faulty clock from hanging.
             for _ in range(20):
                 decision=self.gate.decide(self.snapshot(),self.owned)
                 if not decision.allowed:return self._abort(decision.reason)
                 now=self.clock()
                 if not math.isfinite(now) or now<start:return self._abort('invalid_clock')
-                if now-start>=hold_seconds:break
-                self.sleep(min(.01,hold_seconds-(now-start)))
+                if now>=deadline:break
+                self.sleep(min(.01,deadline-now))
             else:return self._abort('clock_not_advancing')
             unresolved=self._cleanup()
             if unresolved:return self._abort('key_release_failed')

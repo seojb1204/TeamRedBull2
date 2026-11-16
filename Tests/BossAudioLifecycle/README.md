@@ -11,3 +11,5 @@ Assertions cover lobby, battle entry, phase-two volume without restart, fade bef
 2026-11-15 lobby follow-up: 14 assertions pass, including actual lobby clip selection, lobby playback continuity during boss selection and missing-lobby synthesized fallback. No Unity runtime claim.
 
 ESC regression: 17 assertions pass after separating combat identity from pause state. AudioSource.Pause/UnPause preserve the modeled sample cursor, with no Stop/Play during ESC or settings/help pause; leaving battle while paused still changes to lobby. Unity runtime playback is separately required.
+
+2026-11-16 boss combat effects: added assertions for sfx preload (uncached), mapped tell/strike playback, kind fallback (`boss_Volley`), silent unknown events, old-key synth path, 50% music duck on big strikes, low-HP heartbeat and synth fallback when an sfx file is missing. **Written without a .NET SDK in the authoring container (not run there)**; run the command above locally to confirm.

@@ -116,12 +116,12 @@ namespace ReversalTower
             if(TickPhanesDown(dt))return;
             if(!phaseTwo&&g.bossHp<g.spec.hp*g.spec.phaseThreshold)
             {
-                phaseTwo=true;g.phaseFlash=1;current=null;rest=2;bossStagger=0;g.bossState="페이즈 전환";g.shake=4;
+                phaseTwo=true;g.phaseFlash=1;current=null;rest=2;bossStagger=0;g.bossState="페이즈 전환";g.shake=4;g.PlaySound("phase_change");
                 g.Say(g.spec.hasPillars?"철의 맹세가 흔들린다 · 돌진을 기둥으로 유도하세요":g.spec.echoBoss?"일식 · 잔상이 깨어납니다":"두 번째 맹세 · 패턴이 강화됩니다",3);
                 g.Burst(g.boss+Vector2.up,2,Palette.Gold,40);
             }
             if(g.spec.echoBoss&&phaseTwo&&!thirdPhase&&g.bossHp<g.spec.hp*.3f)
-            {thirdPhase=true;current=null;rest=2;g.phaseFlash=1;g.Say("마지막 잔상 · 심연의 끝",3);}
+            {thirdPhase=true;current=null;rest=2;g.phaseFlash=1;g.PlaySound("phase_change");g.Say("마지막 잔상 · 심연의 끝",3);}
             if(g.spec.hasPillars)
             {
                 bool behind=(g.player.x-g.boss.x)*g.bossFace< -.3f;
@@ -184,7 +184,7 @@ namespace ReversalTower
                 if(column)
                 {
                     if(g.boss.x<0)pillarLeft=false;else pillarRight=false;
-                    bossStagger=3.2f;current=null;rest=.5f;g.shake=5;g.PlaySound("hit");g.Say("기둥 충돌 · 공격 기회!",2);g.Burst(g.boss+Vector2.up,2,Palette.Gold,30);return;
+                    bossStagger=3.2f;current=null;rest=.5f;g.shake=5;g.PlaySound("pillar_crash");g.Say("기둥 충돌 · 공격 기회!",2);g.Burst(g.boss+Vector2.up,2,Palette.Gold,30);return;
                 }
                 if(!dashHit&&Mathf.Abs(g.player.x-g.boss.x)<1.2f)
                 {dashHit=true;g.PlayerHit(patternDamage,current.parryable,current.id,g.boss.x,g.player.y<2.2f);if(bossStagger>0){current=null;rest=.5f;return;}}
@@ -405,6 +405,7 @@ namespace ReversalTower
         public void BeginPattern(Pattern p)
         {
             current=p;meleeThreatened=false;RememberSelection(p.id);patternAge=0;attackStep=0;dashHit=false;patternSerial++;g.bossFace=g.player.x>=g.boss.x?1:-1;
+            g.PlaySound("tell_"+g.bossIndex+"_"+p.id);   // 예고음: 선딜이 시작되는 순간. 큰 공격일수록 무겁게 (Soundscape 표)
             origin=g.boss;targetX=g.player.x;
             int level=g.Stat(p.id).level;
             float[] telegraph={1.3f,1.15f,1,.9f,.8f},damage={.8f,.9f,1,1.1f,1.2f},cooldown={1.25f,1.12f,1,.9f,.8f};   // 레벨 -2~+2 쿨타임 배율 (예전에 1.12f가 phaseSpeedScale로 잘못 바뀌어 아라쿠스 -1이 1.0이었음)
@@ -574,7 +575,7 @@ namespace ReversalTower
             if(barrier)
             {
                 barrierTime-=dt;if(barrierTime<=0)
-                {barrier=false;g.PlayerHit(25,false,"barrier",g.boss.x);g.flash=.4f;g.Say("결계 폭발 · 다음에는 벽을 먼저 파괴하세요",3);}
+                {barrier=false;g.PlaySound("barrier_blast");g.PlayerHit(25,false,"barrier",g.boss.x);g.flash=.4f;g.Say("결계 폭발 · 다음에는 벽을 먼저 파괴하세요",3);}
             }
             for(int i=g.hazards.Count-1;i>=0;i--)
             {
@@ -586,7 +587,7 @@ namespace ReversalTower
                 if(h.delay>0)continue;
                 if(!h.hit)
                 {
-                    h.hit=true;bool overlaps=Mathf.Abs(g.player.x-h.x)<h.width*.5f+.3f;
+                    h.hit=true;bool overlaps=Mathf.Abs(g.player.x-h.x)<h.width*.5f+.3f;g.PlaySound("erupt_"+g.bossIndex+"_"+h.pattern);
                     g.PlayerHit(h.damage,h.parry,h.pattern,h.x,overlaps,false,h.threatened&&Mathf.Abs(g.player.x-h.threatX)>=.2f);
                     if(overlaps)g.Burst(g.player+Vector2.up,1,h.color,12);
                 }

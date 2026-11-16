@@ -20,3 +20,9 @@ CC0 reference: https://creativecommons.org/publicdomain/zero/1.0/
 The Hero Knight set has no dedicated parry, potion or dash animation. Parry currently holds an attack preparation pose, dash reuses running frames with a trail, and potion uses the idle pose with an effect. These are integration choices for this prototype, not additional animation assets attributed to LuizMelo.
 
 Boss sprites, UI, attack indicators, healing/death/confirmation fallback sounds and the lobby synth ambience remain the prototype's original resources. The DevWizard knight pack was inspected but is not used or distributed here. No claim of final art or full animation coverage is made.
+
+## Boss combat sound effects (added 2026-11-16)
+
+`Audio/sfx_*.wav` (40 files: boss wind-ups, strikes, hazards, phase change, boss death, player hurt, heartbeat) are original to this project. They are synthesized from oscillators, filtered noise and a synthetic reverb by `Tools/sfx/generate_boss_sfx.py`; no recordings or third-party samples are used. Running the script again reproduces the same files. 44.1 kHz mono 16-bit PCM.
+
+Player-hurt now uses `sfx_player_hurt.wav`; StarNinjas `hit.wav` remains the sound of the player's blade landing on a boss.

@@ -11,6 +11,8 @@ public sealed class UnityTutorialBatchProbe:MonoBehaviour
 {
  TowerGame g;readonly StringBuilder log=new StringBuilder();int passed,battleEvents;string output;
  static string Arg(string key){var a=Environment.GetCommandLineArgs();int i=Array.IndexOf(a,key);return i>=0&&i+1<a.Length?a[i+1]:null;}
+ [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+ static void Silence(){if(Array.IndexOf(Environment.GetCommandLineArgs(),"-towerTutorialBatchProbe")>=0)AudioListener.pause=true;}
  [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
  static void Launch(){if(Array.IndexOf(Environment.GetCommandLineArgs(),"-towerTutorialBatchProbe")>=0)new GameObject("Isolated tutorial batch probe").AddComponent<UnityTutorialBatchProbe>();}
  IEnumerator Start()

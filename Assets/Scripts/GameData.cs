@@ -45,7 +45,7 @@ namespace ReversalTower
             =>new Pattern(id,name,kind,w,r,d,range,n,parry);
         public static readonly BossSpec[] Bosses={
             // 아라쿠스: 팀 기획서 4.1~4.3의 시간·거리. 판정 거리는 기획 거리 + 몸 너비 0.9m. 피해는 기준 12 × 기획 계수(임시).
-            new BossSpec("arakus","아라쿠스","첫 번째 문 · 철의 맹세","파랗게 빛나는 공격은 K로 패링. 돌진은 기둥 뒤로 유도하세요.","철왕의 휩쓸기",780,2.1f,
+            new BossSpec("arakus","아라쿠스","첫 번째 문 · 철의 맹세","파랗게 빛나는 공격은 K로 패링. 돌진은 기둥 뒤로 유도하세요.","일대 휩쓸기",780,2.1f,
                 P("cleave","거검 휘두르기",AttackKind.Slash,.85f,.75f,18,2.9f,1,true).When(0,2.9f,6,1.5f),
                 P("shield","방패 내려찍기",AttackKind.Slash,.85f,1.05f,10,1.9f,1,true).When(0,1.9f,0,2),
                 P("kick","발차기",AttackKind.Slash,.8f,.4f,8,1.4f).When(0,1.4f,0,2),
@@ -90,9 +90,12 @@ namespace ReversalTower
         };
     }
     // abandoned: ESC 포기·창 닫기·에디터 정지로 끝난 판. 기록과 골드는 남지만 DDA 학습과 DB 통계에는 쓰지 않는다.
-    [Serializable] public class HistoryEntry {public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda,abandoned;}
+    [Serializable] public class HistoryEntry {public string battleId,snapshotId;public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda,abandoned;}
     [Serializable] public class SaveData
     {
+        public TutorialAssessment tutorialAssessment,tutorialReplayAssessment;
+        public int tutorialOnboardingVersion;
+        public string profileId,cloudPlayerId;
         public int version=2,gold,attackLevel,healthLevel,equippedUltimate=-1,unlockedBoss;
         public List<CardStack> cards=new List<CardStack>();
         public string[] cardOffer=new string[0];

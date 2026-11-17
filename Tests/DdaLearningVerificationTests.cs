@@ -41,7 +41,7 @@ public static class DdaLearningVerificationTests
     {
         var g=new TowerGame{save=new SaveData{unlockedBoss=4,dda=dda}};
         typeof(TowerGame).GetField("sound",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(g,new Soundscape());
-        g.StartBattle(index);return g;
+        g.save.tutorialOnboardingVersion=1;g.StartBattle(index);return g;
     }
     static void Core()
     {

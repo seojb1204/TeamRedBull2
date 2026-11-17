@@ -63,6 +63,7 @@ namespace ReversalTower
 #if !HEADLESS && !DESKTOP_PREVIEW
             if(nativeUI)
             {
+                if(TutorialActive){DrawTutorialGuide();GUI.matrix=Matrix4x4.identity;return;}
                 DdaPanelUI();   // F8 DDA 패널 (DdaPanel.cs). 아래 창들이 그 위에 그려진다
                 if(showHistory)HistoryUI();
                 if(showSettings)SettingsUI();
@@ -83,10 +84,12 @@ namespace ReversalTower
             if(phaseFlash>0&&mode==ScreenMode.Battle)
             {Fill(new Rect(0,325,1600,110),new Color(.025f,.035f,.05f,phaseFlash*.85f));Text(0,352,1600,80,thirdPhase?"마지막 잔상":phaseTwo?"두 번째 맹세":"",40,Palette.Gold,TextAnchor.UpperCenter);}
 #if !HEADLESS && !DESKTOP_PREVIEW
-            DdaPanelUI();
+            if(TutorialActive){DrawTutorialGuide();GUI.matrix=Matrix4x4.identity;return;}
+                DdaPanelUI();
 #endif
             if(paused&&mode==ScreenMode.Battle)PauseUI();
             if(showHistory)HistoryUI();if(showSettings)SettingsUI();if(showHelp)HelpUI();
+            if(TutorialActive)DrawTutorialGuide();
             if(!string.IsNullOrEmpty(SaveStore.LastError))Text(20,875,1560,24,SaveStore.LastError,13,Palette.Red);
             GUI.matrix=Matrix4x4.identity;
         }
@@ -100,7 +103,7 @@ namespace ReversalTower
             Text(93,198,700,125,"역전의 탑",83);
             Text(102,341,590,100,"무너진 맹세를 넘어,\n신의 기술로 신에게 맞서라.",27,Palette.White);
             Text(103,467,545,65,"패턴을 읽고. 검을 받아내고.\n쓰러뜨린 자의 힘을 계승하세요.",18,muted);
-            if(Button(103,577,360,62,save.history.Count>0?"탑으로 돌아가기   →":"탑에 들어가기   →",true)){mode=ScreenMode.Lobby;}
+            if(Button(103,577,360,62,save.history.Count>0?"탑으로 돌아가기   →":"탑에 들어가기   →",true)){StartGame();}
             if(Button(103,655,170,45,"조작 안내"))showHelp=true;
             if(Button(287,655,176,45,"설정"))showSettings=true;
             Text(103,730,530,32,"검과 패링으로 오르는 다섯 개의 문",16,muted);
@@ -186,7 +189,7 @@ namespace ReversalTower
             Fill(new Rect(0,760,1600,140),new Color(.02f,.035f,.05f,.92f));
             Slot(64,"J","검격",0,1);Slot(180,"K","패링",Mathf.Max(0,parryLock),.55f);Slot(296,"Q","돌진 베기",skillQ,6);Slot(412,"W","회전 베기",skillW,10);Slot(528,"E","처형 베기",skillE,15);Slot(644,"F","회복약",potions==0?1:0,1);
             Text(829,777,570,30,save.equippedUltimate<0?"R   반역의 불꽃":"R   "+Catalog.Bosses[save.equippedUltimate].ultimate,19,ult>=100?Palette.Gold:muted);
-            Bar(830,824,405,8,ult/100,Palette.Gold);Text(1248,811,90,40,Mathf.FloorToInt(ult)+"%",18,Palette.Gold);
+            Bar(830,824,405,8,ult/100,Palette.Gold);Text(1248,811,90,40,SwordCharged?"전기 "+Mathf.CeilToInt(sparkTime)+"초":Mathf.FloorToInt(ult)+"%",18,Palette.Gold);
             Text(829,854,700,23,"A D  이동    SPACE  점프    SHIFT  대시    ESC  일시정지",14,muted);
             if(Button(1391,787,143,51,"도움말  F1"))showHelp=true;
         }
@@ -254,6 +257,17 @@ namespace ReversalTower
         }
         // DDA 기록 초기화: 실수로 누르지 않게 4초 안에 한 번 더 눌러야 지운다. 전투 중에는 막는다(진행 중인 판이 지운 기록에 학습되지 않게).
         float ddaResetArmedUntil=-1,ddaResetDoneUntil=-1;
+        bool profileResetConfirm;string restoreConfirmId;
+        float archivedHistoryRefresh=-1;
+        System.Collections.Generic.List<HistoryEntry> archivedHistory;
+        System.Collections.Generic.HashSet<string> validSnapshots=new System.Collections.Generic.HashSet<string>();
+        void ApplyProfile(SaveData replacement,bool reset)
+        {
+            save=replacement;mode=reset?ScreenMode.Title:ScreenMode.Lobby;paused=false;
+            showSettings=showHistory=showHelp=showCards=false;current=null;barrier=false;
+            hazards.Clear();shots.Clear();minions.Clear();impacts.Clear();motes.Clear();
+            archivedHistory=null;profileResetConfirm=false;restoreConfirmId=null;AudioListener.volume=save.masterVolume;
+        }
         void SettingsUI()
         {
             Modal(440,190,720,590,"설정");
@@ -267,22 +281,49 @@ namespace ReversalTower
                 if(armed){save.ResetDdaLearning();SaveStore.Save(save);ddaResetArmedUntil=-1;ddaResetDoneUntil=realClock+3;Say("DDA 기록을 초기화했습니다. 다음 전투는 첫 만남부터 다시 배웁니다.",3);}
                 else ddaResetArmedUntil=realClock+4;
             }
-            Text(480,555,600,130,"바꾼 설정은 다음 전투부터 적용됩니다. DDA 기록 초기화는 적응 난이도 학습만 지우고 골드·카드·전투 기록은 남깁니다. 전투 기록은 인터넷이 연결되면 익명 ID로 팀 서버에도 보내집니다.",16,muted);
+            if(Button(480,551,600,40,"처음부터 다시 시작 (기록 유지)",false,!inBattle&&!SaveStore.ProfileOperationInProgress))profileResetConfirm=!profileResetConfirm;
+            if(profileResetConfirm)
+            {
+                Text(480,594,600,28,"현재 진행은 초기화됩니다. 기록·복원 지점은 유지됩니다.",14,muted);
+                if(Button(480,624,290,34,"취소"))profileResetConfirm=false;
+                if(Button(790,624,290,34,"백업 후 새 프로필 시작",false,!inBattle))
+                {SaveData next;if(SaveStore.TryResetProfile(save,inBattle,out next))ApplyProfile(next,true);else Say(SaveStore.LastError,5);}
+            }
+            else Text(480,598,600,46,"DDA 초기화와 별개입니다. 새 익명 ID로 시작하며 이전 기록은 복원할 수 있습니다.",14,muted);
+            if(!profileResetConfirm&&save.tutorialOnboardingVersion>=1&&Button(480,645,600,34,"튜토리얼 다시 하기",false,!inBattle&&!SaveStore.ProfileOperationInProgress)){showSettings=false;StartTutorial(true);return;}
             if(Button(480,691,600,48,"저장하고 닫기",true)){SaveStore.Save(save);showSettings=false;}
         }
         void HistoryUI()
         {
             Modal(260,110,1080,690,"탑이 기억하는 전투");
-            Text(300,192,1000,35,"최근 30번의 도전",17,muted);
-            historyScroll=GUI.BeginScrollView(new Rect(294,245,1012,450),historyScroll,new Rect(0,0,980,Mathf.Max(430,save.history.Count*66)));
-            if(save.history.Count==0)Text(15,80,940,80,"첫 번째 문을 열면 여기에 남는다.",22,muted,TextAnchor.UpperCenter);
-            for(int i=0;i<save.history.Count;i++)
+            if(archivedHistory==null||realClock>=archivedHistoryRefresh)
             {
-                var h=save.history[i];float y=i*66;Fill(new Rect(0,y,975,57),new Color(.07f,.10f,.14f));var b=Array.Find(Catalog.Bosses,p=>p.id==h.boss);
+                archivedHistory=SaveStore.AllHistory(save);validSnapshots.Clear();
+                foreach(var entry in archivedHistory)if(SaveStore.HasSnapshot(entry.snapshotId))validSnapshots.Add(entry.snapshotId);
+                archivedHistoryRefresh=realClock+2;
+            }
+            var entries=archivedHistory;
+            Text(300,192,1000,35,"보관된 전투 · 복원은 로컬 진행만 변경하며 서버 기록은 유지됩니다",17,muted);
+            historyScroll=GUI.BeginScrollView(new Rect(294,245,1012,450),historyScroll,new Rect(0,0,980,Mathf.Max(430,entries.Count*90)));
+            if(entries.Count==0)Text(15,80,940,80,"첫 번째 문을 열면 여기에 남는다.",22,muted,TextAnchor.UpperCenter);
+            for(int i=0;i<entries.Count;i++)
+            {
+                var h=entries[i];float y=i*90;Fill(new Rect(0,y,975,57),new Color(.07f,.10f,.14f));var b=Array.Find(Catalog.Bosses,p=>p.id==h.boss);
                 Text(16,y+9,205,35,b==null?h.boss:b.name,20,h.clear?Palette.Gold:Palette.White);Text(240,y+12,160,30,h.clear?"★ 넘음":"쓰러짐",16,h.clear?Palette.Teal:muted);
                 Text(420,y+12,470,30,FormatTime(h.seconds)+"   /   패링 "+h.parries+"   /   "+h.gold+" G",16,Palette.White);Text(15,y+37,840,20,h.date,11,muted);   // DDA 적용 여부는 플레이어에게 보이지 않는다 (UI/UX 설계서)
+                bool available=h.snapshotId!=null&&validSnapshots.Contains(h.snapshotId);
+                if(Button(15,y+59,460,27,available?"이 전투 종료 시점으로 복원":"복원 데이터 없음",false,available&&mode!=ScreenMode.Battle))restoreConfirmId=h.snapshotId;
             }
-            GUI.EndScrollView();if(Button(1069,727,230,44,"닫기",true))showHistory=false;
+                // Restore controls are drawn below each summary.
+            GUI.EndScrollView();
+            if(restoreConfirmId!=null)
+            {
+                Text(300,698,740,24,"현재 진행을 백업하고 선택 시점으로 복원합니다. 이후 기록도 유지됩니다.",14,muted);
+                if(Button(300,727,310,40,"백업 후 복원",false,mode!=ScreenMode.Battle))
+                {SaveData next;if(SaveStore.TryRestoreProfile(save,restoreConfirmId,mode==ScreenMode.Battle,out next))ApplyProfile(next,false);else Say(SaveStore.LastError,5);}
+                if(Button(630,727,180,40,"취소"))restoreConfirmId=null;
+            }
+            if(Button(1069,727,230,44,"닫기",true)){showHistory=false;restoreConfirmId=null;}
         }
     }
 }

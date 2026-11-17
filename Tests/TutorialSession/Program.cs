@@ -4,6 +4,16 @@ class Program
 {
  static int passed;
  static void Check(bool value,string name){if(!value)throw new Exception(name);passed++;Console.WriteLine("PASS "+name);}
+ static TutorialAssessment Complete(int parryFails,int dodgeFails,int chargeParries)
+ {
+  var t=new TutorialSession(false);long id=1;for(int i=0;i<6;i++)t.Acknowledge();
+  foreach(var action in new[]{TutorialAction.Q,TutorialAction.W,TutorialAction.E,TutorialAction.Move,TutorialAction.Jump,TutorialAction.Attack,TutorialAction.Dash}){t.Acknowledge();t.Tick(1,false);t.ConfirmAction(action,true);}
+  t.Acknowledge();t.ConfirmAction(TutorialAction.Potion,true,10);t.Acknowledge();t.Acknowledge();
+  for(int i=0;i<parryFails;i++)t.ResolveThreat(id++,true,true,false,true);t.ResolveThreat(id++,true,true,true,false);
+  t.Acknowledge();for(int i=0;i<dodgeFails;i++)t.ResolveThreat(id++,false,true,false,true);t.ResolveThreat(id++,false,true,true,false);
+  t.Acknowledge();for(int i=0;i<chargeParries;i++)t.ResolveThreat(id++,true,true,true,false);
+  t.GaugeChanged(100);t.Acknowledge();t.ConfirmAction(TutorialAction.Ultimate,true);t.ConfirmEmpoweredSwordHit(true,true);return t.Assessment;
+ }
  static void Main()
  {
   var s=new TutorialSession(false);s.Tick(30,false);Check(s.Assessment.activeDurationSeconds==0,"reading excluded");
@@ -33,6 +43,10 @@ class Program
   Check(s.Assessment.group!="expert","single lucky dodge not expert");
   var skipped=new TutorialSession(false);skipped.Skip();Check(skipped.Assessment.skipped&&!skipped.Assessment.valid&&skipped.Assessment.group=="normal","skip invalid neutral");
   var replay=new TutorialSession(true);Check(!replay.Assessment.isFirstAssessment,"replay separate");
+  var expert=Complete(0,0,2);Check(expert.group=="expert"&&expert.parrySuccesses==3,"three actual parries plus one dodge can reach expert without forced repeat");
+  Check(expert.confidence<=.75f,"single dodge keeps expert confidence limited");
+  var ordinary=Complete(0,0,0);Check(ordinary.group=="normal"&&ordinary.confidence<.5f,"single lucky parry remains low confidence normal");
+  Check(Complete(8,8,0).group=="novice","repeated observed failure can reach novice");
   Console.WriteLine(passed+" PASS, 0 FAIL");
  }
 }

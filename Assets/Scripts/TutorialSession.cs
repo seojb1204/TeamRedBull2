@@ -18,7 +18,8 @@ namespace ReversalTower
     {
         public float parryWeight=.35f,dodgeWeight=.35f,controlsWeight=.2f,speedWeight=.1f;
         public float noviceBelow=.40f,expertAt=.85f,referenceActiveSeconds=120;
-        public int minimumExpertParryOpportunities=3,minimumExpertDodgeOpportunities=3;
+        public int minimumExpertParryOpportunities=3,minimumExpertDodgeOpportunities=1,minimumExpertParrySuccesses=3;
+        public int confidenceDodgeOpportunities=3;
     }
     public enum TutorialStep { Introduction,PlayerHp,EnemyHp,Skills,UltimateGauge,Telegraphs,Q,W,E,Move,Jump,Attack,Dash,Potion,UltimateExplanation,Parry,Dodge,Charge,Ultimate,Complete }
     public enum TutorialAction { Q,W,E,Move,Jump,Attack,Dash,Potion,Ultimate }
@@ -120,8 +121,13 @@ namespace ReversalTower
             float total=rules.parryWeight+rules.dodgeWeight+rules.controlsWeight+rules.speedWeight;
             Assessment.score=total>0?(p*rules.parryWeight+d*rules.dodgeWeight+c*rules.controlsWeight+speed*rules.speedWeight)/total:0;
             bool evidence=Assessment.parryAttempts>=rules.minimumExpertParryOpportunities&&Assessment.dodgeAttempts>=rules.minimumExpertDodgeOpportunities;
-            Assessment.confidence=Math.Min(1,Math.Min(Assessment.parryAttempts/(float)Math.Max(1,rules.minimumExpertParryOpportunities),Assessment.dodgeAttempts/(float)Math.Max(1,rules.minimumExpertDodgeOpportunities)));
-            Assessment.group=!evidence?"normal":Assessment.score<rules.noviceBelow?"novice":Assessment.score>=rules.expertAt?"expert":"normal";
+            bool expertEvidence=evidence&&Assessment.parrySuccesses>=rules.minimumExpertParrySuccesses&&Assessment.dodgeSuccesses>=1;
+            float parryEvidence=Math.Min(1,Assessment.parryAttempts/(float)Math.Max(1,rules.minimumExpertParryOpportunities));
+            float dodgeEvidence=Math.Min(1,Assessment.dodgeAttempts/(float)Math.Max(1,rules.confidenceDodgeOpportunities));
+            Assessment.confidence=Math.Min(1,.35f*parryEvidence+.35f*dodgeEvidence+.2f*Math.Min(1,Assessment.skillActionsCompleted/9f)+.1f);
+            if(!evidence)Assessment.confidence=Math.Min(.49f,Assessment.confidence);
+            else if(Assessment.dodgeAttempts<rules.confidenceDodgeOpportunities)Assessment.confidence=Math.Min(.75f,Assessment.confidence);
+            Assessment.group=!evidence?"normal":Assessment.score<rules.noviceBelow?"novice":expertEvidence&&Assessment.score>=rules.expertAt?"expert":"normal";
         }
     }
 }

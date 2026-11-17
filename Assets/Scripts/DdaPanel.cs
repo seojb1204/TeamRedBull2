@@ -12,9 +12,7 @@ namespace ReversalTower
     {
         const string DdaPanelPref = "DdaPanelVisible";
         bool ddaPanelLoaded, showDdaPanel;
-        HistoryEntry ddaPreviewFor;
-        BossLearning ddaPreviewLearning;
-        bool ddaPreviewEnabled;
+        readonly DdaPreviewStamp ddaPreviewStamp=new DdaPreviewStamp();
         readonly Dictionary<string,int> ddaNextLevel = new Dictionary<string,int>();
         readonly Dictionary<string,string> ddaNextReason = new Dictionary<string,string>();
 
@@ -41,11 +39,9 @@ namespace ReversalTower
         // 결과 화면에서 한 번만 계산한다 (DdaBattleSession.Decide는 학습하지 않으므로 저장 데이터가 바뀌지 않음)
         void RefreshDdaPreview()
         {
-            ddaPreviewFor = result;
             ddaNextLevel.Clear();
             ddaNextReason.Clear();
             bool enabled = save.dda && !AutoRunArgs.DisableDda;
-            ddaPreviewEnabled = enabled;
             foreach (Pattern p in spec.patterns)
             {
                 double[] context;
@@ -53,7 +49,7 @@ namespace ReversalTower
                 ddaNextLevel[p.id] = DdaBattleSession.Decide(save, spec, p, enabled, out context, out reason);
                 ddaNextReason[p.id] = reason;
             }
-            ddaPreviewLearning = save.learning.Find(b => b.id == spec.id);
+            ddaPreviewStamp.Capture(result,save.learning.Find(b => b.id == spec.id),enabled,CommunityStats.Revision);
         }
 
         void DdaPanelUI()
@@ -67,8 +63,8 @@ namespace ReversalTower
             }
             bool full = mode == ScreenMode.Result;
             // Settings can reset learning or toggle DDA while the same result stays open.
-            if (full && (result != ddaPreviewFor || ddaPreviewEnabled != (save.dda && !AutoRunArgs.DisableDda) ||
-                !object.ReferenceEquals(ddaPreviewLearning, save.learning.Find(b => b.id == spec.id)))) RefreshDdaPreview();
+            if (full && !ddaPreviewStamp.Matches(result,save.learning.Find(b => b.id == spec.id),
+                save.dda&&!AutoRunArgs.DisableDda,CommunityStats.Revision)) RefreshDdaPreview();
 
             BossLearning learning = save.learning.Find(b => b.id == spec.id);
             // 무작위로 나오지 않는 연출 패턴(아라쿠스 퀵스텝·분노)은 이번 판에 기회가 있었을 때만 보여 준다
@@ -79,10 +75,10 @@ namespace ReversalTower
                 if (p.minPhase >= 0 || (s != null && s.opportunities > 0)) rows.Add(p);
             }
 
-            const float Pad = 16, Row = 28, NameW = 240, LevelW = 56, NowW = 74, MemoryW = 74, NextW = 96, ReasonW = 330;
+            const float Pad = 16, Row = 52, NameW = 240, LevelW = 56, NowW = 74, MemoryW = 74, NextW = 96, ReasonW = 330;
             bool abandonedLine = full && result != null && result.abandoned;
             float w = Pad * 2 + NameW + LevelW + NowW + MemoryW + (full ? NextW + ReasonW : 0);
-            float header = 86 + (abandonedLine ? 20 : 0);
+            float header = 148 + (abandonedLine ? 20 : 0);
             int lastDecision=0;foreach(var e in BossPatterns.SelectionLog)lastDecision=System.Math.Max(lastDecision,e.decision);
             var frequency=new List<PatternSelectionEvidence>();foreach(var e in BossPatterns.SelectionLog)if(e.decision==lastDecision)frequency.Add(e);
             float frequencyHeight=136+frequency.Count*90;
@@ -105,6 +101,9 @@ namespace ReversalTower
             cy += 20;
             Text(cx, cy, inner, 20, "DB: " + CommunityStats.Status + "   ·   목표 성공률 60~80%", 13, muted);
             cy += 22;
+            Text(cx,cy,inner,20,"현재 수신: "+CommunityStats.ReceiveSummary,11,muted);cy+=20;
+            Text(cx,cy,inner,20,"이번 배정 시점 r"+dda.CommunityRevisionAtPrepare+": "+dda.CommunitySnapshotAtPrepare,11,muted);cy+=20;
+            Text(cx,cy,inner,20,"늦은 수신은 이번 배정을 유지하며 다음 전투 예측만 갱신합니다.",11,muted);cy+=22;
             if (abandonedLine)
             {
                 Text(cx, cy, inner, 20, "포기한 판이라 DDA가 학습하지 않았습니다 (기록과 골드만 남음)", 13, Palette.Red);
@@ -131,7 +130,9 @@ namespace ReversalTower
                 PatternStats s = Stat(p.id);
                 PatternMemory m = learning == null ? null : learning.patterns.Find(q => q.id == p.id);
                 int level = s == null ? 0 : s.level;
-                Text(cx, cy, NameW, Row, p.name, 20, Palette.White);
+                Text(cx, cy, NameW, 28, p.name, 20, Palette.White);
+                string source;dda.Sources.TryGetValue(p.id,out source);
+                Text(cx,cy+29,NameW,21,source??"배정 근거 없음",10,muted);
                 Text(c1, cy, LevelW, Row, Level(level), 20, LevelColor(level));
                 if (s == null || s.opportunities == 0) Text(c2, cy, NowW, Row, "-", 20, muted);
                 else Text(c2, cy, NowW, Row, (s.parries + s.dodges) + "/" + s.opportunities, 20, SuccessColor(s.Success));

@@ -20,6 +20,12 @@ Git ancestry로 `aed9811` 통합 후보와 과거 PR #13~#19의 문서상 HEAD �
 Git read는 성공했다. `gh api user`, pulls/33, pulls/35는 `Forbidden`이었다.
 인증 계정·필수 리뷰·브랜치 보호·병합 권한은 미확인이다. Git의 branch push와 API 접근은 별개이며 main에 쓰기로 권한을 시험하지 않는다.
 
+테스트 변경 커밋 `c21e182`와 작업 브랜치의 원격 push는 성공했다.
+`gh pr create --draft --base main --head test/dda-simulator-coldstart-20261117`는 GraphQL `Forbidden`으로 실패했다.
+PR 번호는 생성 확인되지 않았으며 main 병합을 하지 않았다.
+수동 검토용 비교: https://github.com/seojb1204/TeamRedBull2/compare/main...test/dda-simulator-coldstart-20261117
+PR 본문은 현재 작업 환경의 `/tmp/dda-system-audit-pr.md`에 준비돼 있다. API 접근이 복구되면 Draft로만 생성한다.
+
 ## 현재 실제 연결
 
 `StartBattle → Catalog 또는 BossDefinition.CreateRuntime → DdaBattleSession.Prepare → stats.level`

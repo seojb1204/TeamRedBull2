@@ -1,0 +1,211 @@
+{
+  "source": "third real run; frozen detector; assistant visual labels before output",
+  "label": "visible boss blue outline, NOT valid parry timing",
+  "n": 24,
+  "excluded_duplicates": 0,
+  "tp": 5,
+  "tn": 19,
+  "fp": 0,
+  "fn": 0,
+  "old_fp": 19,
+  "rows": [
+    {
+      "frame": 0,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 3,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 6,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 9,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 12,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 15,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 18,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 21,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 24,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 27,
+      "label": true,
+      "old": true,
+      "new": true,
+      "pixels": 914,
+      "duplicate": false
+    },
+    {
+      "frame": 30,
+      "label": true,
+      "old": true,
+      "new": true,
+      "pixels": 880,
+      "duplicate": false
+    },
+    {
+      "frame": 33,
+      "label": true,
+      "old": true,
+      "new": true,
+      "pixels": 857,
+      "duplicate": false
+    },
+    {
+      "frame": 36,
+      "label": true,
+      "old": true,
+      "new": true,
+      "pixels": 1198,
+      "duplicate": false
+    },
+    {
+      "frame": 39,
+      "label": true,
+      "old": true,
+      "new": true,
+      "pixels": 521,
+      "duplicate": false
+    },
+    {
+      "frame": 42,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 45,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 48,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "duplicate": false
+    },
+    {
+      "frame": 51,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "duplicate": false
+    },
+    {
+      "frame": 54,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 57,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 60,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 9,
+      "duplicate": false
+    },
+    {
+      "frame": 63,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "duplicate": false
+    },
+    {
+      "frame": 66,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "duplicate": false
+    },
+    {
+      "frame": 69,
+      "label": false,
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "duplicate": false
+    }
+  ],
+  "limitations": [
+    "small same-scene sample",
+    "no controlled seed",
+    "no isolated blue projectile negative sample",
+    "player hit flashes cooccur with positive blue boss at33,39"
+  ]
+}

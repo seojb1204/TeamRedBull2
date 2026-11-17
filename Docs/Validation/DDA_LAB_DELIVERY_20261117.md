@@ -143,3 +143,13 @@ lobby 유지, boss 변경 전 fade/이전 clip 정리, phase2 볼륨, ESC Pause/
 TowerGame/BossPatternSystem·씬·Prefab·아트·Soundscape 제품 코드는 이번에 변경하지 않았다.
 원격의 미공개 작업/담당자별 브랜치까지 확인한 것은 아니므로 리뷰 시 위 세 제품 파일의 최신 팀원 변경을 재확인해야 한다.
 main 직접 push·병합, 환경 게시, 실제 DB 쓰기/스키마 변경은 하지 않았다.
+
+## 원격 전달 상태
+
+`feat/dda-lab-diagnostics-20261117` Push에 성공했다. 기능/진단/오디오/문서를 목적별 커밋으로 구분했다.
+`gh pr create --draft`는 `Post https://api.github.com/graphql: Forbidden`으로 실패했다.
+PR 번호는 생성 확인되지 않았으며, API 권한이나 main 병합 권한을 추정하지 않았다.
+
+- 비교: https://github.com/seojb1204/TeamRedBull2/compare/main...feat/dda-lab-diagnostics-20261117
+- 준비한 Draft 본문: [DDA_LAB_DRAFT_PR.md](DDA_LAB_DRAFT_PR.md)
+- 최종 확인한 원격 main은 여전히 `83d9085`이며 세 worktree 모두 미커밋 변경이 없다.

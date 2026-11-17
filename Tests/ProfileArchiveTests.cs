@@ -12,6 +12,15 @@ class ProfileArchiveTests
   string root=Path.Combine(Path.GetTempPath(),"tower-profile-"+Guid.NewGuid());SaveStore.UseIsolatedRoot(root);
   try
   {
+   var historical=new SaveData();var oldest=new HistoryEntry{boss="legacy",date="old"};historical.history.Add(oldest);
+   var ledger=new RewardLedger();HistoryEntry settled;bool first;
+   for(int i=0;i<35;i++){ledger.Reset();ledger.TrySettle(historical,Catalog.Bosses[0],0,false,780,1,0,0,false,out settled,out first);}
+   Check(historical.history.Count==36&&historical.history.Contains(oldest),"more than thirty battles retain legacy history");
+   SaveStore.UseIsolatedRoot(Path.Combine(root,"large-history"));var large=new SaveData();
+   for(int i=0;i<2000;i++)large.history.Add(new HistoryEntry{battleId=Guid.NewGuid().ToString(),boss="arakus",date="2026-11-17",seconds=i});
+   Check(SaveStore.Save(large),"two thousand summaries save without pruning");
+   Check(SaveStore.Load().history.Count==2000,"two thousand summaries reload intact");
+   SaveStore.UseIsolatedRoot(root);
    var a=SaveStore.Load();var boot=SaveStore.Load();Check(a.cloudPlayerId==boot.cloudPlayerId,"boot components share fresh identity");
    string other=Guid.NewGuid().ToString();
    string payload="{\"player_id\":\""+a.cloudPlayerId+"\"}";

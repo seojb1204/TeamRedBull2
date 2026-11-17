@@ -142,7 +142,7 @@ namespace ReversalTower
             save.cardChosen=false;
             save.cardOffer=new string[0];
             save.history.Insert(0,result);
-            if (save.history.Count>30) save.history.RemoveAt(30);
+            // Keep legacy and abandoned summaries too; reset/restore must never silently prune history.
             if (clear)
             {
                 save.cleared[index]=true;

@@ -1,0 +1,219 @@
+{
+  "evaluation": "separate run, all-negative sampled frames; not unseen-seed proof",
+  "n": 23,
+  "positives": 0,
+  "old_false_positives": 23,
+  "new_false_positives": 0,
+  "exact_duplicates": 1,
+  "recall": "unmeasured (no positives)",
+  "rows": [
+    {
+      "frame": 0,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 6,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 9,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 12,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 15,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 18,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 21,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 24,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 27,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 30,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 6,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 33,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 36,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 39,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 5,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 42,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 1,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 45,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 48,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 51,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 54,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 57,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 60,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 63,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 66,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 3,
+      "exact_calibration_duplicate": false
+    },
+    {
+      "frame": 69,
+      "visible_rim_label": false,
+      "label_source": "assistant visual review before detector output; no attack-timing assertion",
+      "old": true,
+      "new": false,
+      "pixels": 2,
+      "exact_calibration_duplicate": false
+    }
+  ],
+  "exact_duplicates_excluded": 1
+}

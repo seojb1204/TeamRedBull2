@@ -20,5 +20,5 @@ namespace ReversalTower{
  public class SaveData{public int cardPurchases;}
  public static class SaveStore{public static event Action<HistoryEntry,List<PatternStats>,SaveData> BattleLogged;}
  public static class LobbyCards{public class Card{public string id;}public static Card[] All=Array.Empty<Card>();public static int Count(SaveData s,string id)=>0;public static float Attack(SaveData s)=>0;public static float Health(SaveData s)=>0;public static float Heal(SaveData s)=>0;public static event Action<string,int,int> Purchased;}
- public static class CommunityStats{public class Entry{public string boss,pattern;public int opportunities,players,suggestedLevel;public float successRate,parryRate,hitRate;}public static int Count;public static string Status;public static void Replace(IEnumerable<Entry> e){Count=0;foreach(var x in e)Count++;}}
+ public static class CommunityStats{public class Entry{public string boss,pattern;public int opportunities,players,suggestedLevel;public float successRate,parryRate,hitRate;}public static List<Entry> Entries=new();public static int Count;public static string Status;public static void Replace(IEnumerable<Entry> e){Entries=new List<Entry>(e);Count=Entries.Count;}}
 }

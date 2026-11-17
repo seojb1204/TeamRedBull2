@@ -13,6 +13,13 @@ PlayerPrefs.SetInt("CloudPlayerRegistered",0);Run();Check(CommunityStats.Status.
 UnityWebRequest.Next=UnityWebRequest.Result.Success;UnityWebRequest.Body="not-json";Run();Check(CommunityStats.Status.Contains("수신 실패"),"malformed JSON not success");Check(CommunityStats.Count==1,"malformed JSON preserves cache");
 UnityWebRequest.Body="null";Run();Check(CommunityStats.Status.Contains("수신 실패"),"null array not success");
 UnityWebRequest.Body="[]";Run();Check(CommunityStats.Status.Contains("동기화됨")&&CommunityStats.Count==0,"recovery and valid empty clear cache");Check(!(bool)t.GetField("sending",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(c),"sending resets after responses");
+UnityWebRequest.Body="[{\"boss\":\"arakus\",\"pattern\":\"cleave\",\"opportunities\":20,\"players\":12,\"success_rate\":0.95,\"parry_rate\":0.5,\"hit_rate\":0.05,\"suggested_level\":1}]";
+bool fetched=false;var receive=(IEnumerator)t.GetMethod("FetchDifficulty",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(c,new object[]{new Action<bool>(ok=>fetched=ok)});
+Check(receive.MoveNext()&&CommunityStats.Count==0&&!fetched,"suspended receive does not publish before resume");
+Drain(receive);var entry=CommunityStats.Entries[0];
+Check(fetched&&entry.boss=="arakus"&&entry.pattern=="cleave"&&entry.opportunities==20&&entry.players==12&&entry.suggestedLevel==1&&Math.Abs(entry.successRate-.95f)<.00001f&&Math.Abs(entry.parryRate-.5f)<.00001f&&Math.Abs(entry.hitRate-.05f)<.00001f,"actual receive maps all cold-start fields to community double");
+UnityWebRequest.Next=UnityWebRequest.Result.ConnectionError;Run();Check(ReferenceEquals(entry,CommunityStats.Entries[0]),"failed refresh retains previous entry values");
+UnityWebRequest.Next=UnityWebRequest.Result.Success;UnityWebRequest.Body="[]";Run();Check(CommunityStats.Count==0,"explicit retry after failure can recover");
 AutoRunArgs.IsAutomationProcess=true;t.GetMethod("Awake",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(new CloudSync(),null);Check(CommunityStats.Status.Contains("네트워크 꺼짐"),"automation never connects");
 Console.WriteLine("CLOUD_STATUS_PASS "+n+" actual CloudSync.cs, stubbed HTTP, no network or production data");}finally{Directory.Delete(root,true);}}
 }

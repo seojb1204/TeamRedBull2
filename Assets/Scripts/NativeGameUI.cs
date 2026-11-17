@@ -325,7 +325,7 @@ namespace ReversalTower
             titlePage.SetActive(mode==ScreenMode.Title);lobbyPage.SetActive(mode==ScreenMode.Lobby&&!cardsVisible);
             battlePage.SetActive(mode==ScreenMode.Battle);resultPage.SetActive(mode==ScreenMode.Result);
             endingPage.SetActive(mode==ScreenMode.Ending);cardsPage.SetActive(cardsVisible);
-            pausePage.SetActive(mode==ScreenMode.Battle&&game.paused);
+            pausePage.SetActive(mode==ScreenMode.Battle&&game.paused&&!game.TutorialActive);
             float fade=UiKit.EaseOut(pageClock/.2f);   // 화면이 바뀔 때 0.2초 동안 스며듦
             titleGroup.alpha=lobbyGroup.alpha=battleGroup.alpha=resultGroup.alpha=endingGroup.alpha=fade;
             inputGroup.interactable=!(game.showHelp||game.showSettings||game.showHistory);
@@ -649,9 +649,9 @@ namespace ReversalTower
         }
         public void CloseCards(){if(CardOutroBlocksInput)return;game.showCards=false;ApplyLobbyInputState();}
         public void Retry(){game.StartBattle(game.bossIndex);}
-        public void OpenSettings(){if(!BlocksLobbyInput)game.showSettings=true;}
-        public void OpenHelp(){if(!BlocksLobbyInput)game.showHelp=true;}
-        public void OpenHistory(){if(!BlocksLobbyInput)game.showHistory=true;}
+        public void OpenSettings(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showSettings=true;}
+        public void OpenHelp(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showHelp=true;}
+        public void OpenHistory(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showHistory=true;}
         public void Resume(){game.paused=false;}
         public void Abandon(){game.Abandon();}
         public void ShowEnding(){game.mode=ScreenMode.Ending;}

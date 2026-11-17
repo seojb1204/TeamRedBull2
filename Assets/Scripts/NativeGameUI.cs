@@ -681,6 +681,7 @@ namespace ReversalTower
         static Color Alpha(Color c,float a){c.a=a;return c;}
         static void Set(Text t,string s){if(t&&t.text!=s)t.text=s;}
         static void Tint(Text t,Color c){if(t&&t.color!=c)t.color=c;}
+        static void Tint(Image image,Color c){if(image&&image.color!=c)image.color=c;}
         static void Swap(Image image,Sprite sprite){if(image&&image.sprite!=sprite)image.sprite=sprite;}
     }
 }

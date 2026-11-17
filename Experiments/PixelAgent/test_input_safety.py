@@ -6,6 +6,29 @@ class SafetyTests(unittest.TestCase):
     def setUp(self):
         self.g=InputSafetyGate(pid=7,process_started_at=1,hwnd=11,width=960,height=540,user_input_sequence=3)
         self.s=Snapshot(now=10,observation_at=9.9,process_scan_at=9.5,pid=7,process_started_at=1,hwnd=11,foreground_hwnd=11,window_pid=7,process_alive=True,scan_complete=True,conflict_found=False,gpu_known_safe=True,user_input_sequence=3,width=960,height=540)
+    def test_constructor_rejects_coerced_identity(self):
+        base=dict(pid=7,process_started_at=1,hwnd=11,width=960,height=540,user_input_sequence=3)
+        for key in ('pid','hwnd','width','height','user_input_sequence'):
+            for value in (True,False,1.0,'7',None,-1):
+                with self.subTest(key=key,value=value), self.assertRaises(ValueError):
+                    InputSafetyGate(**{**base,key:value})
+        for key in ('process_started_at','observation_max_age','scan_max_age'):
+            for value in (True,None,'1',float('nan'),float('inf')):
+                with self.subTest(key=key,value=value), self.assertRaises(ValueError):
+                    InputSafetyGate(**{**base,key:value})
+    def test_malformed_snapshot_latches_and_releases_owned(self):
+        for key in ('pid','hwnd','window_pid','foreground_hwnd','width','height','user_input_sequence','now','observation_at','process_scan_at','process_started_at'):
+            for value in (True,None,'1'):
+                with self.subTest(key=key,value=value):
+                    self.setUp();self.g.decide(self.s,['k']);self.g.commit(['k'])
+                    d=self.g.decide(replace(self.s,**{key:value}),['j'])
+                    self.assertFalse(d.allowed);self.assertEqual(d.release_owned,{'k'})
+                    self.assertFalse(self.g.decide(self.s,['j']).allowed)
+    def test_equal_numeric_identity_with_wrong_type_rejected(self):
+        for key in ('pid','hwnd','window_pid','foreground_hwnd','width','height','user_input_sequence'):
+            self.setUp()
+            self.assertFalse(self.g.decide(replace(self.s,**{key:float(getattr(self.s,key))}),['j']).allowed)
+
     def test_allowed_diff(self):
         self.assertEqual(self.g.decide(self.s,['j','left']).press,{'j','left'})
         self.g.commit(['j','left'])

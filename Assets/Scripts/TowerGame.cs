@@ -20,9 +20,9 @@ namespace ReversalTower
         public readonly List<Shot> shots=new List<Shot>();
         public readonly List<Minion> minions=new List<Minion>();
         public readonly List<Mote> motes=new List<Mote>();
-        // ── 타격감 ── 숫자를 바꿔 세기를 조절한다.
-        // hitStop: 이 시간 동안 전투가 멈춘다(역경직). slowMo: 이 시간 동안 SlowMoScale 배속.
-        // zoomPunch: 카메라가 zoomFocus 쪽으로 잠깐 다가감. whiteFlash: 화면 하얀 번쩍임. bossRecoil: 보스 그림을 밀어 보이는 거리(보기용).
+        // ���� Ÿ�ݰ� ���� ���ڸ� �ٲ� ���⸦ �����Ѵ�.
+        // hitStop: �� �ð� ���� ������ �����(������). slowMo: �� �ð� ���� SlowMoScale ���.
+        // zoomPunch: ī�޶� zoomFocus ������ ��� �ٰ���. whiteFlash: ȭ�� �Ͼ� ��½��. bossRecoil: ���� �׸��� �о� ���̴� �Ÿ�(�����).
         public const float HitStopLight=.05f,HitStopParry=.14f,HitStopHurt=.06f,SlowMoScale=.3f,ParrySlowMo=.3f,ShakeScale=.045f;
         public float hitStop,slowMo,zoomPunch,whiteFlash,bossRecoil;public Vector2 zoomFocus;
         public readonly List<Impact> impacts=new List<Impact>();
@@ -31,7 +31,7 @@ namespace ReversalTower
         public void AddImpact(Vector2 pos,int kind,float size,float angle){impacts.Add(new Impact{pos=pos,kind=kind,size=size,angle=angle,life=kind==2?.42f:kind==1?.24f:.17f});if(impacts.Count>24)impacts.RemoveAt(0);}
         public HistoryEntry result;public bool wasFirstClear;public float realClock;
         float comboGap;int combo;bool skillFired,ended;float dodgeBuffer,coyote;
-        bool abandoning;   // Abandon()·OnApplicationQuit()이 EndBattle 직전에 켠다 (끝까지 싸우지 않은 판 표시)
+        bool abandoning;   // Abandon()��OnApplicationQuit()�� EndBattle ������ �Ҵ� (������ �ο��� ���� �� ǥ��)
         readonly DdaBattleSession dda=new DdaBattleSession();
         readonly RewardLedger rewards=new RewardLedger();
         public List<PatternStats> stats => dda.Stats;
@@ -56,13 +56,13 @@ namespace ReversalTower
         static void Bootstrap(){if(FindAnyObjectByType<TowerGame>()==null)new GameObject("Reversal Tower").AddComponent<TowerGame>();}
         void Awake()
         {
-            // 저장을 읽기 전에 파싱해야 테스트 데이터 격리가 의미를 가진다.
+            // ������ �б� ���� �Ľ��ؾ� �׽�Ʈ ������ �ݸ��� �ǹ̸� ������.
             AutoRunArgs.Parse();
-            // vSync 가 켜져 있으면 Unity 는 targetFrameRate 를 무시한다. 둘을 같이 지정하면
-            // 의도가 모호해지므로 기본은 vSync 에 맡기고, 측정할 때만 고정 프레임을 쓴다.
+            // vSync �� ���� ������ Unity �� targetFrameRate �� �����Ѵ�. ���� ���� �����ϸ�
+            // �ǵ��� ��ȣ�����Ƿ� �⺻�� vSync �� �ñ��, ������ ���� ���� �������� ����.
             if(AutoRunArgs.ForcedFrameRate>0){QualitySettings.vSyncCount=0;Application.targetFrameRate=AutoRunArgs.ForcedFrameRate;}
             else{QualitySettings.vSyncCount=1;Application.targetFrameRate=-1;}
-            save=SaveStore.Load();AudioListener.volume=save.masterVolume;
+            save=SaveStore.Load();AudioListener.volume=AutoRunArgs.ExternalInput?0:save.masterVolume;
 #if !HEADLESS && !DESKTOP_PREVIEW
             if(!scenePresentation)scenePresentation=FindAnyObjectByType<ScenePresentation>();
             if(!nativeUI)nativeUI=FindAnyObjectByType<NativeGameUI>();
@@ -103,20 +103,20 @@ namespace ReversalTower
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if(!AutoRunArgs.Active)DevKeys();
 #endif
-            if(!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
+            if(!AutoRunArgs.Active||AutoRunArgs.ExternalInput)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
                 Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
-            // 역경직 동안에는 전투 시간을 0으로 흘린다 (입력은 계속 읽어서 그 사이 누른 키를 놓치지 않음)
+            // ������ ���ȿ��� ���� �ð��� 0���� �기�� (�Է��� ��� �о �� ���� ���� Ű�� ��ġ�� ����)
             float battleDt=raw;bool fighting=mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;
             if(fighting){if(hitStop>0){hitStop=Mathf.Max(0,hitStop-raw);battleDt=0;}else if(slowMo>0){slowMo=Mathf.Max(0,slowMo-raw);battleDt=raw*SlowMoScale;}}
             if(fighting)TickBattle(battleDt);
-            float fx=fighting?battleDt:raw;   // 불꽃·파편도 같이 멈췄다가 움직인다
+            float fx=fighting?battleDt:raw;   // �Ҳɡ������� ���� ����ٰ� �����δ�
             zoomPunch=Mathf.MoveTowards(zoomPunch,0,raw*3.5f);whiteFlash=Mathf.Max(0,whiteFlash-raw*5);bossRecoil=Mathf.MoveTowards(bossRecoil,0,fx*3.5f);
             for(int i=impacts.Count-1;i>=0;i--){impacts[i].age+=fx;if(impacts[i].age>=impacts[i].life)impacts.RemoveAt(i);}
             for(int i=motes.Count-1;i>=0;i--){var m=motes[i];m.life-=fx;m.pos+=m.velocity*fx;m.velocity+=Vector2.down*fx*3;if(m.life<=0)motes.RemoveAt(i);}
             sound.SetBoss(bossIndex);
             sound.SetPaused(mode==ScreenMode.Battle&&(paused||showHelp||showSettings));
             sound.tension=mode==ScreenMode.Battle?(phaseTwo?.95f:.65f):.08f;
-            // 빈사 심장 박동: 체력 35% 아래에서 시작, 0에 가까울수록 1.
+            // ��� ���� �ڵ�: ü�� 35% �Ʒ����� ����, 0�� �������� 1.
             float hpRatio=maxHp>0?playerHp/maxHp:1;
             sound.danger=mode==ScreenMode.Battle&&!ended&&hpRatio<.35f?Mathf.Clamp01(.35f+.65f*(1-hpRatio/.35f)):0;
             if(!captureDone&&!string.IsNullOrEmpty(capturePath)&&realClock>5){ScreenCapture.CaptureScreenshot(capturePath);captureDone=true;}
@@ -128,7 +128,7 @@ namespace ReversalTower
         void LateUpdate()
         {
             float aspect=(float)Screen.width/Mathf.Max(1,Screen.height);cam.orthographicSize=Mathf.Max(8.2f,14.3f/aspect)-zoomPunch;
-            float zx=zoomFocus.x*zoomPunch*.12f,zy=(zoomFocus.y-5)*zoomPunch*.12f;   // 부딪힌 곳 쪽으로 살짝
+            float zx=zoomFocus.x*zoomPunch*.12f,zy=(zoomFocus.y-5)*zoomPunch*.12f;   // �ε��� �� ������ ��¦
             cam.transform.position=new Vector3(zx+Mathf.Sin(realClock*93)*shake*ShakeScale,5+zy+Mathf.Cos(realClock*87)*shake*ShakeScale*.8f,-20);
             artist.Render();
 #if !HEADLESS && !DESKTOP_PREVIEW
@@ -136,25 +136,25 @@ namespace ReversalTower
             if(nativeUI)nativeUI.Refresh();
 #endif
         }
-        void Capture(){string path=System.IO.Path.Combine(SaveStore.Root,"Screenshot_"+DateTime.Now.ToString("yyyyMMdd_HHmmss")+".png");ScreenCapture.CaptureScreenshot(path);Say("스크린샷을 저장했습니다",2);}
+        void Capture(){string path=System.IO.Path.Combine(SaveStore.Root,"Screenshot_"+DateTime.Now.ToString("yyyyMMdd_HHmmss")+".png");ScreenCapture.CaptureScreenshot(path);Say("��ũ������ �����߽��ϴ�",2);}
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        // 개발용 단축키 (에디터·개발 빌드에서만): 발표 시연과 패턴 확인용
-        // F2 무적  F3 보스 HP 59%(2페이즈)  F4 보스 HP 29%(분노)  F5/F6 이전/다음 패턴 바로 실행  F7 패링 성공 연출 미리보기
+        // ���߿� ����Ű (�����͡����� ���忡����): ��ǥ �ÿ��� ���� Ȯ�ο�
+        // F2 ����  F3 ���� HP 59%(2������)  F4 ���� HP 29%(�г�)  F5/F6 ����/���� ���� �ٷ� ����  F7 �и� ���� ���� �̸�����
         bool devGod;int devPattern=-1;
         void DevKeys()
         {
             if(mode!=ScreenMode.Battle||spec==null)return;
-            if(Input.GetKeyDown(KeyCode.F2)){devGod=!devGod;Say(devGod?"[DEV] 무적 켜짐":"[DEV] 무적 꺼짐",1.5f);}
-            if(Input.GetKeyDown(KeyCode.F3)){bossHp=Mathf.Min(bossHp,spec.hp*.59f);Say("[DEV] 보스 HP 59%",1.5f);}
-            if(Input.GetKeyDown(KeyCode.F4)){bossHp=Mathf.Min(bossHp,spec.hp*.29f);Say("[DEV] 보스 HP 29%",1.5f);}
+            if(Input.GetKeyDown(KeyCode.F2)){devGod=!devGod;Say(devGod?"[DEV] ���� ����":"[DEV] ���� ����",1.5f);}
+            if(Input.GetKeyDown(KeyCode.F3)){bossHp=Mathf.Min(bossHp,spec.hp*.59f);Say("[DEV] ���� HP 59%",1.5f);}
+            if(Input.GetKeyDown(KeyCode.F4)){bossHp=Mathf.Min(bossHp,spec.hp*.29f);Say("[DEV] ���� HP 29%",1.5f);}
             int step=Input.GetKeyDown(KeyCode.F6)?1:Input.GetKeyDown(KeyCode.F5)?-1:0;
             if(step!=0&&spec.patterns.Length>0)
             {
                 devPattern=(devPattern+step+spec.patterns.Length)%spec.patterns.Length;
                 var p=spec.patterns[devPattern];BossPatterns.forceNext=p;
-                Say("[DEV] 다음 패턴 "+(devPattern+1)+"/"+spec.patterns.Length+" · "+p.name,2);
+                Say("[DEV] ���� ���� "+(devPattern+1)+"/"+spec.patterns.Length+" �� "+p.name,2);
             }
-            if(Input.GetKeyDown(KeyCode.F7)){bossStagger=Mathf.Max(bossStagger,.45f);ParryFeedback(boss.x);}   // 패링 성공 연출만 미리보기
+            if(Input.GetKeyDown(KeyCode.F7)){bossStagger=Mathf.Max(bossStagger,.45f);ParryFeedback(boss.x);}   // �и� ���� ���⸸ �̸�����
             if(devGod){playerHp=maxHp;}
         }
 #endif
@@ -204,11 +204,11 @@ namespace ReversalTower
             maxHp=LobbyCards.Health(save);playerHp=maxHp;bossHp=spec.hp;ult=0;seconds=0;hits=parries=sealParries=0;
             horizontalSpeed=0;pvY=0;playerInv=stun=parryLock=dashTime=dashRecharge=actionTime=attackAnim=healing=skillQ=skillW=skillE=0;parryAge=99;
             riposteUntil=0;flowReadyAt=0;
-            phaseTwo=false;thirdPhase=false;seal=index==4;dashes=2;potions=LobbyCards.Potions(save);combo=0;comboGap=0;bossStagger=0;rest=1.8f;current=null;bossState="입장";
+            phaseTwo=false;thirdPhase=false;seal=index==4;dashes=2;potions=LobbyCards.Potions(save);combo=0;comboGap=0;bossStagger=0;rest=1.8f;current=null;bossState="����";
             Evidence.Reset();BossPatterns.Reset();ResetTestAgent();rewards.Reset();playerAction="";healing=0;
             barrier=false;barrierTime=0;pillarLeft=pillarRight=index==0;hazards.Clear();shots.Clear();minions.Clear();motes.Clear();impacts.Clear();hitStop=slowMo=zoomPunch=whiteFlash=bossRecoil=0;
             dda.Prepare(save,spec,AutoRunArgs.DisableDda);
-            Say(spec.name+" — "+spec.lesson,5);sound.Play("confirm");
+            Say(spec.name+" ? "+spec.lesson,5);sound.Play("confirm");
             if(!save.tutorialSeen&&!demo)showHelp=true;
         }
         public PatternStats Stat(string id)=>stats.Find(s=>s.id==id);
@@ -308,7 +308,7 @@ namespace ReversalTower
             if(bossIn&&damage>0){landed=true;DamageBoss(damage,playerAction=="R"?2.6f:playerAction=="E"?2.2f:playerAction=="Q"?1.5f:playerAction=="W"?1.3f:1);}
             for(int i=minions.Count-1;i>=0;i--)
             {var m=minions[i];if(Mathf.Abs(player.x-m.x)<range&&(radial||(m.x-player.x)*face>-.5f)){landed=true;m.hp-=damage;if(m.hp<=0){Burst(new Vector2(m.x,1),.8f,Palette.Gold,12);minions.RemoveAt(i);}}}
-            if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){landed=true;barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){BossPatterns.BreakPhanesBarrier();sound.Play("barrier_break");Say("결계 파괴 · 파네스가 추락했습니다",2);}}
+            if(barrier&&Mathf.Abs(player.x)<range&&((0-player.x)*face>0||radial)){landed=true;barrierHp-=damage;Burst(new Vector2(0,1.2f),.7f,Palette.Gold,8);if(barrierHp<=0){BossPatterns.BreakPhanesBarrier();sound.Play("barrier_break");Say("��� �ı� �� �ĳ׽��� �߶��߽��ϴ�",2);}}
             if(empowered&&landed)riposteUntil=0;
             Burst(player+new Vector2(face*.9f,1),.25f,Palette.Teal,4);
         }
@@ -319,7 +319,7 @@ namespace ReversalTower
         public bool BossShotOverlap(Vector2 point,float radius)
             =>bossIndex==0?Mathf.Abs(point.x-boss.x)<BossWidth+radius&&point.y+radius>boss.y&&point.y-radius<boss.y+BossHeight
                 :Vector2.Distance(point,boss+Vector2.up*1.2f)<1.2f;
-        // 패링 성공 연출: 멈춤 → 슬로모션, 화면 번쩍임, 부딪힌 곳으로 카메라 펀치, 큰 충돌 불꽃, 보스가 크게 밀려 보임
+        // �и� ���� ����: ���� �� ���θ��, ȭ�� ��½��, �ε��� ������ ī�޶� ��ġ, ū �浹 �Ҳ�, ������ ũ�� �з� ����
         public void ParryFeedback(float attackerX)
         {
             float toward=Mathf.Sign(attackerX-player.x);Vector2 clash=player+new Vector2(toward*.8f,1.25f);
@@ -327,12 +327,12 @@ namespace ReversalTower
             HitStop(HitStopParry);slowMo=ParrySlowMo;whiteFlash=.55f;zoomPunch=.8f;zoomFocus=clash;bossFlash=.14f;
             bossRecoil=toward*.45f;AddImpact(clash,2,1.2f,0);
         }
-        // weight: 타격의 무게 (일반 공격 1, 스킬 1.3~2.6) → 멈춤·흔들림·밀림·불꽃 크기가 커진다
+        // weight: Ÿ���� ���� (�Ϲ� ���� 1, ��ų 1.3~2.6) �� ���㡤��鸲���и����Ҳ� ũ�Ⱑ Ŀ����
         public void DamageBoss(float damage,float weight=1)
         {
             if(ended||mode!=ScreenMode.Battle)return;
             if(barrier)damage*=.15f;
-            damage*=BossPatterns.DamageTakenScale; // 아라쿠스 분노 시전 중에만 절반
+            damage*=BossPatterns.DamageTakenScale; // �ƶ����� �г� ���� �߿��� ����
             float oldBossHp=bossHp;bossHp=Mathf.Max(0,bossHp-damage);NoteEvidence("damage_dealt",playerAction,oldBossHp-bossHp);bossFlash=.1f;ult=Mathf.Min(100,ult+damage*.03f*LobbyCards.HitGaugeMultiplier(save));sound.Play("hit");if(weight>=2)sound.Play("thud");
             float side=Mathf.Sign(boss.x-player.x);if(side==0)side=1;
             shake=Mathf.Max(shake,1.4f+weight*1.1f);HitStop(HitStopLight*(.8f+.4f*weight));bossRecoil=side*(.1f+.07f*weight);
@@ -341,7 +341,7 @@ namespace ReversalTower
             Burst(at,.9f+.3f*weight,Palette.Gold,(int)(8+5*weight));
             if(bossHp<=0)EndBattle(true);
         }
-        // ignoreDash: 대시 무적을 무시하는 공격 (아라쿠스 일대 휩쓸기). 맞은 뒤의 무적은 그대로 지킨다.
+        // ignoreDash: ��� ������ �����ϴ� ���� (�ƶ����� �ϴ� �۾���). ���� ���� ������ �״�� ��Ų��.
         public void PlayerHit(float damage,bool canParry,string pattern,float attackerX,bool overlap=true,bool ignoreDash=false,bool threatened=false)
         {
             if(ended)return;var s=Stat(pattern);if(s==null)return;
@@ -353,7 +353,7 @@ namespace ReversalTower
                 s.opportunities++;s.parries++;parries++;ult=Mathf.Min(100,ult+15);parryLock=.05f;parryAge=99;bossStagger=Mathf.Max(bossStagger,.45f);
                 NoteEvidence("parry",pattern);ApplyParryUpgrades();
                 ParryFeedback(attackerX);
-                if(seal&&++sealParries>=3){seal=false;Say("회피 봉인 해제",2);}
+                if(seal&&++sealParries>=3){seal=false;Say("ȸ�� ���� ����",2);}
                 return;
             }
             if(playerInv>0&&!(ignoreDash&&dashTime>0)){if(dashTime>0){s.opportunities++;s.dodges++;}else s.ignored++;return;}
@@ -384,7 +384,7 @@ namespace ReversalTower
             sound.Play(clear?"boss_death":"death");
         }
         public void ReturnLobby(){mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}
-        public void Abandon(){abandoning=true;EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}
+        public void Abandon(){abandoning=true;EndBattle(false);Say("������ �����ߴ�. ��ϰ� ���� ���Ҵ�.");}
         void OnApplicationQuit(){if(mode==ScreenMode.Battle&&!ended){abandoning=true;EndBattle(false);}if(save!=null)SaveStore.Save(save);}
         void DemoInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,ref bool q,ref bool w,ref bool e,ref bool r,ref bool f,float dt)
         {
@@ -398,7 +398,7 @@ namespace ReversalTower
         public sealed class Shot{public Vector2 pos,vel;public float damage,life=6,radius=.22f,maxTravel,travelled;public bool parry,friendly,returns,returning,hitDone;public float cueAt=-1;public string pattern;}
         public sealed class Minion{public float x,hp=25,attack;public string pattern;}
         public sealed class Mote{public Vector2 pos,velocity;public float life,size;public Color color;}
-        // 충돌 불꽃 한 개. kind 0 = 일반 타격, 1 = 강한 타격, 2 = 패링 충돌, 3 = 플레이어 피격
+        // �浹 �Ҳ� �� ��. kind 0 = �Ϲ� Ÿ��, 1 = ���� Ÿ��, 2 = �и� �浹, 3 = �÷��̾� �ǰ�
         public sealed class Impact{public Vector2 pos;public float age,life,size,angle;public int kind;}
     }
 }

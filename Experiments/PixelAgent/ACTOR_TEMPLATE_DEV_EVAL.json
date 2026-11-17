@@ -1,0 +1,722 @@
+[
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 0,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.8437743186950684,
+    "margin": 0.41292163729667664,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 3,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.829459011554718,
+    "margin": 0.3986063301563263,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 6,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8446868062019348,
+    "margin": 0.4138341248035431,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 9,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8150483965873718,
+    "margin": 0.3841957151889801,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 12,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.853705883026123,
+    "margin": 0.4228532016277313,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 15,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.8135048747062683,
+    "margin": 0.3826521933078766,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 18,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8043345808982849,
+    "margin": 0.3734818994998932,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 21,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.80060213804245,
+    "margin": 0.3697494566440582,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 24,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.7798532247543335,
+    "margin": 0.3490005433559418,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 27,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8353921175003052,
+    "margin": 0.40453943610191345,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 30,
+    "box": [
+      166,
+      308,
+      30,
+      47
+    ],
+    "ncc": 0.48096832633018494,
+    "margin": 0.055258989334106445,
+    "candidate_valid": false,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 33,
+    "box": [
+      162,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.7573591470718384,
+    "margin": 0.32650646567344666,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 36,
+    "box": [
+      162,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.7635274529457092,
+    "margin": 0.3326747715473175,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 39,
+    "box": [
+      148,
+      302,
+      30,
+      47
+    ],
+    "ncc": 0.6222409605979919,
+    "margin": 0.23182716965675354,
+    "candidate_valid": false,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 42,
+    "box": [
+      152,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.7038741111755371,
+    "margin": 0.2856166660785675,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 45,
+    "box": [
+      152,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.7486071586608887,
+    "margin": 0.31775447726249695,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 48,
+    "box": [
+      152,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.7901184558868408,
+    "margin": 0.3592657744884491,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 51,
+    "box": [
+      152,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.7564869523048401,
+    "margin": 0.32563427090644836,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 54,
+    "box": [
+      152,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.7527170181274414,
+    "margin": 0.3218643367290497,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 57,
+    "box": [
+      152,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.7855876088142395,
+    "margin": 0.3547349274158478,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 60,
+    "box": [
+      152,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.702484667301178,
+    "margin": 0.27163198590278625,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 63,
+    "box": [
+      152,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.715214729309082,
+    "margin": 0.2843620479106903,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 66,
+    "box": [
+      152,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.7486071586608887,
+    "margin": 0.31775447726249695,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "seq": 69,
+    "box": [
+      152,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.7895444631576538,
+    "margin": 0.3586917817592621,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 0,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.8437743186950684,
+    "margin": 0.41292163729667664,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 3,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.829459011554718,
+    "margin": 0.3986063301563263,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 6,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8043345808982849,
+    "margin": 0.3734818994998932,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 9,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8150483965873718,
+    "margin": 0.3841957151889801,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 12,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.829459011554718,
+    "margin": 0.3986063301563263,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 15,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8446868062019348,
+    "margin": 0.4138341248035431,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 18,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8150483965873718,
+    "margin": 0.3841957151889801,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 21,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.853705883026123,
+    "margin": 0.4228532016277313,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 24,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8446868062019348,
+    "margin": 0.4138341248035431,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 27,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8151211142539978,
+    "margin": 0.3842684328556061,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 30,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.7626298069953918,
+    "margin": 0.3317771255970001,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 33,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.800006628036499,
+    "margin": 0.3647952377796173,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 36,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8156207799911499,
+    "margin": 0.3847680985927582,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 39,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.8437743186950684,
+    "margin": 0.41292163729667664,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 42,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.8135048747062683,
+    "margin": 0.3826521933078766,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 45,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8043345808982849,
+    "margin": 0.3734818994998932,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 48,
+    "box": [
+      172,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.8140797019004822,
+    "margin": 0.38322702050209045,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 51,
+    "box": [
+      172,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.8285274505615234,
+    "margin": 0.3976747691631317,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 54,
+    "box": [
+      164,
+      306,
+      30,
+      47
+    ],
+    "ncc": 0.5647373795509338,
+    "margin": 0.0843166708946228,
+    "candidate_valid": false,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 57,
+    "box": [
+      162,
+      304,
+      30,
+      47
+    ],
+    "ncc": 0.6796449422836304,
+    "margin": 0.2517123222351074,
+    "candidate_valid": true,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 60,
+    "box": [
+      588,
+      260,
+      30,
+      47
+    ],
+    "ncc": 0.4308526813983917,
+    "margin": 0.03461933135986328,
+    "candidate_valid": false,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 63,
+    "box": [
+      590,
+      260,
+      30,
+      47
+    ],
+    "ncc": 0.4371076226234436,
+    "margin": 0.07403293251991272,
+    "candidate_valid": false,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 66,
+    "box": [
+      588,
+      260,
+      30,
+      47
+    ],
+    "ncc": 0.4308526813983917,
+    "margin": 0.03461933135986328,
+    "candidate_valid": false,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "seq": 69,
+    "box": [
+      588,
+      260,
+      30,
+      47
+    ],
+    "ncc": 0.4308526813983917,
+    "margin": 0.03461933135986328,
+    "candidate_valid": false,
+    "action_authorized": false,
+    "limitation": "single pose; no occlusion/flash/scale calibration; score not probability"
+  }
+]

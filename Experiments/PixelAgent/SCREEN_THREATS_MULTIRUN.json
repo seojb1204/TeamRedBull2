@@ -1,0 +1,155 @@
+[
+  {
+    "run": "labels-20261117-030017",
+    "frames": 72,
+    "phases": {
+      "absent": 57,
+      "onset": 2,
+      "brightening": 3,
+      "present": 9,
+      "fading": 1
+    },
+    "candidate_track_frames": 0,
+    "eta_frames": 0,
+    "actual_actions": 0,
+    "selected_rows": []
+  },
+  {
+    "run": "heldout-20261117-030442",
+    "frames": 72,
+    "phases": {
+      "absent": 72
+    },
+    "candidate_track_frames": 0,
+    "eta_frames": 0,
+    "actual_actions": 0,
+    "selected_rows": []
+  },
+  {
+    "run": "hardcase-20261117-030935",
+    "frames": 72,
+    "phases": {
+      "absent": 57,
+      "onset": 1,
+      "present": 12,
+      "brightening": 1,
+      "fading": 1
+    },
+    "candidate_track_frames": 1,
+    "eta_frames": 1,
+    "actual_actions": 0,
+    "selected_rows": []
+  },
+  {
+    "run": "native-timing-20261117-032057",
+    "frames": 72,
+    "phases": {
+      "absent": 56,
+      "onset": 2,
+      "present": 10,
+      "brightening": 2,
+      "fading": 2
+    },
+    "candidate_track_frames": 0,
+    "eta_frames": 0,
+    "actual_actions": 0,
+    "selected_rows": [
+      {
+        "seq": 33,
+        "rim_dynamics": "present",
+        "rim_pixels": 737,
+        "distance_px_estimate": 82.0,
+        "player_raw": true,
+        "boss_raw": true,
+        "small_cyan_tracks": [],
+        "action_authorized": false,
+        "limitations": [
+          "actor detector not independently calibrated",
+          "rim dynamics != attack phase",
+          "cyan FX may masquerade as projectile",
+          "screen crossing != hit prediction"
+        ]
+      },
+      {
+        "seq": 34,
+        "rim_dynamics": "fading",
+        "rim_pixels": 315,
+        "distance_px_estimate": 75.5,
+        "player_raw": true,
+        "boss_raw": true,
+        "small_cyan_tracks": [],
+        "action_authorized": false,
+        "limitations": [
+          "actor detector not independently calibrated",
+          "rim dynamics != attack phase",
+          "cyan FX may masquerade as projectile",
+          "screen crossing != hit prediction"
+        ]
+      },
+      {
+        "seq": 35,
+        "rim_dynamics": "absent",
+        "rim_pixels": 6,
+        "distance_px_estimate": 78.5,
+        "player_raw": true,
+        "boss_raw": true,
+        "small_cyan_tracks": [],
+        "action_authorized": false,
+        "limitations": [
+          "actor detector not independently calibrated",
+          "rim dynamics != attack phase",
+          "cyan FX may masquerade as projectile",
+          "screen crossing != hit prediction"
+        ]
+      },
+      {
+        "seq": 53,
+        "rim_dynamics": "present",
+        "rim_pixels": 1007,
+        "distance_px_estimate": 81.0,
+        "player_raw": true,
+        "boss_raw": true,
+        "small_cyan_tracks": [],
+        "action_authorized": false,
+        "limitations": [
+          "actor detector not independently calibrated",
+          "rim dynamics != attack phase",
+          "cyan FX may masquerade as projectile",
+          "screen crossing != hit prediction"
+        ]
+      },
+      {
+        "seq": 54,
+        "rim_dynamics": "fading",
+        "rim_pixels": 493,
+        "distance_px_estimate": 84.0,
+        "player_raw": true,
+        "boss_raw": true,
+        "small_cyan_tracks": [],
+        "action_authorized": false,
+        "limitations": [
+          "actor detector not independently calibrated",
+          "rim dynamics != attack phase",
+          "cyan FX may masquerade as projectile",
+          "screen crossing != hit prediction"
+        ]
+      },
+      {
+        "seq": 55,
+        "rim_dynamics": "absent",
+        "rim_pixels": 2,
+        "distance_px_estimate": 90.0,
+        "player_raw": true,
+        "boss_raw": true,
+        "small_cyan_tracks": [],
+        "action_authorized": false,
+        "limitations": [
+          "actor detector not independently calibrated",
+          "rim dynamics != attack phase",
+          "cyan FX may masquerade as projectile",
+          "screen crossing != hit prediction"
+        ]
+      }
+    ]
+  }
+]

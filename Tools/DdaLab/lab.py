@@ -109,7 +109,10 @@ class Lab:
             replay = None
             for previous in self.jobs.values():
                 if previous['id'] != run_id and previous.get('status') == 'completed':
-                    old = json.loads((self.data / previous['id'] / 'result.json').read_text())
+                    try:
+                        old = json.loads((self.data / previous['id'] / 'result.json').read_text())
+                    except (OSError, ValueError):
+                        continue
                     if old['config'] == config and old['manifest']['source_sha256'] == hashes:
                         replay = dict(run=previous['id'], identical=old['manifest']['policy_sha256'] == fingerprint)
                         break

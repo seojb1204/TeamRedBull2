@@ -25,6 +25,12 @@ with sync_playwright() as p:
  assert page.request.post(a.url+'/api/run',data={}).status==403
  token=page.evaluate('token')
  assert page.request.post(a.url+'/api/run',headers={'X-Lab-Token':token},data={'rounds':0}).status==400
+ page.click('#import');page.set_input_files('#file',path);page.wait_for_function("document.querySelector('#count').textContent==='6'")
+ page.click('#replay');page.wait_for_function("document.querySelector('#status').textContent.includes('실험 완료')",timeout=120000)
+ assert page.locator('#count').inner_text()=='6'
+ page.click('#import');page.set_input_files('#file',{'name':'invalid.json','mimeType':'application/json','buffer':b'{"schemaVersion":1}'})
+ page.wait_for_function("document.querySelector('#status').classList.contains('error')")
+ assert page.locator('#count').inner_text()=='6'
  assert not errors,errors
  print('UI_PASS real C# run, replay, plots, export, comparison import, narrow viewport; no JS errors')
  browser.close()

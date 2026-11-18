@@ -22,6 +22,7 @@ for i in range(2):
  check(f'frame_{i}_one_pixel_outer_rim',r.tobytes()==ImageChops.subtract(a.filter(ImageFilter.MaxFilter(3)),a).tobytes())
 for f in ['WorldArtist.cs','ArakusVisuals.cs']:check(f+'_meta_unchanged',(ROOT/'Assets/Scripts'/f'{f}.meta').read_bytes()==original('Assets/Scripts/'+f+'.meta'))
 protected=['Assets/Scripts/BossPatternSystem.cs','Assets/Scripts/TowerGame.cs','Assets/Scripts/BossCombat.cs','Assets/Scripts/GameData.cs','Assets/Scripts/GameServices.cs','Assets/Scripts/SaveStore.cs','Assets/Scripts/CloudSync.cs','Assets/Scripts/ActorView.cs','Assets/Scripts/ScenePresentation.cs','Assets/Scenes','Assets/Prefabs','Assets/Data','ProjectSettings','Assets/StreamingAssets/Art/Castle']
+if args.scope_contract:protected.append('Assets/Scripts') # Include new partial/runtime scripts in reviewed integration scope.
 check('combat_DDA_DB_input_camera_scene_prefab_settings_unchanged',verify_scope(ROOT,protected,args.scope_contract))
 world=(ROOT/'Assets/Scripts/WorldArtist.cs').read_text(encoding='utf-8');visual=(ROOT/'Assets/Scripts/ArakusVisuals.cs').read_text(encoding='utf-8')
 expected_room='throneRoom=fight&&(g.TutorialActive?DrawTutorialRoom():(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom())))' if (ROOT/'Assets/Scripts/TowerGame.Tutorial.cs').is_file() else 'throneRoom=fight&&(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom()))'

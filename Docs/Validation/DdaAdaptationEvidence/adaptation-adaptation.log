@@ -1,0 +1,177 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-adaptation/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-1id7l_fw/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/tower-cross-qa-1id7l_fw/QA.csproj]
+PASS empty DB uses actual tutorial conservative prior novice
+PASS tutorial prior never fabricates model learning novice
+PASS empty DB uses actual tutorial conservative prior normal
+PASS tutorial prior never fabricates model learning normal
+PASS empty DB uses actual tutorial conservative prior expert
+PASS tutorial prior never fabricates model learning expert
+PASS low-confidence assessment stays neutral
+PASS skip never grants expert prior
+PASS whole-data fallback wins when group absent
+PASS two anonymous group profiles are insufficient
+PASS nineteen group opportunities insufficient
+PASS sufficient matching cohort wins over whole statistics
+PASS fixture provenance and real sample counts disclosed
+PASS missing cohort patterns independently use tutorial prior
+PASS different cohort cannot be used
+PASS late group receive cannot mutate active assignment
+PASS after evidence personal choose steps upward independent of new cohort
+PASS defensive legacy observations cannot be overwritten by first-meeting group rule
+PASS off remains zero with valid expert prior
+PASS actual learning high-response battle 0
+PASS actual learning high-response battle 1
+PASS actual learning high-response battle 2
+PASS actual learning high-response battle 3
+PASS actual learning high-response battle 4
+PASS actual learning high-response battle 5
+PASS actual learning high-response battle 6
+PASS actual learning high-response battle 7
+PASS actual learning high-response battle 8
+PASS actual learning high-response battle 9
+PASS actual learning high-response battle 10
+PASS actual learning high-response battle 11
+PASS actual learning high-response battle 12
+PASS actual learning high-response battle 13
+PASS actual learning high-response battle 14
+PASS actual learning high-response battle 15
+PASS actual learning high-response battle 16
+PASS actual learning high-response battle 17
+PASS actual learning high-response battle 18
+PASS actual learning high-response battle 19
+PASS actual learning high-response battle 20
+PASS actual learning high-response battle 21
+PASS actual learning high-response battle 22
+PASS actual learning high-response battle 23
+PASS actual learning high-response battle 24
+PASS actual learning high-response battle 25
+PASS actual learning high-response battle 26
+PASS actual learning high-response battle 27
+PASS actual learning high-response battle 28
+PASS actual learning high-response battle 29
+PASS thirty perfect clear battles reach +2
+PASS perfect counters plus repeated losses reproduce intentional protection at -2
+PASS winning recovery releases loss protection
+PASS thirty low-response battles ease to -2
+PASS 85 percent can prefer well-trained easy arm under unchanged reward policy
+PASS score trace identifies why the easier arm wins
+PASS fast unobserved kill is diagnosed as no learning
+PASS F8 model reads actual BeginPattern applied values
+PASS current attack snapshot cannot be confused with later table mutation
+PASS result screen never presents stale attack as current
+PASS applied CSV contains actual source numeric value
+PASS tutorial elapsed reading pause and active clocks partition correctly
+PASS live preview does not finalize or train assessment
+PASS actual tutorial rules simulated novice 0
+PASS actual tutorial rules simulated novice 1
+PASS actual tutorial rules simulated novice 2
+PASS actual tutorial rules simulated novice 3
+PASS actual tutorial rules simulated novice 4
+PASS actual tutorial rules simulated novice 5
+PASS actual tutorial rules simulated novice 6
+PASS actual tutorial rules simulated novice 7
+PASS actual tutorial rules simulated novice 8
+PASS actual tutorial rules simulated novice 9
+PASS actual tutorial rules simulated novice 10
+PASS actual tutorial rules simulated novice 11
+PASS actual tutorial rules simulated novice 12
+PASS actual tutorial rules simulated novice 13
+PASS actual tutorial rules simulated novice 14
+PASS actual tutorial rules simulated novice 15
+PASS actual tutorial rules simulated novice 16
+PASS actual tutorial rules simulated novice 17
+PASS actual tutorial rules simulated novice 18
+PASS actual tutorial rules simulated novice 19
+PASS actual tutorial rules simulated novice 20
+PASS actual tutorial rules simulated novice 21
+PASS actual tutorial rules simulated novice 22
+PASS actual tutorial rules simulated novice 23
+PASS actual tutorial rules simulated novice 24
+PASS actual tutorial rules simulated novice 25
+PASS actual tutorial rules simulated novice 26
+PASS actual tutorial rules simulated novice 27
+PASS actual tutorial rules simulated novice 28
+PASS actual tutorial rules simulated novice 29
+TUTORIAL_GROUP_COUNTS novice novice=30
+PASS actual tutorial rules simulated normal 0
+PASS actual tutorial rules simulated normal 1
+PASS actual tutorial rules simulated normal 2
+PASS actual tutorial rules simulated normal 3
+PASS actual tutorial rules simulated normal 4
+PASS actual tutorial rules simulated normal 5
+PASS actual tutorial rules simulated normal 6
+PASS actual tutorial rules simulated normal 7
+PASS actual tutorial rules simulated normal 8
+PASS actual tutorial rules simulated normal 9
+PASS actual tutorial rules simulated normal 10
+PASS actual tutorial rules simulated normal 11
+PASS actual tutorial rules simulated normal 12
+PASS actual tutorial rules simulated normal 13
+PASS actual tutorial rules simulated normal 14
+PASS actual tutorial rules simulated normal 15
+PASS actual tutorial rules simulated normal 16
+PASS actual tutorial rules simulated normal 17
+PASS actual tutorial rules simulated normal 18
+PASS actual tutorial rules simulated normal 19
+PASS actual tutorial rules simulated normal 20
+PASS actual tutorial rules simulated normal 21
+PASS actual tutorial rules simulated normal 22
+PASS actual tutorial rules simulated normal 23
+PASS actual tutorial rules simulated normal 24
+PASS actual tutorial rules simulated normal 25
+PASS actual tutorial rules simulated normal 26
+PASS actual tutorial rules simulated normal 27
+PASS actual tutorial rules simulated normal 28
+PASS actual tutorial rules simulated normal 29
+TUTORIAL_GROUP_COUNTS normal normal=30
+PASS actual tutorial rules simulated expert 0
+PASS actual tutorial rules simulated expert 1
+PASS actual tutorial rules simulated expert 2
+PASS actual tutorial rules simulated expert 3
+PASS actual tutorial rules simulated expert 4
+PASS actual tutorial rules simulated expert 5
+PASS actual tutorial rules simulated expert 6
+PASS actual tutorial rules simulated expert 7
+PASS actual tutorial rules simulated expert 8
+PASS actual tutorial rules simulated expert 9
+PASS actual tutorial rules simulated expert 10
+PASS actual tutorial rules simulated expert 11
+PASS actual tutorial rules simulated expert 12
+PASS actual tutorial rules simulated expert 13
+PASS actual tutorial rules simulated expert 14
+PASS actual tutorial rules simulated expert 15
+PASS actual tutorial rules simulated expert 16
+PASS actual tutorial rules simulated expert 17
+PASS actual tutorial rules simulated expert 18
+PASS actual tutorial rules simulated expert 19
+PASS actual tutorial rules simulated expert 20
+PASS actual tutorial rules simulated expert 21
+PASS actual tutorial rules simulated expert 22
+PASS actual tutorial rules simulated expert 23
+PASS actual tutorial rules simulated expert 24
+PASS actual tutorial rules simulated expert 25
+PASS actual tutorial rules simulated expert 26
+PASS actual tutorial rules simulated expert 27
+PASS actual tutorial rules simulated expert 28
+PASS actual tutorial rules simulated expert 29
+TUTORIAL_GROUP_COUNTS expert expert=30
+PASS active clear time changes actual score
+PASS reading and pause increase elapsed but never lower score
+PASS perfect but sparse tutorial evidence cannot certify expert
+ADAPTATION_COLDSTART_PASS 155

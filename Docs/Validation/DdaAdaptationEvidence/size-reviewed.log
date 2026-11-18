@@ -1,0 +1,3 @@
+HeadlessTests 0 HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player.
+ArakusAnimationTests 0 ARAKUS_ANIMATION_TESTS_PASSED 430
+ArakusSizeTests 0 ARAKUS_SIZE_TESTS_PASSED 953

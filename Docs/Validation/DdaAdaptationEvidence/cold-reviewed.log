@@ -1,0 +1,54 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,87): warning CS0649: Field 'CloudSync.DifficultyRow.pattern' is never assigned to, and will always have its default value null [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,133): warning CS0649: Field 'CloudSync.DifficultyRow.opportunities' is never assigned to, and will always have its default value 0 [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,110): warning CS0649: Field 'CloudSync.DifficultyRow.group_name' is never assigned to, and will always have its default value null [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(22,100): warning CS0649: Field 'CloudSync.Config.proficiencySync' is never assigned to, and will always have its default value false [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,159): warning CS0649: Field 'CloudSync.DifficultyRow.players' is never assigned to, and will always have its default value 0 [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,181): warning CS0649: Field 'CloudSync.DifficultyRow.success_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,208): warning CS0649: Field 'CloudSync.DifficultyRow.parry_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(25,77): warning CS0649: Field 'CloudSync.DifficultyList.items' is never assigned to, and will always have its default value null [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,233): warning CS0649: Field 'CloudSync.DifficultyRow.hit_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,254): warning CS0649: Field 'CloudSync.DifficultyRow.suggested_level' is never assigned to, and will always have its default value 0 [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,67): warning CS0649: Field 'CloudSync.DifficultyRow.boss' is never assigned to, and will always have its default value null [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Tests/CloudSyncStatus/Stubs.cs(58,413): warning CS0067: The event 'LobbyCards.Purchased' is never used [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(22,79): warning CS0649: Field 'CloudSync.Config.anonKey' is never assigned to, and will always have its default value null [/tmp/tower-cold-integration-8o6lu3dp/Tests.csproj]
+PASS receive suspended with explicit state
+PASS pending receive uses existing fallback without waiting
+PASS HTTP origin separate from memory fixture
+PASS successful snapshot increments preview revision
+PASS active assignment and origin snapshot immutable after late receive
+PASS received data reaches actual next Prepare
+PASS F8 cache key invalidates on actual receive revision
+PASS F8 preserves setting/reset/result invalidation
+PASS missing patterns fall back independently
+PASS received stats cannot enable disabled DDA
+PASS personal completed observation wins over shared first recommendation
+PASS offline preserves snapshot revision and successful timestamp
+PASS malformed row cannot clear prior real cache
+PASS direct invalid memory injection is atomic
+PASS insufficient HTTP sample falls back
+PASS valid empty refresh clears snapshot
+PASS cancelled receive does not stay pending forever
+PASS cancelled coroutine releases sending flag
+PASS queue IO failure releases sending flag
+PASS test-only tutorial validation never trains personal model
+PASS initial and reassessment contract accepted without thresholds
+PASS invalid tutorial observations rejected
+PASS nonfinite tutorial time rejected
+COLD_START_INTEGRATION_PASS 23 actual receive/CommunityStats/Prepare; no network, Unity timing or DB

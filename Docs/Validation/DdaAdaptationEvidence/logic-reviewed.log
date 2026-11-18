@@ -1,0 +1,759 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-adaptation/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-polish-au16sk40/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-polish-au16sk40/Tests.csproj]
+PASS Five distinct boss definitions
+PASS arakus unique cleave
+PASS arakus unique shield
+PASS arakus unique kick
+PASS arakus unique charge
+PASS arakus unique throw
+PASS arakus unique slam
+PASS arakus unique slash
+PASS arakus unique rush
+PASS arakus unique sweep
+PASS arakus unique step
+PASS arakus unique rage
+PASS arakus multiple parry opportunities
+PASS phanes unique orb
+PASS phanes unique fan
+PASS phanes unique beam
+PASS phanes unique rain
+PASS phanes unique barrier
+PASS phanes unique pulse
+PASS phanes multiple parry opportunities
+PASS adicus unique scythe
+PASS adicus unique cross
+PASS adicus unique chain
+PASS adicus unique fall
+PASS adicus unique prisoner
+PASS adicus unique judgement
+PASS adicus unique spin
+PASS adicus multiple parry opportunities
+PASS aethelos unique blade
+PASS aethelos unique lance
+PASS aethelos unique rift
+PASS aethelos unique thunder
+PASS aethelos unique creation
+PASS aethelos unique heaven
+PASS aethelos multiple parry opportunities
+PASS kharos unique twelve
+PASS kharos unique draw
+PASS kharos unique echo
+PASS kharos unique eclipse
+PASS kharos unique rain
+PASS kharos unique phantom
+PASS kharos unique end
+PASS kharos multiple parry opportunities
+PASS Neutral first encounter
+PASS Three-loss protection
+PASS Easy lower bound
+PASS Cold-start support for struggling players
+PASS Cold-start progression for skilled players
+PASS 1000 finite LinUCB updates with one-step bounds
+PASS Learned matrices survive serialization
+PASS Skilled players keep progressing after the opening battles
+PASS Struggling players stay supported after the opening battles
+PASS Hard upper bound
+PASS DDA raises difficulty again when a struggling player improves (-2 -> 2)
+PASS DDA next-battle preview does not learn
+PASS DDA reason says when the hardest level is already reached
+PASS Parry prevents damage and grants 15 ultimate
+PASS Late parry receives damage
+PASS Post-hit invulnerability prevents repeated damage
+PASS Unparryable attack bypasses parry
+PASS Dash evasion counts as a dodge, not ignored hit
+PASS Single-hit damage capped at 30 percent max HP
+PASS Normal attack applies damage after windup
+PASS Dash consumes one stack
+PASS Grounded dash stack recharges
+PASS Potion applies 40 HP after delay
+PASS Potion inventory resets on retry
+PASS Kharos starts with dash sealed
+PASS Three successful parries release dash seal
+PASS Phanes orb reflects and increases damage
+PASS Phase transition grants breathing room
+PASS Arakus charge collides with a pillar and staggers
+PASS Judgement safe side avoids damage
+PASS Breaking Phanes barrier grants stagger
+PASS DDA setting is snapshotted for a running battle
+PASS First victory unlocks inherited ultimate and gold
+PASS Victory enters result screen
+PASS Returning to lobby clears battle hazards
+PASS Boss 1 can complete and persist progression
+PASS Boss 2 can complete and persist progression
+PASS Boss 3 can complete and persist progression
+PASS Boss 4 can complete and persist progression
+PASS Immediate abandon does not generate free gold
+PASS Abandoned battle keeps history but does not train DDA
+PASS Fought-out defeat still trains DDA
+PASS Easier level -1 lengthens Arakus cooldown by 12%
+PASS 180-second boss simulation arakus
+PASS 180-second boss simulation phanes
+PASS 180-second boss simulation adicus
+PASS 180-second boss simulation aethelos
+PASS 180-second boss simulation kharos
+PASS Save writes successfully
+PASS Atomic save replacement succeeds
+PASS Save reload restores progress
+저장 복구: There was an error deserializing the object of type ReversalTower.SaveData. Encountered unexpected character 'b'.
+PASS Corrupt main save recovers backup
+PASS Victory records DDA learning
+PASS DDA reset clears learning but keeps gold, history and progression
+PASS DDA reset survives save and load
+PASS Battle after DDA reset starts as a first encounter
+PASS Legacy fixture saved
+PASS V1 migration preserves gold, old upgrades and progression
+PASS V1 migration preserves DDA memory
+PASS Old permanent stats still contribute
+PASS Exactly three distinct known cards offered
+PASS Reopening does not reroll offers
+PASS Offers survive application restart
+PASS Original v1 save is archived before migration writes
+PASS Offered card purchase succeeds
+PASS Purchase deducts once and adds one permanent stack
+PASS Double selection blocked without consuming gold
+PASS Chosen state and permanent effect survive restart
+PASS Completed lobby cannot open another selection
+PASS Battle entry hides cards and uses accumulated health
+PASS Battle settlement unlocks next lobby offer
+PASS Death preserves permanent cards
+PASS Repeated settlement preserves result and grants no extra gold
+PASS Next lobby offers three cards
+PASS Enter behind card modal does not start battle
+PASS Lobby controller accepts a visible offered card
+PASS Repeated card stacks additively
+PASS Repeated battle start does not reapply card effects
+PASS Cards cannot be selected during battle
+PASS Skip strengthening enters battle directly
+PASS Insufficient funds grants no effect
+PASS Unknown or non-offered card rejected
+저장 실패: The file '/tmp/arakus-polish-au16sk40/work/headless-save/Cards_297586696de64d51b6809f9e7d9641cd/blocked-root' already exists.
+PASS Failed disk write rolls back gold and card effect
+PASS Health and potion effects sum across stacks
+PASS Skill cards affect only specified action
+PASS DDA context includes card power
+PASS Combat consumes effective health and healing stats
+PASS Automated input has no hidden healing
+PASS Malformed cards normalize without duplicate stat application
+PASS Sixteen distinct upgrade definitions
+PASS Unique upgrade blade
+PASS Unique upgrade vitality
+PASS Unique upgrade remedy
+PASS Unique upgrade rush
+PASS Unique upgrade whirl
+PASS Unique upgrade execute
+PASS Unique upgrade stride
+PASS Unique upgrade armor
+PASS Unique upgrade flask
+PASS Unique upgrade inherit
+PASS Unique upgrade qtempo
+PASS Unique upgrade wtempo
+PASS Unique upgrade etempo
+PASS Unique upgrade fervor
+PASS Unique upgrade riposte
+PASS Unique upgrade flow
+PASS No upgrade movement unchanged
+PASS Baseline three potions
+PASS Price ramp/cap 0
+PASS Price ramp/cap 1
+PASS Price ramp/cap 2
+PASS Price ramp/cap 3
+PASS Price ramp/cap 4
+PASS Price ramp/cap 5
+PASS Price ramp/cap 6
+PASS Price ramp/cap 7
+PASS Price ramp/cap 8
+PASS Price ramp/cap 9
+PASS Price ramp/cap 10
+PASS Price ramp/cap 11
+PASS Price ramp/cap 12
+PASS Price ramp/cap 13
+PASS Price ramp/cap 14
+PASS Price ramp/cap 15
+PASS Price ramp/cap 16
+PASS Price ramp/cap 17
+PASS Price ramp/cap 18
+PASS Price ramp/cap 19
+PASS Three eligible offers 0
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 0
+PASS Three eligible offers 1
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 1
+PASS Three eligible offers 2
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 2
+PASS Three eligible offers 3
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards rush
+PASS Attack survival utility choice 3
+PASS Three eligible offers 4
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 4
+PASS Three eligible offers 5
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 5
+PASS Three eligible offers 6
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 6
+PASS Three eligible offers 7
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 7
+PASS Three eligible offers 8
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 8
+PASS Three eligible offers 9
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 9
+PASS Three eligible offers 10
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 10
+PASS Three eligible offers 11
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 11
+PASS Three eligible offers 12
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 12
+PASS Three eligible offers 13
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 13
+PASS Three eligible offers 14
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 14
+PASS Three eligible offers 15
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 15
+PASS Three eligible offers 16
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 16
+PASS Three eligible offers 17
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards rush
+PASS Attack survival utility choice 17
+PASS Three eligible offers 18
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 18
+PASS Three eligible offers 19
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards rush
+PASS Attack survival utility choice 19
+PASS Three eligible offers 20
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 20
+PASS Three eligible offers 21
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 21
+PASS Three eligible offers 22
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 22
+PASS Three eligible offers 23
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 23
+PASS Three eligible offers 24
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 24
+PASS Three eligible offers 25
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 25
+PASS Three eligible offers 26
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 26
+PASS Three eligible offers 27
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 27
+PASS Three eligible offers 28
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 28
+PASS Three eligible offers 29
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 29
+PASS Three eligible offers 30
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 30
+PASS Three eligible offers 31
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 31
+PASS Three eligible offers 32
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 32
+PASS Three eligible offers 33
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 33
+PASS Three eligible offers 34
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 34
+PASS Three eligible offers 35
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 35
+PASS Three eligible offers 36
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 36
+PASS Three eligible offers 37
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 37
+PASS Three eligible offers 38
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 38
+PASS Three eligible offers 39
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 39
+PASS Three eligible offers 40
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 40
+PASS Three eligible offers 41
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 41
+PASS Three eligible offers 42
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 42
+PASS Three eligible offers 43
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 43
+PASS Three eligible offers 44
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 44
+PASS Three eligible offers 45
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 45
+PASS Three eligible offers 46
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 46
+PASS Three eligible offers 47
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 47
+PASS Three eligible offers 48
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 48
+PASS Three eligible offers 49
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 49
+PASS Three eligible offers 50
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 50
+PASS Three eligible offers 51
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 51
+PASS Three eligible offers 52
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 52
+PASS Three eligible offers 53
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 53
+PASS Three eligible offers 54
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 54
+PASS Three eligible offers 55
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 55
+PASS Three eligible offers 56
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 56
+PASS Three eligible offers 57
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 57
+PASS Three eligible offers 58
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 58
+PASS Three eligible offers 59
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 59
+PASS Three eligible offers 60
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 60
+PASS Three eligible offers 61
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 61
+PASS Three eligible offers 62
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 62
+PASS Three eligible offers 63
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 63
+PASS Three eligible offers 64
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 64
+PASS Three eligible offers 65
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 65
+PASS Three eligible offers 66
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards rush
+PASS Attack survival utility choice 66
+PASS Three eligible offers 67
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 67
+PASS Three eligible offers 68
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 68
+PASS Three eligible offers 69
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 69
+PASS Three eligible offers 70
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 70
+PASS Three eligible offers 71
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 71
+PASS Three eligible offers 72
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 72
+PASS Three eligible offers 73
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 73
+PASS Three eligible offers 74
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 74
+PASS Three eligible offers 75
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 75
+PASS Three eligible offers 76
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 76
+PASS Three eligible offers 77
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 77
+PASS Three eligible offers 78
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards rush
+PASS Attack survival utility choice 78
+PASS Three eligible offers 79
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 79
+PASS Three eligible offers 80
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 80
+PASS Three eligible offers 81
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 81
+PASS Three eligible offers 82
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 82
+PASS Three eligible offers 83
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards rush
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 83
+PASS Three eligible offers 84
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards whirl
+PASS Offer excludes locked cards remedy
+PASS Attack survival utility choice 84
+PASS Three eligible offers 85
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 85
+PASS Three eligible offers 86
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 86
+PASS Three eligible offers 87
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 87
+PASS Three eligible offers 88
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards whirl
+PASS Attack survival utility choice 88
+PASS Three eligible offers 89
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 89
+PASS Three eligible offers 90
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards blade
+PASS Attack survival utility choice 90
+PASS Three eligible offers 91
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 91
+PASS Three eligible offers 92
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 92
+PASS Three eligible offers 93
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 93
+PASS Three eligible offers 94
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 94
+PASS Three eligible offers 95
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 95
+PASS Three eligible offers 96
+PASS Offer excludes locked cards remedy
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards stride
+PASS Attack survival utility choice 96
+PASS Three eligible offers 97
+PASS Offer excludes locked cards blade
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 97
+PASS Three eligible offers 98
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards execute
+PASS Offer excludes locked cards vitality
+PASS Attack survival utility choice 98
+PASS Three eligible offers 99
+PASS Offer excludes locked cards stride
+PASS Offer excludes locked cards vitality
+PASS Offer excludes locked cards execute
+PASS Attack survival utility choice 99
+PASS Arakus unlocks riposte
+PASS Flow remains locked until Phanes
+PASS Phanes unlocks flow
+PASS Adicus unlocks spare potion
+PASS Over-cap legacy attack preserved
+PASS Over-cap legacy cannot buy more
+PASS All capped pool terminates with no offers
+PASS Last available card offered without duplicates
+PASS Maxed purchase does not consume gold
+PASS Q maximum cooldown reduction
+PASS W maximum cooldown reduction
+PASS E maximum cooldown reduction
+PASS Movement cap 12 percent
+PASS Extra potion applied on battle start
+PASS Retry does not accumulate potion count
+PASS Defense after existing 30 percent cap
+PASS Telemetry records actual reduced damage
+PASS Attack gauge increased by 20 percent
+PASS Fervor never amplifies parry gauge
+PASS Parry refunds Q
+PASS Parry refunds W
+PASS Parry refunds E
+PASS Repeated parry cannot bypass 3 second cooldown
+PASS Riposte empowers successful basic hit
+PASS Riposte consumed once
+PASS Flow cannot create negative cooldown
+PASS Miss does not consume riposte
+PASS Riposte expires after 3 seconds
+PASS Battle restart clears temporary bonuses
+PASS Phanes ultimate still has five shots
+PASS Projectile ultimate receives damage upgrade
+PASS Ultimate upgrade does not amplify healing
+PASS Actual Q input uses upgraded cooldown
+PASS Actual W input uses upgraded cooldown
+PASS Actual E input uses upgraded cooldown
+PASS Interrupted E refunds half upgraded cooldown
+PASS Forged locked offer cannot buy upgrade
+PASS Save full new inventory succeeds
+PASS Upgrade survives restart blade
+PASS Upgrade survives restart vitality
+PASS Upgrade survives restart remedy
+PASS Upgrade survives restart rush
+PASS Upgrade survives restart whirl
+PASS Upgrade survives restart execute
+PASS Upgrade survives restart stride
+PASS Upgrade survives restart armor
+PASS Upgrade survives restart flask
+PASS Upgrade survives restart inherit
+PASS Upgrade survives restart qtempo
+PASS Upgrade survives restart wtempo
+PASS Upgrade survives restart etempo
+PASS Upgrade survives restart fervor
+PASS Upgrade survives restart riposte
+PASS Upgrade survives restart flow
+PASS New inventory preserves old progress and gold
+PASS Two remaining upgrades offered without duplicates
+PASS Two-card offer stable on reopen
+PASS Riposte applies to minion hit
+PASS Minion hit consumes riposte once
+PASS Riposte applies to barrier
+PASS Barrier hit consumes riposte once
+PASS Flow blocked immediately before boundary
+PASS Flow reactivates exactly at 3 seconds
+PASS Flow leaves all ready skills at zero
+PASS Five actual projectile collisions apply total upgraded R damage
+PASS Ultimate projectiles removed after hits
+PASS Upgrades do not raise first encounter DDA level
+HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player.

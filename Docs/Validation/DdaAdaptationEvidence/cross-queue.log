@@ -1,0 +1,55 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,67): warning CS0649: Field 'CloudSync.DifficultyRow.boss' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,254): warning CS0649: Field 'CloudSync.DifficultyRow.suggested_level' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(25,77): warning CS0649: Field 'CloudSync.DifficultyList.items' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,133): warning CS0649: Field 'CloudSync.DifficultyRow.opportunities' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(22,100): warning CS0649: Field 'CloudSync.Config.proficiencySync' is never assigned to, and will always have its default value false [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(22,79): warning CS0649: Field 'CloudSync.Config.anonKey' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,110): warning CS0649: Field 'CloudSync.DifficultyRow.group_name' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Tests/CloudSyncStatus/Stubs.cs(58,413): warning CS0067: The event 'LobbyCards.Purchased' is never used [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,159): warning CS0649: Field 'CloudSync.DifficultyRow.players' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,233): warning CS0649: Field 'CloudSync.DifficultyRow.hit_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,208): warning CS0649: Field 'CloudSync.DifficultyRow.parry_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,181): warning CS0649: Field 'CloudSync.DifficultyRow.success_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,87): warning CS0649: Field 'CloudSync.DifficultyRow.pattern' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-y43pu2h6/QA.csproj]
+PASS real checkpoint prepared for profile restore during upload
+PASS old owner registration suspends independently of active profile
+PASS actual reset creates new active UUID while old registration is suspended
+PASS actual restore changes active owner back without rewriting captured new-profile card
+PASS new active profile card enqueues without changing in-flight snapshot
+PASS global legacy registered flag cannot skip per-owner registration
+PASS in-flight old battle keeps immutable original owner
+PASS registration cache scoped to old owner only
+PASS successful old upload removed while deferred new card remains
+PASS deferred queue count remains visible after successful snapshot sync
+PASS new card captures new active UUID not stale CloudSync field
+PASS next sync registers and sends deferred new profile card
+PASS successful new owner card acknowledged without pruning other history
+PASS failed registration preserves exact queue payload and registration state
+PASS failed registration prevents battle upload
+PASS offline receive diagnosis and sending guard survive queue failure
+PASS explicit next sync safely retries original owner payload
+PASS corrupt mismatched and unknown-owner queues preserved byte for byte
+PASS valid later item uploads without relabelling invalid earlier items
+PASS retained invalid queues cannot be masked by later successful POST
+PASS abandoned/tutorial-like event cannot enter upload queue
+PASS sparse legacy progress migrates identity without fabricated assessment
+PASS sparse legacy original backup retained
+PASS legacy help-seen alone cannot bypass first assessment
+CLOUD_QUEUE_INTEGRATION 24 PASS / 0 FAIL; real ownership resolver, mocked HTTP, no production data

@@ -1,0 +1,59 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(22,100): warning CS0649: Field 'CloudSync.Config.proficiencySync' is never assigned to, and will always have its default value false [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,159): warning CS0649: Field 'CloudSync.DifficultyRow.players' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,208): warning CS0649: Field 'CloudSync.DifficultyRow.parry_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,110): warning CS0649: Field 'CloudSync.DifficultyRow.group_name' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Tests/CloudSyncStatus/Stubs.cs(58,413): warning CS0067: The event 'LobbyCards.Purchased' is never used [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(25,77): warning CS0649: Field 'CloudSync.DifficultyList.items' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,233): warning CS0649: Field 'CloudSync.DifficultyRow.hit_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,254): warning CS0649: Field 'CloudSync.DifficultyRow.suggested_level' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,181): warning CS0649: Field 'CloudSync.DifficultyRow.success_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(22,79): warning CS0649: Field 'CloudSync.Config.anonKey' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,67): warning CS0649: Field 'CloudSync.DifficultyRow.boss' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,133): warning CS0649: Field 'CloudSync.DifficultyRow.opportunities' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/CloudSync.cs(24,87): warning CS0649: Field 'CloudSync.DifficultyRow.pattern' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+/workspace/dda-adaptation/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-rakfpsla/QA.csproj]
+PASS local assessment safely saved before telemetry
+PASS first real assessment enqueued
+PASS capability stays outside save and queue
+PASS progress excludes capability
+PASS stable assessment event suppresses duplicate enqueue
+PASS reassessment saves independently
+PASS replay cannot overwrite initial evidence
+PASS battle captures first assessment not replay
+PASS HTTP failure retains every pending immutable event
+PASS 409 never blindly acknowledges protected data
+PASS false RPC result is not accepted
+PASS successful true RPC creates receipts and acknowledges
+PASS assessments sent before linked battles
+PASS actual RPC binds captured owner capability and profile
+PASS receipts suppress restart duplicate without editing assessment
+PASS new profile gets independent ownership capability
+PASS missing original key preserves queue without sending under new owner
+PASS new events cannot silently regenerate lost profile key
+PASS group request can suspend without blocking first battle
+PASS pending group uses valid tutorial fallback immediately
+PASS actual HTTP group row reaches actual Prepare
+PASS malformed group response preserves previous snapshot
+PASS group network failure preserves prior snapshot
+PASS cancelled group receive cannot remain pending forever
+PASS assessment profile archived by actual completed battle commit
+PASS actual reset creates fresh profile without reassigning pending telemetry
+PASS actual restore recovers original UUID and first assessment
+PASS restored profile retains original capability and immutable queued owner
+PROFICIENCY_HTTP_PASS 28

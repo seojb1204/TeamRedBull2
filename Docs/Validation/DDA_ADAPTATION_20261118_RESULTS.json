@@ -1,0 +1,1340 @@
+{
+  "summary": [
+    {
+      "mode": "control",
+      "profile": "novice",
+      "scenario": "stable",
+      "run": "6764180106edf709c27f5769",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 5400,
+      "success": 0.30592592592592593,
+      "target_band_fraction": 0.0,
+      "learned": 270,
+      "a_delta": 770.5830537995638,
+      "b_delta": 129.75642353638406,
+      "final": {
+        "cleave": -2,
+        "shield": -2,
+        "kick": -2,
+        "charge": -2,
+        "throw": -2,
+        "slam": -2,
+        "slash": -2,
+        "rush": -2,
+        "sweep": -2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "balanced",
+      "scenario": "stable",
+      "run": "3fe2a75f73ef58160e56c446",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 5400,
+      "success": 0.7003703703703704,
+      "target_band_fraction": 0.7814814814814814,
+      "learned": 270,
+      "a_delta": 320.7159417009799,
+      "b_delta": 281.7210206144041,
+      "final": {
+        "cleave": 0,
+        "shield": 0,
+        "kick": 0,
+        "charge": 0,
+        "throw": 0,
+        "slam": 0,
+        "slash": 0,
+        "rush": 0,
+        "sweep": 0,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "expert",
+      "scenario": "stable",
+      "run": "7defe8ebe5afda7fd21b94d0",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 5400,
+      "success": 0.9492592592592592,
+      "target_band_fraction": 0.014814814814814815,
+      "learned": 270,
+      "a_delta": 506.7861495311037,
+      "b_delta": 230.24775730490884,
+      "final": {
+        "cleave": 2,
+        "shield": 2,
+        "kick": 2,
+        "charge": 2,
+        "throw": 2,
+        "slam": 2,
+        "slash": 2,
+        "rush": 2,
+        "sweep": 2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "combat",
+      "profile": "novice",
+      "scenario": "stable",
+      "run": "923f1e9df6f1554b4914ae80",
+      "outcomes": {
+        "death": 7,
+        "clear": 23
+      },
+      "opportunities": 603,
+      "success": 0.24212271973466004,
+      "target_band_fraction": 0.07731958762886598,
+      "learned": 194,
+      "a_delta": 565.5691008672268,
+      "b_delta": 76.34161102593103,
+      "final": {
+        "cleave": -2,
+        "shield": -2,
+        "kick": -2,
+        "charge": -2,
+        "throw": -1,
+        "slam": 0,
+        "slash": -2,
+        "rush": -2,
+        "sweep": -2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "combat",
+      "profile": "balanced",
+      "scenario": "stable",
+      "run": "20f58c29cbed4e91d609133c",
+      "outcomes": {
+        "clear": 29,
+        "death": 1
+      },
+      "opportunities": 478,
+      "success": 0.5292887029288703,
+      "target_band_fraction": 0.15675675675675677,
+      "learned": 185,
+      "a_delta": 364.9955354767383,
+      "b_delta": 113.41582778715429,
+      "final": {
+        "cleave": 0,
+        "shield": 1,
+        "kick": 1,
+        "charge": 0,
+        "throw": -2,
+        "slam": -2,
+        "slash": -2,
+        "rush": -2,
+        "sweep": -2,
+        "step": 1,
+        "rage": 1
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "combat",
+      "profile": "expert",
+      "scenario": "stable",
+      "run": "c69dee47d53a27242289dfe6",
+      "outcomes": {
+        "timeout_abandoned": 1,
+        "clear": 29
+      },
+      "opportunities": 545,
+      "success": 0.7211009174311926,
+      "target_band_fraction": 0.06666666666666667,
+      "learned": 173,
+      "a_delta": 362.1564769289417,
+      "b_delta": 111.35485800552651,
+      "final": {
+        "cleave": 2,
+        "shield": 2,
+        "kick": 2,
+        "charge": 2,
+        "throw": -2,
+        "slam": -1,
+        "slash": 2,
+        "rush": 2,
+        "sweep": -2,
+        "step": 1,
+        "rage": 1
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "balanced",
+      "scenario": "improving",
+      "run": "9acb2f636c03273b8b3e0627",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 5400,
+      "success": 0.6537037037037037,
+      "target_band_fraction": 0.25925925925925924,
+      "learned": 270,
+      "a_delta": 536.32782088062,
+      "b_delta": 214.92585564636093,
+      "final": {
+        "cleave": 2,
+        "shield": 2,
+        "kick": 2,
+        "charge": 2,
+        "throw": 2,
+        "slam": 2,
+        "slash": 2,
+        "rush": 2,
+        "sweep": 2,
+        "step": 1,
+        "rage": 1
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "balanced",
+      "scenario": "declining",
+      "run": "5e891a62094b0c18a72aec96",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 5400,
+      "success": 0.6572222222222223,
+      "target_band_fraction": 0.2740740740740741,
+      "learned": 270,
+      "a_delta": 566.8722292777722,
+      "b_delta": 243.91036458759663,
+      "final": {
+        "cleave": -2,
+        "shield": -2,
+        "kick": -2,
+        "charge": -2,
+        "throw": -2,
+        "slam": -2,
+        "slash": -2,
+        "rush": -2,
+        "sweep": -2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "balanced",
+      "scenario": "repeated_failures",
+      "run": "545ed237a747a16ad9272bb4",
+      "outcomes": {
+        "synthetic_loss": 30
+      },
+      "opportunities": 5400,
+      "success": 0.10148148148148148,
+      "target_band_fraction": 0.0,
+      "learned": 270,
+      "a_delta": 1173.7746304534771,
+      "b_delta": 5.236816719291597,
+      "final": {
+        "cleave": -2,
+        "shield": -2,
+        "kick": -2,
+        "charge": -2,
+        "throw": -2,
+        "slam": -2,
+        "slash": -2,
+        "rush": -2,
+        "sweep": -2,
+        "step": -1,
+        "rage": -1
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "combat",
+      "profile": "balanced",
+      "scenario": "improving",
+      "run": "d9f20fc2b8158e9d43bad6f8",
+      "outcomes": {
+        "death": 4,
+        "clear": 26
+      },
+      "opportunities": 551,
+      "success": 0.47186932849364793,
+      "target_band_fraction": 0.0855614973262032,
+      "learned": 187,
+      "a_delta": 422.4478404261912,
+      "b_delta": 102.24510993447122,
+      "final": {
+        "cleave": 1,
+        "shield": 2,
+        "kick": 2,
+        "charge": 2,
+        "throw": -2,
+        "slam": -1,
+        "slash": 2,
+        "rush": -1,
+        "sweep": -2,
+        "step": 1,
+        "rage": 1
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "combat",
+      "profile": "balanced",
+      "scenario": "declining",
+      "run": "ae00c1bfe41b17839f0cb875",
+      "outcomes": {
+        "timeout_abandoned": 1,
+        "clear": 27,
+        "death": 2
+      },
+      "opportunities": 537,
+      "success": 0.4748603351955307,
+      "target_band_fraction": 0.09523809523809523,
+      "learned": 182,
+      "a_delta": 446.6719627665633,
+      "b_delta": 94.08013916274444,
+      "final": {
+        "cleave": -2,
+        "shield": -2,
+        "kick": -2,
+        "charge": -2,
+        "throw": -2,
+        "slam": -2,
+        "slash": -2,
+        "rush": -2,
+        "sweep": -2,
+        "step": 1,
+        "rage": 1
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "combat",
+      "profile": "balanced",
+      "scenario": "repeated_failures",
+      "run": "c6eae3c60ff4c378993533b5",
+      "outcomes": {
+        "death": 7,
+        "clear": 23
+      },
+      "opportunities": 603,
+      "success": 0.24212271973466004,
+      "target_band_fraction": 0.07731958762886598,
+      "learned": 194,
+      "a_delta": 565.5691008672268,
+      "b_delta": 76.34161102593103,
+      "final": {
+        "cleave": -2,
+        "shield": -2,
+        "kick": -2,
+        "charge": -2,
+        "throw": -1,
+        "slam": 0,
+        "slash": -2,
+        "rush": -2,
+        "sweep": -2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "expert",
+      "scenario": "perfect",
+      "run": "eb4977a9f14f1af83947eaf8",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 5400,
+      "success": 1.0,
+      "target_band_fraction": 0.0,
+      "learned": 270,
+      "a_delta": 516.870000128746,
+      "b_delta": 186.24636312952342,
+      "final": {
+        "cleave": 2,
+        "shield": 2,
+        "kick": 2,
+        "charge": 2,
+        "throw": 2,
+        "slam": 2,
+        "slash": 2,
+        "rush": 2,
+        "sweep": 2,
+        "step": 1,
+        "rage": 1
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "expert",
+      "scenario": "near_perfect",
+      "run": "e9caf8b2602b37c51466bd65",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 5400,
+      "success": 0.9748148148148148,
+      "target_band_fraction": 0.003703703703703704,
+      "learned": 270,
+      "a_delta": 515.3790809060689,
+      "b_delta": 209.1042867238608,
+      "final": {
+        "cleave": 2,
+        "shield": 2,
+        "kick": 2,
+        "charge": 2,
+        "throw": 2,
+        "slam": 2,
+        "slash": 2,
+        "rush": 2,
+        "sweep": 2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "expert",
+      "scenario": "loss_recovery",
+      "run": "4bc825a59aef5c97b2dcac34",
+      "outcomes": {
+        "synthetic_loss": 10,
+        "synthetic_clear": 20
+      },
+      "opportunities": 5400,
+      "success": 1.0,
+      "target_band_fraction": 0.0,
+      "learned": 270,
+      "a_delta": 536.6700001287461,
+      "b_delta": 188.59690031112407,
+      "final": {
+        "cleave": 2,
+        "shield": 2,
+        "kick": 2,
+        "charge": 2,
+        "throw": 2,
+        "slam": 2,
+        "slash": 2,
+        "rush": 2,
+        "sweep": 2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "expert",
+      "scenario": "sparse",
+      "run": "a5369558762586fa70dbc3dd",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 270,
+      "success": 0.9592592592592593,
+      "target_band_fraction": 0.0,
+      "learned": 270,
+      "a_delta": 491.0569961035089,
+      "b_delta": 173.56393706393467,
+      "final": {
+        "cleave": 2,
+        "shield": 2,
+        "kick": 1,
+        "charge": 2,
+        "throw": 2,
+        "slam": 1,
+        "slash": 2,
+        "rush": 2,
+        "sweep": 2,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    },
+    {
+      "mode": "control",
+      "profile": "expert",
+      "scenario": "unobserved_clear",
+      "run": "66fd6cfed5e6504428b96740",
+      "outcomes": {
+        "synthetic_clear": 30
+      },
+      "opportunities": 0,
+      "success": null,
+      "target_band_fraction": null,
+      "learned": 0,
+      "a_delta": 0,
+      "b_delta": 0,
+      "final": {
+        "cleave": 0,
+        "shield": 0,
+        "kick": 0,
+        "charge": 0,
+        "throw": 0,
+        "slam": 0,
+        "slash": 0,
+        "rush": 0,
+        "sweep": 0,
+        "step": 0,
+        "rage": 0
+      },
+      "restored": true,
+      "off_unchanged": true,
+      "replay_identical": true
+    }
+  ],
+  "manifests": [
+    {
+      "config": {
+        "mode": "control",
+        "profile": "novice",
+        "scenario": "stable",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "c03b91af33db540f223e8b5e1095256ca64deb1bd54fb11a070dd9ca5ebc9143",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/6764180106edf709c27f5769/config.json",
+          "/workspace/adaptation-results/final-study/6764180106edf709c27f5769/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "6764180106edf709c27f5769",
+        "created_utc": "2026-11-18T08:31:46Z"
+      },
+      "result_sha256": "b3e6c2cc0e07ae66dda7884d7261723e75f7f3dfdb89fa1553681aff85324f30"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "balanced",
+        "scenario": "stable",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "f8b09cf686da51930a9706882062edee3078092a29cd071b5c386a7fbb49f873",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/3fe2a75f73ef58160e56c446/config.json",
+          "/workspace/adaptation-results/final-study/3fe2a75f73ef58160e56c446/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "3fe2a75f73ef58160e56c446",
+        "created_utc": "2026-11-18T08:31:48Z"
+      },
+      "result_sha256": "b3dd5c7ddabe5c17955d8a73e93f8ce26f98e8f28548b18c8961593aa1839150"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "expert",
+        "scenario": "stable",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "0b035f70ce4f0f637688165af4fe7810e56a26fe4f02c6dbe5095d016eccdb95",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/7defe8ebe5afda7fd21b94d0/config.json",
+          "/workspace/adaptation-results/final-study/7defe8ebe5afda7fd21b94d0/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "7defe8ebe5afda7fd21b94d0",
+        "created_utc": "2026-11-18T08:31:50Z"
+      },
+      "result_sha256": "7ae76098b89a59a38f9d149cf5ad162b2ddcff1fd6fdd67a0ac9647894ee9482"
+    },
+    {
+      "config": {
+        "mode": "combat",
+        "profile": "novice",
+        "scenario": "stable",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "a2204173942ac40426558b30e3a539ad1f21ab80ab079aa6d7b6e31141e20baa",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/923f1e9df6f1554b4914ae80/config.json",
+          "/workspace/adaptation-results/final-study/923f1e9df6f1554b4914ae80/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "923f1e9df6f1554b4914ae80",
+        "created_utc": "2026-11-18T08:31:55Z"
+      },
+      "result_sha256": "1f61ff08b80541523cdd23a45e35ecd4345e29e32da5a2dcd87a9728d8430a78"
+    },
+    {
+      "config": {
+        "mode": "combat",
+        "profile": "balanced",
+        "scenario": "stable",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "7d5cf667e2bf7113a4a8922aa277bdf5d1691ba5ab143a50f7c4c61c95cbdd59",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/20f58c29cbed4e91d609133c/config.json",
+          "/workspace/adaptation-results/final-study/20f58c29cbed4e91d609133c/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "20f58c29cbed4e91d609133c",
+        "created_utc": "2026-11-18T08:32:02Z"
+      },
+      "result_sha256": "4d880993c4d2a17a1a8c33abd0b9247b97ac9b2bbae6eef0154e83d13c465f1f"
+    },
+    {
+      "config": {
+        "mode": "combat",
+        "profile": "expert",
+        "scenario": "stable",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "3539a014e482a530063a7bf50347cd3103b83a0916d393fb0152276ffde398d2",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/c69dee47d53a27242289dfe6/config.json",
+          "/workspace/adaptation-results/final-study/c69dee47d53a27242289dfe6/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "c69dee47d53a27242289dfe6",
+        "created_utc": "2026-11-18T08:32:08Z"
+      },
+      "result_sha256": "28e5986c84c3a8606ad7dc31f00680f872b0906dc91576704cec24c1be276b5a"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "balanced",
+        "scenario": "improving",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "398e2b959609f1a82949014544bcf0daa81d51241160fbc0c23cb4d4e2a05983",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/9acb2f636c03273b8b3e0627/config.json",
+          "/workspace/adaptation-results/final-study/9acb2f636c03273b8b3e0627/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "9acb2f636c03273b8b3e0627",
+        "created_utc": "2026-11-18T08:32:13Z"
+      },
+      "result_sha256": "bcf87b65f56272c27fb4d2524fac29f062ff161215e18a784c62648684f777b3"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "balanced",
+        "scenario": "declining",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "3ce48b66e3fef60298033789b31bd005a58fe745ab67399f07f925a0089682d3",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/5e891a62094b0c18a72aec96/config.json",
+          "/workspace/adaptation-results/final-study/5e891a62094b0c18a72aec96/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "5e891a62094b0c18a72aec96",
+        "created_utc": "2026-11-18T08:32:16Z"
+      },
+      "result_sha256": "92ad99653dd1b48f188dcffee2af00baeb7a1065e86984ad023c94990018a7a0"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "balanced",
+        "scenario": "repeated_failures",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "76bce0e37732714f7a25f162ac083036bc2ac978b71ceca32e579293bbe49c15",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/545ed237a747a16ad9272bb4/config.json",
+          "/workspace/adaptation-results/final-study/545ed237a747a16ad9272bb4/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "545ed237a747a16ad9272bb4",
+        "created_utc": "2026-11-18T08:32:18Z"
+      },
+      "result_sha256": "aa6c01f71851b6ea097c7e98f54099f7f3b19e1a8c2399eb02f38bd4feade3f7"
+    },
+    {
+      "config": {
+        "mode": "combat",
+        "profile": "balanced",
+        "scenario": "improving",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "1cfe93dea210aced4c8ba486338fcfaac26b215315e6df6ce34e405af1985b9d",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/d9f20fc2b8158e9d43bad6f8/config.json",
+          "/workspace/adaptation-results/final-study/d9f20fc2b8158e9d43bad6f8/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "d9f20fc2b8158e9d43bad6f8",
+        "created_utc": "2026-11-18T08:32:23Z"
+      },
+      "result_sha256": "29693324caaa2f75de6bea5a71d5a71a9382c2ea48527c6a37ba3ed377837263"
+    },
+    {
+      "config": {
+        "mode": "combat",
+        "profile": "balanced",
+        "scenario": "declining",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "ce4d3f46abe10e55c5dc90b04b34c1e3243b5ac40addc0d8dc74be193c73af71",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/ae00c1bfe41b17839f0cb875/config.json",
+          "/workspace/adaptation-results/final-study/ae00c1bfe41b17839f0cb875/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "ae00c1bfe41b17839f0cb875",
+        "created_utc": "2026-11-18T08:32:31Z"
+      },
+      "result_sha256": "e3a3c0de68f29a99e9563d26fc5f468654a855d058acedf876bdfffa0397d1ef"
+    },
+    {
+      "config": {
+        "mode": "combat",
+        "profile": "balanced",
+        "scenario": "repeated_failures",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "15d320f3e40e9e9ae5487e4100b9c2f346b1bd2aeef783ae058e933671472884",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/c6eae3c60ff4c378993533b5/config.json",
+          "/workspace/adaptation-results/final-study/c6eae3c60ff4c378993533b5/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "c6eae3c60ff4c378993533b5",
+        "created_utc": "2026-11-18T08:32:39Z"
+      },
+      "result_sha256": "654cfee0f6cecec4d49c679c67476d27cef23b0c2fc040a0f91db79f792f899b"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "expert",
+        "scenario": "perfect",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "83e5eae5510fedcf1b8c6638d25e34cfa0572bee95fd9d52632307e5abf6fc3c",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/eb4977a9f14f1af83947eaf8/config.json",
+          "/workspace/adaptation-results/final-study/eb4977a9f14f1af83947eaf8/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "eb4977a9f14f1af83947eaf8",
+        "created_utc": "2026-11-18T08:32:45Z"
+      },
+      "result_sha256": "72c1b7a1e2aeb6ac08974ff8ac2fc637328f77f891b586e5d665427c3b320872"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "expert",
+        "scenario": "near_perfect",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "dcf3489dd9fc84bc5f850e07dd152ea784079adca6cd8c2ad84afe5f2090bdfc",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/e9caf8b2602b37c51466bd65/config.json",
+          "/workspace/adaptation-results/final-study/e9caf8b2602b37c51466bd65/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "e9caf8b2602b37c51466bd65",
+        "created_utc": "2026-11-18T08:32:48Z"
+      },
+      "result_sha256": "410f7da423fbf17f49ea83027e259c1aedbb547e87b4f794e44498eb129bcb5e"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "expert",
+        "scenario": "loss_recovery",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "865e6a8e6fc0f0e3a39787df32b875682acd788105f70dae655fad0f7a18bd48",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/4bc825a59aef5c97b2dcac34/config.json",
+          "/workspace/adaptation-results/final-study/4bc825a59aef5c97b2dcac34/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "4bc825a59aef5c97b2dcac34",
+        "created_utc": "2026-11-18T08:32:52Z"
+      },
+      "result_sha256": "93bd98bac0068a89670d79b9b7685ed5ec374ef24085b10a0e13bf80137dae2c"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "expert",
+        "scenario": "sparse",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "663f8496af9e85527f93b4d86fbb91513f4204daabedca695bff887d397b0a73",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/a5369558762586fa70dbc3dd/config.json",
+          "/workspace/adaptation-results/final-study/a5369558762586fa70dbc3dd/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "a5369558762586fa70dbc3dd",
+        "created_utc": "2026-11-18T08:32:59Z"
+      },
+      "result_sha256": "b598515c32f36e247cb73ebdec6234ec1d4dd24a94d38c0d8d78b666cf874d44"
+    },
+    {
+      "config": {
+        "mode": "control",
+        "profile": "expert",
+        "scenario": "unobserved_clear",
+        "dda": "both",
+        "seed": 17,
+        "rounds": 30,
+        "boss": 0,
+        "phase": 1,
+        "distance": 4,
+        "releaseCooldowns": false
+      },
+      "manifest": {
+        "source_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tools/DdaLab/Experiment.cs": "991f91ca27651075c4ff3cc6df95dfca968ff84d3c58ebd4ac148a948989668a"
+        },
+        "policy_sha256": "983a57c2d47523ce24a6fec683ae74201c2d83f9737dd8a94b4cd90444d37c83",
+        "sources_unchanged": true,
+        "replay": null,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "/workspace/adaptation-results/final-study/.build/3dc6822ff14c1db6a4272c669964a1bd983e7d942af8fd179354529295441c3e/out/Lab.dll",
+          "/workspace/adaptation-results/final-study/66fd6cfed5e6504428b96740/config.json",
+          "/workspace/adaptation-results/final-study/66fd6cfed5e6504428b96740/raw.json"
+        ],
+        "exit_code": 0,
+        "run_id": "66fd6cfed5e6504428b96740",
+        "created_utc": "2026-11-18T08:33:04Z"
+      },
+      "result_sha256": "9aae4727816d53ac283f17a6fa2997e648c35a72bf09f0b9581092ebcc4e0794"
+    }
+  ]
+}

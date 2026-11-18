@@ -1,0 +1,149 @@
+{
+  "commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+  "source_sha256": {
+    "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+    "Assets/Scripts/ScenePresentation.cs": "5686f854fdb909719be6fce34a3022e645f73127e058aa9a4b1b996f3a8156b1",
+    "Assets/Scripts/ParryGlow.cs": "36f9cabb495e58411d383617d9169d4536df88e36d40db6cf594109671d05a12",
+    "Assets/Scripts/CloudSync.cs": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+    "Assets/Scripts/NativeGameUI.cs": "989f936b8e8aeb9f2e673dce251284429958028c39233632b28904ac424d70b3",
+    "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+    "Assets/Scripts/DdaHistoryGraph.cs": "c17ee4117dd439485869088b76719f95d0d60b74ebebf2f2bc488f13b7cf1b52",
+    "Assets/Scripts/ArakusEchoView.cs": "6625ea272caf4399c48cb22ed1007e2bbc4fbae985556a4cabdfb3791c052455",
+    "Assets/Scripts/Soundscape.cs": "a2c3d68cf51523412177c59deaff8a1ea9f23f49da5bebdcbcf5e8840f85b214",
+    "Assets/Scripts/CombatSoundDesign.cs": "5254e868a53d253bb79adb4f3b22281ad1a214e4a875012ead9fe1b549504ba4",
+    "Assets/Scripts/ActorView.cs": "21b66d783476fafc16ef139fc0bb827db01a573b3ee88a0cd8a2ac560b968ab3",
+    "Assets/Scripts/UiKit.cs": "b6fd741692dc828ed929718e151cca57636b77c405ad800bb4678d87be4e8e27",
+    "Assets/Scripts/GameUI.cs": "e0a2ba283014c37515a2e74be05653e036cf8ac4b3cc30369b1c11f4e1c2d897",
+    "Assets/Scripts/DdaHistoryRecorder.cs": "ace2c3bfb510854fac289da66f741fef89caf2c124dbc01d4a029dfd00c599c1",
+    "Assets/Scripts/DdaDifficultyHistory.cs": "74c04cff3882ef180bd911b5daf326a1aae7106d6e7e6e810224247e8a6b29f2",
+    "Assets/Scripts/WorldArtist.BossAccents.cs": "cdcdc1a8875eefe12ce0bad708fe2e6a020fd84dd655381b74950cc364868c19",
+    "Assets/Scripts/PixelPresentation.cs": "2a8f386d7f539fa57d40234e02d9f1bb15bbd1066962fd0d750a085cd6327712",
+    "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+    "Assets/Scripts/DdaHistoryRuntime.cs": "0f62ef57e69e5fcf2735c041adeba49a21bf221feceba528da29e8ac3d3fd022",
+    "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+    "Assets/Scripts/ArakusVisuals.cs": "579fdc91b5939e533f416b223df230dfa8a2eeccfde2b4f806864384e2057dc9",
+    "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+    "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+    "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+    "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+    "Assets/Scripts/ExternalAssets.cs": "3781474cf63633e460c892834fc1a9ff85740477db4b1da51d39281aa90d78ef",
+    "Assets/Scripts/PhanesPose.cs": "dfcd456b42f6b3ace8790196a68cff34c442b1b391eb6996b8e2a9e94984a5c4",
+    "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+    "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+    "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+    "Assets/Scripts/SkillFxTimeline.cs": "48ecf2f3a89107a94461f095f758b78d03ed3cdbb34374369fafc2f07cfe442a",
+    "Assets/Scripts/PlayerAnimationSelection.cs": "43c4ed4d943aec70d890165378117f7450a3a21b0fe28943f1c75875a3d1b19a",
+    "Assets/Scripts/PhanesView.cs": "b32ebe174d17645316b61db08e1ba34018fd5180fffd759dde1d9f1b29edbae9",
+    "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+    "Assets/Scripts/PixelSprites.cs": "d26ec7cad59ed710f4e1d93b8333be8a5e49e9be8ed3dcc211261c4a89912044",
+    "Assets/Scripts/DdaPanel.cs": "f908ac8172571b73f48118c759709ce8e7949307d8006f38ad1216d4ba486381",
+    "Assets/Scripts/DdaPanelWindow.cs": "225a98302b00fa23b2ebc468032aa84cea2b3315bcd0fefc582ca18fc8bf5f30",
+    "Assets/Scripts/SkillEffectVisuals.cs": "2bd21af08b9b07141261b0554019848a64f02296283f33aacc4b4f6460ddb9cd",
+    "Assets/Scripts/WorldArtist.cs": "ea6df225a07b09fa7c698b9b96f486aeebf7303db455925e8cc995743285b433",
+    "Assets/Scripts/BossDefinition.cs": "13f004e791cee00c102a3f91fe357b4199ae1351e9bf2c1c378acdbbf202fbb8",
+    "Assets/Scripts/DdaDifficultyHistoryStore.cs": "430ee182925f6fa1fd42ad846c9f97d675e911b934f68a2e4d38490ed36cf5c0"
+  },
+  "suites": {
+    "logic": {
+      "exit": 0,
+      "rerun": "logic-reviewed.log",
+      "reason": "Initial failure was exact old reason text; preserve equal prediction and strengthen whole-learning-state immutability check"
+    },
+    "dda-learning": {
+      "exit": 0,
+      "tail": [
+        "/workspace/dda-adaptation/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/dda-learning-execution-juxu_t1i/Checks.csproj]",
+        "DDA_VERIFICATION source=integrated PASS=269 FAIL=0 (failures retained, no policy changes)",
+        ""
+      ]
+    },
+    "history": {
+      "exit": 0,
+      "tail": [
+        "PASS observer preserves chosen levels in battle 6",
+        "PASS recording and repeated graph queries leave A/b, memories and learning counters identical to baseline",
+        "DDA_HISTORY_TESTS_PASSED 47 assertions; Unity rendering and real DB are not exercised."
+      ]
+    },
+    "panel": {
+      "exit": 0,
+      "tail": [
+        "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+        "--------------------------------------------------------------------------------------",
+        "DDA_PANEL_WINDOW_TESTS_PASSED 205 assertions; Unity GUI/input not exercised."
+      ]
+    },
+    "charge": {
+      "exit": 0,
+      "tail": [
+        "/workspace/dda-adaptation/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-polish-q8kyts6w/Tests.csproj]",
+        "/workspace/dda-adaptation/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-polish-q8kyts6w/Tests.csproj]",
+        "ARAKUS_CHARGE_POLISH_TESTS_PASSED 325; Unity rendering/input and human dodgeability not exercised."
+      ]
+    },
+    "size-animation": {
+      "exit": 0,
+      "rerun": "size-reviewed.log",
+      "manifest": {
+        "base_commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+          "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+          "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+          "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tests/HeadlessTests.cs": "5538e1b1bc178b8f752fb5800b404203ff5695c8650deb62e595a86f9f79db4b",
+          "Tests/ArakusAnimationTests.cs": "1249f871dd8099d8593b7a869ddd6552f4d5552ddd5a1befce65a5593ca8e010",
+          "Tests/ArakusSizeTests.cs": "7ccfe537319bfe303153a40dfdae6afdcc65f39109ddf631e874a5d1077ff3c6"
+        },
+        "tests": {
+          "HeadlessTests": 0,
+          "ArakusAnimationTests": 0,
+          "ArakusSizeTests": 0
+        },
+        "limits": [
+          "HEADLESS UnityShim, not Unity API compilation/rendering",
+          "No actual editor transforms or graphics/Windows build",
+          "No real DB or existing saves"
+        ]
+      },
+      "reason": "Rerun after same Headless assertion correction; art/size criteria unchanged"
+    },
+    "room-resources": {
+      "exit": 0,
+      "tail": [
+        "207 PASS 0 FAIL"
+      ]
+    },
+    "size-resources": {
+      "exit": 0,
+      "tail": [
+        "87 PASS 0 FAIL"
+      ]
+    },
+    "charge-art": {
+      "exit": 0,
+      "tail": [
+        "PASS frame 3 opaque WH (53, 64) -> (66, 80)",
+        "PASS frame 4 opaque WH (48, 64) -> (60, 80)",
+        "ARAKUS_CHARGE_ART_CHECKS_PASSED: 5 frames, exact nearest-neighbor source pixels, baseline, metadata and excluded files"
+      ]
+    }
+  },
+  "limits": [
+    "HEADLESS UnityShim and static/Pillow checks",
+    "No Unity API compile, Game View, Windows build or DB network test"
+  ],
+  "initial_failures_preserved": "initial-regression.json",
+  "verification": "Only failing logic/size suites rerun after test correction; remaining 7 results unchanged and passed."
+}

@@ -1,0 +1,45 @@
+{
+  "commit": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+  "suites": {
+    "adaptation": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+        "Assets/Scripts/GameData.cs": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+        "Assets/Scripts/TowerGame.cs": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+        "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+        "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+        "Assets/Scripts/BossPatternSystem.cs": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+        "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+        "Tests/AdaptationColdStartTests.cs": "7cdbe4c2c29b27490fb29fcebe00fc77ac9bd4d36950f06f45603cd08fb30cd4"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-1id7l_fw/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS active clear time changes actual score",
+        "PASS reading and pause increase elapsed but never lower score",
+        "PASS perfect but sparse tutorial evidence cannot certify expert",
+        "ADAPTATION_COLDSTART_PASS 155"
+      ]
+    }
+  },
+  "limits": [
+    "HEADLESS or mocked Unity/HTTP, not Unity API/runtime or real network",
+    "No production DB, credentials, personal saves/queues",
+    "Tutorial groups are not calibrated human skill probabilities"
+  ]
+}

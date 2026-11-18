@@ -1,0 +1,204 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-adaptation/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/dda-robustness-es8wkrf6/Tests.csproj]
+/workspace/dda-adaptation/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/dda-robustness-es8wkrf6/Tests.csproj]
+PASS cold sample neutral
+PASS four failures only mild boost
+PASS bounded evidence boost
+PASS disabled neutral
+PASS low HP neutral
+PASS success not boosted
+PASS invalid counters ignored
+PASS 100 samples bounded
+PASS outside not dodge
+PASS explicit threat escape observed
+PASS posthit invulnerability not skill
+PASS overlap dash dodge observed
+PASS safe throughout hazard ignored
+PASS leave warning area counts once
+PASS hazard no duplicate outcome
+PASS stay in warning hit
+PASS far melee ignored
+PASS melee leave threat observed
+PASS weights normalized
+PASS weak pattern boosted
+PASS reasons recorded
+PASS diagnostic base and multiplier
+PASS decision snapshots hit count
+PASS manual selection creates local csv
+PASS csv includes causal fields
+PASS one csv row per candidate
+PASS IO failure nonfatal
+PASS IO failure preserves existing data
+PASS bounded log 0
+PASS bounded log 1
+PASS bounded log 2
+PASS bounded log 3
+PASS bounded log 4
+PASS bounded log 5
+PASS bounded log 6
+PASS bounded log 7
+PASS bounded log 8
+PASS bounded log 9
+PASS bounded log 10
+PASS bounded log 11
+PASS bounded log 12
+PASS bounded log 13
+PASS bounded log 14
+PASS bounded log 15
+PASS bounded log 16
+PASS bounded log 17
+PASS bounded log 18
+PASS bounded log 19
+PASS bounded log 20
+PASS bounded log 21
+PASS bounded log 22
+PASS bounded log 23
+PASS bounded log 24
+PASS bounded log 25
+PASS bounded log 26
+PASS bounded log 27
+PASS bounded log 28
+PASS bounded log 29
+PASS bounded log 30
+PASS bounded log 31
+PASS bounded log 32
+PASS bounded log 33
+PASS bounded log 34
+PASS bounded log 35
+PASS bounded log 36
+PASS bounded log 37
+PASS bounded log 38
+PASS bounded log 39
+PASS bounded log 40
+PASS bounded log 41
+PASS bounded log 42
+PASS bounded log 43
+PASS bounded log 44
+PASS bounded log 45
+PASS bounded log 46
+PASS bounded log 47
+PASS bounded log 48
+PASS bounded log 49
+PASS bounded log 50
+PASS bounded log 51
+PASS bounded log 52
+PASS bounded log 53
+PASS bounded log 54
+PASS bounded log 55
+PASS bounded log 56
+PASS bounded log 57
+PASS bounded log 58
+PASS bounded log 59
+PASS bounded log 60
+PASS bounded log 61
+PASS bounded log 62
+PASS bounded log 63
+PASS bounded log 64
+PASS bounded log 65
+PASS bounded log 66
+PASS bounded log 67
+PASS bounded log 68
+PASS bounded log 69
+PASS bounded log 70
+PASS bounded log 71
+PASS bounded log 72
+PASS bounded log 73
+PASS bounded log 74
+PASS bounded log 75
+PASS bounded log 76
+PASS bounded log 77
+PASS bounded log 78
+PASS bounded log 79
+PASS bounded log 80
+PASS bounded log 81
+PASS bounded log 82
+PASS bounded log 83
+PASS bounded log 84
+PASS bounded log 85
+PASS bounded log 86
+PASS bounded log 87
+PASS bounded log 88
+PASS bounded log 89
+PASS bounded log 90
+PASS bounded log 91
+PASS bounded log 92
+PASS bounded log 93
+PASS bounded log 94
+PASS bounded log 95
+PASS bounded log 96
+PASS bounded log 97
+PASS bounded log 98
+PASS bounded log 99
+PASS bounded log 100
+PASS bounded log 101
+PASS bounded log 102
+PASS bounded log 103
+PASS bounded log 104
+PASS bounded log 105
+PASS bounded log 106
+PASS bounded log 107
+PASS bounded log 108
+PASS bounded log 109
+PASS bounded log 110
+PASS bounded log 111
+PASS bounded log 112
+PASS bounded log 113
+PASS bounded log 114
+PASS bounded log 115
+PASS bounded log 116
+PASS bounded log 117
+PASS bounded log 118
+PASS bounded log 119
+PASS bounded log 120
+PASS bounded log 121
+PASS bounded log 122
+PASS bounded log 123
+PASS bounded log 124
+PASS bounded log 125
+PASS bounded log 126
+PASS bounded log 127
+PASS bounded log 128
+PASS bounded log 129
+PASS bounded log 130
+PASS bounded log 131
+PASS bounded log 132
+PASS bounded log 133
+PASS bounded log 134
+PASS bounded log 135
+PASS bounded log 136
+PASS bounded log 137
+PASS bounded log 138
+PASS bounded log 139
+PASS bounded log 140
+PASS bounded log 141
+PASS bounded log 142
+PASS bounded log 143
+PASS bounded log 144
+PASS bounded log 145
+PASS bounded log 146
+PASS bounded log 147
+PASS bounded log 148
+PASS bounded log 149
+PASS recent overloaded pattern excluded if alternative
+PASS repeat exclusion logged
+PASS one selected decision logged
+PASS battle disabled remains base
+PASS eligible authored opening preserved
+PASS opening cannot bypass range gate
+PASS reset clears battle evidence
+DDA_FREQUENCY_PASSED 185 checks; no Unity runtime or human balance evidence

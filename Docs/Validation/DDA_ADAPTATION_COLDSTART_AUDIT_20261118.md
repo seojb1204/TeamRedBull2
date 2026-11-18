@@ -163,3 +163,13 @@ Unity6000.4.0f1은 이 환경에서 찾지 못했다. Game View/실제 F8·F9/�
 5. 발표 전 보스별 BGM/일시정지 청음·11/23 시연 흐름을 실제 Windows에서 확인한다.
 
 제품/테스트 커밋 `24e6a2c`, Lab 커밋 `166fe3f`. 실험은 커밋 전 동일 제품 소스에서 실행하여 manifest의 source_commit은 기준969f3e9로 표시된다. 실제 실행 소스의 SHA256을 함께 기록했고 최종 제품과 exact scope hash가 일치한다. Git Push/PR 결과는 아래 전달 기록에 추가한다.
+
+### 전달 기록
+
+독립 브랜치 Push 성공. 제품 `24e6a2c`, Lab `166fe3f`, 실험 증거 `759b4cf`. `gh pr create --draft --base main`은 `Post https://api.github.com/graphql: Forbidden`으로 실패했고 PR 번호는 생성 확인되지 않았다. 이는 GitHub API 권한/접근 제한이며 로컬 테스트 또는 Push 실패가 아니다.
+
+- [main 대비 비교](https://github.com/seojb1204/TeamRedBull2/compare/main...feat/dda-adaptation-proficiency-coldstart-20261118) — 이전 미병합 통합 포함.
+- [이번 변경만 기준 통합 SHA 대비 비교](https://github.com/seojb1204/TeamRedBull2/compare/969f3e9c59712c3cb38d2d321c68186dfeaa0001...feat/dda-adaptation-proficiency-coldstart-20261118).
+- [준비한 Draft PR 본문](DDA_ADAPTATION_20261118_PR.md).
+
+운영 SQL 적용·실제 DB 연결·main 병합·환경 게시를 하지 않았다. 테스트에 직접 생성한 network-none PostgreSQL 컨테이너와 전용 자동 volume은 검사 후 제거한다. 기존 worktree들과 원격 원본 브랜치 head는 유지한다.

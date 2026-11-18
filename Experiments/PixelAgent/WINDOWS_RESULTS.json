@@ -1,0 +1,137 @@
+{
+  "schema": "tower-pixel-windows-validation/1",
+  "date": "2026-11-13",
+  "unity": "6000.4.0f1",
+  "renderer": "NVIDIA GeForce RTX 5080",
+  "assembly_sha256": "437dc933e772fa4148553522cfd144625213ac2a0f9d0edabac601a77afd81b3",
+  "framebuffer": "160x90 RGB PPM, real game screenshot; samples inspected",
+  "step": "4 fixed frames at 1/60; game pauses between actions",
+  "episodes": [
+    {
+      "policy": "random",
+      "seed": 17,
+      "training": false,
+      "steps": 502,
+      "reward": -2.4401026318082586,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 37.279,
+      "actions": {
+        "idle": 66,
+        "left": 73,
+        "right": 84,
+        "attack": 69,
+        "parry": 76,
+        "jump": 57,
+        "dash": 76
+      },
+      "updates": 0,
+      "completed": true
+    },
+    {
+      "policy": "rule",
+      "seed": 17,
+      "training": false,
+      "steps": 568,
+      "reward": -2.041358989197761,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 41.849,
+      "actions": {
+        "idle": 0,
+        "left": 0,
+        "right": 0,
+        "attack": 567,
+        "parry": 0,
+        "jump": 0,
+        "dash": 0
+      },
+      "updates": 0,
+      "completed": true
+    },
+    {
+      "policy": "learned",
+      "seed": 1001,
+      "training": true,
+      "steps": 526,
+      "reward": -2.512179505545646,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 39.333,
+      "actions": {
+        "idle": 45,
+        "left": 46,
+        "right": 126,
+        "attack": 110,
+        "parry": 112,
+        "jump": 43,
+        "dash": 43
+      },
+      "updates": 525,
+      "completed": true
+    },
+    {
+      "policy": "learned",
+      "seed": 1002,
+      "training": true,
+      "steps": 731,
+      "reward": -2.7171795470640063,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 53.611,
+      "actions": {
+        "idle": 45,
+        "left": 129,
+        "right": 127,
+        "attack": 152,
+        "parry": 24,
+        "jump": 76,
+        "dash": 177
+      },
+      "updates": 1255,
+      "completed": true
+    },
+    {
+      "policy": "learned",
+      "seed": 17,
+      "training": false,
+      "steps": 513,
+      "reward": -2.5120000143069774,
+      "terminated": true,
+      "truncated": false,
+      "outcome": "loss",
+      "wall_seconds": 38.147,
+      "actions": {
+        "idle": 511,
+        "left": 1,
+        "right": 0,
+        "attack": 0,
+        "parry": 0,
+        "jump": 0,
+        "dash": 0
+      },
+      "updates": 1255,
+      "completed": true
+    }
+  ],
+  "evaluation_checkpoint_unchanged": true,
+  "initial_failed_runs": [
+    "client PermissionError during shared transition replacement",
+    "Unity IOException during shared transition replacement; owned process terminated by runner"
+  ],
+  "fix": "numbered immutable transition files, bounded replacement retry, process watchdog",
+  "conclusion": "Transport and learning update pipeline validated. Combat learning failed in this tiny run: evaluation chose idle511/512, no attacks, lost; reward below random. No skill/convergence/human-like-play claim.",
+  "limits": [
+    "single evaluation seed; not statistically meaningful",
+    "linear pooled-RGB model only; no CNN/imitation",
+    "rule detector uncalibrated and used attack fallback for all567 actions",
+    "two training fights only",
+    "same 7 single-input actions; cannot compare with richer PR26 oracle action set",
+    "simulation pauses between inputs, not human reaction timing",
+    "normal save and DB config excluded; GPU renders game only, no ML GPU workload"
+  ]
+}

@@ -52,6 +52,15 @@ namespace ReversalTower
         public ScenePresentation scenePresentation;
         public NativeGameUI nativeUI;
 #endif
+        #if !HEADLESS && !DESKTOP_PREVIEW
+        PixelAgentBridge pixelBridge;
+#endif
+        void RecordPixelHpChange(float before)
+        {
+#if !HEADLESS && !DESKTOP_PREVIEW
+            pixelBridge?.RecordPlayerHpChange(before,playerHp);
+#endif
+        }
         bool demo;float demoAction;string capturePath;bool captureDone;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap(){if(FindAnyObjectByType<TowerGame>()==null)new GameObject("Reversal Tower").AddComponent<TowerGame>();}
@@ -63,7 +72,7 @@ namespace ReversalTower
             // 의도가 모호해지므로 기본은 vSync 에 맡기고, 측정할 때만 고정 프레임을 쓴다.
             if(AutoRunArgs.ForcedFrameRate>0){QualitySettings.vSyncCount=0;Application.targetFrameRate=AutoRunArgs.ForcedFrameRate;}
             else{QualitySettings.vSyncCount=1;Application.targetFrameRate=-1;}
-            save=SaveStore.Load();AudioListener.volume=save.masterVolume;
+            save=SaveStore.Load();AudioListener.volume=AutoRunArgs.ExternalInput?0:save.masterVolume;
 #if !HEADLESS && !DESKTOP_PREVIEW
             if(!scenePresentation)scenePresentation=FindAnyObjectByType<ScenePresentation>();
             if(!nativeUI)nativeUI=FindAnyObjectByType<NativeGameUI>();
@@ -77,17 +86,27 @@ namespace ReversalTower
             sound=gameObject.AddComponent<Soundscape>();sound.Initialize();
             artist=gameObject.AddComponent<WorldArtist>();artist.Initialize(this);
             InitGui();
-            var args=Environment.GetCommandLineArgs();demo=Array.IndexOf(args,"-towerDemo")>=0||AutoRunArgs.AgentProfile!=null;
+            var args=Environment.GetCommandLineArgs();demo=Array.IndexOf(args,"-towerDemo")>=0||AutoRunArgs.AgentProfile!=null||Array.IndexOf(args,"-towerPixelAgent")>=0;
             capturePath=AutoRunArgs.CapturePath;
             if(demo)
             {
                 if(AutoRunArgs.AgentProfile!=null&&SaveStore.IsIsolated)save.unlockedBoss=Mathf.Max(save.unlockedBoss,AutoRunArgs.AgentBoss);
                 StartBattle(AutoRunArgs.AgentProfile!=null?AutoRunArgs.AgentBoss:0);
             }
+#if !HEADLESS && !DESKTOP_PREVIEW
+            try { pixelBridge=PixelAgentBridge.AttachIfRequested(this); }
+            catch(Exception ex) { demo=false;paused=true;enabled=false;Debug.LogError(ex.Message);Application.Quit(2); }
+#endif
         }
         void Update()
         {
-            float raw=Mathf.Min(Time.unscaledDeltaTime,.05f);realClock+=raw;
+            #if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelBridge!=null&&!pixelBridge.BeforeTick())return;
+            float raw=pixelBridge!=null?1f/60f:Mathf.Min(Time.unscaledDeltaTime,.05f);
+#else
+            float raw=Mathf.Min(Time.unscaledDeltaTime,.05f);
+#endif
+            realClock+=raw;
             noticeTime=Mathf.Max(0,noticeTime-raw);flash=Mathf.Max(0,flash-raw*2);phaseFlash=Mathf.Max(0,phaseFlash-raw*.8f);
             shake=Mathf.Max(0,shake-raw*12);
             if(!AutoRunArgs.Active&&Input.GetKeyDown(KeyCode.F12))Capture();
@@ -96,7 +115,7 @@ namespace ReversalTower
 #endif
             TickTransition(raw);
             if(!TransitionActive)TutorialBeforeUpdate(raw);
-            if(!TransitionActive&&!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
+            if(!TransitionActive&&!TutorialActive&&(!AutoRunArgs.Active||AutoRunArgs.ExternalInput))HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
                 Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
             // 역경직 동안에는 전투 시간을 0으로 흘린다 (입력은 계속 읽어서 그 사이 누른 키를 놓치지 않음)
             float battleDt=raw;bool fighting=!TransitionActive&&!ended&&!TutorialExplaining&&mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;
@@ -113,6 +132,9 @@ namespace ReversalTower
             float hpRatio=maxHp>0?playerHp/maxHp:1;
             sound.danger=mode==ScreenMode.Battle&&!ended&&hpRatio<.35f?Mathf.Clamp01(.35f+.65f*(1-hpRatio/.35f)):0;
             if(!captureDone&&!string.IsNullOrEmpty(capturePath)&&realClock>5){ScreenCapture.CaptureScreenshot(capturePath);captureDone=true;}
+            #if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelBridge==null)
+#endif
             AutoRunTick(Time.unscaledDeltaTime);
         }
         void LateUpdate()
@@ -265,6 +287,10 @@ namespace ReversalTower
             bool parry=Input.GetKeyDown(KeyCode.K)||Input.GetKeyDown(KeyCode.X)||(!panelMouse&&Input.GetMouseButtonDown(1));
             bool q=Input.GetKeyDown(KeyCode.Q),w=Input.GetKeyDown(KeyCode.W),e=Input.GetKeyDown(KeyCode.E),r=Input.GetKeyDown(KeyCode.R),f=Input.GetKeyDown(KeyCode.F);
             float move=(right?1:0)-(left?1:0);
+            #if !HEADLESS && !DESKTOP_PREVIEW
+            if(pixelBridge!=null)pixelBridge.ApplyInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f);
+            else
+#endif
             if(demo)DemoInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);
             if(EvidenceEnabled)
             {
@@ -445,7 +471,7 @@ namespace ReversalTower
             // Protection applies only while casting R, never to the eight-second sword buff. Initial invulnerability remains above.
             if(UltimateCasting)damage*=SparkDamageTaken;
             s.damage+=damage;
-            float oldPlayerHp=playerHp;playerHp=Mathf.Max(0,playerHp-damage);NoteEvidence("damage_taken",pattern,oldPlayerHp-playerHp);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=5;
+            float oldPlayerHp=playerHp;playerHp=Mathf.Max(0,playerHp-damage);NoteEvidence("damage_taken",pattern,oldPlayerHp-playerHp);RecordPixelHpChange(oldPlayerHp);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=5;
             HitStop(HitStopHurt);AddImpact(player+new Vector2(0,1.1f),3,1,0);
             if(playerAction=="E"&&actionTime>.6f)skillE=LobbyCards.Cooldown(save,"E")*.5f;
             actionTime=0;healing=0;parryAge=99;player.x=Mathf.Clamp(player.x+Mathf.Sign(-sourceX)*.45f,Left+.4f,Right-.4f);

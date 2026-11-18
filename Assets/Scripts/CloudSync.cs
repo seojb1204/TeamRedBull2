@@ -142,6 +142,7 @@ namespace ReversalTower
             try
             {
             bool ok = true;
+            bool rejectedOwner=false;
             string[] files = Directory.GetFiles(queueDir, "*.json");
             Array.Sort(files, StringComparer.Ordinal);
             foreach (string file in files)
@@ -150,7 +151,7 @@ namespace ReversalTower
                 try { p = JsonUtility.FromJson<Pending>(File.ReadAllText(file)); } catch (Exception) { }
                 // Never discard corrupt or unattributed uploads. Never relabel them with the active profile.
                 string owner=p==null?null:SaveStore.ResolveUploadOwner(p.player,p.battle,p.card);
-                if(owner==null){ok=false;Debug.LogWarning("DB 대기열 신원 검증 실패: 원본 보존");continue;}
+                if(owner==null){ok=false;rejectedOwner=true;Debug.LogWarning("DB 대기열 신원 검증 실패: 원본 보존");continue;}
                 string registration=RegisteredKey+owner;
                 if(PlayerPrefs.GetInt(registration,0)==0)
                 {
@@ -167,10 +168,10 @@ namespace ReversalTower
             bool fetched=false;
             yield return FetchDifficulty(r=>fetched=r);
             int left = Directory.GetFiles(queueDir, "*.json").Length;
-            CommunityStats.Status = !ok
+            CommunityStats.Status = !ok||rejectedOwner
                 ? "DB 전송 실패 · 대기 " + left + "건 · 통계 " + (fetched?"수신됨":"수신 실패 (이전 캐시)")
                 : !fetched ? "DB 전송 처리 완료 · 통계 수신 실패 (이전 캐시 " + CommunityStats.Count + "개)"
-                : "DB 동기화됨 " + (lastSync.HasValue ? lastSync.Value.ToString("HH:mm") : "") + " · 패턴 통계 " + CommunityStats.Count + "개";
+                : "DB 동기화됨 " + (lastSync.HasValue ? lastSync.Value.ToString("HH:mm") : "") + " · 패턴 통계 " + CommunityStats.Count + "개"+(left>0?" · 대기 "+left+"건":"");
             finished=true;
             }
             finally { sending = false;if(!finished)CommunityStats.Status="DB 동기화 중단 · 메모리 통계 "+CommunityStats.Count+"개 유지"; }

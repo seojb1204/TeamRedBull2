@@ -1,3 +1,5 @@
+// Historical proposal superseded by ReversalTower.TutorialAssessment in PR #50.
+// "Balanced" here is not the product group "normal". No runtime use.
 // Test-only contract proposal. Not a SaveData/DB schema or runtime integration.
 using System;
 namespace TutorialContractCandidate {

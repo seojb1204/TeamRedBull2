@@ -94,8 +94,10 @@ namespace ReversalTower
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if(!TutorialActive&&!AutoRunArgs.Active)DevKeys();
 #endif
+            bool wasTutorial=TutorialActive;
             TutorialBeforeUpdate(raw);
-            if(!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
+            // Completion retry/exit may consume Enter/Escape. Do not reuse it on the next screen.
+            if(!wasTutorial&&!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
                 Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
             // 역경직 동안에는 전투 시간을 0으로 흘린다 (입력은 계속 읽어서 그 사이 누른 키를 놓치지 않음)
             float battleDt=raw;bool fighting=!TutorialExplaining&&mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;

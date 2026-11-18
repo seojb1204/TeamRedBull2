@@ -5,7 +5,7 @@ using UnityEngine;
 public static class PhanesTests {
  static int n;
  static void Check(bool b,string m){if(!b)throw new Exception(m);n++;}
- static TowerGame Start(){var g=new TowerGame();g.save=new SaveData{unlockedBoss=4};typeof(TowerGame).GetField("sound",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(g,new Soundscape());g.StartBattle(1);return g;}
+ static TowerGame Start(){var g=new TowerGame();g.save=new SaveData{unlockedBoss=4};typeof(TowerGame).GetField("sound",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(g,new Soundscape());g.save.tutorialOnboardingVersion=1;g.StartBattle(1);return g;}
  public static int Main(){try{
  foreach(float dt in new[]{1f/30,1f/60,1f/120}){
  var g=Start();float x=g.boss.x;g.BossPatterns.TickBoss(dt);Check(g.boss.x<x,"moves throughout rest");
@@ -18,7 +18,7 @@ public static class PhanesTests {
  Check(landed&&rising,"complete lifecycle");Check(Math.Abs(grounded-3)<dt*2,"three seconds on ground");Check(Math.Abs(g.boss.y-1.05f)<.001,"returns to hover");
  g.BossPatterns.TickBoss(dt);Check(g.phaseTwo,"phase resumes after recovery");
  g=Start();g.boss.y=1.2f;g.bossStagger=.45f;g.BossPatterns.TickBoss(dt);Check(g.boss.y==1.2f&&g.BossPatterns.phanesDownStage==0,"parry does not drop boss");
- g.BossPatterns.BreakPhanesBarrier();g.StartBattle(1);Check(g.BossPatterns.phanesDownStage==0,"restart resets down");
+ g.BossPatterns.BreakPhanesBarrier();g.save.tutorialOnboardingVersion=1;g.StartBattle(1);Check(g.BossPatterns.phanesDownStage==0,"restart resets down");
  }
  foreach(float side in new[]{-1f,1f}){var g=Start();g.player.x=side*10;g.boss.x=side*9;g.rest=100;for(int j=0;j<300;j++)g.BossPatterns.TickBoss(.016f);Check(g.boss.x>=TowerGame.Left+1&&g.boss.x<=TowerGame.Right-1,"arena bound");}
  {var g=Start();g.current=g.spec.patterns[0];g.windup=1;g.patternAge=0;float x=g.boss.x;g.BossPatterns.TickBoss(.01f);Check(x==g.boss.x,"windup position locked");}

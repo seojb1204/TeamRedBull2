@@ -13,7 +13,7 @@ a = p.parse_args()
 if not a.dotnet:
     p.error('Install a .NET 8 SDK or supply --dotnet')
 repo = Path(__file__).resolve().parents[1]
-names = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
+names = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices', 'ArakusPatternTiming', 'ArakusAnimationSelection']
 entry = 'DdaFrequencyTests'
 sources = [repo / 'Assets' / 'Scripts' / (n + '.cs') for n in names]

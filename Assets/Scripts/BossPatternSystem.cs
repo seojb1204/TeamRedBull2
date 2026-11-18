@@ -87,12 +87,17 @@ namespace ReversalTower
         public const float ParryCueLead=1.2f, ParryFlashLead=.35f, ParryFlashTime=.3f;
         public float parryGlow;          // 0~1 보스 몸의 파란 빛 (부드럽게 따라감)
         public float parryFlash=99;      // 보스 무기 앞 별빛이 터진 뒤 지난 시간
+        public const string PhanesUltimate="phanes_star";
+        const float ChaseStopDistance=3.1f, ChaseResumeDistance=3.25f;
+        bool phanesUltimateUsed, arakusChasing;
+        float nextArakusSelection;
         int patternSerial,cueKey=-1;float cueSoundAt=-9;
         public float DamageTakenScale => current!=null&&current.kind==AttackKind.Rage?RageDamageTaken:1f;
         public BossPatternSystem(TowerGame game) { g = game; }
         public void Reset()
         {
             phanesDownStage=0;phanesDownAge=0;phanesFallFrom=0;
+            phanesUltimateUsed=arakusChasing=false;nextArakusSelection=0;
             diagnosticSession=System.Guid.NewGuid().ToString("N");DiagnosticStatus="아직 선택 기록 없음";
             cooldowns.Clear(); previousPattern=""; dashHit=false; recentSelections.Clear(); selectionLog.Clear(); meleeThreatened=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
@@ -149,11 +154,28 @@ namespace ReversalTower
                     g.boss.x=Mathf.MoveTowards(g.boss.x,target,dt*g.spec.speed);
                     g.bossFace=g.player.x>=g.boss.x?1:-1;
                 }
-                if(rest>0)return;
+                if(rest>0){arakusChasing=false;return;}
+                if(g.spec.id=="phanes"&&phaseTwo&&!phanesUltimateUsed&&!barrier)
+                {
+                    var ultimate=System.Array.Find(g.spec.patterns,p=>p.id==PhanesUltimate);
+                    if(ultimate!=null){BeginPattern(ultimate);return;}
+                }
                 float distance=Mathf.Abs(g.boss.x-g.player.x);
                 g.bossFace=g.player.x>=g.boss.x?1:-1;
                 float chase=g.spec.speed*(g.spec.hasPillars?(rageActive?RageTempo:1):(phaseTwo?1.18f:1));
-                if(distance>3.1f&&!g.spec.airborne){g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase);if(distance>5&&combatRandom.NextDouble()>.015)return;}
+                if(g.spec.hasPillars)
+                {
+                    arakusChasing=distance>(arakusChasing?ChaseStopDistance:ChaseResumeDistance);
+                    if(arakusChasing)
+                    {
+                        float stop=g.player.x-g.bossFace*ChaseStopDistance;
+                        g.boss.x=Mathf.MoveTowards(g.boss.x,stop,dt*chase);
+                    }
+                    g.bossState=arakusChasing?"추적":"대기";
+                    if(g.seconds<nextArakusSelection)return;
+                    if(distance>5&&combatRandom.NextDouble()>.015)return;
+                }
+                else if(distance>3.1f&&!g.spec.airborne){g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase);if(distance>5&&combatRandom.NextDouble()>.015)return;}
                 SelectPattern(distance);return;
             }
             // Conservative positional evidence: player occupied this melee hit region during
@@ -364,7 +386,12 @@ namespace ReversalTower
                 if(p.kind==AttackKind.Balance&&g.seconds<12)continue;
                 candidates.Add(p);
             }
-            if(candidates.Count==0){rest=.2f;return;}
+            if(candidates.Count==0)
+            {
+                if(g.spec.hasPillars)nextArakusSelection=g.seconds+.2f;
+                else rest=.2f;
+                return;
+            }
             // Preserve authored gates. Prefer alternatives once a pattern occupied 2 of
             // the last 6 selections; never deadlock if every eligible pattern is capped.
             var excluded=new List<Pattern>();
@@ -414,7 +441,14 @@ namespace ReversalTower
             windup=special?p.windup:Mathf.Max(.4f,p.windup*telegraph[level+2]/(phaseTwo?g.spec.phaseSpeedScale:1));
             windup/=tempo;
             recovery=p.recovery/(phaseTwo?g.spec.phaseSpeedScale:1)/tempo;patternDamage=p.damage*damage[level+2];patternCount=p.count;
-            if(phaseTwo&&p.kind==AttackKind.Volley)patternCount++;
+            if(p.id==PhanesUltimate)
+            {
+                phanesUltimateUsed=true;
+                windup=p.windup;recovery=p.recovery;patternCount=1;
+                g.Say("굴절의 별 · 파란 광탄을 받아치거나 궤적 밖으로 피하세요",windup);
+                g.PlaySound("cue");
+            }
+            else if(phaseTwo&&p.kind==AttackKind.Volley)patternCount++;
             if(p.count>1&&level!=0&&p.kind<AttackKind.Step)patternCount=Mathf.Max(1,patternCount+(level==2?1:level==-2?-1:0));
             if(p.kind==AttackKind.Dash)patternCount=2;
             float baseCooldown=p.cooldown>0?p.cooldown:(p.kind==AttackKind.Balance||p.kind==AttackKind.Barrier?18:4);
@@ -452,8 +486,17 @@ namespace ReversalTower
             {
                 Vector2 spawn=g.boss+new Vector2(g.bossFace*.75f,1.25f);
                 Vector2 aim=(g.player+Vector2.up*.9f-spawn).normalized;
-                if(p.id=="fan")aim=Quaternion.Euler(0,0,(attackStep-(patternCount-1)*.5f)*13)*aim;
-                FireShot(spawn,aim*g.spec.projectileSpeed,patternDamage,p.parryable,p.id);
+                if(p.id==PhanesUltimate)
+                {
+                    Vector2 target=new Vector2(targetX,.85f);
+                    FirePhanesStars(spawn,(target-spawn).normalized,g.spec.projectileSpeed,patternDamage,false);
+                    g.PlaySound("boss_1_Volley_orb");
+                }
+                else
+                {
+                    if(p.id=="fan")aim=Quaternion.Euler(0,0,(attackStep-(patternCount-1)*.5f)*13)*aim;
+                    FireShot(spawn,aim*g.spec.projectileSpeed,patternDamage,p.parryable,p.id);
+                }
             }
             else if(p.kind==AttackKind.Rain)
             {
@@ -531,11 +574,19 @@ namespace ReversalTower
         void Ting(){if(g.seconds-cueSoundAt>.12f){cueSoundAt=g.seconds;g.PlaySound("cue");}}
         public void FireShot(Vector2 pos,Vector2 velocity,float damage,bool parry,string pattern,bool friendly=false)
         {g.shots.Add(new TowerGame.Shot{pos=pos,vel=velocity,damage=damage,parry=parry,pattern=pattern,friendly=friendly});}
+        public void FirePhanesStars(Vector2 position,Vector2 aim,float speed,float damage,bool friendly)
+        {
+            for(int index=-2;index<=2;index++)
+            {
+                Vector2 velocity=Quaternion.Euler(0,0,index*13)*aim*speed;
+                FireShot(position,velocity,damage,!friendly,friendly?"ultimate":PhanesUltimate,friendly);
+            }
+        }
         public void TickShots(float dt)
         {
             for(int i=g.shots.Count-1;i>=0;i--)
             {
-                var s=g.shots[i];s.life-=dt;s.pos+=s.vel*dt;bool remove=false;
+                var s=g.shots[i];float arrivalX=s.vel.x;s.life-=dt;s.pos+=s.vel*dt;bool remove=false;
                 if(s.returns&&!s.friendly)
                 {
                     // 아라쿠스 방패: 7m 날아갔다가 보스 손으로 돌아옴. 손에 닿으면 회수.
@@ -556,16 +607,17 @@ namespace ReversalTower
                 {
                     Vector2 aim=(g.boss+Vector2.up*1.3f-s.pos).normalized;
                     s.vel=Vector2.Lerp(s.vel,aim*12,dt*9);
-                    if(g.BossShotOverlap(s.pos,s.radius)){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage);remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
+                    if(g.BossShotOverlap(s.pos,s.radius)){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage,1,s.pattern!="ultimate");remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
                 }
                 else if(!s.hitDone&&s.pos.x>g.player.x-.5f-s.radius&&s.pos.x<g.player.x+.5f+s.radius&&s.pos.y>g.player.y-s.radius&&s.pos.y<g.player.y+1.65f+s.radius)
                 {
-                    int before=g.parries;g.PlayerHit(s.damage,s.parry,s.pattern,s.pos.x);
+                    int before=g.parries;g.PlayerHit(s.damage,s.parry,s.pattern,s.pos.x,approachX:-arrivalX);
                     if(g.parries>before){s.friendly=true;s.damage*=2.5f;s.vel=(g.boss+Vector2.up*1.2f-s.pos).normalized*12;s.life=5;}
                     else if(s.returns){s.hitDone=true;s.returning=true;}
                     else remove=true;
                 }
-                if(s.life<=0||Mathf.Abs(s.pos.x)>15||s.pos.y< -2||s.pos.y>13)
+                bool belowArena=!s.friendly&&s.pattern==PhanesUltimate&&s.pos.y< -s.radius;
+                if(belowArena||s.life<=0||Mathf.Abs(s.pos.x)>15||s.pos.y< -2||s.pos.y>13)
                 {if(!s.friendly&&!s.hitDone)g.PlayerHit(s.damage,s.parry,s.pattern,s.pos.x,false);if(s.returns){shieldCaught=true;shieldOut=false;}remove=true;}
                 if(remove)g.shots.RemoveAt(i);
             }

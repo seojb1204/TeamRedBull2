@@ -29,7 +29,7 @@ public static class DdaSelectionAuditTests
                 foreach(bool release in new[]{false,true})
                 {
                     AutoRunArgs.Active=false;AutoRunArgs.DisableDda=!enabled;
-                    var g=new TowerGame{save=new SaveData()};
+                    var g=new TowerGame{save=new SaveData{tutorialOnboardingVersion=1}};
                     typeof(TowerGame).GetField("sound",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(g,new Soundscape());
                     g.StartBattle(0);g.player.x=distance;g.boss.x=0;g.seconds=5;
                     var system=g.BossPatterns;system.SetTestSeed(seed);system.phaseTwo=phaseTwo;

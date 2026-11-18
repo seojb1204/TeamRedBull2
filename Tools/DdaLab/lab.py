@@ -20,7 +20,7 @@ from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
-NAMES = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
+NAMES = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices', 'ArakusPatternTiming', 'ArakusAnimationSelection']
 DEFAULT = dict(mode='combat', profile='balanced', scenario='stable', dda='both', seed=17,
                rounds=8, boss=0, phase=1, distance=4, releaseCooldowns=False)

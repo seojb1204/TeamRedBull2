@@ -34,7 +34,7 @@ public static class Experiment {
   try {
    foreach(bool enabled in (c.dda=="both"?new[]{false,true}:new[]{c.dda=="on"})) {
     SaveStore.UseIsolatedRoot(Path.Combine(root,enabled?"on":"off"));
-    var save=new SaveData{unlockedBoss=4,dda=enabled};var boss=Catalog.Bosses[c.boss];
+    var save=new SaveData{unlockedBoss=4,dda=enabled,tutorialOnboardingVersion=1};var boss=Catalog.Bosses[c.boss];
     for(int round=1;round<=c.rounds;round++) {
      string profile=Profile(c,round);int seed=c.seed+round-1;var rng=new System.Random(seed);
      AutoRunArgs.Active=false;AutoRunArgs.DisableDda=!enabled;AutoRunArgs.AgentSeed=seed;

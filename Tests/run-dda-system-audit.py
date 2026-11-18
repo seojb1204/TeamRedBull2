@@ -24,7 +24,7 @@ r = Path(__file__).resolve().parents[1]
 out = a.output.resolve()
 out.mkdir(parents=True, exist_ok=False)
 results = {}
-base = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
+base = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
         'LobbySmoke', 'BossPatternSystem', 'GameServices', 'ArakusPatternTiming',
         'ArakusAnimationSelection']
 files = [r / 'Assets/Scripts' / (n + '.cs') for n in base]

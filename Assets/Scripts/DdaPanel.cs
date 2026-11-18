@@ -16,6 +16,8 @@ namespace ReversalTower
         readonly Dictionary<string,int> ddaNextLevel = new Dictionary<string,int>();
         readonly Dictionary<string,string> ddaNextReason = new Dictionary<string,string>();
 
+        public bool TutorialSummaryBlocksMenu=>showDdaPanel&&!TutorialActive&&LastTutorialAssessment!=null&&(mode==ScreenMode.Lobby||mode==ScreenMode.Title);
+
         void DdaPanelInput()
         {
             if(AutoRunArgs.IsAutomationProcess){ddaPanelLoaded=true;showDdaPanel=false;return;}
@@ -55,6 +57,7 @@ namespace ReversalTower
         void DdaPanelUI()
         {
             DdaPanelInput();
+            if(showDdaPanel&&(TutorialActive||TutorialSummaryBlocksMenu)){DrawTutorialDdaPanel();return;}
             if (!showDdaPanel || save == null || spec == null || stats == null || stats.Count == 0 ||
                 (mode != ScreenMode.Battle && mode != ScreenMode.Result))
             {
@@ -78,7 +81,7 @@ namespace ReversalTower
             const float Pad = 16, Row = 52, NameW = 240, LevelW = 56, NowW = 74, MemoryW = 74, NextW = 96, ReasonW = 330;
             bool abandonedLine = full && result != null && result.abandoned;
             float w = Pad * 2 + NameW + LevelW + NowW + MemoryW + (full ? NextW + ReasonW : 0);
-            float header = 148 + (abandonedLine ? 20 : 0);
+            float header = 268 + (abandonedLine ? 20 : 0);
             int lastDecision=0;foreach(var e in BossPatterns.SelectionLog)lastDecision=System.Math.Max(lastDecision,e.decision);
             var frequency=new List<PatternSelectionEvidence>();foreach(var e in BossPatterns.SelectionLog)if(e.decision==lastDecision)frequency.Add(e);
             float frequencyHeight=136+frequency.Count*90;
@@ -104,6 +107,12 @@ namespace ReversalTower
             Text(cx,cy,inner,20,"현재 수신: "+CommunityStats.ReceiveSummary,11,muted);cy+=20;
             Text(cx,cy,inner,20,"이번 배정 시점 r"+dda.CommunityRevisionAtPrepare+": "+dda.CommunitySnapshotAtPrepare,11,muted);cy+=20;
             Text(cx,cy,inner,20,"늦은 수신은 이번 배정을 유지하며 다음 전투 예측만 갱신합니다.",11,muted);cy+=22;
+            var live=DdaSnapshot();
+            Text(cx,cy,inner,24,live.hasAttack?"현재 공격: "+live.patternName+"  [실제 적용 Lv "+Level(live.level)+"]":"현재 공격 없음 · 아래는 이번 전투 배정 / 다음 판은 별도 예측",14,Palette.Gold);cy+=24;
+            Text(cx,cy,inner,24,live.hasAttack?"선딜 "+live.windup.ToString("F3")+"s (×"+live.windupScale.ToString("F2")+") · 피해 "+live.damage.ToString("F2")+" (×"+live.damageScale.ToString("F2")+") · 쿨다운 "+live.cooldown.ToString("F2")+"s (×"+live.cooldownScale.ToString("F2")+")":"공격 객체 없음: 이전 공격 수치를 현재 값으로 표시하지 않음",12,Palette.White);cy+=24;
+            Text(cx,cy,inner,24,"현재 배정 근거: "+live.source+" · "+live.reason,11,muted);cy+=24;
+            Text(cx,cy,inner,24,"최초 튜토리얼: "+(live.assessment==null?"없음":live.assessment.skipped?"스킵 · 근거 제외":live.assessment.group+" / score "+live.assessment.score.ToString("F2")+" / confidence "+live.assessment.confidence.ToString("F2"))+" · "+live.uploadStatus,11,muted);cy+=24;
+            Text(cx,cy,inner,24,"그룹 수신: "+CommunityStats.GroupState+" · "+CommunityStats.GroupOrigin+" · 개인 학습 이후 초기값 덮어쓰기 없음",11,muted);cy+=24;
             if (abandonedLine)
             {
                 Text(cx, cy, inner, 20, "포기한 판이라 DDA가 학습하지 않았습니다 (기록과 골드만 남음)", 13, Palette.Red);
@@ -132,7 +141,7 @@ namespace ReversalTower
                 int level = s == null ? 0 : s.level;
                 Text(cx, cy, NameW, 28, p.name, 20, Palette.White);
                 string source;dda.Sources.TryGetValue(p.id,out source);
-                Text(cx,cy+29,NameW,21,source??"배정 근거 없음",10,muted);
+                Text(cx,cy+29,NameW,21,(source??"배정 근거 없음").Replace(" · 개인 패턴 기록",""),10,muted);
                 Text(c1, cy, LevelW, Row, Level(level), 20, LevelColor(level));
                 if (s == null || s.opportunities == 0) Text(c2, cy, NowW, Row, "-", 20, muted);
                 else Text(c2, cy, NowW, Row, (s.parries + s.dodges) + "/" + s.opportunities, 20, SuccessColor(s.Success));
@@ -184,6 +193,31 @@ namespace ReversalTower
                 .Replace("eligible authored opening","조건을 만족한 첫 공격")
                 .Replace("recent repetition limit: 2 in last 6","최근 6회 중 2회: 반복 제한으로 제외");
         }
+        void DrawTutorialDdaPanel()
+        {
+            var view=DdaSnapshot();var a=TutorialActive?view.assessment:LastTutorialAssessment;if(a==null)return;
+            using(BeginDdaHistoryPanel(1060,ddaHistoryExpanded?610:360,true))
+            {
+                float y=10,w=ddaPanelContentWidth-32;
+                System.Action<string> line=text=>{Text(16,y,w,25,text,13,Palette.White);y+=28;};
+                line("튜토리얼 숙련도 평가 · 규칙 기반 / LinUCB 전투 학습 아님");
+                line("단계: "+(TutorialActive?Tutorial.Step.ToString():"종료 · F8 닫으면 메뉴 입력 복귀")+" · "+TutorialLocalStatus);
+                line((a.completed?"확정":a.skipped?"스킵(숙련도 근거 제외)":"잠정")+" 그룹 "+a.group+" · score "+a.score.ToString("F3")+" · confidence "+a.confidence.ToString("F3")+" (검증된 확률 아님)");
+                line("유효 수행 "+a.activeDurationSeconds.ToString("F1")+"s / 전체 "+a.elapsedDurationSeconds.ToString("F1")+"s / 설명 "+a.explanationSeconds.ToString("F1")+"s / 일시정지 "+a.pausedSeconds.ToString("F1")+"s");
+                line("로컬: "+TutorialLocalStatus+" · DB: "+SaveStore.ProficiencyStatus);
+                line("수신: "+CommunityStats.ReceiveSummary);
+                if(TutorialActive){line(Tutorial.WeightSummary);line(Tutorial.EvidenceSummary);}
+                if(ddaHistoryExpanded)
+                {
+                    line("실제 패링 "+a.parrySuccesses+"/"+a.parryAttempts+" · 회피 "+a.dodgeSuccesses+"/"+a.dodgeAttempts+" · 피격 "+a.damageHits+" · 재시도 "+a.retryCount);
+                    line("수행 조작 "+a.skillActionsCompleted+" · 잘못된 입력 묶음 "+a.inputMistakes+" · 궁극기 명중 "+a.ultimateExecutionSuccess);
+                    line("수행시간은 점수의 기존 10% 항목이며 설명/일시정지는 제외합니다.");
+                    line("평가 중 DB 전투 통계/보상/개인 LinUCB를 갱신하지 않습니다.");
+                    line("완료·유효 최초 평가만 그룹 초기값 근거입니다. 모의 통계는 모의로 표시합니다.");
+                }
+            }
+        }
+
         static string Pct(float value) => Mathf.RoundToInt(value * 100) + "%";
         static string Level(int level) => level > 0 ? "+" + level : level.ToString();
         static Color LevelColor(int level) => level < 0 ? Palette.Teal : level > 0 ? Palette.Red : Palette.White;

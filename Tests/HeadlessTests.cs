@@ -48,8 +48,9 @@ public static class HeadlessTests
                 // DDA 패널의 '다음 판' 미리보기: 몇 번 불러도 같은 답이고 학습하지 않는다
                 var previewSave=new SaveData();var arakus=Catalog.Bosses[0];double[] context;string reason;
                 int first=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                string beforePreview=JsonUtility.ToJson(previewSave.Learning("arakus"));
                 int again=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
-                Check(first==again&&previewSave.Learning("arakus").battles==0&&reason=="첫 만남 · 기본 난이도","DDA next-battle preview does not learn");
+                Check(first==again&&previewSave.Learning("arakus").battles==0&&reason=="첫 만남 · 기본 난이도 · 유효 통계/평가 없음"&&beforePreview==JsonUtility.ToJson(previewSave.Learning("arakus")),"DDA next-battle preview does not learn");
                 var learned=previewSave.Learning("arakus");learned.battles=5;var memory=learned.Pattern("cleave");memory.level=2;memory.observations=3;memory.success=1;
                 int capped=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
                 Check(capped==2&&reason.Contains("이미 가장 어려움"),"DDA reason says when the hardest level is already reached");

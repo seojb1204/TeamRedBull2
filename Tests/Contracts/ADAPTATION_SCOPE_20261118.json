@@ -1,0 +1,54 @@
+{
+  "baseline": "969f3e9c59712c3cb38d2d321c68186dfeaa0001",
+  "purpose": "Exact per-file hash review for authorized adaptation diagnostics and first-prior feature. No directory exclusions. Mutated or additional protected files must fail.",
+  "files": {
+    "Assets/Scripts/BossPatternSystem.cs": {
+      "sha256": "6b807f73027c17674c7ad3612eb7ecd751e6b4609e1e5f45806c87c397585cc8",
+      "reason": "Actual applied attack snapshot and CSV only; formulas unchanged"
+    },
+    "Assets/Scripts/CloudSync.cs": {
+      "sha256": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+      "reason": "Opt-in protected telemetry RPC and grouped receive with cancellation/error state"
+    },
+    "Assets/Scripts/DdaHistoryGraph.cs": {
+      "sha256": "c17ee4117dd439485869088b76719f95d0d60b74ebebf2f2bc488f13b7cf1b52",
+      "reason": "Tutorial panel geometry and input shielding"
+    },
+    "Assets/Scripts/DdaPanel.cs": {
+      "sha256": "f908ac8172571b73f48118c759709ce8e7949307d8006f38ad1216d4ba486381",
+      "reason": "Current attack versus next preview and live tutorial diagnostics"
+    },
+    "Assets/Scripts/GameData.cs": {
+      "sha256": "91c095a2a38465e952753ca504b6a0c70350cd48143568d617f2851e9a58e507",
+      "reason": "Extract exact existing CandidateScore for diagnostic reuse; reward/thresholds unchanged"
+    },
+    "Assets/Scripts/GameServices.cs": {
+      "sha256": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+      "reason": "Authorized first prior/fallback and personal-evidence precedence; real model trace; grouped cache"
+    },
+    "Assets/Scripts/GameUI.cs": {
+      "sha256": "e0a2ba283014c37515a2e74be05653e036cf8ac4b3cc30369b1c11f4e1c2d897",
+      "reason": "Draw tutorial F8 and block covered menus"
+    },
+    "Assets/Scripts/NativeGameUI.cs": {
+      "sha256": "989f936b8e8aeb9f2e673dce251284429958028c39233632b28904ac424d70b3",
+      "reason": "Block covered lobby controls"
+    },
+    "Assets/Scripts/SaveStore.cs": {
+      "sha256": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+      "reason": "Additive isolated outbox/capability/receipts and nonfatal logs; progress commit unchanged"
+    },
+    "Assets/Scripts/TowerGame.Tutorial.cs": {
+      "sha256": "2787ee61c39dfce48c4d78c23b33d8a901f5fafb48e24cd13af7c00c21a56be4",
+      "reason": "Separate reading/pause clocks, actual preview/save status and mouse shield"
+    },
+    "Assets/Scripts/TowerGame.cs": {
+      "sha256": "8857aec79c0b8e555a0ddbc1355d18a5c4ed51abde40c296d66651e3bdea9f1f",
+      "reason": "Actual snapshot, committed-battle telemetry hook, unscaled tutorial clock"
+    },
+    "Assets/Scripts/TutorialSession.cs": {
+      "sha256": "dc24c60a4757e6d37870b1c30cc59b9e234e3fbbfac2c9d9b52e6152be0659ee",
+      "reason": "Separate clocks and nonmutating rule preview; existing score rules unchanged"
+    }
+  }
+}

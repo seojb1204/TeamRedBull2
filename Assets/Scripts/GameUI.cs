@@ -63,7 +63,7 @@ namespace ReversalTower
 #if !HEADLESS && !DESKTOP_PREVIEW
             if(nativeUI)
             {
-                if(TutorialActive){DrawTutorialGuide();GUI.matrix=Matrix4x4.identity;return;}
+                if(TutorialActive){DrawTutorialGuide();DdaPanelUI();GUI.matrix=Matrix4x4.identity;return;}
                 DdaPanelUI();   // F8 DDA 패널 (DdaPanel.cs). 아래 창들이 그 위에 그려진다
                 if(showHistory)HistoryUI();
                 if(showSettings)SettingsUI();
@@ -74,6 +74,9 @@ namespace ReversalTower
 #endif
             bool previousEnabled=GUI.enabled;
             GUI.enabled=previousEnabled&&!showCards&&!showHelp&&!showSettings&&!showHistory&&!paused;
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(TutorialSummaryBlocksMenu)GUI.enabled=false;
+#endif
             if(mode==ScreenMode.Title)TitleUI();else if(mode==ScreenMode.Lobby)LobbyUI();else if(mode==ScreenMode.Battle)BattleUI();else if(mode==ScreenMode.Result)ResultUI();else EndingUI();
             GUI.enabled=previousEnabled;
             if(showCards&&mode==ScreenMode.Lobby)CardsUI();
@@ -84,7 +87,7 @@ namespace ReversalTower
             if(phaseFlash>0&&mode==ScreenMode.Battle)
             {Fill(new Rect(0,325,1600,110),new Color(.025f,.035f,.05f,phaseFlash*.85f));Text(0,352,1600,80,thirdPhase?"마지막 잔상":phaseTwo?"두 번째 맹세":"",40,Palette.Gold,TextAnchor.UpperCenter);}
 #if !HEADLESS && !DESKTOP_PREVIEW
-            if(TutorialActive){DrawTutorialGuide();GUI.matrix=Matrix4x4.identity;return;}
+            if(TutorialActive){DrawTutorialGuide();DdaPanelUI();GUI.matrix=Matrix4x4.identity;return;}
                 DdaPanelUI();
 #endif
             if(paused&&mode==ScreenMode.Battle)PauseUI();

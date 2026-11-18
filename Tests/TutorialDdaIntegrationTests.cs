@@ -53,11 +53,11 @@ public static class TutorialDdaIntegrationTests
             Check(JsonUtility.ToJson(g.save.tutorialAssessment)==first&&g.save.tutorialReplayAssessment.valid&&!g.save.tutorialReplayAssessment.isFirstAssessment,"successful reassessment remains separate from first result");
             string disk=File.ReadAllText(SaveStore.SavePath);g.StartTutorial(true);g.Tutorial.Acknowledge();g.ExitTutorial();
             Check(File.ReadAllText(SaveStore.SavePath)==disk&&JsonUtility.ToJson(g.save.tutorialAssessment)==first,"interrupted reassessment preserves disk and initial assessment");
-            // Changing only tutorial group must not introduce a new difficulty policy.
+            // Sufficient whole DB wins over tutorial; absent patterns now use the authorized tutorial prior.
             CommunityStats.Replace(new[]{new CommunityStats.Entry{boss="arakus",pattern="cleave",opportunities=20,players=12,successRate=.95f,suggestedLevel=-1}});
             var d=new DdaBattleSession();d.Prepare(g.save,Catalog.Bosses[0],false);var levels=d.Stats.Select(x=>x.level).ToArray();
             var detached=JsonUtility.FromJson<SaveData>(JsonUtility.ToJson(g.save));detached.tutorialAssessment.group="novice";var other=new DdaBattleSession();other.Prepare(detached,Catalog.Bosses[0],false);
-            Check(levels.SequenceEqual(other.Stats.Select(x=>x.level))&&d.Stats[0].level==-1,"tutorial category does not change existing shared cold-start policy");
+            Check(other.Stats[0].level==-1&&d.Stats[0].level==-1,"sufficient whole statistics retain priority over tutorial for the covered pattern");
             CommunityStats.Replace(new CommunityStats.Entry[0]);g.StartBattle(0);g.DamageBoss(g.bossHp);
             Check(logged==1&&!string.IsNullOrEmpty(g.result.snapshotId),"first real boss emits one normal event and restorable checkpoint");
             string snapshot=g.result.snapshotId;var completed=g.save;

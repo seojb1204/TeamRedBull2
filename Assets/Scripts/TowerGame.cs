@@ -47,6 +47,7 @@ namespace ReversalTower
         public List<PatternStats> stats => dda.Stats;
         public Dictionary<string,double[]> contexts => dda.Contexts;
         internal bool battleDda => dda.Enabled;
+        internal string DdaReason(string id)=>dda.Reasons.ContainsKey(id)?dda.Reasons[id]:"특수/미배정";
         Soundscape sound;WorldArtist artist;Camera cam;
 #if !HEADLESS && !DESKTOP_PREVIEW
         public ScenePresentation scenePresentation;
@@ -55,6 +56,17 @@ namespace ReversalTower
         bool demo;float demoAction;string capturePath;bool captureDone;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap(){if(FindAnyObjectByType<TowerGame>()==null)new GameObject("Reversal Tower").AddComponent<TowerGame>();}
+        public DdaLiveSnapshot DdaSnapshot()
+        {
+            var applied=BossPatterns.Applied;bool active=mode==ScreenMode.Battle&&current!=null&&applied!=null&&applied.pattern==current.id;
+            return new DdaLiveSnapshot{tutorial=TutorialActive,assessment=TutorialActive?tutorial.Preview():save==null?null:save.tutorialAssessment,
+                localStatus=TutorialLocalStatus,uploadStatus=SaveStore.ProficiencyStatus,dbStatus=CommunityStats.ReceiveSummary,
+                weights=TutorialActive?tutorial.WeightSummary:"",evidence=TutorialActive?tutorial.EvidenceSummary:"",
+                hasAttack=active,pattern=active?current.id:"",patternName=active?current.name:"",level=active?applied.level:0,
+                reason=active?DdaReason(current.id):"대기 중",source=active&&dda.Sources.ContainsKey(current.id)?dda.Sources[current.id]:"",
+                windup=active?windup:0,damage=active?BossPatterns.patternDamage:0,cooldown=active?applied.cooldown:0,cooldownRemaining=active?Mathf.Max(0,applied.readyAt-seconds):0,
+                windupScale=active?applied.windupScale:1,damageScale=active?applied.damageScale:1,cooldownScale=active?applied.cooldownScale:1};
+        }
         void Awake()
         {
             // 저장을 읽기 전에 파싱해야 테스트 데이터 격리가 의미를 가진다.
@@ -95,7 +107,7 @@ namespace ReversalTower
             if(!TutorialActive&&!AutoRunArgs.Active)DevKeys();
 #endif
             bool wasTutorial=TutorialActive;
-            TutorialBeforeUpdate(raw);
+            TutorialBeforeUpdate(Time.unscaledDeltaTime);
             // Completion retry/exit may consume Enter/Escape. Do not reuse it on the next screen.
             if(!wasTutorial&&!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
                 Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
@@ -165,6 +177,9 @@ namespace ReversalTower
         bool CardsBlockLobbyInput => showCards||CardOutroBlocksInput;
         void HandleScreenInput(bool helpDown,bool escapeDown,bool enterDown,bool leftDown,bool rightDown,bool cardsDown)
         {
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(TutorialSummaryBlocksMenu)return;
+#endif
             // Keep a card-close event from activating the lobby later in this same input batch.
             bool cardsBlocked=CardsBlockLobbyInput,animating=CardOutroBlocksInput;
             if(helpDown&&!animating)showHelp=!showHelp;
@@ -400,7 +415,7 @@ namespace ReversalTower
             if(!rewards.TrySettle(save,spec,bossIndex,clear,bossHp,seconds,hits,parries,battleDda,out result,out wasFirstClear))return;
             ended=true;result.abandoned=abandoned;
             dda.Complete(save,spec,clear,abandoned);
-            SaveStore.CommitCompletedBattle(save,result);SaveStore.Log(result,stats,save);mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;
+            bool committed=SaveStore.CommitCompletedBattle(save,result);if(committed)SaveStore.QueueProficiencyBattle(save,result,stats);SaveStore.LogLearning(result.battleId,dda.Trace);SaveStore.Log(result,stats,save);mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;
             sound.Play(clear?"boss_death":"death");
         }
         public void ReturnLobby(){sparkTime=0;echo=null;actionTime=0;mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}

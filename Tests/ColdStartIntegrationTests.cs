@@ -16,7 +16,7 @@ public static class ColdStartIntegrationTests {
   Check(CommunityStats.ReceiveState=="수신 완료"&&CommunityStats.SnapshotOrigin=="HTTP 수신"&&CommunityStats.LastReceivedUtc.HasValue,"HTTP origin separate from memory fixture");
   Check(CommunityStats.Revision==revision+1,"successful snapshot increments preview revision");
   Check(initial.Stats[0].level==0&&initial.CommunitySnapshotAtPrepare==snapshot&&initial.CommunityRevisionAtPrepare==revision,"active assignment and origin snapshot immutable after late receive");
-  var next=Prepare(new SaveData());Check(next.Stats[0].level==1&&next.Sources["cleave"].Contains("공동 통계"),"received data reaches actual next Prepare");
+  var next=Prepare(new SaveData());Check(next.Stats[0].level==1&&next.Sources["cleave"]=="전체 DB","received data reaches actual next Prepare");
   var key=new DdaPreviewStamp();var result=new object();var memory=save.Learning("arakus");key.Capture(result,memory,true,revision);
   Check(key.Matches(result,memory,true,revision)&&!key.Matches(result,memory,true,CommunityStats.Revision),"F8 cache key invalidates on actual receive revision");
   key.Capture(result,memory,true,CommunityStats.Revision);

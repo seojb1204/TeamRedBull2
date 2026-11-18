@@ -8,6 +8,7 @@ namespace ReversalTower
         public int schemaVersion=1;
         public bool completed,skipped,isFirstAssessment,valid;
         public string group="normal",completedAtUtc="";
+        public float elapsedDurationSeconds,explanationSeconds,pausedSeconds;
         public float score,confidence,activeDurationSeconds,ultimateChargeSeconds,firstParrySeconds,firstDodgeSeconds;
         public int parryAttempts,parrySuccesses,dodgeAttempts,dodgeSuccesses,damageHits,retryCount,skillActionsCompleted,inputMistakes;
         public bool firstValidParrySuccess,ultimateExecutionSuccess;
@@ -42,7 +43,10 @@ namespace ReversalTower
         { Replay=replay;rules=scoring??new TutorialScoringRules();Assessment=new TutorialAssessment{isFirstAssessment=!replay}; }
         public void Tick(float delta,bool paused)
         {
-            if(FreezeGameplay||paused||float.IsNaN(delta)||float.IsInfinity(delta)||delta<=0)return;
+            if(Finished||float.IsNaN(delta)||float.IsInfinity(delta)||delta<=0)return;
+            Assessment.elapsedDurationSeconds+=delta;
+            if(paused){Assessment.pausedSeconds+=delta;return;}
+            if(Explaining){Assessment.explanationSeconds+=delta;return;}
             Assessment.activeDurationSeconds+=delta;taskTime+=delta;
             if(Step==TutorialStep.Charge)Assessment.ultimateChargeSeconds+=delta;
         }
@@ -98,7 +102,7 @@ namespace ReversalTower
         {
             if(FreezeGameplay||Step!=TutorialStep.Ultimate||!ultimateActivated||!actualCollision||!empowermentActive)return;
             Assessment.ultimateExecutionSuccess=true;Assessment.completed=true;Assessment.valid=true;
-            Score();Finish();
+            Score(Assessment);Finish();
         }
         public void Skip()
         {
@@ -112,22 +116,33 @@ namespace ReversalTower
             Assessment.tasks.Add(new TutorialTaskMeasurement{task=Step.ToString(),seconds=taskTime,successes=1});
             Step++;Explaining=true;taskTime=0;actionConfirmed=false;
         }
-        void Score()
+        public TutorialAssessment Preview()
         {
-            float p=Assessment.parrySuccesses/(float)Math.Max(1,Assessment.parryAttempts);
-            float d=Assessment.dodgeSuccesses/(float)Math.Max(1,Assessment.dodgeAttempts);
-            float c=Assessment.skillActionsCompleted/(float)Math.Max(1,Assessment.skillActionsCompleted+Assessment.inputMistakes);
-            float speed=Math.Min(1,rules.referenceActiveSeconds/Math.Max(1,Assessment.activeDurationSeconds));
+            if(Finished)return Assessment;
+            var a=new TutorialAssessment{schemaVersion=Assessment.schemaVersion,isFirstAssessment=Assessment.isFirstAssessment,
+                parryAttempts=Assessment.parryAttempts,parrySuccesses=Assessment.parrySuccesses,dodgeAttempts=Assessment.dodgeAttempts,dodgeSuccesses=Assessment.dodgeSuccesses,
+                damageHits=Assessment.damageHits,retryCount=Assessment.retryCount,skillActionsCompleted=Assessment.skillActionsCompleted,inputMistakes=Assessment.inputMistakes,
+                activeDurationSeconds=Assessment.activeDurationSeconds,elapsedDurationSeconds=Assessment.elapsedDurationSeconds,explanationSeconds=Assessment.explanationSeconds,pausedSeconds=Assessment.pausedSeconds};
+            Score(a);return a;
+        }
+        public string WeightSummary=>"패링 "+rules.parryWeight+" / 회피 "+rules.dodgeWeight+" / 조작 "+rules.controlsWeight+" / 수행시간 "+rules.speedWeight;
+        public string EvidenceSummary=>"패링 기회 "+Assessment.parryAttempts+"/"+rules.minimumExpertParryOpportunities+", 회피 "+Assessment.dodgeAttempts+"/"+rules.confidenceDodgeOpportunities+" · 초기 분류는 잠정 규칙";
+        void Score(TutorialAssessment value)
+        {
+            float p=value.parrySuccesses/(float)Math.Max(1,value.parryAttempts);
+            float d=value.dodgeSuccesses/(float)Math.Max(1,value.dodgeAttempts);
+            float c=value.skillActionsCompleted/(float)Math.Max(1,value.skillActionsCompleted+value.inputMistakes);
+            float speed=Math.Min(1,rules.referenceActiveSeconds/Math.Max(1,value.activeDurationSeconds));
             float total=rules.parryWeight+rules.dodgeWeight+rules.controlsWeight+rules.speedWeight;
-            Assessment.score=total>0?(p*rules.parryWeight+d*rules.dodgeWeight+c*rules.controlsWeight+speed*rules.speedWeight)/total:0;
-            bool evidence=Assessment.parryAttempts>=rules.minimumExpertParryOpportunities&&Assessment.dodgeAttempts>=rules.minimumExpertDodgeOpportunities;
-            bool expertEvidence=evidence&&Assessment.parrySuccesses>=rules.minimumExpertParrySuccesses&&Assessment.dodgeSuccesses>=1;
-            float parryEvidence=Math.Min(1,Assessment.parryAttempts/(float)Math.Max(1,rules.minimumExpertParryOpportunities));
-            float dodgeEvidence=Math.Min(1,Assessment.dodgeAttempts/(float)Math.Max(1,rules.confidenceDodgeOpportunities));
-            Assessment.confidence=Math.Min(1,.35f*parryEvidence+.35f*dodgeEvidence+.2f*Math.Min(1,Assessment.skillActionsCompleted/9f)+.1f);
-            if(!evidence)Assessment.confidence=Math.Min(.49f,Assessment.confidence);
-            else if(Assessment.dodgeAttempts<rules.confidenceDodgeOpportunities)Assessment.confidence=Math.Min(.75f,Assessment.confidence);
-            Assessment.group=!evidence?"normal":Assessment.score<rules.noviceBelow?"novice":expertEvidence&&Assessment.score>=rules.expertAt?"expert":"normal";
+            value.score=total>0?(p*rules.parryWeight+d*rules.dodgeWeight+c*rules.controlsWeight+speed*rules.speedWeight)/total:0;
+            bool evidence=value.parryAttempts>=rules.minimumExpertParryOpportunities&&value.dodgeAttempts>=rules.minimumExpertDodgeOpportunities;
+            bool expertEvidence=evidence&&value.parrySuccesses>=rules.minimumExpertParrySuccesses&&value.dodgeSuccesses>=1;
+            float parryEvidence=Math.Min(1,value.parryAttempts/(float)Math.Max(1,rules.minimumExpertParryOpportunities));
+            float dodgeEvidence=Math.Min(1,value.dodgeAttempts/(float)Math.Max(1,rules.confidenceDodgeOpportunities));
+            value.confidence=Math.Min(1,.35f*parryEvidence+.35f*dodgeEvidence+.2f*Math.Min(1,value.skillActionsCompleted/9f)+.1f);
+            if(!evidence)value.confidence=Math.Min(.49f,value.confidence);
+            else if(value.dodgeAttempts<rules.confidenceDodgeOpportunities)value.confidence=Math.Min(.75f,value.confidence);
+            value.group=!evidence?"normal":value.score<rules.noviceBelow?"novice":expertEvidence&&value.score>=rules.expertAt?"expert":"normal";
         }
     }
 }

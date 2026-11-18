@@ -15,14 +15,14 @@ namespace UnityEngine.Networking{
   public enum Result{Success,ConnectionError}
   public sealed class Request {public string url,method,body;}
   public static readonly List<Request> Requests=new List<Request>();
-  public static Result Next=Result.Success;public static string Body="[]";
+  public static Func<string,(Result result,long code,string body)> Respond;public static Result Next=Result.Success;public static string Body="[]";
   public Result result;public long responseCode;public string error="mock";public int timeout;
   public UploadHandlerRaw uploadHandler;public DownloadHandlerBuffer downloadHandler;
   readonly string url,method;
   public UnityWebRequest(string u,string m){url=u;method=m;result=Next;responseCode=result==Result.Success?200:503;}
   public static UnityWebRequest Get(string u)=>new UnityWebRequest(u,"GET"){downloadHandler=new DownloadHandlerBuffer{text=Body}};
   public void SetRequestHeader(string a,string b){}
-  public object SendWebRequest(){Requests.Add(new Request{url=url,method=method,body=uploadHandler==null?null:System.Text.Encoding.UTF8.GetString(uploadHandler.data)});return null;}
+  public object SendWebRequest(){if(Respond!=null){var r=Respond(url);result=r.result;responseCode=r.code;if(downloadHandler!=null)downloadHandler.text=r.body;}Requests.Add(new Request{url=url,method=method,body=uploadHandler==null?null:System.Text.Encoding.UTF8.GetString(uploadHandler.data)});return null;}
   public void Dispose(){}
  }
 
@@ -40,6 +40,15 @@ namespace ReversalTower{
 #if !REAL_SAVE
  public static class SaveStore{
   public static event Action<HistoryEntry,List<PatternStats>,SaveData> BattleLogged;
+  public static event Action ProficiencyQueued;
+  public sealed class ProficiencyEnvelope{public string kind,profile,eventId,assessmentId,ownerKey,payload;}
+  public static string ProficiencyQueueRoot=>throw new NotSupportedException("Protected outbox requires real SaveStore");
+  public static void QueueAssessments(SaveData s){}
+  public static string ProficiencyKind(string path)=>throw new NotSupportedException();
+  public static ProficiencyEnvelope ReadProficiency(string path,out string secret){secret=null;throw new NotSupportedException();}
+  public static void AcknowledgeProficiency(string path,ProficiencyEnvelope e)=>throw new NotSupportedException();
+  public static void SetProficiencyState(string profile,string state){}
+
   public static string ActivePlayerId=>throw new NotSupportedException("Owner validation requires real SaveStore harness");
   public static SaveData Load()=>throw new NotSupportedException("Load requires isolated real SaveStore");
   public static void EnsureIdentity(SaveData s,bool migrate)=>throw new NotSupportedException("Identity not mocked");
@@ -48,6 +57,6 @@ namespace ReversalTower{
 #endif
  public static class LobbyCards{public class Card{public string id;}public static Card[] All=Array.Empty<Card>();public static int Count(SaveData s,string id)=>0;public static float Attack(SaveData s)=>0;public static float Health(SaveData s)=>0;public static float Heal(SaveData s)=>0;public static float Power(SaveData s)=>0;public static void Normalize(SaveData s){}public static event Action<string,int,int> Purchased;}
 #if !REAL_DDA
- public static class CommunityStats{public class Entry{public string boss,pattern;public int opportunities,players,suggestedLevel;public float successRate,parryRate,hitRate;}public static List<Entry> Entries=new();public static int Count;public static string Status;public static void BeginReceive(){}public static void ReceiveFailed(){}public static void EndReceive(){}public static void MarkReceived(){}public static void MarkUnavailable(bool a){}public static void Replace(IEnumerable<Entry> e){Entries=new List<Entry>(e);Count=Entries.Count;}}
+ public static class CommunityStats{public class Entry{public string boss,pattern,group;public int opportunities,players,suggestedLevel;public float successRate,parryRate,hitRate;}public static List<Entry> Entries=new();public static int Count;public static string Status;public static void GroupEndReceive(){}public static void GroupReceiving(){}public static void GroupFailed(){}public static void ReplaceGroups(IEnumerable<Entry> e,bool http=false)=>throw new NotSupportedException("Group evidence requires real CommunityStats");public static void BeginReceive(){}public static void ReceiveFailed(){}public static void EndReceive(){}public static void MarkReceived(){}public static void MarkUnavailable(bool a){}public static void Replace(IEnumerable<Entry> e){Entries=new List<Entry>(e);Count=Entries.Count;}}
 #endif
 }

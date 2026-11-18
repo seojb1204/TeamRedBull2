@@ -24,12 +24,13 @@ public static class CloudQueueIntegrationTests
         string root=Path.Combine(Path.GetTempPath(),"tower-queue-cross-"+Guid.NewGuid().ToString("N"));string queue=Path.Combine(root,"queue");Directory.CreateDirectory(queue);SaveStore.UseIsolatedRoot(Path.Combine(root,"state"));
         try
         {
-            var a=new SaveData();SaveStore.Save(a);var b=new SaveData();SaveStore.Save(b);
-            var cloud=new CloudSync();var cfg=Activator.CreateInstance(type.GetNestedType("Config",BindingFlags.NonPublic),true);cfg.GetType().GetField("url").SetValue(cfg,"https://invalid.local");cfg.GetType().GetField("anonKey").SetValue(cfg,"mock");Field(cloud,"config",cfg);Field(cloud,"queueDir",queue);Field(cloud,"playerId",b.cloudPlayerId);
+            var a=new SaveData();SaveStore.Save(a);var checkpoint=new HistoryEntry{boss="arakus",date="2026-11-18"};a.history.Add(checkpoint);Check(SaveStore.CommitCompletedBattle(a,checkpoint),"real checkpoint prepared for profile restore during upload");
+            var cloud=new CloudSync();var cfg=Activator.CreateInstance(type.GetNestedType("Config",BindingFlags.NonPublic),true);cfg.GetType().GetField("url").SetValue(cfg,"https://invalid.local");cfg.GetType().GetField("anonKey").SetValue(cfg,"mock");Field(cloud,"config",cfg);Field(cloud,"queueDir",queue);Field(cloud,"playerId",a.cloudPlayerId);
             UnityWebRequest.Next=UnityWebRequest.Result.Success;UnityWebRequest.Body="[]";PlayerPrefs.SetInt("CloudPlayerRegistered",1);
             string old=Path.Combine(queue,"001-old.json");Pending(old,a.cloudPlayerId);UnityWebRequest.Requests.Clear();
             var sync=Sync(cloud);Check(sync.MoveNext()&&sync.Current is IEnumerator,"old owner registration suspends independently of active profile");var registration=(IEnumerator)sync.Current;registration.MoveNext();
-            SaveStore.Save(b);Call(cloud,"OnCard","blade",80,1);
+            SaveData b;Check(SaveStore.TryResetProfile(a,false,out b)&&b.cloudPlayerId!=a.cloudPlayerId,"actual reset creates new active UUID while old registration is suspended");Call(cloud,"OnCard","blade",80,1);
+            SaveData restored;Check(SaveStore.TryRestoreProfile(b,checkpoint.snapshotId,false,out restored)&&restored.cloudPlayerId==a.cloudPlayerId,"actual restore changes active owner back without rewriting captured new-profile card");
             Check(Directory.GetFiles(queue,"*.json").Length==2,"new active profile card enqueues without changing in-flight snapshot");
             Drain(registration);Drain(sync);
             var posts=UnityWebRequest.Requests.Where(x=>x.method=="POST").ToArray();

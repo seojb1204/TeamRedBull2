@@ -21,7 +21,7 @@ namespace ReversalTower
             int facing = bossActor ? game.bossFace : game.face;
             if (!battle) { position=new Vector2(bossActor?6:-5.3f,0); facing=bossActor?-1:1; }
             transform.position=new Vector3(position.x+(battle&&bossActor?game.bossRecoil:0),position.y,0);   // 맞으면 살짝 밀려 보임
-            float scale=bossActor&&game.bossIndex==0?ArakusGeometry.VisualScale:1.4f;
+            float scale=bossActor&&game.bossIndex==0?(UsesArakusArt?ArakusVisuals.NewBodyScale:ArakusGeometry.VisualScale):1.4f;
             transform.localScale=new Vector3(scale*facing,scale,1);
             body.color=(bossActor?game.bossFlash:game.hitFlash)>0?Color.white:new Color(.99f,.99f,.99f,1);
             if(bossActor&&battle&&game.bossFlash<=0)
@@ -31,12 +31,13 @@ namespace ReversalTower
                 if(casting){float k=.5f+.5f*Mathf.Sin(game.realClock*18);body.color=new Color(1,.55f+.25f*k,.5f+.25f*k,1);}
                 else if(bp.rageActive)body.color=new Color(1,.78f,.74f,1);
             }
+            int arakusFrame=-1;
             string state="Idle";
             float normalized=Mathf.Repeat(game.realClock*.25f,1);
             if(UsesArakusArt)
             {
                 if(!arakusVisuals)arakusVisuals=GetComponent<ArakusVisuals>()??gameObject.AddComponent<ArakusVisuals>();
-                var pose=arakusVisuals.Sample(game,battle);state=pose.state;normalized=pose.normalized;body.flipX=false;animator.speed=0;
+                var pose=arakusVisuals.Sample(game,battle);state=pose.state;arakusFrame=pose.frame;normalized=pose.normalized;body.flipX=false;animator.speed=0;
             }
             else if (battle && bossActor)
             {
@@ -89,8 +90,20 @@ namespace ReversalTower
             if(animator&&animator.runtimeAnimatorController)
             {
                 if((state=="Run"||state=="Dash")&&!HasExtendedPlayer())normalized=Mathf.Repeat(game.realClock*1.5f,1);
-                animator.Play(state,0,Mathf.Min(.999f,normalized));
+                animator.Play(state=="ShieldThrowing_DashAttack_Caught"?"ShieldThrowing_DashAttack":state,0,Mathf.Min(.999f,normalized));
                 animator.Update(0);
+            }
+            // Keep legacy Animator assets intact; the reviewed replacement uses identical state/frame contracts.
+            if(arakusFrame>=0)
+            {
+                var sprites=ArakusVisuals.Sprites(state);
+                if(sprites.Length>0)
+                {
+                    body.sprite=sprites[Mathf.Clamp(arakusFrame,0,sprites.Length-1)];
+                    // New walk frames 5, 7 and 8 end one opaque pixel above the ground line.
+                    if(state=="Walk"&&(arakusFrame==4||arakusFrame==6||arakusFrame==7)&&body.sprite.rect.width==192)
+                        transform.position+=Vector3.down*(scale/body.sprite.pixelsPerUnit);
+                }
             }
             if(UsesArakusArt)arakusVisuals.Render(game,battle,this);
             RenderGlow(game,battle);
@@ -107,14 +120,14 @@ namespace ReversalTower
         void RenderGlow(TowerGame game,bool battle)
         {
             float level=0,flash=0,shine=0;Color shineColor=Palette.ParryCore;
-            if(battle&&bossActor)
+            if(battle&&bossActor&&game.bossHp>0)
             {
                 var bp=game.BossPatterns;level=bp.parryGlow;flash=Mathf.Clamp01(1-bp.parryFlash/BossPatternSystem.ParryFlashTime);
                 shine=.16f*level+.45f*flash;
                 float hit=Mathf.Clamp01(game.bossFlash/.1f);
                 if(hit>0){shineColor=Color.Lerp(shineColor,Color.white,hit);shine=Mathf.Max(shine,.8f*hit);}
             }
-            else if(battle)
+            else if(battle&&!bossActor)
             {
                 float hurt=Mathf.Clamp01(game.hitFlash/.18f);
                 if(hurt>0){shineColor=HurtRed;shine=.65f*hurt;}

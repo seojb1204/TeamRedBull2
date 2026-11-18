@@ -22,7 +22,7 @@ repo = Path(__file__).resolve().parents[1]
 source = args.source.resolve()
 output = args.output.resolve()
 output.mkdir(parents=True, exist_ok=True)
-names = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
+names = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices']
 if (source / 'Assets' / 'Scripts' / 'ArakusPatternTiming.cs').is_file():
     names.append('ArakusPatternTiming')

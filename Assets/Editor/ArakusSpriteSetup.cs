@@ -84,6 +84,13 @@ public static class ArakusSpriteSetup
             }
         }
         g.current=null;g.bossStagger=0;g.BossPatterns.shieldOut=false;g.BossPatterns.shieldCaught=true;g.bossState="추적";
+        for(int k=0;k<9;k++)
+        {
+            g.seconds+=.1f;g.boss.x+=.175f;artist.Render();scene.Render(g);
+            if(k>0)Check(view.body.sprite.name.StartsWith("Walk_"),"moving chase uses reviewed walk frame");
+            Capture(camera,"_verify/arakus/walk-"+k+".png");
+        }
+        g.seconds+=.1f;scene.Render(g);Check(view.body.sprite.name.StartsWith("Idle_"),"stationary chase does not shuffle");
         g.bossFace=-1;scene.Render(g);Check(view.transform.localScale.x<0&&!view.body.flipX,"right art mirrors once for left facing");
         g.current=g.spec.patterns.First(p=>p.id=="slam");g.patternAge=3;g.BossPatterns.leaping=true;g.BossPatterns.leapStart=2.8f;g.BossPatterns.struck=false;g.boss.y=2;scene.Render(g);Check(view.transform.position.y==2,"game owns leap height");
         g.BossPatterns.shieldOut=true;g.BossPatterns.shieldCaught=false;scene.Render(g);Check(view.body.sprite==ArakusVisuals.Sprites("ShieldThrowing_DashAttack")[1],"timeout leap keeps actual missing shield state actual="+(view.body.sprite?view.body.sprite.name:"null")+" state="+view.animator.GetCurrentAnimatorStateInfo(0).shortNameHash+" expected="+Animator.StringToHash("ShieldThrowing_DashAttack"));g.BossPatterns.leaping=false;g.BossPatterns.struck=true;g.boss.y=0;scene.Render(g);Check(view.body.sprite==ArakusVisuals.Sprites("ShieldThrowing_DashAttack")[1],"timeout landing keeps actual missing shield state");g.BossPatterns.shieldOut=false;g.BossPatterns.shieldCaught=true;

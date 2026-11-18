@@ -90,8 +90,39 @@ namespace ReversalTower
         }
     }
 
+    // Opt-in QA evidence. HP loss is clipped at zero; healing is a separate event.
+    // This measures game callbacks, not rendered perception or OS keyboard latency.
+    public sealed class BattleEvidence
+    {
+        public const int MaxEvents=20000;
+        public readonly System.Collections.Generic.List<string> Events=new System.Collections.Generic.List<string>();
+        public float DamageTaken, Healing, DamageDealt;
+        public int Parries, DroppedEvents, RequestedInputs, CommittedInputs;
+        public void Reset(){Events.Clear();DamageTaken=Healing=DamageDealt=0;Parries=DroppedEvents=RequestedInputs=CommittedInputs=0;}
+        public void Note(float seconds,string kind,string detail,float amount=0)
+        {
+            if(kind=="damage_taken")DamageTaken+=amount;
+            if(kind=="heal")Healing+=amount;
+            if(kind=="damage_dealt")DamageDealt+=amount;
+            if(kind=="parry")Parries++;
+            if(kind=="input_requested")RequestedInputs++;
+            if(kind=="input_committed")CommittedInputs++;
+            if(Events.Count>=MaxEvents){DroppedEvents++;return;}
+            Events.Add(seconds.ToString("F6",CultureInfo.InvariantCulture)+","+kind+","+detail+","+amount.ToString("F6",CultureInfo.InvariantCulture));
+        }
+    }
+
     public sealed partial class TowerGame
     {
+        public readonly BattleEvidence Evidence=new BattleEvidence();
+        bool EvidenceEnabled=>AutoRunArgs.Active||AutoRunArgs.AgentProfile!=null;
+        void NoteEvidence(string kind,string detail,float amount=0){if(EvidenceEnabled)Evidence.Note(seconds,kind,detail,amount);}
+        void HealPlayer(float amount,string cause)
+        {
+            float before=playerHp;playerHp=Mathf.Min(maxHp,playerHp+amount);
+            NoteEvidence("heal",cause,playerHp-before);
+            RecordPixelHpChange(before);
+        }
         System.Random agentRandom;
         Pattern agentPattern;float agentLastAge=-1;bool agentRespond,agentDefended;
         void ResetTestAgent()
@@ -197,6 +228,17 @@ namespace ReversalTower
             Action<string, string> line = (k, v) => sb.Append(k).Append('\t').Append(v).Append('\n');
 
             line("schema", "towerAutoRun/2");
+            line("evidence.schema","towerBattleEvidence/1");
+            line("evidence.track","logic-qa/instrumented-input");
+            line("evidence.inputSemantics","requested then committed callbacks; jump may be buffered; not OS input");
+            line("evidence.damageTaken",Evidence.DamageTaken.ToString("F6",ci));
+            line("evidence.healing",Evidence.Healing.ToString("F6",ci));
+            line("evidence.damageDealt",Evidence.DamageDealt.ToString("F6",ci));
+            line("evidence.parries",Evidence.Parries.ToString(ci));
+            line("evidence.requestedInputs",Evidence.RequestedInputs.ToString(ci));
+            line("evidence.committedInputs",Evidence.CommittedInputs.ToString(ci));
+            line("evidence.droppedEvents",Evidence.DroppedEvents.ToString(ci));
+            line("evidence.eventsFile",AutoRunArgs.ReportPath+".events.csv");
             line("agent.profile",AutoRunArgs.AgentProfile??"legacy-demo");
             line("agent.seed",AutoRunArgs.AgentSeed.ToString(ci));
             line("agent.observation","instrumented state incl. windup; NOT pixels/human reaction");
@@ -243,6 +285,15 @@ namespace ReversalTower
                 line(key+"success",st.Success.ToString("F4",ci));
                 line(key+"reason",dda.Reasons.ContainsKey(st.id)?dda.Reasons[st.id]:"unknown");
             }
+            // Bounded diagnostics, only in the existing explicitly requested autorun report.
+            foreach(var e in BossPatterns.SelectionLog)
+            {
+                string key="selection."+e.decision.ToString(ci)+"."+e.id+".";
+                line(key+"seconds",e.seconds.ToString("F2",ci));line(key+"selected",e.selected?"true":"false");
+                line(key+"opportunities",e.opportunities.ToString(ci));line(key+"success",e.success.ToString("F4",ci));
+                line(key+"weight",e.weight.ToString("F4",ci));line(key+"probability",e.probability.ToString("F4",ci));
+                line(key+"reason",e.reason);
+            }
             line("build.version", "0.5-arakus-editor-foundation");
             line("progression.cardPurchases", save.cardPurchases.ToString(ci));
             line("progression.effectiveAttack", LobbyCards.Attack(save).ToString("F2",ci));
@@ -278,6 +329,7 @@ namespace ReversalTower
             {
                 string dir = Path.GetDirectoryName(AutoRunArgs.ReportPath);
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                File.WriteAllText(AutoRunArgs.ReportPath+".events.csv","seconds,kind,detail,amount\n"+string.Join("\n",Evidence.Events)+"\n",new UTF8Encoding(false));
                 File.WriteAllText(AutoRunArgs.ReportPath, sb.ToString(), new UTF8Encoding(false));
                 Debug.Log("AUTORUN 보고서: " + AutoRunArgs.ReportPath);
             }

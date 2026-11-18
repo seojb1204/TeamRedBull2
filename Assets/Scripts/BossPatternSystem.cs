@@ -38,6 +38,8 @@ namespace ReversalTower
     public sealed class BossPatternSystem
     {
         readonly TowerGame g;
+        string diagnosticSession=System.Guid.NewGuid().ToString("N");
+        public string DiagnosticStatus {get;private set;} = "아직 선택 기록 없음";
         public Pattern current;
         public float patternAge,windup,recovery,rest,patternDamage,targetX,safeSide,nextHit,bossStagger,barrierHp,barrierTime;
         public int patternCount,attackStep;
@@ -85,13 +87,19 @@ namespace ReversalTower
         public const float ParryCueLead=1.2f, ParryFlashLead=.35f, ParryFlashTime=.3f;
         public float parryGlow;          // 0~1 보스 몸의 파란 빛 (부드럽게 따라감)
         public float parryFlash=99;      // 보스 무기 앞 별빛이 터진 뒤 지난 시간
+        public const string PhanesUltimate="phanes_star";
+        const float ChaseStopDistance=3.1f, ChaseResumeDistance=3.25f;
+        bool phanesUltimateUsed, arakusChasing;
+        float nextArakusSelection;
         int patternSerial,cueKey=-1;float cueSoundAt=-9;
         public float DamageTakenScale => current!=null&&current.kind==AttackKind.Rage?RageDamageTaken:1f;
         public BossPatternSystem(TowerGame game) { g = game; }
         public void Reset()
         {
             phanesDownStage=0;phanesDownAge=0;phanesFallFrom=0;
-            cooldowns.Clear(); previousPattern=""; dashHit=false;
+            phanesUltimateUsed=arakusChasing=false;nextArakusSelection=0;
+            diagnosticSession=System.Guid.NewGuid().ToString("N");DiagnosticStatus="아직 선택 기록 없음";
+            cooldowns.Clear(); previousPattern=""; dashHit=false; recentSelections.Clear(); selectionLog.Clear(); meleeThreatened=false;
             tempo=1; rageDone=rageActive=false; poseFrame=-1; behindTime=0;
             shieldOut=shieldCaught=leaping=struck=touched=false;forceNext=null;
             parryGlow=0;parryFlash=99;cueKey=-1;cueSoundAt=-9;
@@ -100,18 +108,25 @@ namespace ReversalTower
         System.Random combatRandom=new System.Random();
         internal void SetTestSeed(int seed){combatRandom=new System.Random(seed);}
         string previousPattern="";
+        bool meleeThreatened; Vector2 meleeThreatPosition;
+        readonly Queue<string> recentSelections=new Queue<string>();
+        readonly List<PatternSelectionEvidence> selectionLog=new List<PatternSelectionEvidence>();
+        public IReadOnlyList<PatternSelectionEvidence> SelectionLog => selectionLog;
+        int RecentCount(string id){int n=0;foreach(string x in recentSelections)if(x==id)n++;return n;}
+        void RememberSelection(string id){recentSelections.Enqueue(id);while(recentSelections.Count>6)recentSelections.Dequeue();}
+
         public void TickBoss(float dt)
         {
             if(g.bossHp<=0)return;
             if(TickPhanesDown(dt))return;
             if(!phaseTwo&&g.bossHp<g.spec.hp*g.spec.phaseThreshold)
             {
-                phaseTwo=true;g.phaseFlash=1;current=null;rest=2;bossStagger=0;g.bossState="페이즈 전환";g.shake=4;
+                phaseTwo=true;g.phaseFlash=1;current=null;rest=2;bossStagger=0;g.bossState="페이즈 전환";g.shake=4;g.PlaySound("phase_change");
                 g.Say(g.spec.hasPillars?"철의 맹세가 흔들린다 · 돌진을 기둥으로 유도하세요":g.spec.echoBoss?"일식 · 잔상이 깨어납니다":"두 번째 맹세 · 패턴이 강화됩니다",3);
                 g.Burst(g.boss+Vector2.up,2,Palette.Gold,40);
             }
             if(g.spec.echoBoss&&phaseTwo&&!thirdPhase&&g.bossHp<g.spec.hp*.3f)
-            {thirdPhase=true;current=null;rest=2;g.phaseFlash=1;g.Say("마지막 잔상 · 심연의 끝",3);}
+            {thirdPhase=true;current=null;rest=2;g.phaseFlash=1;g.PlaySound("phase_change");g.Say("마지막 잔상 · 심연의 끝",3);}
             if(g.spec.hasPillars)
             {
                 bool behind=(g.player.x-g.boss.x)*g.bossFace< -.3f;
@@ -139,13 +154,37 @@ namespace ReversalTower
                     g.boss.x=Mathf.MoveTowards(g.boss.x,target,dt*g.spec.speed);
                     g.bossFace=g.player.x>=g.boss.x?1:-1;
                 }
-                if(rest>0)return;
+                if(rest>0){arakusChasing=false;return;}
+                if(g.spec.id=="phanes"&&phaseTwo&&!phanesUltimateUsed&&!barrier)
+                {
+                    var ultimate=System.Array.Find(g.spec.patterns,p=>p.id==PhanesUltimate);
+                    if(ultimate!=null){BeginPattern(ultimate);return;}
+                }
                 float distance=Mathf.Abs(g.boss.x-g.player.x);
                 g.bossFace=g.player.x>=g.boss.x?1:-1;
                 float chase=g.spec.speed*(g.spec.hasPillars?(rageActive?RageTempo:1):(phaseTwo?1.18f:1));
-                if(distance>3.1f&&!g.spec.airborne){g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase);if(distance>5&&combatRandom.NextDouble()>.015)return;}
+                if(g.spec.hasPillars)
+                {
+                    arakusChasing=distance>(arakusChasing?ChaseStopDistance:ChaseResumeDistance);
+                    if(arakusChasing)
+                    {
+                        float stop=g.player.x-g.bossFace*ChaseStopDistance;
+                        g.boss.x=Mathf.MoveTowards(g.boss.x,stop,dt*chase);
+                    }
+                    g.bossState=arakusChasing?"추적":"대기";
+                    if(g.seconds<nextArakusSelection)return;
+                    if(distance>5&&combatRandom.NextDouble()>.015)return;
+                }
+                else if(distance>3.1f&&!g.spec.airborne){g.boss.x=Mathf.MoveTowards(g.boss.x,g.player.x,dt*chase);if(distance>5&&combatRandom.NextDouble()>.015)return;}
                 SelectPattern(distance);return;
             }
+            // Conservative positional evidence: player occupied this melee hit region during
+            // the final visible warning. Unknown/missed attacks are not automatic dodges.
+            if(current.kind==AttackKind.Slash&&patternAge<nextHit&&nextHit-patternAge<=ParryCueLead)
+                if(!meleeThreatened&&Mathf.Abs(g.player.x-g.boss.x)<ArakusGeometry.Reach(g.spec,current)&&
+                    Mathf.Abs(g.player.y-g.boss.y)<ArakusGeometry.AttackHeight(g.spec,current)&&
+                    (current.id=="spin"||(g.player.x-g.boss.x)*g.bossFace>-.3f))
+                {meleeThreatened=true;meleeThreatPosition=g.player;}
             patternAge+=dt;
             g.bossState=patternAge<windup?"공격 예고":patternAge<nextHit?"연격":"공격";
             if(current.kind>=AttackKind.Step){TickArakus(dt);return;}
@@ -167,7 +206,7 @@ namespace ReversalTower
                 if(column)
                 {
                     if(g.boss.x<0)pillarLeft=false;else pillarRight=false;
-                    bossStagger=3.2f;current=null;rest=.5f;g.shake=5;g.PlaySound("hit");g.Say("기둥 충돌 · 공격 기회!",2);g.Burst(g.boss+Vector2.up,2,Palette.Gold,30);return;
+                    bossStagger=3.2f;current=null;rest=.5f;g.shake=5;g.PlaySound("pillar_crash");g.Say("기둥 충돌 · 공격 기회!",2);g.Burst(g.boss+Vector2.up,2,Palette.Gold,30);return;
                 }
                 if(!dashHit&&Mathf.Abs(g.player.x-g.boss.x)<1.2f)
                 {dashHit=true;g.PlayerHit(patternDamage,current.parryable,current.id,g.boss.x,g.player.y<2.2f);if(bossStagger>0){current=null;rest=.5f;return;}}
@@ -217,7 +256,7 @@ namespace ReversalTower
                 if(t<windup){poseFrame=0;g.bossState="분노 시전";return;}
                 if(!rageActive)
                 {
-                    rageActive=true;g.shake=6;g.flash=.35f;g.PlaySound("parry");
+                    rageActive=true;g.shake=6;g.flash=.35f;g.PlaySound("boss_0_Rage");
                     g.Burst(g.boss+Vector2.up*1.5f,3,Palette.Red,50);
                     g.Say("아라쿠스가 분노했다 · 이제부터 모든 동작이 1.5배 빠릅니다",3);
                 }
@@ -232,7 +271,7 @@ namespace ReversalTower
                 if(attackStep==0)
                 {
                     // 두 패턴 모두 같은 자세로 방패를 던진다 (이지선다)
-                    attackStep=1;shieldOut=true;shieldCaught=false;g.PlaySound("attack");
+                    attackStep=1;shieldOut=true;shieldCaught=false;g.PlaySound("boss_0_ShieldThrow");
                     Vector2 hand=g.boss+new Vector2(g.bossFace*.75f,1.25f);
                     Vector2 aim=(g.player+Vector2.up*.9f-hand).normalized;
                     var shot=new TowerGame.Shot{pos=hand,vel=aim*12*tempo,damage=7*patternDamage/Mathf.Max(1,p.damage),parry=true,pattern=p.id,
@@ -250,7 +289,7 @@ namespace ReversalTower
                     if(t<dashEnd){poseFrame=1;g.boss.x=Mathf.Lerp(moveFrom,moveTo,(t-dashStart)/(.6f*T));g.bossState="돌진";return;}
                     if(!struck)
                     {
-                        struck=true;g.boss.x=moveTo;
+                        struck=true;g.boss.x=moveTo;g.PlaySound("boss_0_Slash_throw");
                         g.PlayerHit(patternDamage,true,p.id,g.boss.x,InFront(p.range)&&g.player.y<2.2f);
                         g.Burst(g.boss+new Vector2(g.bossFace*1.3f,1.2f),.8f,Palette.ParryRim,10);g.shake=Mathf.Max(g.shake,2.5f);
                     }
@@ -274,7 +313,7 @@ namespace ReversalTower
                     g.boss.x=Mathf.Lerp(leapFrom,leapTo,u);g.boss.y=4*2.2f*u*(1-u);
                     poseFrame=u<.5f?2:3;g.bossState="도약";
                     if(u<1)return;
-                    leaping=false;struck=true;g.boss.y=0;leapStart=t;
+                    leaping=false;struck=true;g.boss.y=0;leapStart=t;g.PlaySound("boss_0_landing");
                     bool hit=Mathf.Abs(g.player.x-g.boss.x)<1.5f+.3f&&g.player.y<1.2f;
                     g.PlayerHit(patternDamage,false,p.id,g.boss.x,hit);
                     g.shake=6;g.Burst(g.boss+new Vector2(0,.2f),2.2f,Palette.Red,30);
@@ -293,6 +332,7 @@ namespace ReversalTower
                     poseFrame=1;g.bossState="방패 돌진";g.boss.x=Mathf.Lerp(moveFrom,moveTo,u);
                     while(attackStep<patternCount&&t>=windup+attackStep*.25f*T)
                     {
+                        if(attackStep==0)g.PlaySound("boss_0_ShieldRush");
                         attackStep++;
                         if(InFront(g.spec.id=="arakus"?ArakusGeometry.Reach(g.spec,p):1.4f)&&g.player.y<ArakusGeometry.AttackHeight(g.spec,p)){touched=true;g.PlayerHit(patternDamage,false,p.id,g.boss.x);g.Burst(g.boss+new Vector2(g.bossFace*1,1),.5f,Palette.Red,5);}
                     }
@@ -311,7 +351,7 @@ namespace ReversalTower
                 if(t<windup){poseFrame=0;return;}
                 if(attackStep==0)
                 {
-                    attackStep=1;
+                    attackStep=1;g.PlaySound("boss_0_Slash_sweep_low");
                     bool hit=Mathf.Abs(g.player.x-g.boss.x)<p.range&&g.player.y<1f;
                     g.PlayerHit(patternDamage,false,p.id,g.boss.x,hit,true);
                     g.shake=Mathf.Max(g.shake,3);g.Burst(g.boss+new Vector2(0,.6f),2.5f,Palette.Red,24);
@@ -319,7 +359,7 @@ namespace ReversalTower
                 if(t<second){poseFrame=t<windup+.3f*T?1:2;return;}
                 if(attackStep==1)
                 {
-                    attackStep=2;
+                    attackStep=2;g.PlaySound("boss_0_Slash_sweep_high");
                     bool hit=Mathf.Abs(g.player.x-g.boss.x)<p.range&&g.player.y<2.5f;
                     g.PlayerHit(patternDamage,false,p.id,g.boss.x,hit,true);
                     g.shake=Mathf.Max(g.shake,4.5f);g.Burst(g.boss+new Vector2(0,1.4f),2.5f,Palette.Red,24);
@@ -346,16 +386,53 @@ namespace ReversalTower
                 if(p.kind==AttackKind.Balance&&g.seconds<12)continue;
                 candidates.Add(p);
             }
-            if(candidates.Count==0){rest=.2f;return;}
-            float total=0;foreach(var p in candidates)total+=p.weight>0?p.weight:1;
+            if(candidates.Count==0)
+            {
+                if(g.spec.hasPillars)nextArakusSelection=g.seconds+.2f;
+                else rest=.2f;
+                return;
+            }
+            // Preserve authored gates. Prefer alternatives once a pattern occupied 2 of
+            // the last 6 selections; never deadlock if every eligible pattern is capped.
+            var excluded=new List<Pattern>();
+            if(g.battleDda&&candidates.Exists(p=>RecentCount(p.id)<2))
+            {excluded=candidates.FindAll(p=>RecentCount(p.id)>=2);candidates.RemoveAll(p=>RecentCount(p.id)>=2);}
+            var weights=new List<float>();var evidence=new List<PatternSelectionEvidence>();float total=0;
+            foreach(var p in candidates)
+            {
+                var stat=g.Stat(p.id);string reason;
+                float multiplier=DdaPatternFrequency.Multiplier(stat,g.battleDda,g.playerHp<=g.maxHp*.3f,out reason);
+                float weight=(p.weight>0&&BanditModel.Finite(p.weight)?p.weight:1)*multiplier;
+                weights.Add(weight);total+=weight;
+                evidence.Add(new PatternSelectionEvidence{id=p.id,opportunities=stat==null?0:stat.opportunities,
+                    success=stat==null?.7f:stat.Success,weight=weight,reason=reason,
+                    baseWeight=weight/multiplier,multiplier=multiplier,hits=stat==null?0:stat.hits,
+                    parries=stat==null?0:stat.parries,dodges=stat==null?0:stat.dodges,ignored=stat==null?0:stat.ignored});
+            }
             double roll=combatRandom.NextDouble()*total;Pattern selected=candidates[candidates.Count-1];
-            foreach(var p in candidates){roll-=p.weight>0?p.weight:1;if(roll<0){selected=p;break;}}
-            if(g.seconds<4)selected=g.spec.patterns[0];
+            for(int i=0;i<candidates.Count;i++){roll-=weights[i];if(roll<0){selected=candidates[i];break;}}
+            bool opening=g.seconds<4&&candidates.Contains(g.spec.patterns[0]);
+            if(opening)selected=g.spec.patterns[0];
+            foreach(var e in evidence){e.probability=opening?(e.id==selected.id?1:0):e.weight/total;
+                e.selected=e.id==selected.id;e.seconds=g.seconds;e.decision=patternSerial+1;
+                if(opening)e.reason+="; eligible authored opening";selectionLog.Add(e);}
+            foreach(var p in excluded)
+            {
+                var st=g.Stat(p.id);string why;float mult=DdaPatternFrequency.Multiplier(st,g.battleDda,g.playerHp<=g.maxHp*.3f,out why);
+                selectionLog.Add(new PatternSelectionEvidence{id=p.id,seconds=g.seconds,decision=patternSerial+1,
+                    reason="recent repetition limit: 2 in last 6; "+why,weight=0,probability=0,
+                    baseWeight=p.weight>0&&BanditModel.Finite(p.weight)?p.weight:1,multiplier=mult,
+                    opportunities=st.opportunities,hits=st.hits,parries=st.parries,dodges=st.dodges,ignored=st.ignored,success=st.Success});
+            }
+            // Persist only this decision, before trimming the bounded in-memory panel history.
+            DiagnosticStatus=SaveStore.LogSelections(diagnosticSession,g.spec.id,selectionLog,patternSerial+1);
+            while(selectionLog.Count>128)selectionLog.RemoveAt(0);
             BeginPattern(selected);
         }
         public void BeginPattern(Pattern p)
         {
-            current=p;patternAge=0;attackStep=0;dashHit=false;patternSerial++;g.bossFace=g.player.x>=g.boss.x?1:-1;
+            current=p;meleeThreatened=false;RememberSelection(p.id);patternAge=0;attackStep=0;dashHit=false;patternSerial++;g.bossFace=g.player.x>=g.boss.x?1:-1;
+            g.PlaySound("tell_"+g.bossIndex+"_"+p.id);   // 예고음: 선딜이 시작되는 순간. 큰 공격일수록 무겁게 (Soundscape 표)
             origin=g.boss;targetX=g.player.x;
             int level=g.Stat(p.id).level;
             float[] telegraph={1.3f,1.15f,1,.9f,.8f},damage={.8f,.9f,1,1.1f,1.2f},cooldown={1.25f,1.12f,1,.9f,.8f};   // 레벨 -2~+2 쿨타임 배율 (예전에 1.12f가 phaseSpeedScale로 잘못 바뀌어 아라쿠스 -1이 1.0이었음)
@@ -364,7 +441,14 @@ namespace ReversalTower
             windup=special?p.windup:Mathf.Max(.4f,p.windup*telegraph[level+2]/(phaseTwo?g.spec.phaseSpeedScale:1));
             windup/=tempo;
             recovery=p.recovery/(phaseTwo?g.spec.phaseSpeedScale:1)/tempo;patternDamage=p.damage*damage[level+2];patternCount=p.count;
-            if(phaseTwo&&p.kind==AttackKind.Volley)patternCount++;
+            if(p.id==PhanesUltimate)
+            {
+                phanesUltimateUsed=true;
+                windup=p.windup;recovery=p.recovery;patternCount=1;
+                g.Say("굴절의 별 · 파란 광탄을 받아치거나 궤적 밖으로 피하세요",windup);
+                g.PlaySound("cue");
+            }
+            else if(phaseTwo&&p.kind==AttackKind.Volley)patternCount++;
             if(p.count>1&&level!=0&&p.kind<AttackKind.Step)patternCount=Mathf.Max(1,patternCount+(level==2?1:level==-2?-1:0));
             if(p.kind==AttackKind.Dash)patternCount=2;
             float baseCooldown=p.cooldown>0?p.cooldown:(p.kind==AttackKind.Balance||p.kind==AttackKind.Barrier?18:4);
@@ -383,12 +467,13 @@ namespace ReversalTower
         public void ExecutePattern()
         {
             var p=current;
+            g.PlaySound("boss_"+g.bossIndex+"_"+p.kind+"_"+p.id);
             if(p.kind==AttackKind.Slash)
             {
                 bool radial=p.id=="spin";
                 bool overlap=Mathf.Abs(g.player.x-g.boss.x)<ArakusGeometry.Reach(g.spec,p)&&Mathf.Abs(g.player.y-g.boss.y)<ArakusGeometry.AttackHeight(g.spec,p)&&(radial||(g.player.x-g.boss.x)*g.bossFace>-.3f);
                 int hitsBefore=g.hits;
-                g.PlayerHit(patternDamage,p.parryable,p.id,g.boss.x,overlap);
+                g.PlayerHit(patternDamage,p.parryable,p.id,g.boss.x,overlap,false,meleeThreatened&&Vector2.Distance(meleeThreatPosition,g.player)>=.2f);meleeThreatened=false;
                 // 거검 휘두르기: 맞으면 1m 날아감 (PlayerHit 기본 0.45m + 0.55m)
                 if(g.spec.hasPillars&&p.id=="cleave"&&g.hits>hitsBefore)g.player.x=Mathf.Clamp(g.player.x+g.bossFace*.55f,TowerGame.Left+.4f,TowerGame.Right-.4f);
                 if(g.spec.hasPillars)g.shake=Mathf.Max(g.shake,p.id=="shield"?3.5f:2);
@@ -401,8 +486,17 @@ namespace ReversalTower
             {
                 Vector2 spawn=g.boss+new Vector2(g.bossFace*.75f,1.25f);
                 Vector2 aim=(g.player+Vector2.up*.9f-spawn).normalized;
-                if(p.id=="fan")aim=Quaternion.Euler(0,0,(attackStep-(patternCount-1)*.5f)*13)*aim;
-                FireShot(spawn,aim*g.spec.projectileSpeed,patternDamage,p.parryable,p.id);
+                if(p.id==PhanesUltimate)
+                {
+                    Vector2 target=new Vector2(targetX,.85f);
+                    FirePhanesStars(spawn,(target-spawn).normalized,g.spec.projectileSpeed,patternDamage,false);
+                    g.PlaySound("boss_1_Volley_orb");
+                }
+                else
+                {
+                    if(p.id=="fan")aim=Quaternion.Euler(0,0,(attackStep-(patternCount-1)*.5f)*13)*aim;
+                    FireShot(spawn,aim*g.spec.projectileSpeed,patternDamage,p.parryable,p.id);
+                }
             }
             else if(p.kind==AttackKind.Rain)
             {
@@ -480,11 +574,19 @@ namespace ReversalTower
         void Ting(){if(g.seconds-cueSoundAt>.12f){cueSoundAt=g.seconds;g.PlaySound("cue");}}
         public void FireShot(Vector2 pos,Vector2 velocity,float damage,bool parry,string pattern,bool friendly=false)
         {g.shots.Add(new TowerGame.Shot{pos=pos,vel=velocity,damage=damage,parry=parry,pattern=pattern,friendly=friendly});}
+        public void FirePhanesStars(Vector2 position,Vector2 aim,float speed,float damage,bool friendly)
+        {
+            for(int index=-2;index<=2;index++)
+            {
+                Vector2 velocity=Quaternion.Euler(0,0,index*13)*aim*speed;
+                FireShot(position,velocity,damage,!friendly,friendly?"ultimate":PhanesUltimate,friendly);
+            }
+        }
         public void TickShots(float dt)
         {
             for(int i=g.shots.Count-1;i>=0;i--)
             {
-                var s=g.shots[i];s.life-=dt;s.pos+=s.vel*dt;bool remove=false;
+                var s=g.shots[i];float arrivalX=s.vel.x;s.life-=dt;s.pos+=s.vel*dt;bool remove=false;
                 if(s.returns&&!s.friendly)
                 {
                     // 아라쿠스 방패: 7m 날아갔다가 보스 손으로 돌아옴. 손에 닿으면 회수.
@@ -505,16 +607,17 @@ namespace ReversalTower
                 {
                     Vector2 aim=(g.boss+Vector2.up*1.3f-s.pos).normalized;
                     s.vel=Vector2.Lerp(s.vel,aim*12,dt*9);
-                    if(g.BossShotOverlap(s.pos,s.radius)){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage);remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
+                    if(g.BossShotOverlap(s.pos,s.radius)){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage,1,s.pattern!="ultimate");remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
                 }
                 else if(!s.hitDone&&s.pos.x>g.player.x-.5f-s.radius&&s.pos.x<g.player.x+.5f+s.radius&&s.pos.y>g.player.y-s.radius&&s.pos.y<g.player.y+1.65f+s.radius)
                 {
-                    int before=g.parries;g.PlayerHit(s.damage,s.parry,s.pattern,s.pos.x);
+                    int before=g.parries;g.PlayerHit(s.damage,s.parry,s.pattern,s.pos.x,approachX:-arrivalX);
                     if(g.parries>before){s.friendly=true;s.damage*=2.5f;s.vel=(g.boss+Vector2.up*1.2f-s.pos).normalized*12;s.life=5;}
                     else if(s.returns){s.hitDone=true;s.returning=true;}
                     else remove=true;
                 }
-                if(s.life<=0||Mathf.Abs(s.pos.x)>15||s.pos.y< -2||s.pos.y>13)
+                bool belowArena=!s.friendly&&s.pattern==PhanesUltimate&&s.pos.y< -s.radius;
+                if(belowArena||s.life<=0||Mathf.Abs(s.pos.x)>15||s.pos.y< -2||s.pos.y>13)
                 {if(!s.friendly&&!s.hitDone)g.PlayerHit(s.damage,s.parry,s.pattern,s.pos.x,false);if(s.returns){shieldCaught=true;shieldOut=false;}remove=true;}
                 if(remove)g.shots.RemoveAt(i);
             }
@@ -524,16 +627,20 @@ namespace ReversalTower
             if(barrier)
             {
                 barrierTime-=dt;if(barrierTime<=0)
-                {barrier=false;g.PlayerHit(25,false,"barrier",g.boss.x);g.flash=.4f;g.Say("결계 폭발 · 다음에는 벽을 먼저 파괴하세요",3);}
+                {barrier=false;g.PlaySound("barrier_blast");g.PlayerHit(25,false,"barrier",g.boss.x);g.flash=.4f;g.Say("결계 폭발 · 다음에는 벽을 먼저 파괴하세요",3);}
             }
             for(int i=g.hazards.Count-1;i>=0;i--)
             {
-                var h=g.hazards[i];h.delay-=dt;
+                var h=g.hazards[i];
+                if(!h.hit&&h.delay>0&&h.delay<=ParryCueLead)
+                    if(!h.threatened&&Mathf.Abs(g.player.x-h.x)<h.width*.5f+.3f)
+                    {h.threatened=true;h.threatX=g.player.x;}
+                h.delay-=dt;
                 if(h.delay>0)continue;
                 if(!h.hit)
                 {
-                    h.hit=true;bool overlaps=Mathf.Abs(g.player.x-h.x)<h.width*.5f+.3f;
-                    g.PlayerHit(h.damage,h.parry,h.pattern,h.x,overlaps);
+                    h.hit=true;bool overlaps=Mathf.Abs(g.player.x-h.x)<h.width*.5f+.3f;g.PlaySound("erupt_"+g.bossIndex+"_"+h.pattern);
+                    g.PlayerHit(h.damage,h.parry,h.pattern,h.x,overlaps,false,h.threatened&&Mathf.Abs(g.player.x-h.threatX)>=.2f);
                     if(overlaps)g.Burst(g.player+Vector2.up,1,h.color,12);
                 }
                 h.life-=dt;if(h.life<=0)g.hazards.RemoveAt(i);

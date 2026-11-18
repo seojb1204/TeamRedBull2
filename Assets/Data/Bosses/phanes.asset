@@ -87,3 +87,15 @@ MonoBehaviour:
       range: 20
       count: 2
       parryable: 0
+    - id: phanes_star
+      name: "\uAD74\uC808\uC758 \uBCC4"
+      kind: 4
+      windup: 1.45
+      recovery: 1.1
+      damage: 18
+      range: 20
+      count: 1
+      parryable: 1
+      maxRange: 20
+      weight: 1
+      minPhase: -1

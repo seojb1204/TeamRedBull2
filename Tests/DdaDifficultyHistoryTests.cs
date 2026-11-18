@@ -153,19 +153,19 @@ public static class DdaDifficultyHistoryTests
         SaveStore.UseIsolatedRoot(Root("events")); var game = Game();
         using (var recorder = new DdaHistoryRecorder(() => game.spec, () => SaveStore.Root))
         {
-            game.StartBattle(0); int expected=game.stats.Find(s=>s.id=="cleave").level; game.DamageBoss(game.bossHp);
+            game.save.tutorialOnboardingVersion=1;game.StartBattle(0); int expected=game.stats.Find(s=>s.id=="cleave").level; game.DamageBoss(game.bossHp);
             Check(recorder.Store.Recent("arakus").Count == 1 && recorder.Store.Recent("arakus")[0].patterns.Find(p=>p.id=="cleave").level == expected, "real EndBattle event records the actual assigned level even when never executed");
             Call(game,"EndBattle",true); SaveStore.Log(game.result,game.stats,game.save);
             Check(recorder.Store.Completed("arakus") == 1, "repeated settlement and repeated result event record once");
-            game.StartBattle(0); game.playerHp=0; Call(game,"TickBattle",.016f);
+            game.save.tutorialOnboardingVersion=1;game.StartBattle(0); game.playerHp=0; Call(game,"TickBattle",.016f);
             Check(!recorder.Store.Recent("arakus")[1].clear && !game.result.abandoned, "normal death event records defeat");
-            game.StartBattle(0); game.Abandon();
-            game.StartBattle(0); Call(game,"OnApplicationQuit");
+            game.save.tutorialOnboardingVersion=1;game.StartBattle(0); game.Abandon();
+            game.save.tutorialOnboardingVersion=1;game.StartBattle(0); Call(game,"OnApplicationQuit");
             Check(recorder.Store.All().Count == 4 && recorder.Store.Completed("arakus") == 2, "abandon and quit are audited but excluded from learning graph sequence");
-            game.save.dda=false; game.StartBattle(0); game.DamageBoss(game.bossHp);
+            game.save.dda=false; game.save.tutorialOnboardingVersion=1;game.StartBattle(0); game.DamageBoss(game.bossHp);
             var last=recorder.Store.Recent("arakus")[2];
             Check(!last.dda && last.average==0 && last.patterns.TrueForAll(p=>p.level==0), "Fixed event is stored distinctly with its actual neutral levels");
-            SaveStore.UseIsolatedRoot(Root("second-root")); game.StartBattle(0); game.DamageBoss(game.bossHp);
+            SaveStore.UseIsolatedRoot(Root("second-root")); game.save.tutorialOnboardingVersion=1;game.StartBattle(0); game.DamageBoss(game.bossHp);
             Check(recorder.Store.Completed("arakus")==1, "observer honors a changed SaveStore.Root");
             bool later=false; Action<HistoryEntry,List<PatternStats>,SaveData> listener=(h,s,d)=>later=true;
             SaveStore.BattleLogged+=listener;
@@ -181,7 +181,7 @@ public static class DdaDifficultyHistoryTests
         var levels = new List<string>();
         for(int i=0;i<6;i++)
         {
-            baseline.StartBattle(0); levels.Add(string.Join(",",baseline.stats.ConvertAll(s=>s.level.ToString()).ToArray()));
+            baseline.save.tutorialOnboardingVersion=1;baseline.StartBattle(0); levels.Add(string.Join(",",baseline.stats.ConvertAll(s=>s.level.ToString()).ToArray()));
             foreach(var s in baseline.stats){s.opportunities=5;if(i<3)s.hits=5;else s.dodges=5;}
             baseline.DamageBoss(baseline.bossHp);
         }
@@ -191,7 +191,7 @@ public static class DdaDifficultyHistoryTests
         {
             for(int i=0;i<6;i++)
             {
-                observed.StartBattle(0);
+                observed.save.tutorialOnboardingVersion=1;observed.StartBattle(0);
                 Check(levels[i]==string.Join(",",observed.stats.ConvertAll(s=>s.level.ToString()).ToArray()),"observer preserves chosen levels in battle "+(i+1));
                 foreach(var s in observed.stats){s.opportunities=5;if(i<3)s.hits=5;else s.dodges=5;}
                 observed.DamageBoss(observed.bossHp);

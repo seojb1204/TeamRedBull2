@@ -11,9 +11,13 @@ namespace ReversalTower
         public static Sprite[] Sprites(string id)
         {
             if(cache.TryGetValue(id,out var a))return a;
-            a=Resources.LoadAll<Sprite>("ArakusV1/"+id);Array.Sort(a,(x,y)=>string.CompareOrdinal(x.name,y.name));
+            // Prefer the current art set; use V2 and then V1 when a clip is unavailable.
+            a=Resources.LoadAll<Sprite>("ArakusNew/"+id);
+            if(a.Length==0)a=Resources.LoadAll<Sprite>("ArakusV2/"+id);
+            if(a.Length==0)a=Resources.LoadAll<Sprite>("ArakusV1/"+id);Array.Sort(a,(x,y)=>string.CompareOrdinal(x.name,y.name));
             if(a.Length>0)cache[id]=a;return a;
         }
+        public const float NewBodyScale=ArakusAnimationSelection.WalkCycle.BodyScale;
         public static bool HasArt=>Sprites("Idle").Length==4;
         public static void ClearCache()=>cache.Clear();
         sealed class Effect {public string id;public Vector2 pos;public float start,duration;public int face;}
@@ -24,6 +28,7 @@ namespace ReversalTower
         Pattern previousPattern;float previousAge=-1,lastClock=-1,poseStarted,pillarLeftAt=-99,pillarRightAt=-99;
         bool initialized,lastBattle,left,right,lastRage,lastStruck,pillarStun;
         string poseState;int cursor,leftImpactFace=1,rightImpactFace=1;float clock;
+        readonly ArakusAnimationSelection.WalkCycle walkCycle=new ArakusAnimationSelection.WalkCycle();
         public bool PillarStun=>pillarStun;
         public int VisibleSprites{get{int n=0;foreach(var r in pool)if(r.enabled)n++;return n;}}
         void OnDisable(){foreach(var r in pool)if(r)r.enabled=false;effects.Clear();previousShots.Clear();initialized=false;}
@@ -32,7 +37,7 @@ namespace ReversalTower
             bool combat=battle&&g.mode==ScreenMode.Battle;
             clock=combat?g.seconds:g.realClock;
             bool restart=!initialized||battle!=lastBattle||clock<lastClock;
-            if(restart){effects.Clear();previousShots.Clear();left=g.pillarLeft;right=g.pillarRight;lastRage=g.BossPatterns.rageActive;pillarStun=false;pillarLeftAt=pillarRightAt=-99;poseState=null;previousPattern=null;previousAge=-1;lastStruck=false;}
+            if(restart){walkCycle.Reset();effects.Clear();previousShots.Clear();left=g.pillarLeft;right=g.pillarRight;lastRage=g.BossPatterns.rageActive;pillarStun=false;pillarLeftAt=pillarRightAt=-99;poseState=null;previousPattern=null;previousAge=-1;lastStruck=false;}
             initialized=true;lastBattle=battle;lastClock=clock;
             if(combat)
             {
@@ -43,14 +48,15 @@ namespace ReversalTower
             }
             left=g.pillarLeft;right=g.pillarRight;
             var bp=g.BossPatterns;
+            walkCycle.Observe(g.boss.x,clock,combat&&g.current==null&&g.bossStagger<=0&&g.bossState=="추적",g.bossFace);
             var i=new ArakusAnimationSelection.Input{combat=combat,dead=battle&&g.bossHp<=0,groggy=pillarStun,
-                shieldOut=bp.shieldOut,shieldCaught=bp.shieldCaught,leaping=bp.leaping,struck=bp.struck,
-                walking=g.bossState=="추적",phase=g.bossState=="페이즈 전환",pattern=g.current!=null?g.current.id:null,
+                shieldOut=bp.shieldOut||(battle&&g.bossHp<=0&&g.shots.Exists(shot=>shot.returns)),shieldCaught=bp.shieldCaught,leaping=bp.leaping,struck=bp.struck,
+                walking=walkCycle.Moving,phase=g.bossState=="페이즈 전환",pattern=g.current!=null?g.current.id:null,
                 age=g.patternAge,windup=g.windup,recovery=g.recovery,tempo=bp.tempo,leapStart=bp.leapStart,
                 stagger=Mathf.Max(g.bossStagger,g.bossState=="페이즈 전환"?g.rest:0),hurt=g.bossFlash,step=g.attackStep};
             string state=ArakusAnimationSelection.State(i);
             if(state!=poseState||restart||g.current!=previousPattern||g.patternAge<previousAge){poseState=state;poseStarted=clock;}
-            var pose=ArakusAnimationSelection.Sample(i,clock-poseStarted);
+            var pose=ArakusAnimationSelection.Sample(i,state=="Walk"?walkCycle.Elapsed:clock-poseStarted);
             previousPattern=g.current;previousAge=g.patternAge;return pose;
         }
         void Emit(string id,Vector2 pos,int face,float duration=.6f)
@@ -66,7 +72,7 @@ namespace ReversalTower
                 {
                     switch(p.id)
                     {
-                        case "slash":Emit("FX_SwordAttack",g.boss+new Vector2(g.bossFace*.7f,.25f),g.bossFace);break;
+                        case "slash":Emit("FX_SwordAttack",g.boss+new Vector2(g.bossFace*1.1f,1.55f),g.bossFace);break;
                         case "shield":Emit("FX_ShieldAttack",g.boss+new Vector2(g.bossFace*.8f,0),g.bossFace);break;
                         case "cleave":Emit("FX_SwordSwing",g.boss+new Vector2(g.bossFace*.7f,.5f),g.bossFace);Emit("FX_ArmWind",g.boss+Vector2.up*.5f,g.bossFace);break;
                         case "step":Emit("FX_Dirt",g.boss,-g.bossFace);break;
@@ -77,8 +83,8 @@ namespace ReversalTower
                 if(p.id=="sweep"&&before<w+T&&t>=w+T)Emit("FX_WideVertical",g.boss+new Vector2(g.bossFace*.7f,0),g.bossFace,1.5f);
                 if(bp.struck&&(newPattern||!lastStruck))
                 {
-                    if(p.id=="throw")Emit("FX_SwordAttack",g.boss+new Vector2(g.bossFace*.7f,.25f),g.bossFace);
-                    if(p.id=="slam")Emit("FX_LeapingSlam",g.boss,g.bossFace);
+                    if(p.id=="throw")Emit("FX_SwordAttack",g.boss+new Vector2(g.bossFace*1.1f,2.15f),g.bossFace);
+                    if(p.id=="slam"&&!SkillEffectVisuals.HasLanding)Emit("FX_LeapingSlam",g.boss,g.bossFace);
                 }
             }
             if(bp.rageActive&&!lastRage)Emit("FX_WrathRing",g.boss,g.bossFace);
@@ -117,11 +123,34 @@ namespace ReversalTower
                 else if(clock-pillarLeftAt<.6f)DrawPillar(g,1,new Vector2(-4,0),leftImpactFace,owner,Mathf.Clamp01(1-(clock-pillarLeftAt)/.6f));
                 if(g.pillarRight)DrawPillar(g,0,new Vector2(4,0),1,owner,1);
                 else if(clock-pillarRightAt<.6f)DrawPillar(g,1,new Vector2(4,0),rightImpactFace,owner,Mathf.Clamp01(1-(clock-pillarRightAt)/.6f));
-                foreach(var s in g.shots)if(s.returns)Draw("Shield_Spin",ArakusAnimationSelection.NativeFrame("Shield_Spin",clock,true),s.pos,1,owner,s.friendly?Palette.Teal:Color.white);
-                if(g.bossHp<=0&&!g.BossPatterns.shieldOut&&poseState=="Death")
+                bool dying=g.bossHp<=0&&poseState=="Death";
+                const float shieldRestY=23f*ArakusGeometry.LegacyEffectScale/ArakusGeometry.PixelsPerUnit;
+                if(dying)
                 {
-                    float drop=clock-poseStarted-ArakusAnimationSelection.Find("Death").Start(2);
-                    if(drop>=0)Draw("Shield_Spin",drop<.2f?((int)(drop/.05f)%4):0,g.boss+new Vector2(g.bossFace*.65f,Mathf.Lerp(1.1f,.45f,Mathf.Clamp01(drop/.2f))),1,owner);
+                    float age=Mathf.Max(0,clock-poseStarted);
+                    var thrownShield=g.shots.Find(shot=>shot.returns);
+                    if(thrownShield!=null)
+                    {
+                        // Result mode freezes combat. Finish the one airborne shield visually.
+                        float fall=Mathf.Clamp01(age/.36f);
+                        float drift=Mathf.Clamp(thrownShield.vel.x*.08f,-.8f,.8f);
+                        var landing=new Vector2(thrownShield.pos.x+drift,Mathf.Min(shieldRestY,thrownShield.pos.y));
+                        Vector2 position=Vector2.Lerp(thrownShield.pos,landing,fall*fall);
+                        int image=fall<1?ArakusAnimationSelection.NativeFrame("Shield_Spin",age,true):0;
+                        Draw("Shield_Spin",image,position,1,owner);
+                    }
+                    else if(!g.BossPatterns.shieldOut)
+                    {
+                        float drop=age-ArakusAnimationSelection.Find("Death").Start(2);
+                        if(drop>=0)Draw("Shield_Spin",drop<.2f?(int)(drop/.05f)%4:0,
+                            g.boss+new Vector2(g.bossFace*.65f,Mathf.Lerp(1.1f,shieldRestY,Mathf.Clamp01(drop/.2f))),1,owner);
+                    }
+                }
+                else
+                {
+                    foreach(var s in g.shots)
+                        if(s.returns)Draw("Shield_Spin",ArakusAnimationSelection.NativeFrame("Shield_Spin",clock,true),
+                            s.pos,1,owner,s.friendly?Palette.Teal:Color.white);
                 }
                 var p=g.current;
                 if(g.bossHp>0&&p!=null)

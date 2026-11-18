@@ -58,11 +58,21 @@ namespace ReversalTower
         }
         void OnGUI()
         {
+            GUI.depth=TransitionActive?-10000:0;
+            if(TransitionActive&&(Event.current.isMouse||Event.current.isKey))Event.current.Use();
+            DrawGameUi();
+            if(TransitionActive&&Event.current.type==EventType.Repaint)
+                Fill(new Rect(0,0,Screen.width,Screen.height),new Color(0,0,0,transitionAlpha));
+        }
+
+        void DrawGameUi()
+        {
             EnsureStyles();float scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
             GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1600*scale)/2,(Screen.height-900*scale)/2,0),Quaternion.identity,new Vector3(scale,scale,1));
 #if !HEADLESS && !DESKTOP_PREVIEW
             if(nativeUI)
             {
+                if(TutorialActive){DrawTutorialGuide();if(showSettings)SettingsUI();if(showHelp)HelpUI();GUI.matrix=Matrix4x4.identity;return;}
                 DdaPanelUI();   // F8 DDA 패널 (DdaPanel.cs). 아래 창들이 그 위에 그려진다
                 if(showHistory)HistoryUI();
                 if(showSettings)SettingsUI();
@@ -83,10 +93,12 @@ namespace ReversalTower
             if(phaseFlash>0&&mode==ScreenMode.Battle)
             {Fill(new Rect(0,325,1600,110),new Color(.025f,.035f,.05f,phaseFlash*.85f));Text(0,352,1600,80,thirdPhase?"마지막 잔상":phaseTwo?"두 번째 맹세":"",40,Palette.Gold,TextAnchor.UpperCenter);}
 #if !HEADLESS && !DESKTOP_PREVIEW
-            DdaPanelUI();
+            if(TutorialActive){DrawTutorialGuide();if(showSettings)SettingsUI();if(showHelp)HelpUI();GUI.matrix=Matrix4x4.identity;return;}
+                DdaPanelUI();
 #endif
-            if(paused&&mode==ScreenMode.Battle)PauseUI();
+            if(paused&&mode==ScreenMode.Battle&&!TutorialActive&&!showSettings&&!showHelp)PauseUI();
             if(showHistory)HistoryUI();if(showSettings)SettingsUI();if(showHelp)HelpUI();
+            if(TutorialActive)DrawTutorialGuide();
             if(!string.IsNullOrEmpty(SaveStore.LastError))Text(20,875,1560,24,SaveStore.LastError,13,Palette.Red);
             GUI.matrix=Matrix4x4.identity;
         }
@@ -100,7 +112,7 @@ namespace ReversalTower
             Text(93,198,700,125,"역전의 탑",83);
             Text(102,341,590,100,"무너진 맹세를 넘어,\n신의 기술로 신에게 맞서라.",27,Palette.White);
             Text(103,467,545,65,"패턴을 읽고. 검을 받아내고.\n쓰러뜨린 자의 힘을 계승하세요.",18,muted);
-            if(Button(103,577,360,62,save.history.Count>0?"탑으로 돌아가기   →":"탑에 들어가기   →",true)){mode=ScreenMode.Lobby;}
+            if(Button(103,577,360,62,save.history.Count>0?"탑으로 돌아가기   →":"탑에 들어가기   →",true)){StartGame();}
             if(Button(103,655,170,45,"조작 안내"))showHelp=true;
             if(Button(287,655,176,45,"설정"))showSettings=true;
             Text(103,730,530,32,"검과 패링으로 오르는 다섯 개의 문",16,muted);
@@ -128,11 +140,11 @@ namespace ReversalTower
             Text(524,283,385,55,b.name,42);Text(528,350,370,32,b.title,18,Palette.White);
             Rule(528,401,365);Text(528,423,365,98,b.lesson,18,muted);
             Text(528,533,365,30,"계승 기술  /  "+b.ultimate,16,Palette.Gold);
-            if(Button(503,589,420,58,save.cardChosen?"강화 완료 · 보스전 입장   →":"강화 없이 바로 입장   →",true))StartBattle(bossIndex);
+            if(Button(503,589,420,58,"보스전 입장   →",true))StartBattle(bossIndex);
             Fill(new Rect(80,677,843,134),panel);Text(100,690,790,28,"영구 강화  /  세 카드 중 하나 선택 · 사망해도 유지",16,Palette.Gold);
             Text(100,727,435,30,"공격력 "+LobbyCards.Attack(save).ToString("0.0")+"  ·  체력 "+LobbyCards.Health(save).ToString("0")+"  ·  회복 "+LobbyCards.Heal(save).ToString("0"),18);
             Text(100,769,450,25,"누적 선택 "+save.cardPurchases+"회  ·  기존 영구 강화 유지",13,muted);
-            if(Button(560,732,340,52,save.cardChosen?"이번 로비 강화 완료":"강화 선택  [C]  ·  "+LobbyCards.Cost(save)+" G",false,!save.cardChosen))OpenCards();
+            if(Button(560,732,340,52,"강화 선택  [C]  ·  "+LobbyCards.Cost(save)+" G",false,LobbyCards.CanPurchase(save)))OpenCards();
             Fill(new Rect(981,677,540,134),panel);Text(1003,692,490,26,"장착 궁극기",15,Palette.Gold);
             Text(1003,730,335,33,save.equippedUltimate<0?"반역의 불꽃":Catalog.Bosses[save.equippedUltimate].ultimate,23);
             if(Button(1362,730,138,45,"변경  ↻"))CycleUltimate();
@@ -144,16 +156,16 @@ namespace ReversalTower
         {
             Modal(230,205,1140,570,"맹세의 인장 · 하나를 선택하세요");
             Text(270,273,1060,40,"보유 "+save.gold+" G  /  선택 비용 "+LobbyCards.Cost(save)+" G  ·  강화는 영구 누적됩니다.",18,Palette.Gold);
-            if(save.cardOffer==null||save.cardOffer.Length!=3){Text(280,355,1000,80,"강화 후보를 불러오지 못했습니다. 닫고 다시 열어주세요.",20);}
-            else for(int i=0;i<3;i++)
+            if(save.cardOffer==null||save.cardOffer.Length==0){Text(280,355,1000,80,"강화 후보를 불러오지 못했습니다. 닫고 다시 열어주세요.",20);}
+            else for(int i=0;i<save.cardOffer.Length;i++)
             {
                 var card=LobbyCards.Find(save.cardOffer[i]);if(card==null)continue;float x=280+i*350;
                 Fill(new Rect(x,328,330,296),new Color(.075f,.10f,.14f));Rule(x,328,330,Palette.Gold);
                 Text(x+20,345,290,50,card.glyph,32,Palette.Gold,TextAnchor.UpperCenter);
                 Text(x+20,408,290,40,card.name,23,Palette.White,TextAnchor.UpperCenter);
                 Text(x+25,462,280,75,card.description,17,muted,TextAnchor.UpperCenter);
-                Text(x+20,550,290,30,"보유 "+LobbyCards.Count(save,card.id)+" → "+(LobbyCards.Count(save,card.id)+1),16,Palette.Teal,TextAnchor.UpperCenter);
-                if(Button(x,639,330,51,"이 카드 선택",true,save.gold>=LobbyCards.Cost(save)&&!save.cardChosen))
+                Text(x+20,550,290,30,LobbyCards.Preview(save,card.id),16,Palette.Teal,TextAnchor.UpperCenter);
+                if(Button(x,639,330,51,"이 카드 선택",true,save.gold>=LobbyCards.Cost(save)&&LobbyCards.Available(save,card)))
                 {if(ChooseCard(card.id))sound.Play("heal");return;}
             }
             if(Button(650,711,300,42,"선택하지 않고 돌아가기"))showCards=false;
@@ -186,7 +198,7 @@ namespace ReversalTower
             Fill(new Rect(0,760,1600,140),new Color(.02f,.035f,.05f,.92f));
             Slot(64,"J","검격",0,1);Slot(180,"K","패링",Mathf.Max(0,parryLock),.55f);Slot(296,"Q","돌진 베기",skillQ,6);Slot(412,"W","회전 베기",skillW,10);Slot(528,"E","처형 베기",skillE,15);Slot(644,"F","회복약",potions==0?1:0,1);
             Text(829,777,570,30,save.equippedUltimate<0?"R   반역의 불꽃":"R   "+Catalog.Bosses[save.equippedUltimate].ultimate,19,ult>=100?Palette.Gold:muted);
-            Bar(830,824,405,8,ult/100,Palette.Gold);Text(1248,811,90,40,Mathf.FloorToInt(ult)+"%",18,Palette.Gold);
+            Bar(830,824,405,8,ult/100,Palette.Gold);Text(1248,811,90,40,SwordCharged?"전기 "+Mathf.CeilToInt(sparkTime)+"초":Mathf.FloorToInt(ult)+"%",18,Palette.Gold);
             Text(829,854,700,23,"A D  이동    SPACE  점프    SHIFT  대시    ESC  일시정지",14,muted);
             if(Button(1391,787,143,51,"도움말  F1"))showHelp=true;
         }
@@ -210,7 +222,7 @@ namespace ReversalTower
             else Text(390,508,820,52,"전투 기록과 진행 상황을 저장했습니다.",19,muted,TextAnchor.UpperCenter);
             if(result.clear&&bossIndex>=3)
             {
-                if(Button(475,603,650,62,bossIndex==4?"심연의 끝을 바라보기   →":"창조자의 마지막을 바라보기   →",true))mode=ScreenMode.Ending;
+                if(Button(475,603,650,62,bossIndex==4?"심연의 끝을 바라보기   →":"창조자의 마지막을 바라보기   →",true))ShowEnding();
             }
             else if(Button(475,603,650,62,"회랑으로 돌아가기   →",true))ReturnLobby();
             if(!result.clear&&Button(475,685,315,49,"다시 도전"))StartBattle(bossIndex);
@@ -240,26 +252,51 @@ namespace ReversalTower
             Modal(535,215,530,466,"잠시 검을 내려놓고");Text(568,282,460,40,"전투는 멈춰 있습니다.",18,muted);
             if(Button(568,344,464,56,"전투 계속하기",true))paused=false;
             if(Button(568,419,222,48,"조작 안내"))showHelp=true;if(Button(810,419,222,48,"설정"))showSettings=true;
-            if(Button(568,490,464,50,"전투 중단 후 회랑으로"))Abandon();
-            Text(568,562,464,64,"중단한 전투도 실패 기록과 보상이 남습니다.\nESC로 전투에 복귀할 수 있습니다.",15,muted);
+            if(TutorialActive)
+            {
+                if(Button(568,490,464,50,"튜토리얼 나가기"))ExitTutorial();
+            }
+            else
+            {
+                if(Button(568,490,464,50,"전투 중단 후 회랑으로"))Abandon();
+                Text(568,562,464,64,"중단한 전투도 실패 기록과 보상이 남습니다.\nESC로 전투에 복귀할 수 있습니다.",15,muted);
+            }
         }
         void HelpUI()
         {
             Modal(260,110,1080,690,"검보다 먼저, 패턴을 읽으세요");
             string[] keys={"A / D · ← / →","SPACE","J / Z · 마우스 왼쪽","K / X · 마우스 오른쪽","SHIFT","Q / W / E","R","F"};
-            string[] actions={"이동","점프 · 지면 파동을 뛰어넘습니다","검격","푸른 신호에 맞춰 패링 · 궁극기 +15","무적 대시 · 2스택, 지상에서 스택당 2.5초 충전","돌진 베기 / 회전 베기 / 처형 베기","궁극기 · 게이지 100 소모","회복약 · "+LobbyCards.Heal(save).ToString("0")+" 회복, 한 전투에 3개"};
+            string[] actions={"이동","점프 · 지면 파동을 뛰어넘습니다","검격","푸른 신호에 맞춰 패링 · 궁극기 +15","무적 대시 · 2스택, 지상에서 스택당 2.5초 충전","돌진 베기 / 회전 베기 / 처형 베기","궁극기 · 게이지 100 소모","회복약 · "+LobbyCards.Heal(save).ToString("0")+" 회복, 한 전투에 "+LobbyCards.Potions(save)+"개"};
             for(int i=0;i<keys.Length;i++){float y=202+i*48;Text(298,y,320,32,keys[i],18,Palette.Gold);Text(650,y,640,34,actions[i],18,Palette.White);}
             Rule(298,608,1000);Text(298,632,1000,72,"파랗게 빛나면 받아치고, 붉게 빛나면 피하세요.\n별빛이 번쩍이는 순간이 받아칠 때입니다.",17,muted);
             if(Button(1070,726,230,44,"알겠습니다",true)){showHelp=false;save.tutorialSeen=true;SaveStore.Save(save);}
         }
         // DDA 기록 초기화: 실수로 누르지 않게 4초 안에 한 번 더 눌러야 지운다. 전투 중에는 막는다(진행 중인 판이 지운 기록에 학습되지 않게).
         float ddaResetArmedUntil=-1,ddaResetDoneUntil=-1;
+        bool profileResetConfirm;string restoreConfirmId;
+        float archivedHistoryRefresh=-1;
+        System.Collections.Generic.List<HistoryEntry> archivedHistory;
+        System.Collections.Generic.HashSet<string> validSnapshots=new System.Collections.Generic.HashSet<string>();
+        void ApplyProfile(SaveData replacement,bool reset)
+        {
+            save=replacement;mode=reset?ScreenMode.Title:ScreenMode.Lobby;paused=false;
+            showSettings=showHistory=showHelp=showCards=false;current=null;barrier=false;
+            hazards.Clear();shots.Clear();minions.Clear();impacts.Clear();motes.Clear();
+            archivedHistory=null;profileResetConfirm=false;restoreConfirmId=null;AudioListener.volume=save.masterVolume;
+        }
+        SaveData SettingsProfile=>tutorialOriginalSave??save;
+        void CloseSettings()
+        {
+            if(SettingsProfile!=null)SaveStore.Save(SettingsProfile);
+            showSettings=false;
+        }
         void SettingsUI()
         {
+            var settings=SettingsProfile;
             Modal(440,190,720,590,"설정");
-            Text(478,280,600,32,"전체 음량",20);save.masterVolume=GUI.HorizontalSlider(new Rect(480,337,600,28),save.masterVolume,0,1);AudioListener.volume=save.masterVolume;
+            Text(478,280,600,32,"전체 음량",20);settings.masterVolume=GUI.HorizontalSlider(new Rect(480,337,600,28),settings.masterVolume,0,1);AudioListener.volume=settings.masterVolume;
             Text(478,385,600,32,"패턴별 적응 난이도  /  DDA",20);
-            if(Button(480,438,600,48,save.dda?"사용 중  ·  클릭하여 고정 난이도로 변경":"고정 난이도  ·  클릭하여 DDA 사용")){save.dda=!save.dda;SaveStore.Save(save);}
+            if(Button(480,438,600,48,settings.dda?"사용 중  ·  클릭하여 고정 난이도로 변경":"고정 난이도  ·  클릭하여 DDA 사용")){settings.dda=!settings.dda;SaveStore.Save(settings);}
             bool inBattle=mode==ScreenMode.Battle,armed=realClock<ddaResetArmedUntil,done=realClock<ddaResetDoneUntil;
             string resetLabel=inBattle?"전투 중에는 DDA 기록을 초기화할 수 없습니다":done?"DDA 기록을 초기화했습니다":armed?"한 번 더 누르면 초기화합니다 (되돌릴 수 없음)":"DDA 기록 초기화  ·  모든 보스";
             if(Button(480,498,600,44,resetLabel,false,!inBattle&&!done))
@@ -267,22 +304,49 @@ namespace ReversalTower
                 if(armed){save.ResetDdaLearning();SaveStore.Save(save);ddaResetArmedUntil=-1;ddaResetDoneUntil=realClock+3;Say("DDA 기록을 초기화했습니다. 다음 전투는 첫 만남부터 다시 배웁니다.",3);}
                 else ddaResetArmedUntil=realClock+4;
             }
-            Text(480,555,600,130,"바꾼 설정은 다음 전투부터 적용됩니다. DDA 기록 초기화는 적응 난이도 학습만 지우고 골드·카드·전투 기록은 남깁니다. 전투 기록은 인터넷이 연결되면 익명 ID로 팀 서버에도 보내집니다.",16,muted);
-            if(Button(480,691,600,48,"저장하고 닫기",true)){SaveStore.Save(save);showSettings=false;}
+            if(Button(480,551,600,40,"처음부터 다시 시작 (기록 유지)",false,!inBattle&&!SaveStore.ProfileOperationInProgress))profileResetConfirm=!profileResetConfirm;
+            if(profileResetConfirm)
+            {
+                Text(480,594,600,28,"현재 진행은 초기화됩니다. 기록·복원 지점은 유지됩니다.",14,muted);
+                if(Button(480,624,290,34,"취소"))profileResetConfirm=false;
+                if(Button(790,624,290,34,"백업 후 새 프로필 시작",false,!inBattle))
+                {SaveData next;if(SaveStore.TryResetProfile(save,inBattle,out next))ApplyProfile(next,true);else Say(SaveStore.LastError,5);}
+            }
+            else Text(480,598,600,46,"DDA 초기화와 별개입니다. 새 익명 ID로 시작하며 이전 기록은 복원할 수 있습니다.",14,muted);
+            if(!profileResetConfirm&&save.tutorialOnboardingVersion>=1&&Button(480,645,600,34,"튜토리얼 다시 하기",false,!inBattle&&!SaveStore.ProfileOperationInProgress)){showSettings=false;StartTutorial(true);return;}
+            if(Button(480,691,600,48,"저장하고 닫기",true)){CloseSettings();}
         }
         void HistoryUI()
         {
             Modal(260,110,1080,690,"탑이 기억하는 전투");
-            Text(300,192,1000,35,"최근 30번의 도전",17,muted);
-            historyScroll=GUI.BeginScrollView(new Rect(294,245,1012,450),historyScroll,new Rect(0,0,980,Mathf.Max(430,save.history.Count*66)));
-            if(save.history.Count==0)Text(15,80,940,80,"첫 번째 문을 열면 여기에 남는다.",22,muted,TextAnchor.UpperCenter);
-            for(int i=0;i<save.history.Count;i++)
+            if(archivedHistory==null||realClock>=archivedHistoryRefresh)
             {
-                var h=save.history[i];float y=i*66;Fill(new Rect(0,y,975,57),new Color(.07f,.10f,.14f));var b=Array.Find(Catalog.Bosses,p=>p.id==h.boss);
+                archivedHistory=SaveStore.AllHistory(save);validSnapshots.Clear();
+                foreach(var entry in archivedHistory)if(SaveStore.HasSnapshot(entry.snapshotId))validSnapshots.Add(entry.snapshotId);
+                archivedHistoryRefresh=realClock+2;
+            }
+            var entries=archivedHistory;
+            Text(300,192,1000,35,"보관된 전투 · 복원은 로컬 진행만 변경하며 서버 기록은 유지됩니다",17,muted);
+            historyScroll=GUI.BeginScrollView(new Rect(294,245,1012,450),historyScroll,new Rect(0,0,980,Mathf.Max(430,entries.Count*90)));
+            if(entries.Count==0)Text(15,80,940,80,"첫 번째 문을 열면 여기에 남는다.",22,muted,TextAnchor.UpperCenter);
+            for(int i=0;i<entries.Count;i++)
+            {
+                var h=entries[i];float y=i*90;Fill(new Rect(0,y,975,57),new Color(.07f,.10f,.14f));var b=Array.Find(Catalog.Bosses,p=>p.id==h.boss);
                 Text(16,y+9,205,35,b==null?h.boss:b.name,20,h.clear?Palette.Gold:Palette.White);Text(240,y+12,160,30,h.clear?"★ 넘음":"쓰러짐",16,h.clear?Palette.Teal:muted);
                 Text(420,y+12,470,30,FormatTime(h.seconds)+"   /   패링 "+h.parries+"   /   "+h.gold+" G",16,Palette.White);Text(15,y+37,840,20,h.date,11,muted);   // DDA 적용 여부는 플레이어에게 보이지 않는다 (UI/UX 설계서)
+                bool available=h.snapshotId!=null&&validSnapshots.Contains(h.snapshotId);
+                if(Button(15,y+59,460,27,available?"이 전투 종료 시점으로 복원":"복원 데이터 없음",false,available&&mode!=ScreenMode.Battle))restoreConfirmId=h.snapshotId;
             }
-            GUI.EndScrollView();if(Button(1069,727,230,44,"닫기",true))showHistory=false;
+                // Restore controls are drawn below each summary.
+            GUI.EndScrollView();
+            if(restoreConfirmId!=null)
+            {
+                Text(300,698,740,24,"현재 진행을 백업하고 선택 시점으로 복원합니다. 이후 기록도 유지됩니다.",14,muted);
+                if(Button(300,727,310,40,"백업 후 복원",false,mode!=ScreenMode.Battle))
+                {SaveData next;if(SaveStore.TryRestoreProfile(save,restoreConfirmId,mode==ScreenMode.Battle,out next))ApplyProfile(next,false);else Say(SaveStore.LastError,5);}
+                if(Button(630,727,180,40,"취소"))restoreConfirmId=null;
+            }
+            if(Button(1069,727,230,44,"닫기",true)){showHistory=false;restoreConfirmId=null;}
         }
     }
 }

@@ -325,7 +325,7 @@ namespace ReversalTower
             titlePage.SetActive(mode==ScreenMode.Title);lobbyPage.SetActive(mode==ScreenMode.Lobby&&!cardsVisible);
             battlePage.SetActive(mode==ScreenMode.Battle);resultPage.SetActive(mode==ScreenMode.Result);
             endingPage.SetActive(mode==ScreenMode.Ending);cardsPage.SetActive(cardsVisible);
-            pausePage.SetActive(mode==ScreenMode.Battle&&game.paused);
+            pausePage.SetActive(mode==ScreenMode.Battle&&game.paused&&!game.TutorialActive);
             float fade=UiKit.EaseOut(pageClock/.2f);   // 화면이 바뀔 때 0.2초 동안 스며듦
             titleGroup.alpha=lobbyGroup.alpha=battleGroup.alpha=resultGroup.alpha=endingGroup.alpha=fade;
             inputGroup.interactable=!(game.showHelp||game.showSettings||game.showHistory);
@@ -480,9 +480,11 @@ namespace ReversalTower
             var r=slots[6];bool ready=game.ult>=100;
             r.shade.fillAmount=Mathf.Clamp01(game.ult/100);
             Tint(r.key,ready?Palette.Gold:UiKit.Soft);
-            Set(r.name,ready?"궁극기":Mathf.FloorToInt(game.ult)+"%");Tint(r.name,ready?Palette.Gold:UiKit.Muted);
+            Set(r.name,game.SwordCharged?"전기 "+Mathf.CeilToInt(game.sparkTime)+"초":ready?"궁극기":Mathf.FloorToInt(game.ult)+"%");Tint(r.name,ready||game.SwordCharged?Palette.Gold:UiKit.Muted);
             if(ready&&!ultWasReady)r.pop=1;ultWasReady=ready;
             Pop(r,dt);
+            if(ready){Swap(r.frame,UiKit.Selected);Tint(r.frame,Color.Lerp(Palette.Gold,Color.white,.35f+.25f*Mathf.Sin(Time.unscaledTime*4)));}
+            else Tint(r.frame,Color.white);
         }
 
         string PatternLine()
@@ -605,7 +607,31 @@ namespace ReversalTower
 
         // ═══════════════════════════ 버튼 이벤트 (씬에 이름으로 연결됨) ═══════════════════════════
 
-        public void EnterLobby(){if(!BlocksLobbyInput)game.ReturnLobby();}
+        public bool TutorialSlotRect(string key,out Rect rect)
+        {
+            rect=new Rect();if(slots==null)return false;
+            if(key=="PlayerHp"&&playerHealth){rect=TutorialRect(playerHealth.rectTransform);return true;}
+            if(key=="EnemyHp"&&bossHealth){rect=TutorialRect(bossHealth.rectTransform);return true;}
+            if(key=="UltimateGauge"||key=="UltimateExplanation")key="R";
+            if(key=="Skills"&&slots.Length>0)
+            {
+                rect=TutorialRect(slots[0].root);
+                for(int i=1;i<slots.Length;i++){var next=TutorialRect(slots[i].root);rect=Rect.MinMaxRect(Mathf.Min(rect.xMin,next.xMin),Mathf.Min(rect.yMin,next.yMin),Mathf.Max(rect.xMax,next.xMax),Mathf.Max(rect.yMax,next.yMax));}
+                return true;
+            }
+            foreach(var slot in slots)if(slot.letter==key){rect=TutorialRect(slot.root);return true;}
+            return false;
+        }
+        Rect TutorialRect(RectTransform target)
+        {
+            var corners=new Vector3[4];target.GetWorldCorners(corners);
+            var canvas=target.GetComponentInParent<Canvas>();
+            Camera camera=canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?canvas.worldCamera:null;
+            var a=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);var b=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
+            float scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
+            return new Rect((a.x-(Screen.width-1600*scale)/2)/scale,(Screen.height-b.y-(Screen.height-900*scale)/2)/scale,(b.x-a.x)/scale,(b.y-a.y)/scale);
+        }
+        public void EnterLobby(){if(!BlocksLobbyInput)game.StartGame();}
         public void SelectBoss(int index){if(!BlocksLobbyInput&&index>=0&&index<=game.save.unlockedBoss)game.bossIndex=index;}
         public void EnterBattle(){if(!BlocksLobbyInput)game.StartBattle(game.bossIndex);}
         public void OpenCards(){if(BlocksLobbyInput)return;game.OpenCards();ApplyLobbyInputState();}
@@ -623,9 +649,9 @@ namespace ReversalTower
         }
         public void CloseCards(){if(CardOutroBlocksInput)return;game.showCards=false;ApplyLobbyInputState();}
         public void Retry(){game.StartBattle(game.bossIndex);}
-        public void OpenSettings(){if(!BlocksLobbyInput)game.showSettings=true;}
-        public void OpenHelp(){if(!BlocksLobbyInput)game.showHelp=true;}
-        public void OpenHistory(){if(!BlocksLobbyInput)game.showHistory=true;}
+        public void OpenSettings(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showSettings=true;}
+        public void OpenHelp(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showHelp=true;}
+        public void OpenHistory(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showHistory=true;}
         public void Resume(){game.paused=false;}
         public void Abandon(){game.Abandon();}
         public void ShowEnding(){game.mode=ScreenMode.Ending;}
@@ -655,6 +681,7 @@ namespace ReversalTower
         static Color Alpha(Color c,float a){c.a=a;return c;}
         static void Set(Text t,string s){if(t&&t.text!=s)t.text=s;}
         static void Tint(Text t,Color c){if(t&&t.color!=c)t.color=c;}
+        static void Tint(Image image,Color c){if(image&&image.color!=c)image.color=c;}
         static void Swap(Image image,Sprite sprite){if(image&&image.sprite!=sprite)image.sprite=sprite;}
     }
 }

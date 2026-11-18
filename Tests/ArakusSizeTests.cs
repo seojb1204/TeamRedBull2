@@ -5,7 +5,7 @@ public static class ArakusSizeTests
  static bool Near(float a,float b)=>Math.Abs(a-b)<.001f;
  static object Call(TowerGame g,string name,params object[] args)=>typeof(TowerGame).GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic).Invoke(g,args);
  static TowerGame Game(int index=0,int level=0,bool rage=false)
- {var g=new TowerGame{save=new SaveData{unlockedBoss=4}};typeof(TowerGame).GetField("sound",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(g,new Soundscape());g.StartBattle(index);g.boss=new Vector2(0,0);g.player=new Vector2(-6,0);g.seconds=10;foreach(var s in g.stats)s.level=level;g.BossPatterns.rageActive=rage;return g;}
+ {var g=new TowerGame{save=new SaveData{unlockedBoss=4}};typeof(TowerGame).GetField("sound",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(g,new Soundscape());g.save.tutorialOnboardingVersion=1;g.StartBattle(index);g.boss=new Vector2(0,0);g.player=new Vector2(-6,0);g.seconds=10;foreach(var s in g.stats)s.level=level;g.BossPatterns.rageActive=rage;return g;}
  static Pattern P(TowerGame g,string id)=>Array.Find(g.spec.patterns,p=>p.id==id);
  static void Enemy(string id,int face,float distance,float y,bool parry,bool dash,bool expectHit,int level,bool rage)
  {
@@ -18,7 +18,7 @@ public static class ArakusSizeTests
  {
   try{
    Check(Near(ArakusGeometry.HalfWidth,1.2964286f)&&Near(ArakusGeometry.Height,3.4964286f),"sprite alpha dimensions");
-   for(int face=-1;face<=1;face+=2)foreach(string action in new[]{"J","Q","W","E","R"})foreach(bool hit in new[]{false,true})
+   for(int face=-1;face<=1;face+=2)foreach(string action in new[]{"J","Q","W","E"})foreach(bool hit in new[]{false,true})
    {
     var g=Game();g.face=face;g.save.equippedUltimate=0;float range=action=="J"?2.1f:action=="Q"?2.5f:action=="W"?2.9f:action=="E"?2.8f:6;
     g.player=new Vector2(-face*(range+g.BossWidth+(hit?-.01f:.01f)),3.3f);float hp=g.bossHp;

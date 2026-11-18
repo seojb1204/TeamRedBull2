@@ -9,7 +9,7 @@ public static class DdaFrequencyTests
 {
     static int count;static TowerGame g;
     static void Check(bool ok,string name){if(!ok)throw new Exception(name);count++;Console.WriteLine("PASS "+name);}
-    static void Start(){AutoRunArgs.DisableDda=false;g=new TowerGame{save=new SaveData()};typeof(TowerGame).GetField("sound",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(g,new Soundscape());g.StartBattle(0);}
+    static void Start(){AutoRunArgs.DisableDda=false;g=new TowerGame{save=new SaveData()};typeof(TowerGame).GetField("sound",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(g,new Soundscape());g.save.tutorialOnboardingVersion=1;g.StartBattle(0);}
     public static int Main()
     {
         SaveStore.UseIsolatedRoot(Path.Combine(Path.GetTempPath(),"dda-frequency-"+Guid.NewGuid().ToString("N")));
@@ -56,7 +56,7 @@ public static class DdaFrequencyTests
         Check(g.BossPatterns.current.id!="cleave","recent overloaded pattern excluded if alternative");
         Check(g.BossPatterns.SelectionLog.Any(e=>e.id=="cleave"&&e.weight==0&&e.reason.Contains("repetition")),"repeat exclusion logged");
         Check(g.BossPatterns.SelectionLog.Count(e=>e.decision==g.BossPatterns.SelectionLog.Last().decision&&e.selected)==1,"one selected decision logged");
-        Start();g.save.dda=false;g.StartBattle(0);g.seconds=5;g.Stat("cleave").opportunities=g.Stat("cleave").hits=100;g.BossPatterns.SelectPattern(1);
+        Start();g.save.dda=false;g.save.tutorialOnboardingVersion=1;g.StartBattle(0);g.seconds=5;g.Stat("cleave").opportunities=g.Stat("cleave").hits=100;g.BossPatterns.SelectPattern(1);
         Check(g.BossPatterns.SelectionLog.All(e=>e.reason.Contains("off")),"battle disabled remains base");
         Start();g.seconds=0;g.BossPatterns.SelectPattern(1);Check(g.BossPatterns.current.id==g.spec.patterns[0].id,"eligible authored opening preserved");
         Start();g.seconds=0;g.BossPatterns.SelectPattern(100);Check(g.BossPatterns.current==null||g.BossPatterns.current.id!="cleave","opening cannot bypass range gate");

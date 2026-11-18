@@ -3,7 +3,7 @@ Invokes existing suites; no algorithm reimplementation or test suppression.
 """
 from pathlib import Path
 import argparse,subprocess,sys,json,hashlib
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--dotnet',required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--dotnet',required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--scope-contract',type=Path);a=p.parse_args()
 r=Path(__file__).resolve().parents[1];out=a.output.resolve();out.mkdir(parents=True,exist_ok=True)
 commands=[
  ('logic',['Tests/run-arakus-polish.py','--suite','logic','--dotnet',a.dotnet]),
@@ -19,6 +19,7 @@ commands=[
  ('charge-art',['Tests/verify-arakus-charge-art.py','--presentation-baseline','cc765da55daf170d110977d778eca41f452f5310'])]
 results={}
 for name,cmd in commands:
+ if a.scope_contract and name in ('room-resources','size-resources'):cmd += ['--scope-contract',str(a.scope_contract.resolve())]
  result=subprocess.run([sys.executable,*cmd],cwd=r,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
  (out/(name+'.log')).write_text(result.stdout);results[name]={'exit':result.returncode,'tail':result.stdout.splitlines()[-3:]}
  print(name,'PASS' if result.returncode==0 else 'FAIL',flush=True)

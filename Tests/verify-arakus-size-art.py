@@ -2,10 +2,11 @@
 from pathlib import Path
 from PIL import Image
 import argparse,subprocess,re,json
-p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
+from scope_contract import verify_scope
+p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--scope-contract',type=Path);a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
 r=Path(__file__).resolve().parents[1];checks=[];frames=[]
 def check(n,ok):checks.append({'check':n,'pass':bool(ok)})
-def unchanged(paths):return subprocess.run(['git','diff','--quiet','HEAD','--',*paths],cwd=r).returncode==0
+def unchanged(paths):return verify_scope(r,paths,a.scope_contract)
 def source(name):return (r/'Assets/Scripts'/name).read_text()
 for name in re.findall(r'new Definition\("([^"]+)","캐릭터"',source('ArakusAnimationSelection.cs')):
  im=Image.open(r/'Assets/Resources/ArakusV1'/f'{name}.png').convert('RGBA')

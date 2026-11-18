@@ -3,8 +3,9 @@ from pathlib import Path
 from PIL import Image,ImageChops,ImageFilter
 import subprocess,json,hashlib,sys,importlib.util,argparse,math
 sys.dont_write_bytecode=True
+from scope_contract import verify_scope
 ROOT=Path(__file__).resolve().parents[1]
-p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);args=p.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--scope-contract',type=Path);args=p.parse_args();args.output.mkdir(parents=True,exist_ok=True)
 ART=ROOT/'Assets/StreamingAssets/Art/ArakusRoom';RES=ROOT/'Assets/Resources/ArakusV1'
 checks=[]
 def check(name,value):
@@ -21,9 +22,10 @@ for i in range(2):
  check(f'frame_{i}_one_pixel_outer_rim',r.tobytes()==ImageChops.subtract(a.filter(ImageFilter.MaxFilter(3)),a).tobytes())
 for f in ['WorldArtist.cs','ArakusVisuals.cs']:check(f+'_meta_unchanged',(ROOT/'Assets/Scripts'/f'{f}.meta').read_bytes()==original('Assets/Scripts/'+f+'.meta'))
 protected=['Assets/Scripts/BossPatternSystem.cs','Assets/Scripts/TowerGame.cs','Assets/Scripts/BossCombat.cs','Assets/Scripts/GameData.cs','Assets/Scripts/GameServices.cs','Assets/Scripts/SaveStore.cs','Assets/Scripts/CloudSync.cs','Assets/Scripts/ActorView.cs','Assets/Scripts/ScenePresentation.cs','Assets/Scenes','Assets/Prefabs','Assets/Data','ProjectSettings','Assets/StreamingAssets/Art/Castle']
-check('combat_DDA_DB_input_camera_scene_prefab_settings_unchanged',subprocess.run(['git','diff','--quiet','HEAD','--',*protected],cwd=ROOT).returncode==0)
+check('combat_DDA_DB_input_camera_scene_prefab_settings_unchanged',verify_scope(ROOT,protected,args.scope_contract))
 world=(ROOT/'Assets/Scripts/WorldArtist.cs').read_text(encoding='utf-8');visual=(ROOT/'Assets/Scripts/ArakusVisuals.cs').read_text(encoding='utf-8')
-check('battle_result_only_gate','bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;' in world and ('throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom()' in world or 'throneRoom=fight&&(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom()))' in world))
+expected_room='throneRoom=fight&&(g.TutorialActive?DrawTutorialRoom():(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom())))' if (ROOT/'Assets/Scripts/TowerGame.Tutorial.cs').is_file() else 'throneRoom=fight&&(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom()))'
+check('battle_result_only_gate','bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;' in world and (expected_room in world or (not (ROOT/'Assets/Scripts/TowerGame.Tutorial.cs').is_file() and 'throneRoom=fight&&g.bossIndex==0&&DrawThroneRoom()' in world)))
 check('legacy_world_has_fallback','if(!throneRoom)' in world and 'if(room==null)return false;' in world)
 check('fade_kept_both_sides',all('clock-pillar'+s+'At<.6f' in visual and '1-(clock-pillar'+s+'At)/.6f' in visual for s in ['Left','Right']))
 check('glow_charge_kind_only','g.current.kind==AttackKind.Dash' in visual)
@@ -40,7 +42,7 @@ metrics=[]
 check('width_fit_uses_actual_viewport','unit=pixelWidth/sourceWidth/pixelsPerWorld' in world and 'centerX=g.zoomFocus.x*g.zoomPunch*.12f' in world)
 check('room_does_not_cancel_camera_shake','centerX=camera.transform.position.x' not in world)
 check('no_integer_scale_or_floor_snap','Mathf.Floor(fit)' not in world and 'Mathf.Round(groundPixel)' not in world)
-check('art_and_pillar_resources_unchanged',subprocess.run(['git','diff','--quiet','HEAD','--','Assets/Resources','Assets/StreamingAssets'],cwd=ROOT).returncode==0)
+check('art_and_pillar_resources_unchanged',verify_scope(ROOT,['Assets/Resources','Assets/StreamingAssets'],args.scope_contract))
 # Independent numerical projection oracle; not Unity Camera/GPU execution.
 for width,height in [(1920,1080),(1280,720),(2560,1440),(1024,768),(2520,1080),(640,360)]:
  for zoom,cx,cy in [(0,0,5),(.8,-1,4.5),(.8,1,5)]:

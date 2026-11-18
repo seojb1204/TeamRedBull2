@@ -169,3 +169,11 @@ scope 계약은 자동 재승인하지 말고 변경 근거를 리뷰한 뒤 정
 프로필 아카이브/전체 history는 삭제하지 않아 성장한다. 2000요약 검사는 무한 저장·디스크 고갈 안전성 증명이 아니다. 다중 게임 프로세스 저장 잠금도 범위 밖이다.
 
 현재 후보는 **자동검증을 통과한 통합 검토 후보**이며 main 병합·환경 게시·운영 DB 변경·출시 배포는 수행하지 않았다.
+
+### 원격 전달 결과
+
+통합 브랜치 Push는 성공했다. `gh pr create --draft`는 `Post https://api.github.com/graphql: Forbidden`으로 실패했으며 PR 번호는 생성 확인되지 않았다.
+
+- 비교: https://github.com/seojb1204/TeamRedBull2/compare/main...integration/dda-lab-tutorial-qa-20261118
+- 준비한 Draft 본문: [INTEGRATION_QA_20261118_PR.md](INTEGRATION_QA_20261118_PR.md)
+- 전달 직전 main `83d9085`, PR #50 `be57b0b`, Lab `779352c`가 유지됨을 재확인했다. 기존 세 worktree와 후보 모두 clean이다.

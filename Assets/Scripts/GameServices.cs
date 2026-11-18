@@ -14,6 +14,10 @@ namespace ReversalTower
         public Dictionary<string,double[]> Contexts { get; private set; } = new Dictionary<string,double[]>();
         // 패턴마다 이번 난이도를 고른 이유 (DDA 패널·발표용)
         public Dictionary<string,string> Reasons { get; private set; } = new Dictionary<string,string>();
+        // Diagnostic snapshots only; late receive never rewrites active assignments.
+        public long CommunityRevisionAtPrepare { get; private set; }
+        public string CommunitySnapshotAtPrepare { get; private set; }
+        public Dictionary<string,string> Sources { get; private set; } = new Dictionary<string,string>();
 
         public void Prepare(SaveData save, BossSpec boss, bool disable)
         {
@@ -22,6 +26,9 @@ namespace ReversalTower
             Stats = new List<PatternStats>();
             Contexts = new Dictionary<string,double[]>();
             Reasons = new Dictionary<string,string>();
+            Sources = new Dictionary<string,string>();
+            CommunityRevisionAtPrepare=CommunityStats.Revision;
+            CommunitySnapshotAtPrepare=CommunityStats.ReceiveSummary;
             foreach (Pattern pattern in boss.patterns)
             {
                 double[] context;
@@ -30,6 +37,13 @@ namespace ReversalTower
                 Stats.Add(new PatternStats { id=pattern.id, level=level });
                 Contexts[pattern.id] = context;
                 Reasons[pattern.id] = reason;
+                CommunityStats.Entry entry;
+                bool found=CommunityStats.TryGet(boss.id,pattern.id,out entry);
+                bool shared=found&&entry.opportunities>=CommunityStats.MinOpportunities;
+                var learning=save.Learning(boss.id);
+                Sources[pattern.id]=!Enabled?"고정 난이도 (DDA OFF)":learning.battles==0&&shared?
+                    "공동 통계 · 첫 만남 추천":learning.Pattern(pattern.id).observations>0?"개인 패턴 기록":
+                    shared?"공동 통계 · 문맥":found?"기본값 · 공동 표본 부족":"기본값 · 공동 통계 없음";
             }
         }
 
@@ -108,14 +122,46 @@ namespace ReversalTower
         static readonly Dictionary<string,Entry> entries = new Dictionary<string,Entry>();
         public static string Status = "DB 연결 안 됨";   // 화면 표시용 (CloudSync가 갱신)
         public static int Count { get { lock (entries) return entries.Count; } }
+        public static long Revision { get; private set; }
+        public static string ReceiveState { get; private set; } = "미요청";
+        public static string SnapshotOrigin { get; private set; } = "없음";
+        public static DateTime? LastReceivedUtc { get; private set; }
+        public static string ReceiveSummary => ReceiveState+" · 메모리 "+Count+"개 · "+SnapshotOrigin+
+            (LastReceivedUtc.HasValue?" · 최근 수신 "+LastReceivedUtc.Value.ToString("HH:mm:ss")+" UTC":" · HTTP 성공 수신 기록 없음")+" · 영속 캐시 없음";
+        public static void MarkUnavailable(bool automation){ReceiveState=automation?"자동검증 꺼짐":"설정 없음";}
+        public static void BeginReceive(){ReceiveState="수신 중";}
+        public static void ReceiveFailed(){ReceiveState="수신 실패";}
+        public static void EndReceive(){if(ReceiveState=="수신 중")ReceiveState="수신 중단";}
+        public static void MarkReceived(){ReceiveState="수신 완료";SnapshotOrigin="HTTP 수신";LastReceivedUtc=DateTime.UtcNow;}
         public static void Replace(IEnumerable<Entry> list)
         {
-            lock (entries) { entries.Clear(); foreach (var e in list) entries[e.boss + "/" + e.pattern] = e; }
+            // Materialize before replacing so malformed input preserves the previous snapshot.
+            var replacement=new Dictionary<string,Entry>();
+            foreach(var e in list)
+            {
+                if(e==null||string.IsNullOrEmpty(e.boss)||string.IsNullOrEmpty(e.pattern))throw new ArgumentException("Invalid community row");
+                replacement[e.boss+"/"+e.pattern]=e;
+            }
+            lock (entries)
+            {
+                entries.Clear();foreach(var pair in replacement)entries[pair.Key]=pair.Value;
+                Revision++;SnapshotOrigin="메모리 주입";
+            }
         }
         public static bool TryGet(string boss, string pattern, out Entry entry)
         {
             lock (entries) return entries.TryGetValue(boss + "/" + pattern, out entry);
         }
+    }
+
+    // UI-only cache key. Neither matching nor capture invokes decisions or training.
+    public sealed class DdaPreviewStamp
+    {
+        object result;BossLearning learning;bool enabled,captured;long revision;
+        public bool Matches(object currentResult,BossLearning currentLearning,bool currentEnabled,long currentRevision)
+            =>captured&&ReferenceEquals(result,currentResult)&&ReferenceEquals(learning,currentLearning)&&enabled==currentEnabled&&revision==currentRevision;
+        public void Capture(object currentResult,BossLearning currentLearning,bool currentEnabled,long currentRevision)
+        {result=currentResult;learning=currentLearning;enabled=currentEnabled;revision=currentRevision;captured=true;}
     }
 
     // Exactly-once progression settlement. Game flow/presentation do not calculate rewards.

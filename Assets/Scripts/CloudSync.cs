@@ -45,9 +45,9 @@ namespace ReversalTower
         {
             // Boot order is unspecified: inspect command line, not AutoRunArgs.Active.
             if(AutoRunArgs.IsAutomationProcess)
-            {CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
+            {CommunityStats.MarkUnavailable(true);CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
             config = LoadConfig();
-            if (config == null) { CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
+            if (config == null) { CommunityStats.MarkUnavailable(false);CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
             playerId = SaveStore.Load().cloudPlayerId;
             queueDir = Path.Combine(Application.persistentDataPath, "CloudQueue");
             Directory.CreateDirectory(queueDir);
@@ -138,6 +138,9 @@ namespace ReversalTower
         {
             if (sending) yield break;
             sending = true;
+            bool finished=false;
+            try
+            {
             bool ok = true;
             string[] files = Directory.GetFiles(queueDir, "*.json");
             Array.Sort(files, StringComparer.Ordinal);
@@ -168,7 +171,9 @@ namespace ReversalTower
                 ? "DB 전송 실패 · 대기 " + left + "건 · 통계 " + (fetched?"수신됨":"수신 실패 (이전 캐시)")
                 : !fetched ? "DB 전송 처리 완료 · 통계 수신 실패 (이전 캐시 " + CommunityStats.Count + "개)"
                 : "DB 동기화됨 " + (lastSync.HasValue ? lastSync.Value.ToString("HH:mm") : "") + " · 패턴 통계 " + CommunityStats.Count + "개";
-            sending = false;
+            finished=true;
+            }
+            finally { sending = false;if(!finished)CommunityStats.Status="DB 동기화 중단 · 메모리 통계 "+CommunityStats.Count+"개 유지"; }
         }
 
         IEnumerator Post(string table, string json, Action<bool> done)
@@ -190,12 +195,15 @@ namespace ReversalTower
 
         IEnumerator FetchDifficulty(Action<bool> done)
         {
+            CommunityStats.BeginReceive();
+            try
+            {
             string url = config.url + "/rest/v1/pattern_difficulty?select=boss,pattern,opportunities,players,success_rate,parry_rate,hit_rate,suggested_level";
             using (var req = UnityWebRequest.Get(url))
             {
                 Headers(req);
                 yield return req.SendWebRequest();
-                if (req.result != UnityWebRequest.Result.Success) { Debug.LogWarning("DB 통계 받기 실패 (" + req.responseCode + "): " + req.error); done(false); yield break; }
+                if (req.result != UnityWebRequest.Result.Success) { CommunityStats.ReceiveFailed();Debug.LogWarning("DB 통계 받기 실패 (" + req.responseCode + "): " + req.error); done(false); yield break; }
                 try
                 {
                     var list = JsonUtility.FromJson<DifficultyList>("{\"items\":" + req.downloadHandler.text + "}");
@@ -203,14 +211,20 @@ namespace ReversalTower
                     var entries = new List<CommunityStats.Entry>();
                     if (list != null && list.items != null)
                         foreach (var r in list.items)
+                        {
+                            if(r==null||string.IsNullOrEmpty(r.boss)||string.IsNullOrEmpty(r.pattern))throw new FormatException("Invalid statistics row");
                             entries.Add(new CommunityStats.Entry { boss = r.boss, pattern = r.pattern, opportunities = r.opportunities, players = r.players,
                                 successRate = r.success_rate, parryRate = r.parry_rate, hitRate = r.hit_rate, suggestedLevel = r.suggested_level });
+                        }
                     CommunityStats.Replace(entries);
+                    CommunityStats.MarkReceived();
                     lastSync = DateTime.Now;
                     done(true);
                 }
-                catch (Exception e) { Debug.LogWarning("DB 통계 해석 실패: " + e.Message); done(false); }
+                catch (Exception e) { CommunityStats.ReceiveFailed();Debug.LogWarning("DB 통계 해석 실패: " + e.Message); done(false); }
             }
+            }
+            finally { CommunityStats.EndReceive(); }
         }
 
         void Headers(UnityWebRequest req)

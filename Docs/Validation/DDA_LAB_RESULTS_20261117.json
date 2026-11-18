@@ -1,0 +1,405 @@
+{
+  "base_main": "83d9085fb44a6218e721b68b16d620c4669f5d95",
+  "tested_production_commit": "21b2a31a0a1bdd6b11379e282a30135c0e7e2dbe",
+  "audit_results": {
+    "learning-1": {
+      "exit_code": 0,
+      "tail": [
+        "--------------------------------------------------------------------------------------",
+        "DDA_VERIFICATION source=audit PASS=269 FAIL=0 (failures retained, no policy changes)",
+        ""
+      ]
+    },
+    "selection-1": {
+      "exit_code": 0,
+      "tail": [
+        "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+        "--------------------------------------------------------------------------------------",
+        "SELECTION_AUDIT_PASS decisions=2968 rows=52800 seeds=17,42 Catalog/HEADLESS; controlled selection, not full combat"
+      ]
+    },
+    "combat-1": {
+      "exit_code": 0,
+      "tail": [
+        "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+        "--------------------------------------------------------------------------------------",
+        "PLAYTEST_AGENT_PASS trials=240 replay=identical engine=UnityShim isolation=true network=excluded"
+      ]
+    },
+    "learning-2": {
+      "exit_code": 0,
+      "tail": [
+        "--------------------------------------------------------------------------------------",
+        "DDA_VERIFICATION source=audit PASS=269 FAIL=0 (failures retained, no policy changes)",
+        ""
+      ]
+    },
+    "selection-2": {
+      "exit_code": 0,
+      "tail": [
+        "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+        "--------------------------------------------------------------------------------------",
+        "SELECTION_AUDIT_PASS decisions=2968 rows=52800 seeds=17,42 Catalog/HEADLESS; controlled selection, not full combat"
+      ]
+    },
+    "combat-2": {
+      "exit_code": 0,
+      "tail": [
+        "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+        "--------------------------------------------------------------------------------------",
+        "PLAYTEST_AGENT_PASS trials=240 replay=identical engine=UnityShim isolation=true network=excluded"
+      ]
+    },
+    "frequency": {
+      "exit_code": 0,
+      "tail": [
+        "PASS opening cannot bypass range gate",
+        "PASS reset clears battle evidence",
+        "DDA_FREQUENCY_PASSED 185 checks; no Unity runtime or human balance evidence"
+      ]
+    },
+    "robustness": {
+      "exit_code": 0,
+      "tail": [
+        "PASS nested_invalid_save_written",
+        "PASS nested_invalid_save_repaired",
+        "DDA_ROBUSTNESS_PASSED 31 checks; no Unity rendering, DB or human fairness test"
+      ]
+    },
+    "cloud-receive": {
+      "exit_code": 0,
+      "tail": [
+        "PASS explicit retry after failure can recover",
+        "PASS automation never connects",
+        "CLOUD_STATUS_PASS 16 actual CloudSync.cs, stubbed HTTP, no network or production data"
+      ]
+    }
+  },
+  "audit_sources": {
+    "Assets/Scripts/GameData.cs": "d9df46eac22bc0466e7cadda40379185c5d87e3731013c939907fdb822bb6a1d",
+    "Assets/Scripts/TowerGame.cs": "1e4fa350344b2a3f9c994e664da4020b94d3f41d45d66486cf67b29cfb21cfd8",
+    "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "Assets/Scripts/SaveStore.cs": "e1b8bed97c7081cf6c991f7bcaee2b933e46262d15d46b0c4b673cba333c12a9",
+    "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+    "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+    "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+    "Assets/Scripts/BossPatternSystem.cs": "747374bf6e986c7e28fffd41001d7030b806f9b41cf2fca05c2086e3143e8051",
+    "Assets/Scripts/GameServices.cs": "0e7177523c8176646df610dc8433f2cdbeb8a1d8e0215ff4afd60d130911dcee",
+    "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+    "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+    "Assets/Scripts/CloudSync.cs": "f47cb7684826bedb78d2d29daa75cf89846b334836f85d3ec8ae9d7389b7aa8a",
+    "Tests/SkillFxTimelineTests.cs": "d6ac0242fc18f33353bfc533d9c2a406c031c75440297b605b5a30ffdd77c5fa",
+    "Tests/CombatSoundDesignTests.cs": "51a7b9bd6e857be5f383c20cfcc27f144c9c3240723bddcefee4ceda17413c93",
+    "Tests/ArakusChargePolishTests.cs": "09a652ea20fe7cb610894d56abb81d041a1c05b51ed269307df2c60d724851c6",
+    "Tests/PlaytestAgentTests.cs": "5a94edf2afc8333037aa8eed5443fe86f530b96a32ec014da36de968d3686544",
+    "Tests/UnitySkillFxProbe.cs": "03a80a67e16aa9626e694b9307e26080ac875c7015c221af533162094c5852fb",
+    "Tests/HeadlessTests.cs": "a26517a077247a46d254a24cc07998a55f336ed1f1feacc2ad357c7526e5e621",
+    "Tests/ColdStartIntegrationTests.cs": "0605fbd9a9cd47270910ac06bd3f0d30266a97a09d7c4482eae7560192d1dd76",
+    "Tests/DdaPanelWindowTests.cs": "5bf2e9db67103db40b21a48882900b5c2c02ac03bc7339985a807b9a1dfe15a5",
+    "Tests/PhanesTests.cs": "a25a705ff14828c75b2004fdcf4772590541dd0147905717d5ddff83e19c6a0e",
+    "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+    "Tests/BossAccentContractTests.cs": "d83e716a830ef59ca992637ca92123682d402c654f05529ddcefb1119c9f1ddc",
+    "Tests/ArakusAnimationTests.cs": "1249f871dd8099d8593b7a869ddd6552f4d5552ddd5a1befce65a5593ca8e010",
+    "Tests/PlayerAnimationTests.cs": "2801d957d77e3866de3769b7383477ebb0f565bfd70ce7266813e80b1f1bb738",
+    "Tests/DdaFrequencyTests.cs": "1cc41bdb6bf6bd28f480edecb8c1bcf071a878c41958af884f066a85dfc82575",
+    "Tests/DdaSelectionAuditTests.cs": "75b8193e88cd9dcf2c11570dfb30d947924a6e8bd1dc464f5f5e93db16bbf9d3",
+    "Tests/ArakusSizeTests.cs": "e812196f125d3f9045f5f452ec971c8f9c2638c5a5cc117bf88310dff7b578bc",
+    "Tests/DdaRobustnessTests.cs": "4f48275aeba02e58238d2df8555c5eaf550df2ca023e7e24495efae7fd96f761",
+    "Tests/DdaLearningVerificationTests.cs": "2506e311b9202927b4fbba1cb439058c8b2c70833d3808dd547e7ef81fdec81d",
+    "Tests/DdaDifficultyHistoryTests.cs": "279ca756c7356f2ba5e76622a9a27445e9d087c4b33c1691a61688aab95d4f7b",
+    "Tests/run-arakus-polish.py": "2347865d98231ff23e3de0dd0dcf81dd50eec83b54606d5a047ebd007b028e1a",
+    "Tests/run-playtest-agent.py": "abbbcee5b25cec9a44cf1c84b789049a98c535dd7843e2c72b666884e6d84b84",
+    "Tests/run-phanes.py": "127dcf76d97e438f5f48495a06615eb84122cb166a29d05ef92f75ee8628e619",
+    "Tests/summarize-dda-learning-verification.py": "c884602f6ec173c3b60e13997a240824b655a8df216719e79fe35307f84f8d52",
+    "Tests/verify_lobby_music.py": "00b060b5fea9e33a3421cd0c34dab3e2c770b44e30384b57af4439122ee0d30a",
+    "Tests/summarize-playtest.py": "5310f2a174510ff2a658464ae1cc54b5668c9e59be837cacab6dc7d38beef613",
+    "Tests/verify-approved-merge.py": "32b60b366261ba02380312f1a4baac7926a40c34fd2bf5b77b79755fe6e48bb2",
+    "Tests/run-audio-lifecycle.py": "ac1a6faebe0c27565759e0b004bc0cea4034221f8c343de7150aee7abebc3e24",
+    "Tests/run-final-integration.py": "51e16169513ac5552f41688c817e7ad5a4cf280837fdf57145c689356983c48c",
+    "Tests/run-dda-learning-verification.py": "4013aa385e7083ad2b676764806524a8bb159f0b8d386c52bfffbc8456fbd61c",
+    "Tests/test-dda-lab.py": "672de658d6b09cc833f8fddde3591a4dad502c8aefbb730ba58cb6a4ca4a5ac4",
+    "Tests/run-cold-start-integration.py": "937b999f5a419648ae5639806e3af7b9faade949aeb07b21db82f9ac5b840b72",
+    "Tests/verify-arakus-dash-alignment.py": "4087903ba7cb4773f0d3db4341b4df47c93e4b769e618edd92c0620dd21781e8",
+    "Tests/run-dda-frequency.py": "5d048b6917935b013bf846a1d0c07a2d66f6ea92a8662860c3d33466bd60fe0b",
+    "Tests/run-unity-playtest-agent.py": "3f731c8850baf399c9d906d3eef165a49be55581cb3a287b7b8e27c8bf4f4791",
+    "Tests/run-dda-system-audit.py": "b1e8b9320316dd971d055b584852b9fee06c075cb17e85489168589cf541d9c7",
+    "Tests/verify-arakus-charge-art.py": "9a0831457d1e51a65cce44cf46cd79ecc35bf06715cd4e0e4452d91a452a493d",
+    "Tests/test-dda-lab-ui.py": "5f69d899e617be667c24ee238fb97c86c630fbce35fd8c460e1abecf8a3a017f",
+    "Tests/verify_boss_music.py": "b02339667092cdbd419b585ef9b73a375b9a77708a9380d166b3b0120c118594",
+    "Tests/verify-arakus-room-integration.py": "dfc46936318ba9ee0b9b9eb06c66a5cb168ca364d07e55479273a5a1be5f098e",
+    "Tests/run-arakus-size.py": "8d794ca7051a293ef0f87c48d18fd48c5553aa0238fb03be6de8f68b089b6d49",
+    "Tests/run-dda-history.py": "3bb8f63e2dd09d7e7c6a97f14f9257bf7aa56cbbab67e6b525642ef21206c6f3",
+    "Tests/verify-boss-arenas.py": "7b3b4bc8d3a2ed3f4fbe7b94de91dc41e9af2fecb5537b3827b768b3d6954165",
+    "Tests/verify-arakus-v2.py": "6473051da19579cde3bf8b559fcb13f8466d673a7e4236cac7d320efb57a01c6",
+    "Tests/verify_boss_sfx.py": "2fdc9b2df2dbec547eebda829ba1b20d1fc4f2cdfd08f9eafb6605170549da82",
+    "Tests/test-playtest-summary.py": "6acafa4444e2073006ac990771770f5e17b7b4cbb2f680d84477b3c6c196b14d",
+    "Tests/run-dda-robustness.py": "3413e1fa32dcbff3e5863db0719fd63ea11c30373e0e2ec1fd23728864c899bc",
+    "Tests/verify-arakus-size-art.py": "7f40cce039fea9511fc216706adcd8c47f62bda24451db8e57006aebf2e53c10",
+    "Tests/CloudSyncStatus/Stubs.cs": "ebf1715fb3f4b7ababcd21f001710e89a89605232c24748b12a4e07acb033a47",
+    "Tests/CloudSyncStatus/Program.cs": "28e0d12f5674b4f08b8a0e5a89f33c5f0769b9f8f6b627db0b6b3a1da7c63f34"
+  },
+  "audit_sources_stable": true,
+  "repeat_outputs": {
+    "learning/battles.csv": true,
+    "learning/arakus_low_00_final.json": true,
+    "learning/arakus_low_30_final.json": true,
+    "learning/arakus_high_95_final.json": true,
+    "learning/arakus_high_100_final.json": true,
+    "learning/arakus_mid_60_final.json": true,
+    "learning/arakus_mid_70_final.json": true,
+    "learning/arakus_mid_80_final.json": true,
+    "learning/arakus_improving_20_to_100_final.json": true,
+    "learning/arakus_declining_100_to_20_final.json": true,
+    "learning/arakus_loss_streak_high_final.json": true,
+    "learning/arakus_fixed_off_final.json": true,
+    "learning/arakus_mixed_by_pattern_final.json": true,
+    "learning/phanes_low_00_final.json": true,
+    "learning/phanes_low_30_final.json": true,
+    "learning/phanes_high_95_final.json": true,
+    "learning/phanes_high_100_final.json": true,
+    "learning/phanes_mid_60_final.json": true,
+    "learning/phanes_mid_70_final.json": true,
+    "learning/phanes_mid_80_final.json": true,
+    "learning/phanes_improving_20_to_100_final.json": true,
+    "learning/phanes_declining_100_to_20_final.json": true,
+    "learning/phanes_loss_streak_high_final.json": true,
+    "learning/phanes_fixed_off_final.json": true,
+    "learning/phanes_mixed_by_pattern_final.json": true,
+    "learning/adicus_low_00_final.json": true,
+    "learning/adicus_low_30_final.json": true,
+    "learning/adicus_high_95_final.json": true,
+    "learning/adicus_high_100_final.json": true,
+    "learning/adicus_mid_60_final.json": true,
+    "learning/adicus_mid_70_final.json": true,
+    "learning/adicus_mid_80_final.json": true,
+    "learning/adicus_improving_20_to_100_final.json": true,
+    "learning/adicus_declining_100_to_20_final.json": true,
+    "learning/adicus_loss_streak_high_final.json": true,
+    "learning/adicus_fixed_off_final.json": true,
+    "learning/adicus_mixed_by_pattern_final.json": true,
+    "learning/aethelos_low_00_final.json": true,
+    "learning/aethelos_low_30_final.json": true,
+    "learning/aethelos_high_95_final.json": true,
+    "learning/aethelos_high_100_final.json": true,
+    "learning/aethelos_mid_60_final.json": true,
+    "learning/aethelos_mid_70_final.json": true,
+    "learning/aethelos_mid_80_final.json": true,
+    "learning/aethelos_improving_20_to_100_final.json": true,
+    "learning/aethelos_declining_100_to_20_final.json": true,
+    "learning/aethelos_loss_streak_high_final.json": true,
+    "learning/aethelos_fixed_off_final.json": true,
+    "learning/aethelos_mixed_by_pattern_final.json": true,
+    "learning/kharos_low_00_final.json": true,
+    "learning/kharos_low_30_final.json": true,
+    "learning/kharos_high_95_final.json": true,
+    "learning/kharos_high_100_final.json": true,
+    "learning/kharos_mid_60_final.json": true,
+    "learning/kharos_mid_70_final.json": true,
+    "learning/kharos_mid_80_final.json": true,
+    "learning/kharos_improving_20_to_100_final.json": true,
+    "learning/kharos_declining_100_to_20_final.json": true,
+    "learning/kharos_loss_streak_high_final.json": true,
+    "learning/kharos_fixed_off_final.json": true,
+    "learning/kharos_mixed_by_pattern_final.json": true,
+    "selection/selection.csv": true,
+    "selection/catalog.json": true,
+    "combat.csv": true
+  },
+  "prechange_policy_outputs": {
+    "learning/battles.csv": true,
+    "learning/arakus_low_00_final.json": true,
+    "learning/arakus_low_30_final.json": true,
+    "learning/arakus_high_95_final.json": true,
+    "learning/arakus_high_100_final.json": true,
+    "learning/arakus_mid_60_final.json": true,
+    "learning/arakus_mid_70_final.json": true,
+    "learning/arakus_mid_80_final.json": true,
+    "learning/arakus_improving_20_to_100_final.json": true,
+    "learning/arakus_declining_100_to_20_final.json": true,
+    "learning/arakus_loss_streak_high_final.json": true,
+    "learning/arakus_fixed_off_final.json": true,
+    "learning/arakus_mixed_by_pattern_final.json": true,
+    "learning/phanes_low_00_final.json": true,
+    "learning/phanes_low_30_final.json": true,
+    "learning/phanes_high_95_final.json": true,
+    "learning/phanes_high_100_final.json": true,
+    "learning/phanes_mid_60_final.json": true,
+    "learning/phanes_mid_70_final.json": true,
+    "learning/phanes_mid_80_final.json": true,
+    "learning/phanes_improving_20_to_100_final.json": true,
+    "learning/phanes_declining_100_to_20_final.json": true,
+    "learning/phanes_loss_streak_high_final.json": true,
+    "learning/phanes_fixed_off_final.json": true,
+    "learning/phanes_mixed_by_pattern_final.json": true,
+    "learning/adicus_low_00_final.json": true,
+    "learning/adicus_low_30_final.json": true,
+    "learning/adicus_high_95_final.json": true,
+    "learning/adicus_high_100_final.json": true,
+    "learning/adicus_mid_60_final.json": true,
+    "learning/adicus_mid_70_final.json": true,
+    "learning/adicus_mid_80_final.json": true,
+    "learning/adicus_improving_20_to_100_final.json": true,
+    "learning/adicus_declining_100_to_20_final.json": true,
+    "learning/adicus_loss_streak_high_final.json": true,
+    "learning/adicus_fixed_off_final.json": true,
+    "learning/adicus_mixed_by_pattern_final.json": true,
+    "learning/aethelos_low_00_final.json": true,
+    "learning/aethelos_low_30_final.json": true,
+    "learning/aethelos_high_95_final.json": true,
+    "learning/aethelos_high_100_final.json": true,
+    "learning/aethelos_mid_60_final.json": true,
+    "learning/aethelos_mid_70_final.json": true,
+    "learning/aethelos_mid_80_final.json": true,
+    "learning/aethelos_improving_20_to_100_final.json": true,
+    "learning/aethelos_declining_100_to_20_final.json": true,
+    "learning/aethelos_loss_streak_high_final.json": true,
+    "learning/aethelos_fixed_off_final.json": true,
+    "learning/aethelos_mixed_by_pattern_final.json": true,
+    "learning/kharos_low_00_final.json": true,
+    "learning/kharos_low_30_final.json": true,
+    "learning/kharos_high_95_final.json": true,
+    "learning/kharos_high_100_final.json": true,
+    "learning/kharos_mid_60_final.json": true,
+    "learning/kharos_mid_70_final.json": true,
+    "learning/kharos_mid_80_final.json": true,
+    "learning/kharos_improving_20_to_100_final.json": true,
+    "learning/kharos_declining_100_to_20_final.json": true,
+    "learning/kharos_loss_streak_high_final.json": true,
+    "learning/kharos_fixed_off_final.json": true,
+    "learning/kharos_mixed_by_pattern_final.json": true,
+    "selection/selection.csv": true,
+    "selection/catalog.json": true,
+    "combat.csv": true
+  },
+  "catalog_numeric_differences": [],
+  "integration": {
+    "logic": {
+      "exit": 0,
+      "tail": [
+        "PASS Ultimate projectiles removed after hits",
+        "PASS Upgrades do not raise first encounter DDA level",
+        "HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player."
+      ]
+    },
+    "dda-learning": {
+      "exit": 0,
+      "tail": [
+        "--------------------------------------------------------------------------------------",
+        "DDA_VERIFICATION source=integrated PASS=269 FAIL=0 (failures retained, no policy changes)",
+        ""
+      ]
+    },
+    "history": {
+      "exit": 0,
+      "tail": [
+        "PASS observer preserves chosen levels in battle 6",
+        "PASS recording and repeated graph queries leave A/b, memories and learning counters identical to baseline",
+        "DDA_HISTORY_TESTS_PASSED 47 assertions; Unity rendering and real DB are not exercised."
+      ]
+    },
+    "panel": {
+      "exit": 0,
+      "tail": [
+        "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+        "--------------------------------------------------------------------------------------",
+        "DDA_PANEL_WINDOW_TESTS_PASSED 205 assertions; Unity GUI/input not exercised."
+      ]
+    },
+    "charge": {
+      "exit": 0,
+      "tail": [
+        "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+        "--------------------------------------------------------------------------------------",
+        "ARAKUS_CHARGE_POLISH_TESTS_PASSED 325; Unity rendering/input and human dodgeability not exercised."
+      ]
+    },
+    "size-animation": {
+      "exit": 0,
+      "tail": [
+        "HeadlessTests 0 HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player.",
+        "ArakusAnimationTests 0 ARAKUS_ANIMATION_TESTS_PASSED 430",
+        "ArakusSizeTests 0 ARAKUS_SIZE_TESTS_PASSED 957"
+      ]
+    },
+    "room-resources": {
+      "exit": 1,
+      "tail": [
+        "FAIL combat_DDA_DB_input_camera_scene_prefab_settings_unchanged",
+        "206 PASS 1 FAIL"
+      ]
+    },
+    "size-resources": {
+      "exit": 1,
+      "tail": [
+        "86 PASS 1 FAIL"
+      ]
+    },
+    "charge-art": {
+      "exit": 0,
+      "tail": [
+        "PASS frame 3 opaque WH (53, 64) -> (66, 80)",
+        "PASS frame 4 opaque WH (48, 64) -> (60, 80)",
+        "ARAKUS_CHARGE_ART_CHECKS_PASSED: 5 frames, exact nearest-neighbor source pixels, baseline, metadata and excluded files"
+      ]
+    }
+  },
+  "lab": {
+    "tail": [
+      "PASS reject invalid config {'distance': nan}",
+      "PASS reject invalid config {'path': '/tmp/anything'}",
+      "PASS reject invalid config {'rounds': 101}",
+      "DDA_LAB_PASS 46 checks"
+    ],
+    "log_sha256": "a18fc30123aa573c6165c4ca951e10bf1546c400962016dd8b64283efb8389a3"
+  },
+  "cold": {
+    "tail": [
+      "PASS initial and reassessment contract accepted without thresholds",
+      "PASS invalid tutorial observations rejected",
+      "PASS nonfinite tutorial time rejected",
+      "COLD_START_INTEGRATION_PASS 23 actual receive/CommunityStats/Prepare; no network, Unity timing or DB"
+    ],
+    "log_sha256": "83a15414cb2c28aac6e74bb53ae877bf560ea4c7eee27934e070111d2b6ab019"
+  },
+  "audio": {
+    "tail": [
+      "Report issues and find source on GitHub: https://github.com/dotnet/core",
+      "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+      "--------------------------------------------------------------------------------------",
+      "PASS 27 lifecycle assertions (STUB, not Unity runtime)"
+    ],
+    "log_sha256": "1627489f215377e91c281aa05a0eb13fce9588e97939c40c7906a16dc4a5c228"
+  },
+  "ui": {
+    "tail": [
+      "UI_PASS real C# run, replay, plots, export, comparison import, narrow viewport; no JS errors"
+    ],
+    "log_sha256": "cf5c7e8176cd897e21e2d6d3972b7adaae5e8a714fc89ea0df728f7e34972019"
+  },
+  "boss_music": {
+    "tail": [
+      "adicus PASS 62s stereo peak 0.6877 rms 0.12",
+      "aethelos PASS 62s stereo peak 0.3556 rms 0.12",
+      "kharos PASS 62s stereo peak 0.8 rms 0.0757",
+      "PASS: five unique loops, original fallback, boss wiring, fade and bounded decode"
+    ],
+    "log_sha256": "c57d36e0489e0eba020cccf4c63fcb5184e47c83466832650beb99740de42e8b"
+  },
+  "lobby_music": {
+    "tail": [
+      "lobby PASS 62s stereo peak 0.7684 rms 0.12",
+      "PASS: lobby recording, synthesized fallback, no restart on boss selection",
+      "PASS: ESC pause routed separately from battle identity"
+    ],
+    "log_sha256": "ec4692718d37668a216904b32acc578e91be3e414160d4e473a9277abd5c5907"
+  },
+  "sfx": {
+    "tail": [
+      "PASS files: 40 sfx, 44.1 kHz mono 16-bit, peak below clipping, unique GUIDs",
+      "PASS coverage: every pattern of all five bosses has a wind-up and a strike sound",
+      "PASS wiring: wind-up, strike, hazard, phase, barrier, death, hurt and heartbeat events resolve",
+      "PASS determinism: generator reproduces every committed file byte for byte"
+    ],
+    "log_sha256": "7fb2b340d394c3e58ffbe50727ae6114a43228509866e5c09c5674d5b76e9322"
+  }
+}

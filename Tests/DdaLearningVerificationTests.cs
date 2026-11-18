@@ -113,7 +113,7 @@ public static class DdaLearningVerificationTests
         Check("DDA_OFF_neutral_and_no_Complete_learning",fixedSession.Stats.All(s=>s.level==0)&&snapshot==JsonUtility.ToJson(save.learning));
         save.dda=true;var empty=Session(save,b);var a=Copy(learn.model.matrices);var v=Copy(learn.model.vectors);int n=learn.battles;empty.Complete(save,b,false);
         Check("unseen_patterns_no_A_b_or_memory_updates",Same(a,learn.model.matrices)&&Same(v,learn.model.vectors)&&learn.Pattern(d.Stats[2].id).observations==0);
-        Note("zero_observation_battle_counter", "No-pattern Complete increments battles: "+n+" -> "+learn.battles+", lossStreak="+learn.lossStreak);
+        Check("zero_observation_battle_does_not_advance",learn.battles==n);
         var unobserved=Session(save,b);foreach(var s in unobserved.Stats)Fill(s,.7f);unobserved.Complete(save,b,true);
         string beforeSave=JsonUtility.ToJson(save.learning);Check("SaveStore_save",SaveStore.Save(save));var restored=SaveStore.Load();
         Check("A_b_memory_preserved_after_save_reload",beforeSave==JsonUtility.ToJson(restored.learning));
@@ -137,9 +137,9 @@ public static class DdaLearningVerificationTests
             }
             finally{SaveStore.BattleLogged-=observer;}
         }
-        // Session has no internal exactly-once guard; normal game EndBattle owns that guard.
+        // Current production session also guards direct duplicate completion.
         var twiceSave=new SaveData();var twice=Session(twiceSave,b);Fill(twice.Stats[0],.7f);twice.Complete(twiceSave,b,true);twice.Complete(twiceSave,b,true);
-        Note("direct_Complete_duplicate_call", "Two direct Complete calls produce battles="+twiceSave.Learning(b.id).battles+"; guarded at TowerGame.EndBattle, not inside session.");
+        Check("direct_Complete_duplicate_is_idempotent",twiceSave.Learning(b.id).battles==1);
     }
     static void ColdStart()
     {
@@ -154,8 +154,13 @@ public static class DdaLearningVerificationTests
         ClearCommunity();var local=new SaveData();var before=Session(local,b);int original=before.Stats[0].level;
         CommunityStats.Replace(new[]{new CommunityStats.Entry{boss=b.id,pattern=id,opportunities=20,players=12,successRate=1,suggestedLevel=1}});
         Check("late_community_data_does_not_change_running_assignment",before.Stats[0].level==original);
+        Check("late_data_used_by_next_prepare_before_completion",Session(new SaveData(),b).Stats[0].level==1);
+        Check("missing_community_pattern_stays_neutral",before.Stats.Skip(1).All(s=>s.level==0));
+        var disabled=new SaveData{dda=false};var off=Session(disabled,b);
+        Check("community_does_not_override_disabled_DDA",off.Stats.All(s=>s.level==0));
         Fill(before.Stats[0],.3f);before.Complete(local,b,true);var after=Session(local,b);
         Check("personal_observations_override_community_context",Near(after.Contexts[id][1],.7));
+        Check("personal_completed_battle_overrides_shared_level",after.Stats[0].level==-1);
         ClearCommunity();
     }
     static float Outcome(string profile,int battle,int pattern)
@@ -165,13 +170,14 @@ public static class DdaLearningVerificationTests
             case "low_00":return 0;case "low_30":return .3f;case "high_95":return .95f;case "high_100":return 1;
             case "mid_60":return .6f;case "mid_70":return .7f;case "mid_80":return .8f;
             case "improving_20_to_100":return battle<=8?.2f:battle<=12?.7f:1;
+            case "declining_100_to_20":return battle<=8?1:battle<=12?.7f:.2f;
             case "loss_streak_high":return 1;case "fixed_off":return .7f;
             default:return pattern%2==0?.2f:.95f;
         }
     }
     static void Experiments()
     {
-        string[] profiles={"low_00","low_30","high_95","high_100","mid_60","mid_70","mid_80","improving_20_to_100","loss_streak_high","fixed_off","mixed_by_pattern"};
+        string[] profiles={"low_00","low_30","high_95","high_100","mid_60","mid_70","mid_80","improving_20_to_100","declining_100_to_20","loss_streak_high","fixed_off","mixed_by_pattern"};
         using(var csv=new StreamWriter(Path.Combine(output,"battles.csv"),false,new UTF8Encoding(false)))
         {
             csv.WriteLine("source,profile,battle,boss,pattern,attack,assigned_level,success,reason,loss_before,loss_after,reward,context,a_before,a_after,b_before,b_after,arm_a_changed,arm_b_changed,next_level,memory_before,memory_after,observations,ucb_scores,final_scores,clear,model_a_delta,model_b_delta");
@@ -224,6 +230,8 @@ public static class DdaLearningVerificationTests
                     var final=Session(save,boss);
                     Check("desired_reacts_to_improvement_"+boss.id,final.Stats.Where((st,j)=>Attack(boss.patterns[j])).All(st=>st.level==2),"After 12 consecutive 100% synthetic outcomes, next attack assignments should reach +2");
                 }
+                if(profile=="declining_100_to_20")
+                    Check("reacts_to_synthetic_decline_"+boss.id,Session(save,boss).Stats.Where((st,j)=>Attack(boss.patterns[j])).All(st=>st.level==-2),"Synthetic input response only; no human adaptation claim");
                 File.WriteAllText(Path.Combine(output,boss.id+"_"+profile+"_final.json"),JsonUtility.ToJson(save.learning));
             }
         }

@@ -11,9 +11,9 @@ namespace ReversalTower
         public static Sprite[] Sprites(string id)
         {
             if(cache.TryGetValue(id,out var a))return a;
-            // User-approved centered walk remains V1; other reviewed motions prefer V2.
+            // Prefer the current art set; use V2 and then V1 when a clip is unavailable.
             a=Resources.LoadAll<Sprite>("ArakusNew/"+id);
-            if(a.Length==0)a=Resources.LoadAll<Sprite>((id=="Walk"?"ArakusV1/":"ArakusV2/")+id);
+            if(a.Length==0)a=Resources.LoadAll<Sprite>("ArakusV2/"+id);
             if(a.Length==0)a=Resources.LoadAll<Sprite>("ArakusV1/"+id);Array.Sort(a,(x,y)=>string.CompareOrdinal(x.name,y.name));
             if(a.Length>0)cache[id]=a;return a;
         }

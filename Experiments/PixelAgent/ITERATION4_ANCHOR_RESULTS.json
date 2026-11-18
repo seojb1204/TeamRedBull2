@@ -1,0 +1,172 @@
+{
+  "schema": "tower-anchor-validation/1",
+  "source_commit": "2094e4073e8e06b80af98cf9df78745682ec5ef0",
+  "capture": "camera-texture-no-hud",
+  "hidden": true,
+  "dda": false,
+  "seconds_limit": 60,
+  "method": "Teacher-demonstration assisted soft-margin RL; not unaided discovery",
+  "original_checkpoint_sha256": "6183eb9953b979937356ed413f9bf5a3d04cf25faf197e5afc6f9c6b91da0b2f",
+  "prior_failed_rl_sha256": "83114b80d7dedda28930a3da36b4d3e9e4d16f7252622465b0ecd85ad0c90952",
+  "anchor_checkpoint_sha256": "2e27737266e2c1a61337bfd8791f4c4fab22a29ff918fdc8ef60ba9ac83ff3f2",
+  "evaluation_model_unchanged": true,
+  "runs": [
+    {
+      "run": "anchor-601",
+      "status": "complete",
+      "seed": 601,
+      "training": true,
+      "outcome": "loss",
+      "steps": 547,
+      "missing_actor_fraction": 0.08957952468007313,
+      "actions": {
+        "idle": 18,
+        "left": 69,
+        "right": 118,
+        "attack": 264,
+        "parry": 29,
+        "jump": 27,
+        "dash": 21
+      },
+      "anchor_updates": 73,
+      "online_updates": 546,
+      "replay_updates": 4368,
+      "metrics": {
+        "schema": "towerPixelMetrics/1",
+        "outcome": "loss",
+        "simulationSeconds": 32.866336822509766,
+        "wallSeconds": 41.462364196777344,
+        "bossDamage": 440.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 10,
+        "parries": 0,
+        "decisions": 546,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      },
+      "initial_checkpoint_sha256": "6183eb9953b979937356ed413f9bf5a3d04cf25faf197e5afc6f9c6b91da0b2f",
+      "trajectory_sha256": "f1f75bceafb4cce6858926b85158be7e75ffb1af0d79aaed2725638a1ef09cbe"
+    },
+    {
+      "run": "anchor-602",
+      "status": "complete",
+      "seed": 602,
+      "training": true,
+      "outcome": "loss",
+      "steps": 379,
+      "missing_actor_fraction": 0.044854881266490766,
+      "actions": {
+        "idle": 12,
+        "left": 53,
+        "right": 94,
+        "attack": 165,
+        "parry": 22,
+        "jump": 13,
+        "dash": 19
+      },
+      "anchor_updates": 2577,
+      "online_updates": 924,
+      "replay_updates": 7392,
+      "metrics": {
+        "schema": "towerPixelMetrics/1",
+        "outcome": "loss",
+        "simulationSeconds": 23.583145141601562,
+        "wallSeconds": 29.34355354309082,
+        "bossDamage": 170.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 9,
+        "parries": 0,
+        "decisions": 378,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      },
+      "initial_checkpoint_sha256": "e7053c56909f4c796e7d39b7a590322df4272c6a6563d8aac44adb7155deebd6",
+      "trajectory_sha256": "a7b9b8ab83a5f1356c0b23b55db6ba792c048b9632fb6a22b190e342a191ca84"
+    },
+    {
+      "run": "anchor-eval-401",
+      "status": "complete",
+      "seed": 401,
+      "training": false,
+      "outcome": "loss",
+      "steps": 336,
+      "missing_actor_fraction": 0.002976190476190476,
+      "actions": {
+        "idle": 0,
+        "left": 16,
+        "right": 56,
+        "attack": 254,
+        "parry": 9,
+        "jump": 0,
+        "dash": 0
+      },
+      "anchor_updates": 0,
+      "online_updates": 924,
+      "replay_updates": 7392,
+      "metrics": {
+        "schema": "towerPixelMetrics/1",
+        "outcome": "loss",
+        "simulationSeconds": 19.166545867919922,
+        "wallSeconds": 25.719099044799805,
+        "bossDamage": 410.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 7,
+        "parries": 0,
+        "decisions": 335,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      },
+      "initial_checkpoint_sha256": "2e27737266e2c1a61337bfd8791f4c4fab22a29ff918fdc8ef60ba9ac83ff3f2",
+      "trajectory_sha256": "c39b07bbaee731ea57fb789c1b482705570dc2fcf41efc376489fa4944be9218"
+    },
+    {
+      "run": "anchor-eval-402",
+      "status": "complete",
+      "seed": 402,
+      "training": false,
+      "outcome": "loss",
+      "steps": 674,
+      "missing_actor_fraction": 0.017804154302670624,
+      "actions": {
+        "idle": 5,
+        "left": 34,
+        "right": 67,
+        "attack": 558,
+        "parry": 9,
+        "jump": 0,
+        "dash": 0
+      },
+      "anchor_updates": 0,
+      "online_updates": 924,
+      "replay_updates": 7392,
+      "metrics": {
+        "schema": "towerPixelMetrics/1",
+        "outcome": "loss",
+        "simulationSeconds": 38.6662483215332,
+        "wallSeconds": 51.18572235107422,
+        "bossDamage": 765.0,
+        "playerDamage": 100.0,
+        "hitsTaken": 11,
+        "parries": 0,
+        "decisions": 673,
+        "saveRootIsolated": true,
+        "ddaDisabled": true
+      },
+      "initial_checkpoint_sha256": "2e27737266e2c1a61337bfd8791f4c4fab22a29ff918fdc8ef60ba9ac83ff3f2",
+      "trajectory_sha256": "a1381ad88f93f319060c233f08a1ed9101369e8c36ebf4b0e6fbcb696368cc64"
+    }
+  ],
+  "development_seed_mean_boss_damage": 587.5,
+  "previous_means": {
+    "random": 50,
+    "visual_rule": 610,
+    "imitation": 430,
+    "unassisted_rl": 75
+  },
+  "limits": [
+    "401/402 are reused development seeds, not independent final generalization validation",
+    "Training seeds601/602 separate from evaluation but method selection used previous401/402 results",
+    "Two evaluation episodes; all four episodes losses; no fun/general skill claim",
+    "New-seed validation required; no additional experiments launched"
+  ]
+}

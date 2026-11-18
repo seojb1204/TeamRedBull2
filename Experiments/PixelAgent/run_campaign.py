@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""Bounded Windows pixel-agent campaign. Starts only the specified isolated build."""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import threading,time
+from pixel_agent import atomic_json
+from windows_hidden import HiddenUnityHost
+
+
+def validate_build(exe):
+    exe = Path(exe).resolve()
+    if not exe.is_file() or exe.suffix.lower()!='.exe':
+        raise ValueError('Specify an existing experimental Windows .exe')
+    data=exe.with_name(exe.stem+'_Data')
+    # Never read the real DB config. Preserve art/audio so pixels match normal assets.
+    streaming=data/'StreamingAssets'
+    if (streaming/'supabase.json').exists():
+        raise ValueError('Refusing DB-configured build; use an isolated build without supabase.json')
+    assembly=data/'Managed'/'Assembly-CSharp.dll'
+    if not assembly.is_file():
+        raise ValueError('Requires Mono experimental build with inspectable Assembly-CSharp.dll')
+    blob=assembly.read_bytes()
+    for marker in ('-towerPixelAgent','자동검증: 네트워크 꺼짐'):
+        if marker.encode('utf-16-le') not in blob:
+            raise ValueError('Missing pixel/network isolation marker; refusing old/unrelated build')
+    return exe,hashlib.sha256(blob).hexdigest()
+
+
+def stop_owned(process):
+    # No name-based kill, global taskkill, editor closure or unrelated process cleanup.
+    if process is not None and process.poll() is None:
+        process.terminate()
+        try:process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill();process.wait(timeout=5)
+
+
+def campaign(args):
+    if os.name!='nt':
+        raise ValueError('Actual game launch is supported on Windows only; synthetic tests run anywhere')
+    if getattr(args,'hidden',False) and not getattr(args,'offscreen',False):
+        raise ValueError('Hidden window requires explicit offscreen rendering; framebuffer may be black')
+    exe,assembly_hash=validate_build(args.exe)
+    out=Path(args.output).resolve()
+    # New directory only: prevents overwriting existing evidence/checkpoint.
+    out.mkdir(parents=True,exist_ok=False)
+    runroot=Path(tempfile.mkdtemp(prefix='tower-pixel-campaign-'))
+    checkpoint=Path(args.checkpoint).resolve() if args.checkpoint else out/'checkpoint.json'
+    if args.policy in ('learned','tabular','tabular-v3','tabular-v4') and not args.train and not checkpoint.is_file():
+        raise ValueError('Learned evaluation requires --checkpoint from an earlier training run')
+    rows=[]
+    summary={'schema':'tower-pixel-campaign/1','exe':str(exe),
+             'exe_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),
+             'assembly_sha256':assembly_hash,'isolated_root':str(runroot),
+             'policy':args.policy,'training':args.train,'dda':False,
+             'action_set':'native12' if args.policy.endswith('-v4') else 'legacy7',
+             'capture_mode':'camera-texture-no-hud' if getattr(args,'offscreen',False) else 'framebuffer',
+             'hidden_window':getattr(args,'hidden',False),
+             'initial_checkpoint_sha256':hashlib.sha256(checkpoint.read_bytes()).hexdigest() if checkpoint.is_file() else None,
+             'observation':'Actual rendered RGB only; environment rewards/termination for learning/scoring',
+             'episodes':rows,'status':'running'}
+    atomic_json(out/'campaign.json',summary)
+    try:
+        for i in range(args.episodes):
+            # Do not compete with another Unity editor/game or an already busy GPU.
+            busy=subprocess.check_output(['powershell','-NoProfile','-Command',"Get-Process Unity,ReversalTower,EternalReturn -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id; exit 0"],text=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW).strip()
+            if busy:raise RuntimeError('Another Unity/game process is active; refusing campaign')
+            gpu=subprocess.check_output(['nvidia-smi','--query-gpu=utilization.gpu,temperature.gpu','--format=csv,noheader,nounits'],text=True,timeout=3,creationflags=subprocess.CREATE_NO_WINDOW)
+            for line in gpu.strip().splitlines():
+                use,temp=map(float,line.split(','))
+                if use>50 or temp>=70:raise RuntimeError('GPU busy/hot before episode; refusing campaign')
+            seed=args.seed+i
+            data=runroot/f'episode-{i+1}'
+            bridge=data/'bridge';bridge.mkdir(parents=True)
+            result=out/f'episode-{i+1}.json'
+            command=[str(exe),'-towerPixelAgent',str(bridge),'-towerDataRoot',str(data),
+                     '-towerNoDda','-towerAutoSeconds',str(args.seconds),'-towerBoss','0',
+                     '-towerSeed',str(seed),'-towerFrameRate','60',
+                     '-screen-fullscreen','0','-screen-width','960','-screen-height','540',
+                     '-logFile',str(out/f'episode-{i+1}-unity.log')]
+            if getattr(args,'offscreen',False):command+=['-towerPixelOffscreen']
+            if args.policy in ('random-v4','rule-v4','tabular-v4'):command+=['-towerPixelFullActions']
+            client_command=[sys.executable,str(Path(__file__).with_name('visual_agent_v4.py' if args.policy in ('random-v4','rule-v4','tabular-v4') else 'visual_agent_v3.py' if args.policy in ('random-v3','rule-v3','tabular-v3') else 'visual_agent_v2.py' if args.policy in ('random-v2','rule-v2','tabular') else 'pixel_agent.py')),
+                            '--bridge',str(bridge),'--policy',args.policy,'--seed',str(seed),
+                            '--max-seconds',str(args.seconds+15),'--timeout',str(args.seconds),
+                            '--report',str(result)]
+            if args.policy in ('learned','tabular','tabular-v3','tabular-v4'):client_command+=['--checkpoint',str(checkpoint)]
+            if args.train:client_command+=['--train','--epsilon',str(args.epsilon)]
+            if getattr(args,'anchor_checkpoint',None):client_command+=['--anchor-checkpoint',str(Path(args.anchor_checkpoint).resolve())]
+            game=client=None;host=None
+            gpu_samples=[];stop_gpu=threading.Event();gpu_abort=threading.Event()
+            def sample_gpu():
+                while not stop_gpu.is_set():
+                    try:
+                        raw=subprocess.check_output(['nvidia-smi','--query-gpu=utilization.gpu,memory.used,power.draw,temperature.gpu','--format=csv,noheader,nounits'],text=True,timeout=3,creationflags=subprocess.CREATE_NO_WINDOW)
+                        gpu_samples.append({'utc':time.time(),'system_wide_gpu_percent_mib_watts_celsius':raw.strip()})
+                        if any(float(line.split(',')[3])>=75 for line in raw.strip().splitlines()):gpu_abort.set()
+                    except (OSError,subprocess.SubprocessError,ValueError,IndexError) as error:
+                        gpu_samples.append({'error':type(error).__name__});gpu_abort.set()
+                    stop_gpu.wait(5)
+            sampler=threading.Thread(target=sample_gpu,daemon=True)
+            with (out/f'episode-{i+1}-client.log').open('w',encoding='utf-8') as client_log:
+                try:
+                    sampler.start()
+                    startup=None
+                    if getattr(args,'hidden',False):
+                        startup=subprocess.STARTUPINFO();startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
+                    if getattr(args,'hidden',False):
+                        host=HiddenUnityHost();command+=['-parentHWND',str(host.hwnd),'delayed']
+                    game=subprocess.Popen(command,cwd=exe.parent,stdin=subprocess.DEVNULL,startupinfo=startup)
+                    client=subprocess.Popen(client_command,stdout=client_log,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL,creationflags=subprocess.CREATE_NO_WINDOW)
+                    deadline=time.monotonic()+args.seconds+25
+                    while client.poll() is None:
+                        if host:host.pump_and_guard(game.pid)
+                        if gpu_abort.is_set():raise RuntimeError('GPU guard: temperature >=75C or monitoring failed; stop owned experiment')
+                        if time.monotonic()>deadline:raise subprocess.TimeoutExpired(client_command,args.seconds+25)
+                        time.sleep(.2)
+                    client_code=client.returncode
+                    if client_code!=0:
+                        raise RuntimeError(f'Episode {i+1}: client failed ({client_code}); see client log')
+                    game_code=game.wait(timeout=15)
+                    if game_code!=0:
+                        raise RuntimeError(f'Episode {i+1}: game failed ({game_code}); see Unity log')
+                finally:
+                    try:
+                        try:stop_owned(client)
+                        finally:stop_owned(game)
+                    finally:
+                        if host:host.close()
+                        stop_gpu.set()
+                        if sampler.ident is not None:sampler.join(timeout=4)
+                        atomic_json(out/f'episode-{i+1}-gpu.json',{'scope':'system-wide, includes unrelated apps; not isolated game utilization','samples':gpu_samples})
+            if not result.is_file():raise RuntimeError('Missing client report')
+            row=json.loads(result.read_text(encoding='utf-8'))
+            if not row.get('completed'):raise RuntimeError('Episode did not reach a terminal/truncated transition')
+            final=json.loads((bridge/'transition.json').read_text(encoding='utf-8-sig'))
+            row['game_outcome']=final.get('reason','unknown')
+            metrics=bridge/'episode_metrics.json'
+            if metrics.exists():row['evaluation_only_game_metrics']=json.loads(metrics.read_text(encoding='utf-8-sig'))
+            rows.append(row)
+            atomic_json(out/'campaign.json',summary)
+        summary['status']='complete'
+    except BaseException as error:
+        summary['status']='failed';summary['error']=str(error)
+        raise
+    finally:
+        atomic_json(out/'campaign.json',summary)
+    print('Pixel campaign complete:',out/'campaign.json')
+
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--exe',required=True,type=Path)
+    p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--policy',choices=['random','rule','learned','random-v2','rule-v2','tabular','random-v3','rule-v3','tabular-v3','random-v4','rule-v4','tabular-v4'],default='random')
+    p.add_argument('--train',action='store_true')
+    p.add_argument('--offscreen',action='store_true',help='Render camera texture, excludes IMGUI/HUD')
+    p.add_argument('--hidden',action='store_true',help='Hide game window; requires --offscreen')
+    p.add_argument('--checkpoint',type=Path)
+    p.add_argument('--anchor-checkpoint',type=Path)
+    p.add_argument('--episodes',type=int,default=1)
+    p.add_argument('--seconds',type=int,default=180)
+    p.add_argument('--seed',type=int,default=17)
+    p.add_argument('--epsilon',type=float,default=.3)
+    a=p.parse_args()
+    if not 1<=a.episodes<=3 or not 10<=a.seconds<=180 or not 0<=a.epsilon<=1:
+        p.error('episodes 1..3, seconds 10..180, epsilon 0..1 required')
+    if a.train and a.policy not in ('learned','tabular','tabular-v3','tabular-v4'):p.error('--train requires --policy learned or tabular')
+    campaign(a)
+
+if __name__=='__main__':main()

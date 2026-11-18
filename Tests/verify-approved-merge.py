@@ -20,5 +20,9 @@ arena=w.split('bool DrawBossArena()',1)[1].split('bool DrawThroneRoom()',1)[0]
 assert 'centerX=g.bossIndex==0?g.zoomFocus.x*g.zoomPunch*.12f:camera.transform.position.x' in arena
 assert arena.count('if(g.bossIndex==0)RoomEdges(')==2
 assert 'sourceWidth-1' in w
-assert not (r/'Assets/Scripts/PixelAgentBridge.cs').exists()
-print('APPROVED_MERGE_CONTRACT_PASS: all motions prefer V2, V1 walk file kept, unchanged metadata/V2 pack, current arena camera path, no pixel experiment')
+bridge=r/'Assets/Scripts/PixelAgentBridge.cs'
+if bridge.exists():
+ source=bridge.read_text(encoding='utf-8').split('public static PixelAgentBridge AttachIfRequested',1)[1]
+ assert 'if(Array.IndexOf(args,"-towerPixelAgent")<0)return null;' in source
+ assert '!SaveStore.IsIsolated' in source and '!AutoRunArgs.DisableDda' in source
+print('APPROVED_MERGE_CONTRACT_PASS: all motions prefer V2, V1 walk file kept, unchanged metadata/V2 pack, current arena camera path, pixel experiment requires explicit isolated opt-in')

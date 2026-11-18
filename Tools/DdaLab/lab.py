@@ -31,7 +31,7 @@ def validate(data):
         raise ValueError('Unknown configuration fields')
     c = DEFAULT | data
     for k, choices in dict(mode=['combat', 'control', 'selection'], profile=['novice', 'balanced', 'expert'],
-                           scenario=['stable', 'improving', 'declining', 'repeated_failures'], dda=['both', 'on', 'off']).items():
+                           scenario=['stable', 'improving', 'declining', 'repeated_failures', 'perfect', 'near_perfect', 'loss_recovery', 'sparse', 'unobserved_clear'], dda=['both', 'on', 'off']).items():
         if c[k] not in choices:
             raise ValueError('Invalid ' + k)
     for k, low, high in [('seed', 0, 10**9), ('rounds', 1, 100), ('boss', 0, 4), ('phase', 1, 2)]:
@@ -41,6 +41,8 @@ def validate(data):
         raise ValueError('distance: 0..20 required')
     if type(c['releaseCooldowns']) is not bool:
         raise ValueError('releaseCooldowns must be boolean')
+    if c['mode'] != 'control' and c['scenario'] in ('perfect','near_perfect','loss_recovery','sparse','unobserved_clear'):
+        raise ValueError('This observation-injection scenario requires control mode')
     return c
 
 
@@ -136,14 +138,17 @@ class Lab:
     @staticmethod
     def csv(folder, data):
         rows = []
+        traces = []
         for b in data['battles']:
+            for t in (b.get('trace') or {}).get('patterns', []):
+                traces.append(dict(dda=b['dda'],round=b['round'],**{k: json.dumps(v,ensure_ascii=False) if isinstance(v,(list,dict)) else v for k,v in t.items()}))
             nxt = {s['pattern']: s for s in b['next']}
             assigned = {s['pattern']: s for s in b['assigned']}
             for s in b['stats']:
                 rows.append(dict(dda=b['dda'], round=b['round'], seed=b['seed'], profile=b['profile'], outcome=b['outcome'],
                     **s, next_level=nxt[s['pattern']]['level'], assignment_reason=assigned[s['pattern']]['reason'],
                     next_reason=nxt[s['pattern']]['reason']))
-        for name, values in [('battles.csv', rows), ('selections.csv', data['selections'])]:
+        for name, values in [('battles.csv', rows), ('selections.csv', data['selections']), ('learning.csv', traces)]:
             with (folder / name).open('w', newline='', encoding='utf-8-sig') as f:
                 writer = csv.DictWriter(f, fieldnames=list(values[0]) if values else ['no_selection_rows'])
                 writer.writeheader()
@@ -198,7 +203,7 @@ def serve(lab, port):
                 q = parse_qs(url.query)
                 run = q.get('id', [''])[0]
                 filename = q.get('file', ['result.json'])[0]
-                if run not in lab.jobs or filename not in ('result.json', 'battles.csv', 'selections.csv', 'execution.log'):
+                if run not in lab.jobs or filename not in ('result.json', 'battles.csv', 'selections.csv', 'learning.csv', 'execution.log'):
                     return self.send(404, {'error': 'Unknown result'})
                 f = lab.data / run / filename
                 if not f.is_file():

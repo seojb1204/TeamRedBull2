@@ -88,3 +88,18 @@ python Tests/test-dda-lab-ui.py --chromium /path/to/chromium --output ./TestResu
 
 샌드박스에서 .NET `NuGet-Migrations` named mutex 오류가 나면 지원되는 명령 권한 조정을 사용하세요.
 검사를 우회하거나 TLS·서명 검증을 끄지 마세요. Unity 전체/F8 화면/청음/Windows/실제 DB 검증은 별도입니다.
+
+## 11/18 적응 진단 추가
+
+성공률 주입 모드에서 `perfect`(100%), `near_perfect`(97.5% 확률), `loss_recovery`(100% 대응이지만 앞 1/3 패배, 이후 승리), `sparse`(패턴당 관측 1회), `unobserved_clear`(0회 클리어)를 선택할 수 있습니다. 이 다섯 가지는 통제 모드 전용이며 실제 전투에서 선택하면 요청을 거부합니다. 자연스러운 빠른 처치의 보편적 행동을 재현한 것으로 해석하지 마세요.
+
+`학습 추적 CSV`와 result.json의 `battle.trace.patterns`에는 실제 A/b 갱신량·해시, context, 현재/다음 이유, 실제 learned/skip, 이전 성공률, 연패 전후, 후보 점수를 기록합니다. `candidateScoresUsed=false`이면 첫 배정·OFF·강제 보호 규칙 등으로 후보 점수가 실제 선택 근거가 아니었습니다. 계산된 점수만으로 LinUCB가 선택했다고 해석하지 마세요. 학습 갱신량은 패턴별 순차 update의 L2 차이이며 단순 합은 전체 모델 L2 norm과 다릅니다.
+
+30회×17종×ON/OFF×재실행 전체 검증:
+
+```bash
+python Tests/run-adaptation-study.py --dotnet <dotnet> --output <새 결과 폴더>
+python Tests/export-adaptation-study.py --study <위 결과 폴더> --output <그래프 폴더>
+```
+
+첫 전투 튜토리얼/그룹 fallback은 제품 `InitialDifficulty`의 별도 정책입니다. 이 Lab의 기본 프로필은 입력 에이전트 선택이며 튜토리얼 평가를 받았다고 위장하지 않습니다. 해당 초기값은 `run-integration-qa.py`의 adaptation/proficiency-http suite가 실제 TutorialAssessment와 모의 HTTP로 검증합니다.

@@ -3,6 +3,7 @@ Each invocation has a fresh isolated root, reused only across that campaign's ro
 This does NOT claim that headless results are Unity results.
 """
 import argparse, csv, json, pathlib, subprocess, tempfile, hashlib
+from bot_evidence import validate
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--exe',type=pathlib.Path,required=True)
 p.add_argument('--output',type=pathlib.Path,required=True)
@@ -21,7 +22,7 @@ if (data/'StreamingAssets'/'supabase.json').exists():p.error('Refusing a DB-conf
 assembly=data/'Managed'/'Assembly-CSharp.dll'
 if not assembly.is_file():p.error('Requires this branch’s Mono Windows build with inspectable Assembly-CSharp.dll')
 blob=assembly.read_bytes()
-for marker in ['towerAutoRun/2','-towerAgent','자동검증: 네트워크 꺼짐']:
+for marker in ['towerAutoRun/2','towerBattleEvidence/1','-towerAgent','자동검증: 네트워크 꺼짐']:
     if marker.encode('utf-16-le') not in blob:p.error('Missing automation safety marker; refusing old/unrelated build')
 if not 1<=a.rounds<=50 or not 5<=a.seconds<=600:p.error('rounds 1..50, seconds 5..600 required')
 out.mkdir(parents=True,exist_ok=True)
@@ -40,6 +41,7 @@ for i in range(a.rounds):
     row=dict(line.split('\t',1) for line in report.read_text(encoding='utf-8-sig').splitlines() if '\t' in line)
     if row.get('result')!='AUTORUN_REPORT_COMPLETE' or row.get('saveRootIsolated')!='true':raise SystemExit('Incomplete/unisolated report')
     if row.get('agent.profile')!=a.profile or row.get('schema')!='towerAutoRun/2':raise SystemExit('Wrong/old build')
+    row["eventValidation"]=validate(report)
     rows.append(row)
 (out/'campaign.json').write_text(json.dumps({'engine':'Unity executable','exe':str(exe),'exe_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),
     'save_root':str(root),'rounds':rows,'limits':['instrumented state agent, not visual AI or human','frame timing and VFX may differ between runs','no claim of player enjoyment or 60-80% convergence']},ensure_ascii=False,indent=2),encoding='utf-8')

@@ -13,7 +13,7 @@ public static class HeadlessTests
     static void Tick(float dt=.016f){Call("TickBattle",dt);Input.Clear();}
     static void Start(int index=0)
     {
-        game=new TowerGame();game.save=new SaveData{unlockedBoss=4};Set("sound",new Soundscape());game.StartBattle(index);
+        game=new TowerGame();game.save=new SaveData{unlockedBoss=4};Set("sound",new Soundscape());game.save.tutorialOnboardingVersion=1;game.StartBattle(index);
     }
     public static int Main()
     {
@@ -65,7 +65,7 @@ public static class HeadlessTests
             Start();game.player=new Vector2(-5,0);Input.down.Add(KeyCode.LeftShift);Tick();Check(game.dashes==1&&game.dashTime>0,"Dash consumes one stack");
             game.dashTime=0;game.player=new Vector2(-5,0);for(int i=0;i<160;i++)Tick();Check(game.dashes==2,"Grounded dash stack recharges");
             Start();game.player=new Vector2(-5,0);game.playerHp=40;Input.down.Add(KeyCode.F);Tick();for(int i=0;i<45;i++)Tick();Check(game.playerHp==80,"Potion applies 40 HP after delay");
-            game.StartBattle(0);game.playerHp=40;Input.down.Add(KeyCode.F);Tick();for(int i=0;i<45;i++)Tick();Check(game.playerHp==80,"Potion inventory resets on retry");
+            game.save.tutorialOnboardingVersion=1;game.StartBattle(0);game.playerHp=40;Input.down.Add(KeyCode.F);Tick();for(int i=0;i<45;i++)Tick();Check(game.playerHp==80,"Potion inventory resets on retry");
             Start(4);Check(game.seal,"Kharos starts with dash sealed");for(int i=0;i<3;i++){game.parryAge=.1f;game.PlayerHit(8,true,"twelve",5);}Check(!game.seal,"Three successful parries release dash seal");
             Start(1);game.shots.Add(new TowerGame.Shot{pos=game.player+Vector2.up,vel=new Vector2(0,0),parry=true,damage=10,pattern="orb"});game.parryAge=.1f;Call("TickShots",.016f);Check(game.shots[0].friendly&&game.shots[0].damage==25,"Phanes orb reflects and increases damage");
             Start();game.bossHp=game.spec.hp*.59f;Call("TickBoss",.016f);Check(game.phaseTwo&&game.rest>1,"Phase transition grants breathing room");
@@ -76,7 +76,7 @@ public static class HeadlessTests
             Check(game.save.cleared[0]&&game.save.equippedUltimate==0&&game.save.gold>=130,"First victory unlocks inherited ultimate and gold");
             Check(game.mode==ScreenMode.Result,"Victory enters result screen");
             game.ReturnLobby();Check(game.mode==ScreenMode.Lobby&&game.hazards.Count==0,"Returning to lobby clears battle hazards");
-            foreach(int i in new[]{1,2,3,4}){game.StartBattle(i);game.DamageBoss(game.bossHp);Check(game.save.cleared[i],"Boss "+i+" can complete and persist progression");}
+            foreach(int i in new[]{1,2,3,4}){game.save.tutorialOnboardingVersion=1;game.StartBattle(i);game.DamageBoss(game.bossHp);Check(game.save.cleared[i],"Boss "+i+" can complete and persist progression");}
             Start();Call("EndBattle",false);Check(game.result.gold==0,"Immediate abandon does not generate free gold");
             Start();game.Stat("cleave").opportunities=3;game.Stat("cleave").hits=3;game.Abandon();
             {var learned=game.save.Learning("arakus");Check(game.result.abandoned&&game.save.history.Count==1&&learned.battles==0&&learned.lossStreak==0&&learned.Pattern("cleave").observations==0,"Abandoned battle keeps history but does not train DDA");}
@@ -116,7 +116,7 @@ public static class HeadlessTests
                 game.save.ResetDdaLearning();
                 Check(game.save.learning.Count==0&&game.save.gold==gold&&game.save.history.Count==history&&game.save.cleared[0],"DDA reset clears learning but keeps gold, history and progression");
                 Check(SaveStore.Save(game.save)&&SaveStore.Load().learning.Count==0,"DDA reset survives save and load");
-                game.ReturnLobby();game.StartBattle(0);
+                game.ReturnLobby();game.save.tutorialOnboardingVersion=1;game.StartBattle(0);
                 Check(game.save.Learning("arakus").battles==0&&game.Stat("cleave").level==0,"Battle after DDA reset starts as a first encounter");
             }
             TestLobbyCards();
@@ -148,7 +148,7 @@ public static class HeadlessTests
         loaded=SaveStore.Load();Check(loaded.cardChosen&&LobbyCards.Count(loaded,"blade")==1&&loaded.gold==920,"Chosen state and permanent effect survive restart");
         Start();game.save=loaded;game.mode=ScreenMode.Lobby;game.showHelp=false;
         game.OpenCards();Check(!game.showCards,"Completed lobby cannot open another selection");
-        game.StartBattle(0);Check(!game.showCards&&game.maxHp==130,"Battle entry hides cards and uses accumulated health");
+        game.save.tutorialOnboardingVersion=1;game.StartBattle(0);Check(!game.showCards&&game.maxHp==130,"Battle entry hides cards and uses accumulated health");
         Call("EndBattle",false);Check(!game.save.cardChosen&&game.save.cardOffer.Length==0,"Battle settlement unlocks next lobby offer");
         Check(LobbyCards.Count(game.save,"blade")==1,"Death preserves permanent cards");
         int goldAfterEnd=game.save.gold;Call("EndBattle",false);Check(game.save.gold==goldAfterEnd&&game.result!=null,"Repeated settlement preserves result and grants no extra gold");
@@ -157,7 +157,7 @@ public static class HeadlessTests
         Input.down.Add(KeyCode.Return);Call("Update");Input.Clear();Check(game.mode==ScreenMode.Lobby&&game.showCards,"Enter behind card modal does not start battle");
         Check(game.ChooseCard("blade"),"Lobby controller accepts a visible offered card");
         Check(LobbyCards.Count(game.save,"blade")==2&&Math.Abs(LobbyCards.Attack(game.save)-14.4f)<.001,"Repeated card stacks additively");
-        float attack=LobbyCards.Attack(game.save);game.StartBattle(0);game.StartBattle(0);
+        float attack=LobbyCards.Attack(game.save);game.save.tutorialOnboardingVersion=1;game.StartBattle(0);game.save.tutorialOnboardingVersion=1;game.StartBattle(0);
         Check(Math.Abs(LobbyCards.Attack(game.save)-attack)<.001&&!game.showCards,"Repeated battle start does not reapply card effects");
         Check(!game.ChooseCard("vitality"),"Cards cannot be selected during battle");
         Call("EndBattle",false);game.ReturnLobby();game.showCards=false;
@@ -173,7 +173,7 @@ public static class HeadlessTests
         Check(LobbyCards.Health(statsData)==120&&LobbyCards.Heal(statsData)==50,"Health and potion effects sum across stacks");
         Check(Math.Abs(LobbyCards.SkillMultiplier(statsData,"Q")-1.16f)<.001&&LobbyCards.SkillMultiplier(statsData,"W")==1,"Skill cards affect only specified action");
         Check(LobbyCards.Power(statsData)>0,"DDA context includes card power");
-        Start();game.save=statsData;game.StartBattle(0);game.playerHp=30;Call("BeginAction","F",.9f);Call("TickAction",.65f);
+        Start();game.save=statsData;game.save.tutorialOnboardingVersion=1;game.StartBattle(0);game.playerHp=30;Call("BeginAction","F",.9f);Call("TickAction",.65f);
         Check(game.maxHp==120&&game.playerHp==80,"Combat consumes effective health and healing stats");
         game.playerHp=10;object[] demoArgs={0f,false,false,false,false,false,false,false,false,false,.016f};Call("DemoInput",demoArgs);
         Check(game.playerHp==10,"Automated input has no hidden healing");
@@ -207,9 +207,9 @@ public static class HeadlessTests
         string error;data.gold=9999;Check(!LobbyCards.Purchase(data,"vitality",out error)&&data.gold==9999,"Maxed purchase does not consume gold");
         data=new SaveData();Give(data,"qtempo",3);Give(data,"wtempo",3);Give(data,"etempo",3);Give(data,"stride",3);Give(data,"armor",3);Give(data,"flask");Give(data,"fervor",2);
         Near(LobbyCards.Cooldown(data,"Q"),4.92f,"Q maximum cooldown reduction");Near(LobbyCards.Cooldown(data,"W"),8.2f,"W maximum cooldown reduction");Near(LobbyCards.Cooldown(data,"E"),12.3f,"E maximum cooldown reduction");Near(LobbyCards.MoveSpeed(data),6.16f,"Movement cap 12 percent");
-        Start();game.save=data;game.StartBattle(0);Check(game.PotionCount==4,"Extra potion applied on battle start");game.StartBattle(0);Check(game.PotionCount==4,"Retry does not accumulate potion count");
+        Start();game.save=data;game.save.tutorialOnboardingVersion=1;game.StartBattle(0);Check(game.PotionCount==4,"Extra potion applied on battle start");game.save.tutorialOnboardingVersion=1;game.StartBattle(0);Check(game.PotionCount==4,"Retry does not accumulate potion count");
         game.PlayerHit(100,false,"cleave",game.boss.x);Near(game.playerHp,72.7f,"Defense after existing 30 percent cap");Near(game.Stat("cleave").damage,27.3f,"Telemetry records actual reduced damage");
-        game.StartBattle(0);game.DamageBoss(10);Near(game.ult,.36f,"Attack gauge increased by 20 percent");
+        game.save.tutorialOnboardingVersion=1;game.StartBattle(0);game.DamageBoss(10);Near(game.ult,.36f,"Attack gauge increased by 20 percent");
         game.ult=0;game.parryAge=.1f;game.PlayerHit(10,true,"cleave",game.boss.x);Near(game.ult,15,"Fervor never amplifies parry gauge");
         Start();Give(game.save,"riposte");Give(game.save,"flow");game.skillQ=6;game.skillW=10;game.skillE=15;
         game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);Near(game.skillQ,5.7f,"Parry refunds Q");Near(game.skillW,9.5f,"Parry refunds W");Near(game.skillE,14.25f,"Parry refunds E");
@@ -222,7 +222,7 @@ public static class HeadlessTests
         Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,12.5f,"Miss does not consume riposte");
         game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);game.seconds+=3.1f;hp=game.bossHp;
         Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,10,"Riposte expires after 3 seconds");
-        game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);game.StartBattle(0);game.player=new Vector2(3,0);hp=game.bossHp;
+        game.parryAge=.1f;game.PlayerHit(18,true,"cleave",game.boss.x);game.save.tutorialOnboardingVersion=1;game.StartBattle(0);game.player=new Vector2(3,0);hp=game.bossHp;
         Call("BeginAction","J",.35f);Call("TickAction",.2f);Near(hp-game.bossHp,10,"Battle restart clears temporary bonuses");
         Start();Give(game.save,"inherit",3);game.save.equippedUltimate=1;Call("BeginAction","R",.85f);Call("TickAction",.3f);
         Check(game.shots.Count==5,"Phanes ultimate still has five shots");Near(game.shots[0].damage,24.8f,"Projectile ultimate receives damage upgrade");

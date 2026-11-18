@@ -11,17 +11,17 @@ from xml.sax.saxutils import escape
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dotnet', default=shutil.which('dotnet'))
-    parser.add_argument('--suite', choices=['history', 'logic', 'panel'], default='history')
+    parser.add_argument('--suite', choices=['history', 'logic', 'panel', 'profiles'], default='history')
     args = parser.parse_args()
     if not args.dotnet:
         parser.error('A .NET SDK is required; supply --dotnet /path/to/dotnet')
     repo = Path(__file__).resolve().parents[1]
-    names = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
+    names = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
              'LobbySmoke', 'BossPatternSystem', 'GameServices', 'DdaDifficultyHistory',
              'DdaDifficultyHistoryStore', 'DdaHistoryRecorder']
     if (repo / 'Assets' / 'Scripts' / 'ArakusPatternTiming.cs').is_file():
         names.append('ArakusPatternTiming')
-    entry = 'DdaDifficultyHistoryTests' if args.suite == 'history' else 'HeadlessTests'
+    entry = 'ProfileArchiveTests' if args.suite == 'profiles' else 'DdaDifficultyHistoryTests' if args.suite == 'history' else 'HeadlessTests'
     sources = [repo / 'Assets' / 'Scripts' / (name + '.cs') for name in names]
     sources += [repo / 'Tests' / 'UnityShim.cs', repo / 'Tests' / (entry + '.cs')]
     if args.suite == 'panel':

@@ -59,7 +59,7 @@ namespace ReversalTower
             cursor=0;bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;float time=g.realClock;
             Rect(0,5,70,40,Palette.Ink);
             Color accent=g.bossIndex==4?Palette.Purple:g.bossIndex==1?Palette.Teal:Palette.Gold;
-            bool throneRoom=fight&&(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom()));
+            bool throneRoom=fight&&(g.TutorialActive?DrawTutorialRoom():(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom())));
             if(!throneRoom)
             {
             Disc(4,7.5f,19,19,new Color(.055f,.09f,.125f));Disc(4,7.5f,14,14,new Color(.075f,.12f,.15f));
@@ -97,7 +97,8 @@ namespace ReversalTower
                 if(!spriteArakus){if(g.pillarLeft)Pillar(-4);if(g.pillarRight)Pillar(4);}
                 BossPatternAccents(); // Presentation layer below the unchanged gameplay warnings.
                 if(g.current!=null)Telegraph();
-                if(g.current!=null&&g.current.kind>=AttackKind.Step)ArakusCues(time);
+                if(g.current?.id==BossPatternSystem.PhanesUltimate&&g.patternAge<g.windup)PhanesStarWarning();
+                if(g.bossHp>0&&g.current!=null&&g.current.kind>=AttackKind.Step)ArakusCues(time);
                 if(!spriteArakus&&(g.BossPatterns.rageActive||(g.current!=null&&g.current.kind==AttackKind.Rage)))RageAura(time);
                 foreach(var h in g.hazards)
                 {
@@ -110,15 +111,25 @@ namespace ReversalTower
                 foreach(var m in g.minions)Minion(m.x,time);
                 Character(g.player,1,g.face,g.stun>0?"hit":g.dashTime>0?"dash":g.attackAnim>0?g.playerAction:Mathf.Abs(g.pvY)>1?"jump":Mathf.Abs(g.horizontalSpeed)>.3f?"run":"idle",false,time,g.hitFlash>0?Palette.Red:Palette.Teal);
                 ParryAura();
-                Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
+                if(g.TutorialActive)DrawTutorialDummy(time);else Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
                 foreach(var s in g.shots)
                 {
                     if(s.returns){if(!spriteArakus)Shield(s,time);continue;}
-                    Color c=s.friendly?Palette.Teal:s.parry?Palette.ParryRim:Palette.Red;Disc(s.pos.x,s.pos.y,s.radius*5,s.radius*5,Palette.Alpha(c,.12f));Line(s.pos-s.vel.normalized*.65f,s.pos,.08f,Palette.Alpha(c,.4f));Disc(s.pos.x,s.pos.y,s.radius*2,s.radius*2,c);Disc(s.pos.x,s.pos.y,s.radius,s.radius,Palette.White);}
+                    Color c=s.friendly?Palette.Teal:s.parry?Palette.ParryRim:Palette.Red;Disc(s.pos.x,s.pos.y,s.radius*5,s.radius*5,Palette.Alpha(c,.12f));Line(s.pos-s.vel.normalized*.65f,s.pos,.08f,Palette.Alpha(c,.4f));Disc(s.pos.x,s.pos.y,s.radius*2,s.radius*2,c);if(s.pattern==BossPatternSystem.PhanesUltimate||s.pattern=="ultimate")
+                    {
+                        Rect(s.pos.x,s.pos.y,s.radius*2.5f,s.radius*.5f,Palette.White,45);
+                        Rect(s.pos.x,s.pos.y,s.radius*.5f,s.radius*2.5f,Palette.White,45);
+                    }
+                    else Disc(s.pos.x,s.pos.y,s.radius,s.radius,Palette.White);
+                }
                 if(g.parryAge<.21f)
                 {float a=Mathf.Clamp01(1-g.parryAge/.24f);Disc(g.player.x+g.face*.6f,g.player.y+1.1f,.8f,1.7f,Palette.Alpha(Palette.Teal,a*.25f));Rect(g.player.x+g.face*.65f,g.player.y+1.1f,.07f,1.6f,Palette.Alpha(Palette.White,a));}
                 if(g.dashTime>0)for(int i=1;i<4;i++)Rect(g.player.x-g.face*i*.5f,g.player.y+.9f,.4f,1.4f,Palette.Alpha(Palette.Teal,.14f/i));
-                ParryGlints();
+                if(g.mode==ScreenMode.Battle)
+                {
+                    ParryGlints();
+                    if(g.playerAction=="F"&&g.actionTime>0)DrawPotion();
+                }
                 Impacts();
             }
             else
@@ -135,6 +146,70 @@ namespace ReversalTower
         static readonly string[] arenaNames={"arakus","phanes","adicus","aethelos","kharos"};
         // Measured walk lines in the generated 1672 x 941 originals, not guessed from a prompt.
         static readonly float[] arenaGroundRows={696f,677f,750f,716f,725f};
+        bool DrawTutorialRoom()
+        {
+            var room=ExternalAssets.Picture("Art/ArakusRoom/IronWarworks/room_far.png");
+            if(room==null)return false;
+            Shape(room,0,5,32,18,Palette.White);
+            var mid=ExternalAssets.Picture("Art/ArakusRoom/IronWarworks/room_mid.png");
+            if(mid!=null)Shape(mid,0,5,32,18,Palette.White);
+            Rect(0,-.15f,40,.3f,Palette.Stone);return true;
+        }
+        void PhanesStarWarning()
+        {
+            var origin=g.boss+new Vector2(g.bossFace*.75f,1.25f);
+            var aim=(new Vector2(g.BossPatterns.targetX,.85f)-origin).normalized;
+            float progress=Mathf.Clamp01(g.patternAge/g.windup);
+            for(int i=-2;i<=2;i++)
+            {
+                Vector2 ray=Quaternion.Euler(0,0,i*13)*aim;
+                float length=4+15*progress;
+                if(ray.y<0)length=Mathf.Min(length,origin.y/-ray.y);
+                Line(origin,origin+ray*length,i==0?.075f:.035f,
+                    Palette.Alpha(Palette.ParryRim,(i==0?.62f:.38f)*progress));
+            }
+            Disc(origin.x,origin.y,.55f+progress,.55f+progress,Palette.Alpha(Palette.ParryRim,.45f));
+        }
+        void DrawPotion()
+        {
+            float elapsed=g.actionTotal-g.actionTime;
+            float raise=Mathf.SmoothStep(0,1,Mathf.Min(elapsed/.3f,(g.actionTotal-elapsed)/.23f));
+            Vector2 hand=g.player+new Vector2(g.face*Mathf.Lerp(.38f,.46f,raise),Mathf.Lerp(.72f,1.29f,raise));
+            Vector2 shoulder=g.player+new Vector2(g.face*.08f,1.12f);
+            Vector2 elbow=g.player+new Vector2(g.face*Mathf.Lerp(.20f,.33f,raise),.94f);
+            int previousLayer=layerBoost;
+            layerBoost=1200;
+            Line(shoulder,elbow,.14f,new Color(.25f,.20f,.24f));
+            Line(elbow,hand,.15f,new Color(.33f,.27f,.25f));
+            GlowShape(disk,hand.x,hand.y,.43f,.43f,Palette.Alpha(Palette.Teal,.17f));
+            float angle=g.face*raise*72;
+            Rect(hand.x,hand.y,.20f,.29f,new Color(.03f,.17f,.19f),angle);
+            Rect(hand.x,hand.y,.13f,.20f,Palette.Teal,angle);
+            Vector2 cap=hand+(Vector2)(Quaternion.Euler(0,0,angle)*Vector2.up*.19f);
+            Rect(cap.x,cap.y,.11f,.09f,Palette.Gold,angle);
+            layerBoost=previousLayer;
+        }
+        void DrawTutorialDummy(float time)
+        {
+            float x=g.boss.x;
+            Rect(x,1.1f,.22f,2.2f,new Color(.42f,.25f,.12f));
+            float swing=g.TutorialThreatVisible?Mathf.Lerp(-35,18,Mathf.Pow(g.TutorialThreatProgress,3)):0;
+            Rect(x,1.65f,2,.18f,new Color(.58f,.35f,.18f),swing);
+            Disc(x,1.5f,1.1f,1.3f,new Color(.72f,.58f,.34f));
+            Disc(x,1.5f,.65f,.75f,Palette.Red);Disc(x,1.5f,.24f,.3f,Palette.Gold);
+            if(g.TutorialThreatVisible)
+            {
+                Color c=g.Tutorial.Step==TutorialStep.Dodge?Palette.Red:Palette.ParryRim;
+                Rect(g.TutorialThreatX,.06f,2.6f,.12f,c);
+                Rect(g.TutorialThreatX,1,2.6f,2,Palette.Alpha(c,.22f));
+                Rect(g.TutorialThreatX,.17f,2.6f*g.TutorialThreatProgress,.09f,c);
+                if(g.TutorialTimingSignal&&g.Tutorial.Step!=TutorialStep.Dodge)
+                {
+                    Disc(g.TutorialThreatX,1.05f,1f,1f,Palette.Alpha(c,.48f));
+                    Rect(g.TutorialThreatX,1.15f,.6f,.6f,Palette.White,45);
+                }
+            }
+        }
         bool DrawBossArena()
         {
             if(g.bossIndex<0||g.bossIndex>=arenaNames.Length)return false;
@@ -210,15 +285,25 @@ namespace ReversalTower
         void Telegraph()
         {
             var p=g.current;float remaining=g.windup-g.patternAge;
-            if(remaining<=0)return;
+            if(remaining<=0)
+            {
+                if(g.bossIndex==0 && g.mode==ScreenMode.Battle &&
+                    p.kind==AttackKind.Slash && g.attackStep>0)
+                {
+                    float age=-remaining;
+                    ArakusRangeBand(g.boss.x,g.boss.y,g.bossFace,ArakusGeometry.Reach(g.spec,p),
+                        ArakusGeometry.AttackHeight(g.spec,p),p.parryable?Palette.ParryRim:Palette.Red,
+                        Mathf.Clamp01(1-age*8),true);
+                }
+                return;
+            }
             Color c=p.parryable?Palette.ParryRim:Palette.Red;float opacity=.08f+.05f*Mathf.Sin(g.realClock*14);
             if(p.kind==AttackKind.Slash)
             {
                 if(g.bossIndex==0)
                 {
-                    float reach=ArakusGeometry.Reach(g.spec,p),height=ArakusGeometry.AttackHeight(g.spec,p),width=reach+.3f;
-                    float x=g.boss.x+g.bossFace*(reach-.3f)*.5f;
-                    Rect(x,g.boss.y+height*.5f,width,height,Palette.Alpha(c,opacity));Rect(x,g.boss.y+.05f,width,.04f,c);
+                    ArakusRangeBand(g.boss.x,g.boss.y,g.bossFace,ArakusGeometry.Reach(g.spec,p),
+                        ArakusGeometry.AttackHeight(g.spec,p),c,.55f+opacity*2,false);
                 }
                 else{bool radial=p.id=="spin";float x=radial?g.boss.x:g.boss.x+g.bossFace*p.range*.5f;Rect(x,.8f,radial?p.range*2:p.range,1.6f,Palette.Alpha(c,opacity));Rect(x,.05f,radial?p.range*2:p.range,.04f,c);}
             }
@@ -227,6 +312,20 @@ namespace ReversalTower
             {Rect(g.safeSide*6,.04f,11.2f,.1f,Palette.Teal);Rect(g.safeSide*6,1,11.2f,2,Palette.Alpha(Palette.Teal,.08f));}
         }
         // ── 아라쿠스 기획 패턴 예고·효과: 파란빛 = 패링 가능, 붉은빛 = 피하거나 거리 벌리기 ──
+        void ArakusRangeBand(float origin,float floor,float facing,float reach,float height,
+            Color color,float strength,bool contact)
+        {
+            if(strength<=0)return;
+            float near=origin-facing*.3f;
+            float far=origin+facing*reach;
+            float center=(near+far)*.5f;
+            float width=reach+.3f;
+            Rect(center,floor+height*.5f,width,height,Palette.Alpha(color,strength*(contact?.17f:.09f)));
+            Rect(center,floor+.07f,width,contact?.11f:.055f,Palette.Alpha(color,strength));
+            Rect(far,floor+.20f,.055f,.32f,Palette.Alpha(color,strength));
+            if(contact)
+                Rect(center,floor+.38f,width,.085f,Palette.Alpha(color,.85f*strength));
+        }
         void ArakusCues(float time)
         {
             var bp=g.BossPatterns;var p=g.current;float t=g.patternAge,w=g.windup,pulse=.5f+.5f*Mathf.Sin(time*16);
@@ -242,8 +341,12 @@ namespace ReversalTower
                 }
                 if(p.id=="throw")
                 {
-                    if(!bp.struck){float x=bp.moveTo+face*p.range*.5f;Rect(x,.8f,p.range,1.6f,Palette.Alpha(Palette.ParryRim,.1f+.08f*pulse));Rect(x,.05f,p.range,.05f,Palette.ParryRim);}
-                    else if(t<w+1.1f){float x=bx+face*1.2f;Line(new Vector2(x-face*.9f,2.1f),new Vector2(x+face*.5f,.3f),.12f,Palette.Alpha(Palette.White,.8f));}
+                    float strikeAge=t-w-.8f/Mathf.Max(.01f,bp.tempo);
+                    if(!bp.struck)
+                        ArakusRangeBand(bp.moveTo,0,face,p.range,2.2f,Palette.ParryRim,.55f+.25f*pulse,false);
+                    else
+                        ArakusRangeBand(bx,0,face,p.range,2.2f,Palette.ParryRim,
+                            Mathf.Clamp01(1-strikeAge*8),true);
                     return;
                 }
                 // 내려찍기: 도약 중 착지점(반경 1.5m), 착지 뒤 충격파

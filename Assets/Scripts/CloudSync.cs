@@ -24,7 +24,7 @@ namespace ReversalTower
         [Serializable] sealed class DifficultyRow { public string boss; public string pattern; public int opportunities; public int players; public float success_rate; public float parry_rate; public float hit_rate; public int suggested_level; }
         [Serializable] sealed class DifficultyList { public DifficultyRow[] items; }
 
-        const string PlayerKey = "CloudPlayerId", RegisteredKey = "CloudPlayerRegistered";
+        const string RegisteredKey = "CloudPlayerRegistered/";
         const int TimeoutSeconds = 6;
         static CloudSync instance;
         Config config;
@@ -48,8 +48,7 @@ namespace ReversalTower
             {CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
             config = LoadConfig();
             if (config == null) { CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
-            playerId = PlayerPrefs.GetString(PlayerKey, "");
-            if (string.IsNullOrEmpty(playerId)) { playerId = Guid.NewGuid().ToString(); PlayerPrefs.SetString(PlayerKey, playerId); PlayerPrefs.Save(); }
+            playerId = SaveStore.Load().cloudPlayerId;
             queueDir = Path.Combine(Application.persistentDataPath, "CloudQueue");
             Directory.CreateDirectory(queueDir);
             SaveStore.BattleLogged += OnBattle;
@@ -85,7 +84,9 @@ namespace ReversalTower
             if (h == null || stats == null) return;
             // 끝까지 싸우지 않은 판(포기·종료)은 다른 플레이어의 첫 판 난이도를 정하는 통계에 섞지 않는다 (로컬 CSV에는 남음)
             if (h.abandoned) return;
-            string battleId = Guid.NewGuid().ToString();
+            if(save==null)return;
+            SaveStore.EnsureIdentity(save,false);playerId=save.cloudPlayerId;
+            string battleId = string.IsNullOrEmpty(h.battleId)?Guid.NewGuid().ToString():h.battleId;
             var ci = CultureInfo.InvariantCulture;
             var cards = new StringBuilder();
             if (save != null) foreach (var c in LobbyCards.All) { int n = LobbyCards.Count(save, c.id); if (n > 0) { if (cards.Length > 0) cards.Append('|'); cards.Append(c.id).Append(':').Append(n); } }
@@ -109,22 +110,24 @@ namespace ReversalTower
                 Raw(rows, "ignored", s.ignored.ToString(ci)); Raw(rows, "damage", s.damage.ToString("0.##", ci), true); rows.Append('}');
             }
             rows.Append(']');
-            Enqueue(new Pending { id = battleId, battle = battle.ToString(), stats = stats.Count > 0 ? rows.ToString() : null });
+            Enqueue(new Pending { id = battleId, player = playerId, battle = battle.ToString(), stats = stats.Count > 0 ? rows.ToString() : null });
         }
 
         void OnCard(string card, int cost, int index)
         {
+            playerId=SaveStore.ActivePlayerId;
+            if(string.IsNullOrEmpty(playerId))return;
             var row = new StringBuilder("{");
             string id = Guid.NewGuid().ToString();
             Field(row, "id", id); Field(row, "player_id", playerId); Field(row, "card", card);
             Raw(row, "cost", Mathf.Max(0, cost).ToString(CultureInfo.InvariantCulture)); Raw(row, "pick_index", Mathf.Max(0, index).ToString(CultureInfo.InvariantCulture), true);
             row.Append('}');
-            Enqueue(new Pending { id = id, card = row.ToString() });
+            Enqueue(new Pending { id = id, player = playerId, card = row.ToString() });
         }
 
         void Enqueue(Pending p)
         {
-            try { File.WriteAllText(Path.Combine(queueDir, DateTime.UtcNow.ToString("yyyyMMddHHmmssfff") + "_" + p.id.Substring(0, 8) + ".json"), JsonUtility.ToJson(p)); }
+            try { string path=Path.Combine(queueDir, DateTime.UtcNow.ToString("yyyyMMddHHmmssfff") + "_" + p.id + ".json");File.WriteAllText(path+".tmp",JsonUtility.ToJson(p));File.Move(path+".tmp",path); }
             catch (Exception e) { Debug.LogWarning("DB 대기열 저장 실패: " + e.Message); }
             if (!sending) StartCoroutine(SyncAll());
         }
@@ -136,19 +139,23 @@ namespace ReversalTower
             if (sending) yield break;
             sending = true;
             bool ok = true;
-            if (PlayerPrefs.GetInt(RegisteredKey, 0) == 0)
-            {
-                var player = new StringBuilder("{"); Field(player, "id", playerId); Field(player, "game_version", Application.version, true); player.Append('}');
-                yield return Post("players", player.ToString(), r => ok = r);
-                if (ok) { PlayerPrefs.SetInt(RegisteredKey, 1); PlayerPrefs.Save(); }
-            }
-            string[] files = ok ? Directory.GetFiles(queueDir, "*.json") : new string[0];
+            string[] files = Directory.GetFiles(queueDir, "*.json");
             Array.Sort(files, StringComparer.Ordinal);
             foreach (string file in files)
             {
                 Pending p = null;
                 try { p = JsonUtility.FromJson<Pending>(File.ReadAllText(file)); } catch (Exception) { }
-                if (p == null) { TryDelete(file); continue; }
+                // Never discard corrupt or unattributed uploads. Never relabel them with the active profile.
+                string owner=p==null?null:SaveStore.ResolveUploadOwner(p.player,p.battle,p.card);
+                if(owner==null){ok=false;Debug.LogWarning("DB 대기열 신원 검증 실패: 원본 보존");continue;}
+                string registration=RegisteredKey+owner;
+                if(PlayerPrefs.GetInt(registration,0)==0)
+                {
+                    var player=new StringBuilder("{");Field(player,"id",owner);Field(player,"game_version",Application.version,true);player.Append('}');
+                    yield return Post("players",player.ToString(),r=>ok=r);
+                    if(!ok)break;
+                    PlayerPrefs.SetInt(registration,1);PlayerPrefs.Save();
+                }
                 if (!string.IsNullOrEmpty(p.battle)) { yield return Post("battles", p.battle, r => ok = r); if (!ok) break; }
                 if (!string.IsNullOrEmpty(p.stats)) { yield return Post("pattern_stats", p.stats, r => ok = r); if (!ok) break; }
                 if (!string.IsNullOrEmpty(p.card)) { yield return Post("card_picks", p.card, r => ok = r); if (!ok) break; }

@@ -19,7 +19,7 @@ if a.output.exists() or a.output.with_suffix('.manifest.json').exists():
 if not a.dotnet:
     p.error('Install a .NET 8 SDK or supply --dotnet')
 repo = Path(__file__).resolve().parents[1]
-names = ['GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
+names = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices', 'ArakusPatternTiming', 'ArakusAnimationSelection']
 entry = 'PlaytestAgentTests'
 sources = [repo / 'Assets' / 'Scripts' / (n + '.cs') for n in names]

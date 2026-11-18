@@ -45,7 +45,7 @@ namespace ReversalTower
             =>new Pattern(id,name,kind,w,r,d,range,n,parry);
         public static readonly BossSpec[] Bosses={
             // 아라쿠스: 팀 기획서 4.1~4.3의 시간·거리. 판정 거리는 기획 거리 + 몸 너비 0.9m. 피해는 기준 12 × 기획 계수(임시).
-            new BossSpec("arakus","아라쿠스","첫 번째 문 · 철의 맹세","파랗게 빛나는 공격은 K로 패링. 돌진은 기둥 뒤로 유도하세요.","철왕의 휩쓸기",780,2.1f,
+            new BossSpec("arakus","아라쿠스","첫 번째 문 · 철의 맹세","파랗게 빛나는 공격은 K로 패링. 돌진은 기둥 뒤로 유도하세요.","일대 휩쓸기",780,2.1f,
                 P("cleave","거검 휘두르기",AttackKind.Slash,.85f,.75f,18,2.9f,1,true).When(0,2.9f,6,1.5f),
                 P("shield","방패 내려찍기",AttackKind.Slash,.85f,1.05f,10,1.9f,1,true).When(0,1.9f,0,2),
                 P("kick","발차기",AttackKind.Slash,.8f,.4f,8,1.4f).When(0,1.4f,0,2),
@@ -63,7 +63,8 @@ namespace ReversalTower
                 P("beam","단죄의 빛 기둥",AttackKind.Pillar,1.05f,1f,21,20,3),
                 P("rain","추락하는 별",AttackKind.Rain,1.15f,.85f,17,20,4),
                 P("barrier","단절의 결계",AttackKind.Barrier,1.3f,1.3f,25,20),
-                P("pulse","천공의 파동",AttackKind.Wave,.95f,.85f,18,20,2)),
+                P("pulse","천공의 파동",AttackKind.Wave,.95f,.85f,18,20,2),
+                P(BossPatternSystem.PhanesUltimate,"굴절의 별",AttackKind.Volley,1.45f,1.1f,18,20,1,true).When(0,20,0,1,-1)),
             new BossSpec("adicus","아디쿠스","세 번째 문 · 눈먼 심판","죄수와 망자를 정리하고, 심판 때 빛나는 저울 쪽으로 이동하세요.","심판의 낫",1100,2.3f,
                 P("scythe","심판의 낫",AttackKind.Slash,.85f,.85f,20,3.8f,1,true),
                 P("cross","X자 베기",AttackKind.Slash,.75f,.9f,12,3.3f,2,true),
@@ -90,9 +91,12 @@ namespace ReversalTower
         };
     }
     // abandoned: ESC 포기·창 닫기·에디터 정지로 끝난 판. 기록과 골드는 남지만 DDA 학습과 DB 통계에는 쓰지 않는다.
-    [Serializable] public class HistoryEntry {public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda,abandoned;}
+    [Serializable] public class HistoryEntry {public string battleId,snapshotId;public string date,boss;public bool clear;public float seconds;public int hits,parries,gold;public bool dda,abandoned;}
     [Serializable] public class SaveData
     {
+        public TutorialAssessment tutorialAssessment,tutorialReplayAssessment;
+        public int tutorialOnboardingVersion;
+        public string profileId,cloudPlayerId;
         public int version=2,gold,attackLevel,healthLevel,equippedUltimate=-1,unlockedBoss;
         public List<CardStack> cards=new List<CardStack>();
         public string[] cardOffer=new string[0];

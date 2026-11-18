@@ -11,7 +11,8 @@ im=Image.open(r/p);assert im.size==(768,192) and im.mode=='RGBA'
 meta=(r/(p+'.meta')).read_text();assert len(re.findall(r'      name:',meta))==4
 assert 'spritePixelsToUnits: 56' in meta
 src=(r/'Assets/Scripts/ArakusVisuals.cs').read_text()
-assert '(id=="Walk"?"ArakusV1/":"ArakusV2/")+id' in src
+# 2026-11-16 user choice: every Arakus motion (walk included) prefers V2, V1 only as fallback
+assert 'Resources.LoadAll<Sprite>("ArakusV2/"+id)' in src and '"ArakusV1/":"ArakusV2/"' not in src
 for f in (r/'Assets/Resources/ArakusV2').iterdir():
  assert f.read_bytes()==git('fc133cca61656fad4193664df6d8e4eb5d553732',str(f.relative_to(r)))
 w=(r/'Assets/Scripts/WorldArtist.cs').read_text()
@@ -20,4 +21,4 @@ assert 'centerX=g.bossIndex==0?g.zoomFocus.x*g.zoomPunch*.12f:camera.transform.p
 assert arena.count('if(g.bossIndex==0)RoomEdges(')==2
 assert 'sourceWidth-1' in w
 assert not (r/'Assets/Scripts/PixelAgentBridge.cs').exists()
-print('APPROVED_MERGE_CONTRACT_PASS: exact chosen walk, unchanged metadata/V2 pack, current arena camera path, no pixel experiment')
+print('APPROVED_MERGE_CONTRACT_PASS: all motions prefer V2, V1 walk file kept, unchanged metadata/V2 pack, current arena camera path, no pixel experiment')

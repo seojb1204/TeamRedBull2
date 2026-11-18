@@ -146,7 +146,8 @@ namespace ReversalTower
         void HealPlayer(float amount,string cause)
         {
             float before=playerHp;playerHp=Mathf.Min(maxHp,playerHp+amount);
-            NoteEvidence("heal",cause,playerHp-before);RecordPixelHpChange(before);
+            NoteEvidence("heal",cause,playerHp-before);
+            RecordPixelHpChange(before);RecordPixelHpChange(before);
         }
         System.Random agentRandom;
         Pattern agentPattern;float agentLastAge=-1;bool agentRespond,agentDefended;

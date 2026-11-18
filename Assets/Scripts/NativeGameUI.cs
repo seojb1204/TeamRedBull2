@@ -32,6 +32,7 @@ namespace ReversalTower
         bool built;
         ScreenMode lastMode=(ScreenMode)(-1);
         float pageClock;
+        string[] purchasedOffer;
         CanvasGroup titleGroup,lobbyGroup,battleGroup,resultGroup,endingGroup,cardsGroup;
 
         // 타이틀
@@ -325,10 +326,10 @@ namespace ReversalTower
             titlePage.SetActive(mode==ScreenMode.Title);lobbyPage.SetActive(mode==ScreenMode.Lobby&&!cardsVisible);
             battlePage.SetActive(mode==ScreenMode.Battle);resultPage.SetActive(mode==ScreenMode.Result);
             endingPage.SetActive(mode==ScreenMode.Ending);cardsPage.SetActive(cardsVisible);
-            pausePage.SetActive(mode==ScreenMode.Battle&&game.paused);
-            float fade=UiKit.EaseOut(pageClock/.2f);   // 화면이 바뀔 때 0.2초 동안 스며듦
+            pausePage.SetActive(mode==ScreenMode.Battle&&game.paused&&!game.TutorialActive);
+            float fade=game.TransitionActive?1:UiKit.EaseOut(pageClock/.2f);   // 화면이 바뀔 때 0.2초 동안 스며듦
             titleGroup.alpha=lobbyGroup.alpha=battleGroup.alpha=resultGroup.alpha=endingGroup.alpha=fade;
-            inputGroup.interactable=!(game.showHelp||game.showSettings||game.showHistory);
+            inputGroup.interactable=!game.TransitionActive&&!(game.showHelp||game.showSettings||game.showHistory);
             Set(notice,game.noticeTime>0?game.notice:"");
 
             switch(mode)
@@ -398,8 +399,9 @@ namespace ReversalTower
 
             Set(lobbyStats,"공격 "+Num(LobbyCards.Attack(save))+"  ·  체력 "+Num(LobbyCards.Health(save))+"\n포션 "+LobbyCards.Potions(save)+"개 × "+Num(LobbyCards.Heal(save))+"  ·  인장 "+save.cardPurchases+"장");
             int cost=LobbyCards.Cost(save);
-            upgradeButton.interactable=!save.cardChosen;
-            Set(upgradeLabel,save.cardChosen?"다음 전투가 끝나면 다시":save.gold<cost?"골드 부족  ·  "+UiKit.Gold(cost):"강화하기  ·  "+UiKit.Gold(cost));
+            upgradeButton.interactable=LobbyCards.CanPurchase(save);
+            Set(upgradeLabel,save.gold<cost?"골드 부족  ·  "+UiKit.Gold(cost):
+                upgradeButton.interactable?"강화하기  ·  "+UiKit.Gold(cost):"구매 가능한 강화 없음");
         }
 
         void RefreshCards(float dt)
@@ -415,18 +417,19 @@ namespace ReversalTower
                               :"골드가 모자라다   ·   "+UiKit.Gold(cost)+" 필요, 지금 "+UiKit.Gold(save.gold));
             Tint(cardSub,afford||outro>=0?UiKit.Muted:Palette.Red);
 
-            bool offer=save.cardOffer!=null&&save.cardOffer.Length>0&&save.cardOffer.Length<=cardButtons.Length;
-            Set(cardTitle,offer?"강화 선택 · "+(save.cardOffer.Length==1?"한 장":save.cardOffer.Length==2?"두 장":"세 장")+" 중 하나":"현재 선택할 강화가 없습니다");
             bool live=outro<0;
+            string[] visibleOffer=live?save.cardOffer:purchasedOffer;
+            bool offer=visibleOffer!=null&&visibleOffer.Length>0&&visibleOffer.Length<=cardButtons.Length;
+            Set(cardTitle,!live?"강화 완료":offer?"강화 선택 · "+(visibleOffer.Length==1?"한 장":visibleOffer.Length==2?"두 장":"세 장")+" 중 하나":"현재 선택할 강화가 없습니다");
             for(int i=0;i<cardButtons.Length;i++)
             {
-                UpgradeCard card=offer&&i<save.cardOffer.Length?LobbyCards.Find(save.cardOffer[i]):null;
+                UpgradeCard card=offer&&i<visibleOffer.Length?LobbyCards.Find(visibleOffer[i]):null;
                 if(cardButtons[i].gameObject.activeSelf!=(card!=null))cardButtons[i].gameObject.SetActive(card!=null);
                 if(card==null)continue;
                 int owned=LobbyCards.Count(save,card.id);
                 Set(cardGlyph[i],card.glyph);Set(cardAmount[i],card.amount);Set(cardLabels[i],card.stat);Set(cardDetail[i],card.detail);
                 Set(cardOwned[i],!live&&i==chosen?"지금 "+owned+"장":LobbyCards.Preview(save,card.id));
-                cardButtons[i].interactable=live?!save.cardChosen&&afford&&LobbyCards.Available(save,card):true;   // 사라지는 동안 흐려지지 않게
+                cardButtons[i].interactable=live?afford&&LobbyCards.Available(save,card):true;   // 사라지는 동안 흐려지지 않게
 
                 // 등장: 한 장씩 아래에서 올라옴
                 float t=(cardsClock-i*.07f)/.32f;
@@ -449,7 +452,7 @@ namespace ReversalTower
             if(cardsClose&&cardsClose.gameObject.activeSelf!=live)cardsClose.gameObject.SetActive(live);
             cardsGroup.alpha=live?UiKit.EaseOut(cardsClock/.18f):1-Mathf.Clamp01((outro-.42f)/.22f);
             cardsGroup.blocksRaycasts=true; // The full-screen Dim must consume clicks until the outro ends.
-            if(outro>.66f){outro=-1;chosen=-1;cardsReleasedFrame=Time.frameCount;cardsPage.SetActive(false);}
+            if(outro>.66f){outro=-1;chosen=-1;purchasedOffer=null;cardsReleasedFrame=Time.frameCount;cardsPage.SetActive(false);}
         }
 
         void RefreshBattle(float dt)
@@ -480,9 +483,11 @@ namespace ReversalTower
             var r=slots[6];bool ready=game.ult>=100;
             r.shade.fillAmount=Mathf.Clamp01(game.ult/100);
             Tint(r.key,ready?Palette.Gold:UiKit.Soft);
-            Set(r.name,ready?"궁극기":Mathf.FloorToInt(game.ult)+"%");Tint(r.name,ready?Palette.Gold:UiKit.Muted);
+            Set(r.name,game.SwordCharged?"전기 "+Mathf.CeilToInt(game.sparkTime)+"초":ready?"궁극기":Mathf.FloorToInt(game.ult)+"%");Tint(r.name,ready||game.SwordCharged?Palette.Gold:UiKit.Muted);
             if(ready&&!ultWasReady)r.pop=1;ultWasReady=ready;
             Pop(r,dt);
+            if(ready){Swap(r.frame,UiKit.Selected);Tint(r.frame,Color.Lerp(Palette.Gold,Color.white,.35f+.25f*Mathf.Sin(Time.unscaledTime*4)));}
+            else Tint(r.frame,Color.white);
         }
 
         string PatternLine()
@@ -605,15 +610,41 @@ namespace ReversalTower
 
         // ═══════════════════════════ 버튼 이벤트 (씬에 이름으로 연결됨) ═══════════════════════════
 
-        public void EnterLobby(){if(!BlocksLobbyInput)game.ReturnLobby();}
+        public bool TutorialSlotRect(string key,out Rect rect)
+        {
+            rect=new Rect();if(slots==null)return false;
+            if(key=="PlayerHp"&&playerHealth){rect=TutorialRect(playerHealth.rectTransform);return true;}
+            if(key=="EnemyHp"&&bossHealth){rect=TutorialRect(bossHealth.rectTransform);return true;}
+            if(key=="UltimateGauge"||key=="UltimateExplanation")key="R";
+            if(key=="Skills"&&slots.Length>0)
+            {
+                rect=TutorialRect(slots[0].root);
+                for(int i=1;i<slots.Length;i++){var next=TutorialRect(slots[i].root);rect=Rect.MinMaxRect(Mathf.Min(rect.xMin,next.xMin),Mathf.Min(rect.yMin,next.yMin),Mathf.Max(rect.xMax,next.xMax),Mathf.Max(rect.yMax,next.yMax));}
+                return true;
+            }
+            foreach(var slot in slots)if(slot.letter==key){rect=TutorialRect(slot.root);return true;}
+            return false;
+        }
+        Rect TutorialRect(RectTransform target)
+        {
+            var corners=new Vector3[4];target.GetWorldCorners(corners);
+            var canvas=target.GetComponentInParent<Canvas>();
+            Camera camera=canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?canvas.worldCamera:null;
+            var a=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);var b=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
+            float scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
+            return new Rect((a.x-(Screen.width-1600*scale)/2)/scale,(Screen.height-b.y-(Screen.height-900*scale)/2)/scale,(b.x-a.x)/scale,(b.y-a.y)/scale);
+        }
+        public void EnterLobby(){if(!BlocksLobbyInput)game.StartGame();}
         public void SelectBoss(int index){if(!BlocksLobbyInput&&index>=0&&index<=game.save.unlockedBoss)game.bossIndex=index;}
         public void EnterBattle(){if(!BlocksLobbyInput)game.StartBattle(game.bossIndex);}
         public void OpenCards(){if(BlocksLobbyInput)return;game.OpenCards();ApplyLobbyInputState();}
         public void ChooseCard(int index)
         {
             if(!game||!game.showCards||CardOutroBlocksInput||game.save.cardOffer==null||index<0||index>=game.save.cardOffer.Length)return;
-            if(game.ChooseCard(game.save.cardOffer[index]))
+            var offer=game.save.cardOffer;
+            if(game.ChooseCard(offer[index]))
             {
+                purchasedOffer=offer;
                 chosen=index;outro=0;cardsReleasedFrame=-1;
                 ApplyLobbyInputState();
                 foreach(var group in cardGroups)group.blocksRaycasts=false;
@@ -623,12 +654,12 @@ namespace ReversalTower
         }
         public void CloseCards(){if(CardOutroBlocksInput)return;game.showCards=false;ApplyLobbyInputState();}
         public void Retry(){game.StartBattle(game.bossIndex);}
-        public void OpenSettings(){if(!BlocksLobbyInput)game.showSettings=true;}
-        public void OpenHelp(){if(!BlocksLobbyInput)game.showHelp=true;}
-        public void OpenHistory(){if(!BlocksLobbyInput)game.showHistory=true;}
+        public void OpenSettings(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showSettings=true;}
+        public void OpenHelp(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showHelp=true;}
+        public void OpenHistory(){if(!game.TutorialActive&&!BlocksLobbyInput)game.showHistory=true;}
         public void Resume(){game.paused=false;}
         public void Abandon(){game.Abandon();}
-        public void ShowEnding(){game.mode=ScreenMode.Ending;}
+        public void ShowEnding(){game.ShowEnding();}
         public void CycleUltimate(){if(!BlocksLobbyInput)game.CycleUltimate();}
 
         // ═══════════════════════════ 작은 도우미 ═══════════════════════════
@@ -655,6 +686,7 @@ namespace ReversalTower
         static Color Alpha(Color c,float a){c.a=a;return c;}
         static void Set(Text t,string s){if(t&&t.text!=s)t.text=s;}
         static void Tint(Text t,Color c){if(t&&t.color!=c)t.color=c;}
+        static void Tint(Image image,Color c){if(image&&image.color!=c)image.color=c;}
         static void Swap(Image image,Sprite sprite){if(image&&image.sprite!=sprite)image.sprite=sprite;}
     }
 }

@@ -1,0 +1,920 @@
+{
+  "base_main": "83d9085fb44a6218e721b68b16d620c4669f5d95",
+  "inputs": {
+    "PR50": "be57b0b0173d72dcd8fc205f9e564d06b48f5377",
+    "DDA Lab": "779352c3b38d33790f35873fc270d5e47924e952"
+  },
+  "candidate_commit_before_report": "b2f256e3e735b3205167548764701bab104d01c3",
+  "initial": {
+    "main-headless": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-arakus-polish.py",
+        "--suite",
+        "logic",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet"
+      ],
+      "cwd": "/workspace/TeamRedBull2",
+      "tail": [
+        "PASS Ultimate projectiles removed after hits",
+        "PASS Upgrades do not raise first encounter DDA level",
+        "HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player."
+      ]
+    },
+    "initial-integrated": {
+      "exit": 1,
+      "command": [
+        "python3",
+        "Tests/run-final-integration.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "--output",
+        "/workspace/integration-results/initial-integrated"
+      ],
+      "cwd": "/workspace/integration-qa",
+      "tail": [
+        "room-resources FAIL",
+        "size-resources PASS",
+        "charge-art PASS"
+      ]
+    },
+    "initial-lab": {
+      "exit": 1,
+      "command": [
+        "python3",
+        "Tests/test-dda-lab.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet"
+      ],
+      "cwd": "/workspace/integration-qa",
+      "tail": [
+        "    if not ok:raise AssertionError(label)",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "AssertionError: {'mode': 'control', 'scenario': 'improving', 'rounds': 6}"
+      ]
+    },
+    "initial-cold": {
+      "exit": 1,
+      "command": [
+        "python3",
+        "Tests/run-cold-start-integration.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet"
+      ],
+      "cwd": "/workspace/integration-qa",
+      "tail": [
+        "/workspace/integration-qa/Assets/Scripts/GameData.cs(96,16): error CS0246: The type or namespace name 'TutorialAssessment' could not be found (are you missing a using directive or an assembly reference?) [/tmp/tower-cold-integration-zwwkplnn/Tests.csproj]",
+        "",
+        "The build failed. Fix the build errors and run again."
+      ]
+    },
+    "initial-profiles": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-dda-history.py",
+        "--suite",
+        "profiles",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet"
+      ],
+      "cwd": "/workspace/integration-qa",
+      "tail": [
+        "PASS save failure no snapshot",
+        "PASS save failure preserves old file",
+        "RESULT 31 PASS / 0 FAIL"
+      ]
+    },
+    "initial-ultimate": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-ultimate.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "--output",
+        "/workspace/integration-results/initial-ultimate"
+      ],
+      "cwd": "/workspace/integration-qa",
+      "tail": [
+        "HeadlessTests 0 HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player.",
+        "UltimateSystemTests 0 PASS 37"
+      ]
+    }
+  },
+  "final": {
+    "integrated": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-final-integration.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "--output",
+        "/workspace/integration-results/final/integrated",
+        "--scope-contract",
+        "Tests/Contracts/INTEGRATION_SCOPE_20261118.json"
+      ],
+      "tail": [
+        "room-resources PASS",
+        "size-resources PASS",
+        "charge-art PASS"
+      ]
+    },
+    "audit": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-dda-system-audit.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "--output",
+        "/workspace/integration-results/final/audit"
+      ],
+      "tail": [
+        "robustness PASS",
+        "cloud-receive PASS",
+        "AUDIT PASS deterministic 64 / 64 asset numeric differences 0"
+      ]
+    },
+    "cross": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-integration-qa.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "--output",
+        "/workspace/integration-results/final/cross"
+      ],
+      "tail": [
+        "tutorial-save 0 [\"저장 실패: The file '/tmp/tutorial-save-64baac40-9f6f-45dc-9d8b-7f54f39fd2d3/not-directory' already exists.\", 'PASS cancel failed replay retains first assessment', 'PASS cancel safely returns replay lobby', '7 PASS, 0 FAIL']",
+        "tutorial-dda 0 [\"저장 실패: The file '/tmp/tower-integrated-tutorial-043585ce3fb24c098d7155691b57cb59/blocked' already exists.\", 'PASS failed completion remains retryable through Update', 'PASS same Enter used for completion retry cannot also start a boss battle', 'TUTORIAL_DDA_INTEGRATION_PASS 24 real session action collision save and DDA; no Unity or DB']",
+        "queue 0 ['PASS sparse legacy progress migrates identity without fabricated assessment', 'PASS sparse legacy original backup retained', 'PASS legacy help-seen alone cannot bypass first assessment', 'CLOUD_QUEUE_INTEGRATION 21 PASS / 0 FAIL; real ownership resolver, mocked HTTP, no production data']"
+      ]
+    },
+    "cold": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-cold-start-integration.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet"
+      ],
+      "tail": [
+        "PASS invalid tutorial observations rejected",
+        "PASS nonfinite tutorial time rejected",
+        "COLD_START_INTEGRATION_PASS 23 actual receive/CommunityStats/Prepare; no network, Unity timing or DB"
+      ]
+    },
+    "phanes": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/run-phanes.py",
+        "--dotnet",
+        "/workspace/.cloud-setup/dotnet/dotnet"
+      ],
+      "tail": [
+        "/workspace/integration-qa/Assets/Scripts/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-polish-gi_ey1ro/Tests.csproj]",
+        "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-polish-gi_ey1ro/Tests.csproj]",
+        "PASS 3188 Phanes assertions"
+      ]
+    },
+    "scope": {
+      "exit": 0,
+      "command": [
+        "python3",
+        "Tests/test-scope-contract.py"
+      ],
+      "tail": [
+        "Ran 1 test in 0.225s",
+        "",
+        "OK"
+      ]
+    }
+  },
+  "final_integration": {
+    "commit": "d76409b6b80d61782ab6f607cdf0b00209f6708f",
+    "source_sha256": {
+      "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+      "Assets/Scripts/ScenePresentation.cs": "5686f854fdb909719be6fce34a3022e645f73127e058aa9a4b1b996f3a8156b1",
+      "Assets/Scripts/ParryGlow.cs": "36f9cabb495e58411d383617d9169d4536df88e36d40db6cf594109671d05a12",
+      "Assets/Scripts/CloudSync.cs": "22b820d2b570d808348b1292c94a708a59ab5aa5ba3b7eaec2090d53dcd12dd9",
+      "Assets/Scripts/NativeGameUI.cs": "e5c656a2000e317309999ffaa459dc0d2b78bf58ce25b10a8cf1707379f57b81",
+      "Assets/Scripts/GameServices.cs": "f9dabb1873de96c27a1897ffddce27860cc75935fe3da158b91c1f3ae37f67a5",
+      "Assets/Scripts/DdaHistoryGraph.cs": "0a0b86de8ab4fefef57f0d5726b7b6095ae14c1286db280bfa727f16ea937d9a",
+      "Assets/Scripts/ArakusEchoView.cs": "6625ea272caf4399c48cb22ed1007e2bbc4fbae985556a4cabdfb3791c052455",
+      "Assets/Scripts/Soundscape.cs": "a2c3d68cf51523412177c59deaff8a1ea9f23f49da5bebdcbcf5e8840f85b214",
+      "Assets/Scripts/CombatSoundDesign.cs": "5254e868a53d253bb79adb4f3b22281ad1a214e4a875012ead9fe1b549504ba4",
+      "Assets/Scripts/ActorView.cs": "21b66d783476fafc16ef139fc0bb827db01a573b3ee88a0cd8a2ac560b968ab3",
+      "Assets/Scripts/UiKit.cs": "b6fd741692dc828ed929718e151cca57636b77c405ad800bb4678d87be4e8e27",
+      "Assets/Scripts/GameUI.cs": "679fb6945b1c1c221b5e5130e7b5b4b1cdebd758b265c21fbafe200a299d1c04",
+      "Assets/Scripts/DdaHistoryRecorder.cs": "ace2c3bfb510854fac289da66f741fef89caf2c124dbc01d4a029dfd00c599c1",
+      "Assets/Scripts/DdaDifficultyHistory.cs": "74c04cff3882ef180bd911b5daf326a1aae7106d6e7e6e810224247e8a6b29f2",
+      "Assets/Scripts/WorldArtist.BossAccents.cs": "cdcdc1a8875eefe12ce0bad708fe2e6a020fd84dd655381b74950cc364868c19",
+      "Assets/Scripts/PixelPresentation.cs": "2a8f386d7f539fa57d40234e02d9f1bb15bbd1066962fd0d750a085cd6327712",
+      "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+      "Assets/Scripts/DdaHistoryRuntime.cs": "0f62ef57e69e5fcf2735c041adeba49a21bf221feceba528da29e8ac3d3fd022",
+      "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+      "Assets/Scripts/ArakusVisuals.cs": "579fdc91b5939e533f416b223df230dfa8a2eeccfde2b4f806864384e2057dc9",
+      "Assets/Scripts/SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+      "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+      "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+      "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+      "Assets/Scripts/GameData.cs": "24f33e3d63be479c0eed7942730071c9b50e45e050aa320126d0ac350473652e",
+      "Assets/Scripts/ExternalAssets.cs": "3781474cf63633e460c892834fc1a9ff85740477db4b1da51d39281aa90d78ef",
+      "Assets/Scripts/PhanesPose.cs": "dfcd456b42f6b3ace8790196a68cff34c442b1b391eb6996b8e2a9e94984a5c4",
+      "Assets/Scripts/BossPatternSystem.cs": "ab145a35cb3a552a557022a698d4e738d5eb89930822f1aad2c49c34340e62e7",
+      "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+      "Assets/Scripts/TowerGame.Tutorial.cs": "c1c9a3153a349d0e4fc1cebe0b8c7bb83cbe9cf24e26980e95a461f1cdcf9a65",
+      "Assets/Scripts/SkillFxTimeline.cs": "48ecf2f3a89107a94461f095f758b78d03ed3cdbb34374369fafc2f07cfe442a",
+      "Assets/Scripts/PlayerAnimationSelection.cs": "43c4ed4d943aec70d890165378117f7450a3a21b0fe28943f1c75875a3d1b19a",
+      "Assets/Scripts/PhanesView.cs": "b32ebe174d17645316b61db08e1ba34018fd5180fffd759dde1d9f1b29edbae9",
+      "Assets/Scripts/TowerGame.cs": "267c91947eeca2b18311525c3b7ba648b5a531c60ee670cc88c1456daa7f23c1",
+      "Assets/Scripts/PixelSprites.cs": "d26ec7cad59ed710f4e1d93b8333be8a5e49e9be8ed3dcc211261c4a89912044",
+      "Assets/Scripts/DdaPanel.cs": "6199fe5f43f2eab784a34632e4d6f68cf1ae0bae5352bcbfcd80303781533ed7",
+      "Assets/Scripts/DdaPanelWindow.cs": "225a98302b00fa23b2ebc468032aa84cea2b3315bcd0fefc582ca18fc8bf5f30",
+      "Assets/Scripts/SkillEffectVisuals.cs": "2bd21af08b9b07141261b0554019848a64f02296283f33aacc4b4f6460ddb9cd",
+      "Assets/Scripts/WorldArtist.cs": "ea6df225a07b09fa7c698b9b96f486aeebf7303db455925e8cc995743285b433",
+      "Assets/Scripts/BossDefinition.cs": "13f004e791cee00c102a3f91fe357b4199ae1351e9bf2c1c378acdbbf202fbb8",
+      "Assets/Scripts/DdaDifficultyHistoryStore.cs": "430ee182925f6fa1fd42ad846c9f97d675e911b934f68a2e4d38490ed36cf5c0"
+    },
+    "suites": {
+      "logic": {
+        "exit": 0,
+        "tail": [
+          "PASS Ultimate projectiles removed after hits",
+          "PASS Upgrades do not raise first encounter DDA level",
+          "HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player."
+        ]
+      },
+      "dda-learning": {
+        "exit": 0,
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/dda-learning-execution-40aokp0a/Checks.csproj]",
+          "DDA_VERIFICATION source=integrated PASS=269 FAIL=0 (failures retained, no policy changes)",
+          ""
+        ]
+      },
+      "history": {
+        "exit": 0,
+        "tail": [
+          "PASS observer preserves chosen levels in battle 6",
+          "PASS recording and repeated graph queries leave A/b, memories and learning counters identical to baseline",
+          "DDA_HISTORY_TESTS_PASSED 47 assertions; Unity rendering and real DB are not exercised."
+        ]
+      },
+      "panel": {
+        "exit": 0,
+        "tail": [
+          "Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli",
+          "--------------------------------------------------------------------------------------",
+          "DDA_PANEL_WINDOW_TESTS_PASSED 205 assertions; Unity GUI/input not exercised."
+        ]
+      },
+      "charge": {
+        "exit": 0,
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-polish-d2uc2ajz/Tests.csproj]",
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-polish-d2uc2ajz/Tests.csproj]",
+          "ARAKUS_CHARGE_POLISH_TESTS_PASSED 325; Unity rendering/input and human dodgeability not exercised."
+        ]
+      },
+      "size-animation": {
+        "exit": 0,
+        "tail": [
+          "HeadlessTests 0 HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player.",
+          "ArakusAnimationTests 0 ARAKUS_ANIMATION_TESTS_PASSED 430",
+          "ArakusSizeTests 0 ARAKUS_SIZE_TESTS_PASSED 953"
+        ]
+      },
+      "room-resources": {
+        "exit": 0,
+        "tail": [
+          "207 PASS 0 FAIL"
+        ]
+      },
+      "size-resources": {
+        "exit": 0,
+        "tail": [
+          "87 PASS 0 FAIL"
+        ]
+      },
+      "charge-art": {
+        "exit": 0,
+        "tail": [
+          "PASS frame 3 opaque WH (53, 64) -> (66, 80)",
+          "PASS frame 4 opaque WH (48, 64) -> (60, 80)",
+          "ARAKUS_CHARGE_ART_CHECKS_PASSED: 5 frames, exact nearest-neighbor source pixels, baseline, metadata and excluded files"
+        ]
+      }
+    },
+    "limits": [
+      "HEADLESS UnityShim and static/Pillow checks",
+      "No Unity API compile, Game View, Windows build or DB network test"
+    ]
+  },
+  "crossing": {
+    "commit": "d76409b6b80d61782ab6f607cdf0b00209f6708f",
+    "suites": {
+      "tutorial-state": {
+        "exit": 0,
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+          "Tests/TutorialSession/Program.cs": "83437a8feea4edd1e8103f75ebc1b137f0c35087a55d2dfc219336de989a0014"
+        },
+        "sources_unchanged": true,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/tower-cross-qa-61r6gr9b/QA.csproj",
+          "--verbosity",
+          "quiet"
+        ],
+        "tail": [
+          "PASS single dodge keeps expert confidence limited",
+          "PASS single lucky parry remains low confidence normal",
+          "PASS repeated observed failure can reach novice",
+          "30 PASS, 0 FAIL"
+        ]
+      },
+      "tutorial-save": {
+        "exit": 0,
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "c1c9a3153a349d0e4fc1cebe0b8c7bb83cbe9cf24e26980e95a461f1cdcf9a65",
+          "Assets/Scripts/GameData.cs": "24f33e3d63be479c0eed7942730071c9b50e45e050aa320126d0ac350473652e",
+          "Assets/Scripts/TowerGame.cs": "267c91947eeca2b18311525c3b7ba648b5a531c60ee670cc88c1456daa7f23c1",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "ab145a35cb3a552a557022a698d4e738d5eb89930822f1aad2c49c34340e62e7",
+          "Assets/Scripts/GameServices.cs": "f9dabb1873de96c27a1897ffddce27860cc75935fe3da158b91c1f3ae37f67a5",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tests/TutorialPersistenceTests.cs": "2d0cea4b15c5f6a5b6c322ed4c5dd9d3e010a3bb2361b1ddfe7d8536035f9285"
+        },
+        "sources_unchanged": true,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/tower-cross-qa-ycznj14d/QA.csproj",
+          "--verbosity",
+          "quiet"
+        ],
+        "tail": [
+          "저장 실패: The file '/tmp/tutorial-save-64baac40-9f6f-45dc-9d8b-7f54f39fd2d3/not-directory' already exists.",
+          "PASS cancel failed replay retains first assessment",
+          "PASS cancel safely returns replay lobby",
+          "7 PASS, 0 FAIL"
+        ]
+      },
+      "tutorial-dda": {
+        "exit": 0,
+        "source_sha256": {
+          "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+          "Assets/Scripts/TowerGame.Tutorial.cs": "c1c9a3153a349d0e4fc1cebe0b8c7bb83cbe9cf24e26980e95a461f1cdcf9a65",
+          "Assets/Scripts/GameData.cs": "24f33e3d63be479c0eed7942730071c9b50e45e050aa320126d0ac350473652e",
+          "Assets/Scripts/TowerGame.cs": "267c91947eeca2b18311525c3b7ba648b5a531c60ee670cc88c1456daa7f23c1",
+          "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+          "Assets/Scripts/SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+          "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+          "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+          "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+          "Assets/Scripts/BossPatternSystem.cs": "ab145a35cb3a552a557022a698d4e738d5eb89930822f1aad2c49c34340e62e7",
+          "Assets/Scripts/GameServices.cs": "f9dabb1873de96c27a1897ffddce27860cc75935fe3da158b91c1f3ae37f67a5",
+          "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+          "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+          "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+          "Tests/TutorialDdaIntegrationTests.cs": "216bf43d715416b12c410ec60a5503f141240fdb1e0c4a0cae227264c00b7b8d",
+          "Tests/Contracts/TutorialAssessmentLabAdapter.cs": "4928389e50abaa9b7ba45e8bddb610be96ddbb3bf33d7f839bcdfc029616a4b0"
+        },
+        "sources_unchanged": true,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/tower-cross-qa-g9_vv7lk/QA.csproj",
+          "--verbosity",
+          "quiet"
+        ],
+        "tail": [
+          "저장 실패: The file '/tmp/tower-integrated-tutorial-043585ce3fb24c098d7155691b57cb59/blocked' already exists.",
+          "PASS failed completion remains retryable through Update",
+          "PASS same Enter used for completion retry cannot also start a boss battle",
+          "TUTORIAL_DDA_INTEGRATION_PASS 24 real session action collision save and DDA; no Unity or DB"
+        ]
+      },
+      "queue": {
+        "exit": 0,
+        "source_sha256": {
+          "Assets/Scripts/GameData.cs": "24f33e3d63be479c0eed7942730071c9b50e45e050aa320126d0ac350473652e",
+          "Assets/Scripts/GameServices.cs": "f9dabb1873de96c27a1897ffddce27860cc75935fe3da158b91c1f3ae37f67a5",
+          "Assets/Scripts/SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+          "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+          "Assets/Scripts/CloudSync.cs": "22b820d2b570d808348b1292c94a708a59ab5aa5ba3b7eaec2090d53dcd12dd9",
+          "Tests/CloudSyncStatus/Stubs.cs": "8e94f005396dc52b832656a10fefc88fba301e69ee2c04194caf2e13cedc41d0",
+          "Tests/CloudQueueIntegrationTests.cs": "8f3b04738f588a5762b04c9b02e11082371d2edea7b94db75277738ea71e969f"
+        },
+        "sources_unchanged": true,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/tower-cross-qa-8t74bdp8/QA.csproj",
+          "--verbosity",
+          "quiet"
+        ],
+        "tail": [
+          "PASS sparse legacy progress migrates identity without fabricated assessment",
+          "PASS sparse legacy original backup retained",
+          "PASS legacy help-seen alone cannot bypass first assessment",
+          "CLOUD_QUEUE_INTEGRATION 21 PASS / 0 FAIL; real ownership resolver, mocked HTTP, no production data"
+        ]
+      }
+    },
+    "limits": [
+      "HEADLESS or mocked Unity/HTTP, not Unity API/runtime or real network",
+      "No production DB, credentials, personal saves/queues",
+      "Tutorial groups are not calibrated human skill probabilities"
+    ]
+  },
+  "queue_extended": {
+    "commit": "f5a01dfe25848cdbdfed6f72d0837efbb61e12bd",
+    "suites": {
+      "queue": {
+        "exit": 0,
+        "source_sha256": {
+          "Assets/Scripts/GameData.cs": "24f33e3d63be479c0eed7942730071c9b50e45e050aa320126d0ac350473652e",
+          "Assets/Scripts/GameServices.cs": "f9dabb1873de96c27a1897ffddce27860cc75935fe3da158b91c1f3ae37f67a5",
+          "Assets/Scripts/SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+          "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+          "Assets/Scripts/CloudSync.cs": "22b820d2b570d808348b1292c94a708a59ab5aa5ba3b7eaec2090d53dcd12dd9",
+          "Tests/CloudSyncStatus/Stubs.cs": "8e94f005396dc52b832656a10fefc88fba301e69ee2c04194caf2e13cedc41d0",
+          "Tests/CloudQueueIntegrationTests.cs": "fcd81523653d0d4a875f1decad5c575eca3b68c9df506f597b419ee270399964"
+        },
+        "sources_unchanged": true,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/tower-cross-qa-xmyheick/QA.csproj",
+          "--verbosity",
+          "quiet"
+        ],
+        "tail": [
+          "PASS sparse legacy progress migrates identity without fabricated assessment",
+          "PASS sparse legacy original backup retained",
+          "PASS legacy help-seen alone cannot bypass first assessment",
+          "CLOUD_QUEUE_INTEGRATION 24 PASS / 0 FAIL; real ownership resolver, mocked HTTP, no production data"
+        ]
+      }
+    },
+    "limits": [
+      "HEADLESS or mocked Unity/HTTP, not Unity API/runtime or real network",
+      "No production DB, credentials, personal saves/queues",
+      "Tutorial groups are not calibrated human skill probabilities"
+    ]
+  },
+  "policy_and_preservation": {
+    "frequency_policy_byte_identical_to_main": true,
+    "Decide_byte_identical_to_main": true,
+    "Complete_byte_identical_to_main": true,
+    "selector_byte_identical_to_main": true,
+    "BanditModel_byte_identical_to_main": true,
+    "PR50_preserved/GameData.cs": true,
+    "PR50_preserved/SaveStore.cs": true,
+    "PR50_preserved/TowerGame.Tutorial.cs": true,
+    "PR50_preserved/TutorialSession.cs": true,
+    "PR50_preserved/BossPatternSystem.cs": true,
+    "PR50_preserved/WorldArtist.cs": true,
+    "PR50_preserved/NativeGameUI.cs": true,
+    "PR50_preserved/ScenePresentation.cs": true,
+    "PR50_preserved/ArakusEchoView.cs": true,
+    "Lab_preserved/DdaPanel.cs": true,
+    "PR50_unpruned_RewardLedger_preserved": true
+  },
+  "policy_source_files_current": {
+    "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+    "Assets/Scripts/ScenePresentation.cs": "5686f854fdb909719be6fce34a3022e645f73127e058aa9a4b1b996f3a8156b1",
+    "Assets/Scripts/ParryGlow.cs": "36f9cabb495e58411d383617d9169d4536df88e36d40db6cf594109671d05a12",
+    "Assets/Scripts/CloudSync.cs": "22b820d2b570d808348b1292c94a708a59ab5aa5ba3b7eaec2090d53dcd12dd9",
+    "Assets/Scripts/NativeGameUI.cs": "e5c656a2000e317309999ffaa459dc0d2b78bf58ce25b10a8cf1707379f57b81",
+    "Assets/Scripts/GameServices.cs": "f9dabb1873de96c27a1897ffddce27860cc75935fe3da158b91c1f3ae37f67a5",
+    "Assets/Scripts/DdaHistoryGraph.cs": "0a0b86de8ab4fefef57f0d5726b7b6095ae14c1286db280bfa727f16ea937d9a",
+    "Assets/Scripts/ArakusEchoView.cs": "6625ea272caf4399c48cb22ed1007e2bbc4fbae985556a4cabdfb3791c052455",
+    "Assets/Scripts/Soundscape.cs": "a2c3d68cf51523412177c59deaff8a1ea9f23f49da5bebdcbcf5e8840f85b214",
+    "Assets/Scripts/CombatSoundDesign.cs": "5254e868a53d253bb79adb4f3b22281ad1a214e4a875012ead9fe1b549504ba4",
+    "Assets/Scripts/ActorView.cs": "21b66d783476fafc16ef139fc0bb827db01a573b3ee88a0cd8a2ac560b968ab3",
+    "Assets/Scripts/UiKit.cs": "b6fd741692dc828ed929718e151cca57636b77c405ad800bb4678d87be4e8e27",
+    "Assets/Scripts/GameUI.cs": "679fb6945b1c1c221b5e5130e7b5b4b1cdebd758b265c21fbafe200a299d1c04",
+    "Assets/Scripts/DdaHistoryRecorder.cs": "ace2c3bfb510854fac289da66f741fef89caf2c124dbc01d4a029dfd00c599c1",
+    "Assets/Scripts/DdaDifficultyHistory.cs": "74c04cff3882ef180bd911b5daf326a1aae7106d6e7e6e810224247e8a6b29f2",
+    "Assets/Scripts/WorldArtist.BossAccents.cs": "cdcdc1a8875eefe12ce0bad708fe2e6a020fd84dd655381b74950cc364868c19",
+    "Assets/Scripts/PixelPresentation.cs": "2a8f386d7f539fa57d40234e02d9f1bb15bbd1066962fd0d750a085cd6327712",
+    "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+    "Assets/Scripts/DdaHistoryRuntime.cs": "0f62ef57e69e5fcf2735c041adeba49a21bf221feceba528da29e8ac3d3fd022",
+    "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+    "Assets/Scripts/ArakusVisuals.cs": "579fdc91b5939e533f416b223df230dfa8a2eeccfde2b4f806864384e2057dc9",
+    "Assets/Scripts/SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+    "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+    "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+    "Assets/Scripts/GameData.cs": "24f33e3d63be479c0eed7942730071c9b50e45e050aa320126d0ac350473652e",
+    "Assets/Scripts/ExternalAssets.cs": "3781474cf63633e460c892834fc1a9ff85740477db4b1da51d39281aa90d78ef",
+    "Assets/Scripts/PhanesPose.cs": "dfcd456b42f6b3ace8790196a68cff34c442b1b391eb6996b8e2a9e94984a5c4",
+    "Assets/Scripts/BossPatternSystem.cs": "ab145a35cb3a552a557022a698d4e738d5eb89930822f1aad2c49c34340e62e7",
+    "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+    "Assets/Scripts/TowerGame.Tutorial.cs": "c1c9a3153a349d0e4fc1cebe0b8c7bb83cbe9cf24e26980e95a461f1cdcf9a65",
+    "Assets/Scripts/SkillFxTimeline.cs": "48ecf2f3a89107a94461f095f758b78d03ed3cdbb34374369fafc2f07cfe442a",
+    "Assets/Scripts/PlayerAnimationSelection.cs": "43c4ed4d943aec70d890165378117f7450a3a21b0fe28943f1c75875a3d1b19a",
+    "Assets/Scripts/PhanesView.cs": "b32ebe174d17645316b61db08e1ba34018fd5180fffd759dde1d9f1b29edbae9",
+    "Assets/Scripts/TowerGame.cs": "267c91947eeca2b18311525c3b7ba648b5a531c60ee670cc88c1456daa7f23c1",
+    "Assets/Scripts/PixelSprites.cs": "d26ec7cad59ed710f4e1d93b8333be8a5e49e9be8ed3dcc211261c4a89912044",
+    "Assets/Scripts/DdaPanel.cs": "6199fe5f43f2eab784a34632e4d6f68cf1ae0bae5352bcbfcd80303781533ed7",
+    "Assets/Scripts/DdaPanelWindow.cs": "225a98302b00fa23b2ebc468032aa84cea2b3315bcd0fefc582ca18fc8bf5f30",
+    "Assets/Scripts/SkillEffectVisuals.cs": "2bd21af08b9b07141261b0554019848a64f02296283f33aacc4b4f6460ddb9cd",
+    "Assets/Scripts/WorldArtist.cs": "ea6df225a07b09fa7c698b9b96f486aeebf7303db455925e8cc995743285b433",
+    "Assets/Scripts/BossDefinition.cs": "13f004e791cee00c102a3f91fe357b4199ae1351e9bf2c1c378acdbbf202fbb8",
+    "Assets/Scripts/DdaDifficultyHistoryStore.cs": "430ee182925f6fa1fd42ad846c9f97d675e911b934f68a2e4d38490ed36cf5c0"
+  },
+  "limits": [
+    "No usable Unity editor found; no Unity API compilation, Game View, audio listening or Windows build this run.",
+    "No real Supabase, credentials, personal saves or existing CloudQueue read/modified.",
+    "Sparse legacy JSON uses real SaveStore plus field-tolerant System.Text.Json double, not Unity JsonUtility.",
+    "Experimental normal-to-balanced name mapping is test-only, not group-aware Cold Start."
+  ],
+  "audit": {
+    "source_commit": "d76409b6b80d61782ab6f607cdf0b00209f6708f",
+    "source_sha256": {
+      "Assets/Scripts/TutorialSession.cs": "6ffaaac8a36681e237fb34aeb46c72dd5b9fc7fe495da12b1d85934ca1386d7e",
+      "Assets/Scripts/TowerGame.Tutorial.cs": "c1c9a3153a349d0e4fc1cebe0b8c7bb83cbe9cf24e26980e95a461f1cdcf9a65",
+      "Assets/Scripts/GameData.cs": "24f33e3d63be479c0eed7942730071c9b50e45e050aa320126d0ac350473652e",
+      "Assets/Scripts/TowerGame.cs": "267c91947eeca2b18311525c3b7ba648b5a531c60ee670cc88c1456daa7f23c1",
+      "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+      "Assets/Scripts/SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+      "Assets/Scripts/LobbyCards.cs": "a7607ee725caaf7bca347f9680b61f49a85f29881b722b13026801f92f9cbfb8",
+      "Assets/Scripts/AutoRun.cs": "19bc5232389d14652c9ef8de0be8fdb8ac94a4c04ed35df9aaf1971461f5e1f5",
+      "Assets/Scripts/LobbySmoke.cs": "6f9aa3b6ab900c2e5b2a3c2142852a665e7ef1df6b38c2a4e85152fb146ae5fd",
+      "Assets/Scripts/BossPatternSystem.cs": "ab145a35cb3a552a557022a698d4e738d5eb89930822f1aad2c49c34340e62e7",
+      "Assets/Scripts/GameServices.cs": "f9dabb1873de96c27a1897ffddce27860cc75935fe3da158b91c1f3ae37f67a5",
+      "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+      "Assets/Scripts/ArakusAnimationSelection.cs": "ca71f6629716e65f8b8061ddc08343235253b24784267a7075b6d7d3fa4218a0",
+      "Assets/Scripts/CloudSync.cs": "22b820d2b570d808348b1292c94a708a59ab5aa5ba3b7eaec2090d53dcd12dd9",
+      "Tests/SkillFxTimelineTests.cs": "d6ac0242fc18f33353bfc533d9c2a406c031c75440297b605b5a30ffdd77c5fa",
+      "Tests/CombatSoundDesignTests.cs": "51a7b9bd6e857be5f383c20cfcc27f144c9c3240723bddcefee4ceda17413c93",
+      "Tests/TutorialDdaIntegrationTests.cs": "216bf43d715416b12c410ec60a5503f141240fdb1e0c4a0cae227264c00b7b8d",
+      "Tests/ArakusChargePolishTests.cs": "ae088e23ab97d339c6e0634d3096b78a5d2a996ef7414c296acb3dba8032248b",
+      "Tests/ProfileArchiveTests.cs": "7ce200bf7fb201f9f2618fd79d3765fc5eea5a87dff4feda0e7610f1668cc33b",
+      "Tests/PlaytestAgentTests.cs": "1a4de162adb1219fca92c8e324e7d6065b59f717066fc8cbac6b20735c44b8aa",
+      "Tests/UnitySkillFxProbe.cs": "03a80a67e16aa9626e694b9307e26080ac875c7015c221af533162094c5852fb",
+      "Tests/TutorialPersistenceTests.cs": "2d0cea4b15c5f6a5b6c322ed4c5dd9d3e010a3bb2361b1ddfe7d8536035f9285",
+      "Tests/HeadlessTests.cs": "5815a42898b4fd171db0f45c9bc61e8cf8915ce3ced0abd708e347e4b2e523b4",
+      "Tests/ColdStartIntegrationTests.cs": "0605fbd9a9cd47270910ac06bd3f0d30266a97a09d7c4482eae7560192d1dd76",
+      "Tests/DdaPanelWindowTests.cs": "5bf2e9db67103db40b21a48882900b5c2c02ac03bc7339985a807b9a1dfe15a5",
+      "Tests/PhanesTests.cs": "f8d498a8b7c930039c0d437d46b11fe6bd0b71f6be9e49bf760db3865f060cd0",
+      "Tests/UnityShim.cs": "f9c9d3d31270599663c157887b2f0fd67526172d078a9dc546eb8c333c0a0d15",
+      "Tests/UnityTutorialBatchProbe.cs": "8f4a50fc7dfc0ba1bf4f7cd08b7c7e98d9d1d4773690ba23e90b67c60fcb73de",
+      "Tests/BossAccentContractTests.cs": "d83e716a830ef59ca992637ca92123682d402c654f05529ddcefb1119c9f1ddc",
+      "Tests/ArakusAnimationTests.cs": "1249f871dd8099d8593b7a869ddd6552f4d5552ddd5a1befce65a5593ca8e010",
+      "Tests/PlayerAnimationTests.cs": "2801d957d77e3866de3769b7383477ebb0f565bfd70ce7266813e80b1f1bb738",
+      "Tests/DdaFrequencyTests.cs": "b808e7f22fdf0b81e4e4401c6dc04223fc4429cb2c69a7fe01787455208e057e",
+      "Tests/UltimateSystemTests.cs": "76bd6fef882438b2d10fe9fcb6bf9a8d3599769eb44e2e480a3a0c5d12fc005a",
+      "Tests/DdaSelectionAuditTests.cs": "77e5b1e4cf3c2660a90d7467b902d1f1bd99c3e468c3ac57ec3effa18b795a5e",
+      "Tests/ArakusSizeTests.cs": "7ccfe537319bfe303153a40dfdae6afdcc65f39109ddf631e874a5d1077ff3c6",
+      "Tests/DdaRobustnessTests.cs": "4f48275aeba02e58238d2df8555c5eaf550df2ca023e7e24495efae7fd96f761",
+      "Tests/CloudQueueIntegrationTests.cs": "8f3b04738f588a5762b04c9b02e11082371d2edea7b94db75277738ea71e969f",
+      "Tests/DdaLearningVerificationTests.cs": "51e027c6ac1890c7ad9fb766205a729636a9dd1e8edfd04aca0fa4cb8f26b415",
+      "Tests/DdaDifficultyHistoryTests.cs": "81debec9a2d774560ae9b80abe163b1267f54cb701c9daca318752109bb727d5",
+      "Tests/run-arakus-polish.py": "777b6369af4de73ad52bb5ea0921e7cc57f0894a9a8d8a5f588cf7a3c7b51611",
+      "Tests/run-playtest-agent.py": "b6e3728debacefefe5382b3ae8b18b4e4b8aebb73154e425f75854e965490a39",
+      "Tests/run-phanes.py": "11f34bd87414eafc0006e6817014af9dd55b6d30cd8e611cecc41a1c34e54d27",
+      "Tests/test-scope-contract.py": "8fd3e594920d8f6e6e1d7387e62b19f879f1e33bd2ae627b48a746546f1cfc0a",
+      "Tests/summarize-dda-learning-verification.py": "c884602f6ec173c3b60e13997a240824b655a8df216719e79fe35307f84f8d52",
+      "Tests/verify_lobby_music.py": "00b060b5fea9e33a3421cd0c34dab3e2c770b44e30384b57af4439122ee0d30a",
+      "Tests/summarize-playtest.py": "5310f2a174510ff2a658464ae1cc54b5668c9e59be837cacab6dc7d38beef613",
+      "Tests/verify-approved-merge.py": "32b60b366261ba02380312f1a4baac7926a40c34fd2bf5b77b79755fe6e48bb2",
+      "Tests/scope_contract.py": "ed1486e5aaf015870e0ebbf5475f1d5f311c7e914d6a6d2b32eb503442bc545f",
+      "Tests/run-audio-lifecycle.py": "ac1a6faebe0c27565759e0b004bc0cea4034221f8c343de7150aee7abebc3e24",
+      "Tests/run-final-integration.py": "974de96b585475d874fc0a0d6d7a2919102de1f03b2c4f6038b810c5ff7537de",
+      "Tests/run-dda-learning-verification.py": "21d268b10ea02d1e46569d29b512ba2ea72d0b28f12a58d596621393580c427c",
+      "Tests/test-dda-lab.py": "672de658d6b09cc833f8fddde3591a4dad502c8aefbb730ba58cb6a4ca4a5ac4",
+      "Tests/run-cold-start-integration.py": "b1cb15292ae23d02de888e0918efa7f7e0ac239169e49326592ccc096ff9246d",
+      "Tests/verify-arakus-dash-alignment.py": "4087903ba7cb4773f0d3db4341b4df47c93e4b769e618edd92c0620dd21781e8",
+      "Tests/run-dda-frequency.py": "658a35ba98916efc6d165a7b21669c3c0a2cd03a798a9c613b73ab316e8b0d32",
+      "Tests/run-unity-playtest-agent.py": "3f731c8850baf399c9d906d3eef165a49be55581cb3a287b7b8e27c8bf4f4791",
+      "Tests/run-dda-system-audit.py": "ccfb64e3255ec18e2e657575f193a5d11cca512250d9575a6f95f7d5f15b5ee2",
+      "Tests/verify-arakus-charge-art.py": "9a0831457d1e51a65cce44cf46cd79ecc35bf06715cd4e0e4452d91a452a493d",
+      "Tests/run-integration-qa.py": "95189ae9de43639b6311d470168dbfb6b04c9e28e104720d9fd6c1cc3d2255f0",
+      "Tests/test-dda-lab-ui.py": "cc3da6c177ab0a0057debde6157725346a2713bc51b7fc812e60f86d7e3adc56",
+      "Tests/verify_boss_music.py": "b02339667092cdbd419b585ef9b73a375b9a77708a9380d166b3b0120c118594",
+      "Tests/verify-arakus-room-integration.py": "86b16e3e1222d3337ca74a409eb48e5ee49f6f6ba8199ce2fedd54f34150553c",
+      "Tests/run-arakus-size.py": "5a57faa619bb13c8b7535ac5e4c3a91045bf72c4e0fe1dded5c965ccf01594ef",
+      "Tests/run-dda-history.py": "04e4f4c738bc73480eb4358106d3b16f6a9b9462f68eece9f5e05c03ee96dcef",
+      "Tests/verify-boss-arenas.py": "7b3b4bc8d3a2ed3f4fbe7b94de91dc41e9af2fecb5537b3827b768b3d6954165",
+      "Tests/verify-arakus-v2.py": "6473051da19579cde3bf8b559fcb13f8466d673a7e4236cac7d320efb57a01c6",
+      "Tests/verify_boss_sfx.py": "2fdc9b2df2dbec547eebda829ba1b20d1fc4f2cdfd08f9eafb6605170549da82",
+      "Tests/run-ultimate.py": "c23ac34ee373a282904ff05df73c05ec4b8756597e502590aa38fb48040006cd",
+      "Tests/test-playtest-summary.py": "6acafa4444e2073006ac990771770f5e17b7b4cbb2f680d84477b3c6c196b14d",
+      "Tests/run-dda-robustness.py": "fd405867fae03446cece1797813f07cd5a5a58aab5789275211f8e10bf9ba68a",
+      "Tests/verify-arakus-size-art.py": "6f70531ccb17c436cbaa21d36eba851fef676b0277b90b00268cd60ffbdc1842",
+      "Tests/CloudSyncStatus/Stubs.cs": "8e94f005396dc52b832656a10fefc88fba301e69ee2c04194caf2e13cedc41d0",
+      "Tests/CloudSyncStatus/Program.cs": "3d572227778cd27812984d9bf679aca69b4f9d75186d1e441bb31705c2be4238"
+    },
+    "sources_unchanged_during_run": true,
+    "asset_sha256": {
+      "Assets/Data/Bosses/kharos.asset": "611ec9ed0600dbd07bcc1a511d474cb1c5aacc13f6365b0d0c9fb95388808e11",
+      "Assets/Data/Bosses/arakus.asset": "9b4dd62dff40ff7fc0a6ccbb2a9e271e1495f0180b1960e527ead9bf3cc8dbf2",
+      "Assets/Data/Bosses/adicus.asset": "bcb7fb5b379f2b1e4e53eaf9158a729827819111e293fd9b412d2437fe8f049c",
+      "Assets/Data/Bosses/phanes.asset": "10ade5bd13285b98acc5494f136eba9ac15124d990e117e034a550cdc1ac9d37",
+      "Assets/Data/Bosses/aethelos.asset": "d6a816c9722b75dcce133959f0d8f125da7714978bff050bacc89584e9de8016"
+    },
+    "seeds": [
+      17,
+      42
+    ],
+    "target": "net8.0",
+    "results": {
+      "learning-1": {
+        "exit_code": 0,
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "Tests/run-dda-learning-verification.py",
+          "--dotnet",
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "--label",
+          "audit",
+          "--output",
+          "/workspace/integration-results/final/audit/learning-1"
+        ],
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/dda-learning-execution-xo22u3xm/Checks.csproj]",
+          "DDA_VERIFICATION source=audit PASS=269 FAIL=0 (failures retained, no policy changes)",
+          ""
+        ]
+      },
+      "selection-1": {
+        "exit_code": 0,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/dda-system-audit-gbicjd28/Audit.csproj",
+          "--verbosity",
+          "quiet",
+          "--",
+          "/workspace/integration-results/final/audit/selection-1"
+        ],
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/dda-system-audit-gbicjd28/Audit.csproj]",
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/dda-system-audit-gbicjd28/Audit.csproj]",
+          "SELECTION_AUDIT_PASS decisions=2968 rows=52800 seeds=17,42 Catalog/HEADLESS; controlled selection, not full combat"
+        ]
+      },
+      "combat-1": {
+        "exit_code": 0,
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "Tests/run-playtest-agent.py",
+          "--dotnet",
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "--output",
+          "/workspace/integration-results/final/audit/combat-1.csv"
+        ],
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-polish-o_ku2yo5/Tests.csproj]",
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-polish-o_ku2yo5/Tests.csproj]",
+          "PLAYTEST_AGENT_PASS trials=240 replay=identical engine=UnityShim isolation=true network=excluded"
+        ]
+      },
+      "learning-2": {
+        "exit_code": 0,
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "Tests/run-dda-learning-verification.py",
+          "--dotnet",
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "--label",
+          "audit",
+          "--output",
+          "/workspace/integration-results/final/audit/learning-2"
+        ],
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/dda-learning-execution-h4etaryg/Checks.csproj]",
+          "DDA_VERIFICATION source=audit PASS=269 FAIL=0 (failures retained, no policy changes)",
+          ""
+        ]
+      },
+      "selection-2": {
+        "exit_code": 0,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/dda-system-audit-ijfujazw/Audit.csproj",
+          "--verbosity",
+          "quiet",
+          "--",
+          "/workspace/integration-results/final/audit/selection-2"
+        ],
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/dda-system-audit-ijfujazw/Audit.csproj]",
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/dda-system-audit-ijfujazw/Audit.csproj]",
+          "SELECTION_AUDIT_PASS decisions=2968 rows=52800 seeds=17,42 Catalog/HEADLESS; controlled selection, not full combat"
+        ]
+      },
+      "combat-2": {
+        "exit_code": 0,
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "Tests/run-playtest-agent.py",
+          "--dotnet",
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "--output",
+          "/workspace/integration-results/final/audit/combat-2.csv"
+        ],
+        "tail": [
+          "/workspace/integration-qa/Assets/Scripts/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-polish-adm_6cqg/Tests.csproj]",
+          "/workspace/integration-qa/Assets/Scripts/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-polish-adm_6cqg/Tests.csproj]",
+          "PLAYTEST_AGENT_PASS trials=240 replay=identical engine=UnityShim isolation=true network=excluded"
+        ]
+      },
+      "frequency": {
+        "exit_code": 0,
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "Tests/run-dda-frequency.py",
+          "--dotnet",
+          "/workspace/.cloud-setup/dotnet/dotnet"
+        ],
+        "tail": [
+          "PASS opening cannot bypass range gate",
+          "PASS reset clears battle evidence",
+          "DDA_FREQUENCY_PASSED 185 checks; no Unity runtime or human balance evidence"
+        ]
+      },
+      "robustness": {
+        "exit_code": 0,
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "Tests/run-dda-robustness.py",
+          "--dotnet",
+          "/workspace/.cloud-setup/dotnet/dotnet"
+        ],
+        "tail": [
+          "PASS nested_invalid_save_written",
+          "PASS nested_invalid_save_repaired",
+          "DDA_ROBUSTNESS_PASSED 31 checks; no Unity rendering, DB or human fairness test"
+        ]
+      },
+      "cloud-receive": {
+        "exit_code": 0,
+        "command": [
+          "/workspace/.cloud-setup/dotnet/dotnet",
+          "run",
+          "--project",
+          "/tmp/dda-system-audit-zpd6k0wq/Audit.csproj",
+          "--verbosity",
+          "quiet",
+          "--"
+        ],
+        "tail": [
+          "PASS explicit retry after failure can recover",
+          "PASS automation never connects",
+          "CLOUD_STATUS_PASS 16 actual CloudSync.cs, stubbed HTTP, no network or production data"
+        ]
+      }
+    },
+    "deterministic_policy_outputs": {
+      "learning/battles.csv": true,
+      "learning/arakus_low_00_final.json": true,
+      "learning/arakus_low_30_final.json": true,
+      "learning/arakus_high_95_final.json": true,
+      "learning/arakus_high_100_final.json": true,
+      "learning/arakus_mid_60_final.json": true,
+      "learning/arakus_mid_70_final.json": true,
+      "learning/arakus_mid_80_final.json": true,
+      "learning/arakus_improving_20_to_100_final.json": true,
+      "learning/arakus_declining_100_to_20_final.json": true,
+      "learning/arakus_loss_streak_high_final.json": true,
+      "learning/arakus_fixed_off_final.json": true,
+      "learning/arakus_mixed_by_pattern_final.json": true,
+      "learning/phanes_low_00_final.json": true,
+      "learning/phanes_low_30_final.json": true,
+      "learning/phanes_high_95_final.json": true,
+      "learning/phanes_high_100_final.json": true,
+      "learning/phanes_mid_60_final.json": true,
+      "learning/phanes_mid_70_final.json": true,
+      "learning/phanes_mid_80_final.json": true,
+      "learning/phanes_improving_20_to_100_final.json": true,
+      "learning/phanes_declining_100_to_20_final.json": true,
+      "learning/phanes_loss_streak_high_final.json": true,
+      "learning/phanes_fixed_off_final.json": true,
+      "learning/phanes_mixed_by_pattern_final.json": true,
+      "learning/adicus_low_00_final.json": true,
+      "learning/adicus_low_30_final.json": true,
+      "learning/adicus_high_95_final.json": true,
+      "learning/adicus_high_100_final.json": true,
+      "learning/adicus_mid_60_final.json": true,
+      "learning/adicus_mid_70_final.json": true,
+      "learning/adicus_mid_80_final.json": true,
+      "learning/adicus_improving_20_to_100_final.json": true,
+      "learning/adicus_declining_100_to_20_final.json": true,
+      "learning/adicus_loss_streak_high_final.json": true,
+      "learning/adicus_fixed_off_final.json": true,
+      "learning/adicus_mixed_by_pattern_final.json": true,
+      "learning/aethelos_low_00_final.json": true,
+      "learning/aethelos_low_30_final.json": true,
+      "learning/aethelos_high_95_final.json": true,
+      "learning/aethelos_high_100_final.json": true,
+      "learning/aethelos_mid_60_final.json": true,
+      "learning/aethelos_mid_70_final.json": true,
+      "learning/aethelos_mid_80_final.json": true,
+      "learning/aethelos_improving_20_to_100_final.json": true,
+      "learning/aethelos_declining_100_to_20_final.json": true,
+      "learning/aethelos_loss_streak_high_final.json": true,
+      "learning/aethelos_fixed_off_final.json": true,
+      "learning/aethelos_mixed_by_pattern_final.json": true,
+      "learning/kharos_low_00_final.json": true,
+      "learning/kharos_low_30_final.json": true,
+      "learning/kharos_high_95_final.json": true,
+      "learning/kharos_high_100_final.json": true,
+      "learning/kharos_mid_60_final.json": true,
+      "learning/kharos_mid_70_final.json": true,
+      "learning/kharos_mid_80_final.json": true,
+      "learning/kharos_improving_20_to_100_final.json": true,
+      "learning/kharos_declining_100_to_20_final.json": true,
+      "learning/kharos_loss_streak_high_final.json": true,
+      "learning/kharos_fixed_off_final.json": true,
+      "learning/kharos_mixed_by_pattern_final.json": true,
+      "selection/selection.csv": true,
+      "selection/catalog.json": true,
+      "combat.csv": true
+    },
+    "catalog_asset_numeric_differences": [],
+    "limits": [
+      "Synthetic learning outcomes and controlled eligibility probes are not human play.",
+      "Combat trials execute real TowerGame.Update with UnityShim and Catalog, not Unity/SO.",
+      "CloudSync receive uses actual coroutine with synchronous HTTP/JSON doubles, not real network/timing.",
+      "Learning and combat/selection are separate executables: no end-to-end HTTP-to-Prepare claim.",
+      "Catalog parity covers numeric pattern fields only; differences are observations, not policy failures.",
+      "Logs, generated session IDs, timestamps and temporary paths excluded from deterministic comparison.",
+      "No Unity rendering, audio, Windows build, production DB, credentials, personal saves or queue."
+    ]
+  },
+  "main_headless": {
+    "tail": [
+      "PASS Five actual projectile collisions apply total upgraded R damage",
+      "PASS Ultimate projectiles removed after hits",
+      "PASS Upgrades do not raise first encounter DDA level",
+      "HEADLESS_TESTS_PASSED 738 assertions. Rendering/audio require a real Unity player."
+    ],
+    "log_sha256": "368a145829a9b579fcafc03d93e9244caa5b64b2b1d5731ef891a9309b966a67"
+  },
+  "lab": {
+    "tail": [
+      "PASS reject invalid config {'distance': nan}",
+      "PASS reject invalid config {'path': '/tmp/anything'}",
+      "PASS reject invalid config {'rounds': 101}",
+      "DDA_LAB_PASS 46 checks"
+    ],
+    "log_sha256": "a18fc30123aa573c6165c4ca951e10bf1546c400962016dd8b64283efb8389a3"
+  },
+  "ui": {
+    "tail": [
+      "UI_PASS real C# run, replay, plots, export, comparison import, narrow viewport; no JS errors"
+    ],
+    "log_sha256": "cf5c7e8176cd897e21e2d6d3972b7adaae5e8a714fc89ea0df728f7e34972019"
+  },
+  "strict_new_partials_scope": {
+    "tail": [
+      "207 PASS 0 FAIL"
+    ],
+    "log_sha256": "184f99794cb8254897798b5939f15fe5e4dcf4f2e395204631637a26510486bc"
+  },
+  "ultimate": {
+    "tail": [
+      "/tmp/arakus-size-rdyubwxx/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-size-rdyubwxx/UltimateSystemTests.csproj]",
+      "/tmp/arakus-size-rdyubwxx/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-size-rdyubwxx/UltimateSystemTests.csproj]",
+      "PASS 37"
+    ],
+    "log_sha256": "a936a6e7e0b8527dd8bdfc7e90b65079e790d87ecf5ab173ee1ee5b1085a4574"
+  },
+  "profiles": {
+    "tail": [
+      "저장 실패: Access to the path '/tmp/tower-profile-e0c3c4af-15e0-487d-a31a-cd8a08cd38b4/progress.json.tmp' is denied.",
+      "PASS save failure no snapshot",
+      "PASS save failure preserves old file",
+      "RESULT 31 PASS / 0 FAIL"
+    ],
+    "log_sha256": "70aae042101cb5a64997e7dacf6dcbb35dce6fd57f56819066e1692c5235cbf9"
+  }
+}

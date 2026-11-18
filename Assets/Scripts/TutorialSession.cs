@@ -34,6 +34,7 @@ namespace ReversalTower
         public bool Replay { get; private set; }
         public TutorialAssessment Assessment { get; private set; }
         public bool FreezeGameplay => Explaining||Finished;
+        public bool AwaitingThreatFeedback { get; private set; }
         readonly TutorialScoringRules rules;
         float taskTime;
         bool actionConfirmed,ultimateActivated;
@@ -73,7 +74,7 @@ namespace ReversalTower
         void CompleteAction(){Assessment.skillActionsCompleted++;Advance();}
         bool Matches(TutorialAction a)
         { return Step.ToString()==a.ToString(); }
-        public void ResolveThreat(long id,bool parryable,bool threatenedAtStart,bool success,bool hit)
+        public void ResolveThreat(long id,bool parryable,bool threatenedAtStart,bool success,bool hit,bool showFeedback=false)
         {
             if(FreezeGameplay||!threatenedAtStart||!resolvedThreats.Add(id))return;
             if(Step!=TutorialStep.Parry&&Step!=TutorialStep.Dodge&&Step!=TutorialStep.Charge)return;
@@ -90,8 +91,15 @@ namespace ReversalTower
                 else Assessment.retryCount++;
             }
             if(hit)Assessment.damageHits++;
-            if(Step==TutorialStep.Parry&&parryable&&success)Advance();
-            else if(Step==TutorialStep.Dodge&&!parryable&&success&&!hit)Advance();
+            if(success&&((Step==TutorialStep.Parry&&parryable)||(Step==TutorialStep.Dodge&&!parryable&&!hit)))
+            {
+                if(showFeedback)AwaitingThreatFeedback=true;
+                else Advance();
+            }
+        }
+        public void CompleteThreatFeedback()
+        {
+            if(AwaitingThreatFeedback){AwaitingThreatFeedback=false;Advance();}
         }
         public void GaugeChanged(float charge){if(!FreezeGameplay&&Step==TutorialStep.Charge&&charge>=100)Advance();}
         public void ConfirmEmpoweredSwordHit(bool actualCollision,bool empowermentActive)

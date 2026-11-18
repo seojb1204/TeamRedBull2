@@ -47,14 +47,28 @@ namespace ReversalTower
                 {
 #if !HEADLESS && !DESKTOP_PREVIEW
                     nativeUI.cardButtons[0].onClick.Invoke();
-                    LobbyCheck(save.cardChosen,"choose first card through serialized uGUI event");
+                    LobbyCheck(LobbyCards.Count(save,"blade")==1,"choose first card through serialized uGUI event");
 #else
                     LobbyCheck(ChooseCard("blade"),"choose first card");
 #endif
                     LobbyCheck(!showCards&&save.gold==920&&LobbyCards.Count(save,"blade")==1,"selection commits once and closes");
                     var loaded=SaveStore.Load();
-                    LobbyCheck(loaded.cardChosen&&LobbyCards.Count(loaded,"blade")==1&&loaded.gold==920,"reload preserves permanent selection");
-                    save=loaded;OpenCards();LobbyCheck(!showCards,"second selection blocked");
+                    LobbyCheck(LobbyCards.Count(loaded,"blade")==1&&loaded.gold==920,"reload preserves permanent selection");
+                    save=loaded;
+#if !HEADLESS && !DESKTOP_PREVIEW
+                    OpenCards();LobbyCheck(!showCards,"outro prevents duplicate native activation");
+#endif
+                    lobbySmokeStageAt=autoElapsed;lobbySmokeStage=3;
+                }
+                else if(lobbySmokeStage==3&&autoElapsed-lobbySmokeStageAt>1)
+                {
+                    OpenCards();LobbyCheck(showCards,"second selection available in the same lobby");
+                    int before=save.gold,nextCost=LobbyCards.Cost(save);
+                    var nextCard=save.cardOffer[0];
+                    LobbyCheck(ChooseCard(nextCard)&&save.gold==before-nextCost&&!ChooseCard(nextCard),"second card debits once");
+                    var after=SaveStore.Load();
+                    LobbyCheck(after.cardPurchases==2&&after.gold==save.gold,"both purchases persist");
+                    save=after;
                     StartBattle(0);LobbyCheck(mode==ScreenMode.Battle&&!showCards,"battle has no card overlay");
 #if !HEADLESS && !DESKTOP_PREVIEW
                     float previousHp=playerHp;playerHp=maxHp*.5f;nativeUI.Refresh();
@@ -69,11 +83,11 @@ namespace ReversalTower
                 {
                     EndBattle(false);int settled=save.gold;
                     EndBattle(false);LobbyCheck(save.gold==settled,"settlement cannot repeat");
-                    ReturnLobby();LobbyCheck(!save.cardChosen&&LobbyCards.Count(save,"blade")==1,"death returns to lobby and keeps effect");
+                    ReturnLobby();LobbyCheck(LobbyCards.Count(save,"blade")>=1,"death returns to lobby and keeps effect");
                     save.cardOffer=new[]{"blade","vitality","remedy"};OpenCards();
                     LobbyCheck(ChooseCard("vitality"),"next lobby permits new choice");
-                    save=SaveStore.Load();LobbyCheck(LobbyCards.Health(save)==110&&LobbyCards.Count(save,"blade")==1,"multiple permanent choices coexist after reload");
-                    StartBattle(0);StartBattle(0);LobbyCheck(maxHp==110,"battle restart never reapplies stacks");
+                    save=SaveStore.Load();LobbyCheck(LobbyCards.Health(save)>=110&&LobbyCards.Count(save,"blade")>=1,"multiple permanent choices coexist after reload");
+                    StartBattle(0);StartBattle(0);LobbyCheck(maxHp==LobbyCards.Health(save),"battle restart never reapplies stacks");
                     EndBattle(false);ReturnLobby();StartBattle(0);
                     LobbyCheck(mode==ScreenMode.Battle&&!showCards,"entry without upgrade remains available");
                     EndBattle(false);ReturnLobby();lobbySmokeFinished=true;

@@ -94,11 +94,12 @@ namespace ReversalTower
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if(!TutorialActive&&!AutoRunArgs.Active)DevKeys();
 #endif
-            TutorialBeforeUpdate(raw);
-            if(!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
+            TickTransition(raw);
+            if(!TransitionActive)TutorialBeforeUpdate(raw);
+            if(!TransitionActive&&!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
                 Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
             // 역경직 동안에는 전투 시간을 0으로 흘린다 (입력은 계속 읽어서 그 사이 누른 키를 놓치지 않음)
-            float battleDt=raw;bool fighting=!TutorialExplaining&&mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;
+            float battleDt=raw;bool fighting=!TransitionActive&&!ended&&!TutorialExplaining&&mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;
             if(fighting){if(hitStop>0){hitStop=Mathf.Max(0,hitStop-raw);battleDt=0;}else if(slowMo>0){slowMo=Mathf.Max(0,slowMo-raw);battleDt=raw*SlowMoScale;}}
             if(fighting)TickBattle(battleDt);
             float fx=TutorialExplaining?0:fighting?battleDt:raw;   // 불꽃·파편도 같이 멈췄다가 움직인다
@@ -148,6 +149,42 @@ namespace ReversalTower
             if(devGod){playerHp=maxHp;}
         }
 #endif
+        const float TransitionDuration=.2f;
+        Action screenChange;
+        float transitionAlpha;
+        bool switchingScreen;
+        public bool TransitionActive=>screenChange!=null||transitionAlpha>0;
+
+        bool QueueScreenChange(Action change)
+        {
+            if(switchingScreen||AutoRunArgs.Active||!Application.isPlaying)return false;
+            if(!TransitionActive)screenChange=change;
+            return true;
+        }
+        void TickTransition(float dt)
+        {
+            transitionAlpha=Mathf.MoveTowards(transitionAlpha,screenChange!=null?1:0,dt/TransitionDuration);
+            if(screenChange==null||transitionAlpha<1)return;
+            var change=screenChange;
+            screenChange=null;
+            switchingScreen=true;
+            try{change();}
+            finally{switchingScreen=false;}
+        }
+        public void ShowEnding()
+        {
+            if(!QueueScreenChange(ShowEnding))mode=ScreenMode.Ending;
+        }
+        void HandleEscape()
+        {
+            if(showHelp)showHelp=false;
+            else if(showHistory)showHistory=false;
+            else if(showSettings)CloseSettings();
+            else if(showCards)showCards=false;
+            else if(mode==ScreenMode.Battle&&!ended)paused=!paused;
+            else if(mode==ScreenMode.Lobby||mode==ScreenMode.Title)showSettings=true;
+        }
+
         public void Say(string text,float duration=2.5f){notice=text;noticeTime=duration;}
         bool CardOutroBlocksInput
         {
@@ -168,12 +205,13 @@ namespace ReversalTower
             if(helpDown&&!animating)showHelp=!showHelp;
             if(escapeDown&&!animating)
             {
-                if(showHelp)showHelp=false;else if(showHistory)showHistory=false;else if(showSettings){showSettings=false;SaveStore.Save(save);}else if(showCards)showCards=false;else if(mode==ScreenMode.Battle)paused=!paused;else if(mode==ScreenMode.Lobby)mode=ScreenMode.Title;
+                HandleEscape();
+                return;
             }
-            if(mode==ScreenMode.Title&&enterDown){StartGame();sound.Play("confirm");}
+            if(mode==ScreenMode.Title&&enterDown&&!showSettings&&!showHelp){StartGame();sound.Play("confirm");}
             else if(mode==ScreenMode.Lobby&&!showHistory&&!showSettings&&!showHelp&&!cardsBlocked&&!CardsBlockLobbyInput)
                 LobbyKeys(leftDown,rightDown,cardsDown,enterDown);
-            if(mode==ScreenMode.Result&&enterDown)ReturnLobby();
+            if(mode==ScreenMode.Result&&enterDown&&!showSettings&&!showHelp)ReturnLobby();
         }
         void LobbyKeys(bool leftDown,bool rightDown,bool cardsDown,bool enterDown)
         {
@@ -188,10 +226,17 @@ namespace ReversalTower
             if(TutorialActive)return;
             if(RequiresTutorial&&!AutoRunArgs.Active){StartTutorial(false);return;}
             if(index<0||index>save.unlockedBoss)return;
+            if(QueueScreenChange(()=>StartBattle(index)))return;
             bossIndex=index;spec=Catalog.Bosses[index];mode=ScreenMode.Battle;paused=false;showHelp=false;showSettings=false;showHistory=false;showCards=false;ended=false;
 #if !HEADLESS && !DESKTOP_PREVIEW
             if(scenePresentation&&scenePresentation.bosses!=null&&index<scenePresentation.bosses.Length&&scenePresentation.bosses[index])spec=scenePresentation.bosses[index].CreateRuntime();
 #endif
+            if(spec.id=="phanes"&&!Array.Exists(spec.patterns,p=>p.id==BossPatternSystem.PhanesUltimate))
+            {
+                var patterns=new List<Pattern>(spec.patterns);
+                patterns.Add(Array.Find(Catalog.Bosses[index].patterns,p=>p.id==BossPatternSystem.PhanesUltimate));
+                spec.patterns=patterns.ToArray();
+            }
             player=new Vector2(-6,0);boss=new Vector2(5,index==1?1.1f:0);face=1;bossFace=-1;
             maxHp=LobbyCards.Health(save);playerHp=maxHp;bossHp=spec.hp;ult=0;seconds=0;hits=parries=sealParries=0;
             horizontalSpeed=0;pvY=0;playerInv=stun=parryLock=dashTime=dashRecharge=actionTime=attackAnim=healing=skillQ=skillW=skillE=0;parryAge=99;
@@ -246,7 +291,12 @@ namespace ReversalTower
             if(barrier&&Mathf.Sign(before)!=Mathf.Sign(player.x))player.x=before<0?-.65f:.65f;
             dashTime-=dt;
             pvY-=22.5f*dt;player.y+=pvY*dt;if(player.y<0){player.y=0;pvY=0;}
-            if(actionTime>0)TickAction(dt);if(ended)return;TickEcho(dt);if(ended)return;
+            if(actionTime>0)
+            {
+                TickAction(dt);
+                if(TutorialActive&&actionTime<=0)tutorial.ActionAnimationFinished();
+            }
+            if(ended)return;TickEcho(dt);if(ended)return;
             if(TutorialActive){TickTutorialOpponent(dt);return;}
             TickBoss(dt);if(ended)return;BossPatterns.TickParryCue(dt);
             TickShots(dt);if(ended)return;TickHazards(dt);if(ended)return;TickMinions(dt);
@@ -283,7 +333,16 @@ namespace ReversalTower
                 int u=save.equippedUltimate;
                 if(u<0)sparkTime=SparkDuration;
                 if(u==0)echo=new SweepEcho{pos=new Vector2(player.x,0),face=face};
-                if(u==1){for(int i=0;i<5;i++)FireShot(player+new Vector2(0,1+i*.12f),new Vector2(face*(7+i),.3f),attack*2*LobbyCards.SkillMultiplier(save,"R"),true,"ultimate",true);damage=0;}
+                if(u==1)
+                {
+                    BossPatterns.FirePhanesStars(player+new Vector2(face*.35f,1.1f),
+                        new Vector2(face,0),9f,attack*2*LobbyCards.SkillMultiplier(save,"R"),true);
+                    Say("굴절의 별",1.25f);
+                    PlaySound("boss_1_Volley_orb");
+                    Burst(player+Vector2.up,2,Palette.ParryRim,24);
+                    shake=3;
+                    return;
+                }
                 if(u==2){range=4;damage*=1.4f;playerHp=Mathf.Min(maxHp,playerHp+12);}
                 if(u==3){range=30;damage*=1.7f;}
                 if(u==4){range=30;damage*=2;playerInv=1;}
@@ -356,17 +415,18 @@ namespace ReversalTower
             if(bossHp<=0)EndBattle(true);
         }
         // ignoreDash: 대시 무적을 무시하는 공격 (아라쿠스 일대 휩쓸기). 맞은 뒤의 무적은 그대로 지킨다.
-        public void PlayerHit(float damage,bool canParry,string pattern,float attackerX,bool overlap=true,bool ignoreDash=false,bool threatened=false)
+        public void PlayerHit(float damage,bool canParry,string pattern,float attackerX,bool overlap=true,bool ignoreDash=false,bool threatened=false,float? approachX=null)
         {
             if(ended)return;var s=Stat(pattern);if(s==null)return;
             if(!overlap){if(threatened){s.opportunities++;s.dodges++;}else s.ignored++;return;}
             // Intentional parry can override post-hit invulnerability; dash invulnerability cannot.
-            bool activeParry=canParry&&parryAge>=.05f&&parryAge<=.2f&&dashTime<=0;
+            float sourceX=approachX??attackerX-player.x;
+            bool activeParry=canParry&&CanParryFrom(sourceX);
             if(activeParry)
             {
                 s.opportunities++;s.parries++;parries++;ult=Mathf.Min(100,ult+15);parryLock=.05f;parryAge=99;bossStagger=Mathf.Max(bossStagger,.45f);
                 ApplyParryUpgrades();
-                ParryFeedback(attackerX);
+                ParryFeedback(player.x+sourceX);
                 if(seal&&++sealParries>=3){seal=false;Say("회피 봉인 해제",2);}
                 return;
             }
@@ -378,9 +438,13 @@ namespace ReversalTower
             playerHp=Mathf.Max(0,playerHp-damage);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=5;
             HitStop(HitStopHurt);AddImpact(player+new Vector2(0,1.1f),3,1,0);
             if(playerAction=="E"&&actionTime>.6f)skillE=LobbyCards.Cooldown(save,"E")*.5f;
-            actionTime=0;healing=0;parryAge=99;player.x=Mathf.Clamp(player.x+Mathf.Sign(player.x-attackerX)*.45f,Left+.4f,Right-.4f);
+            actionTime=0;healing=0;parryAge=99;player.x=Mathf.Clamp(player.x+Mathf.Sign(-sourceX)*.45f,Left+.4f,Right-.4f);
             sound.Play("player_hurt");Burst(player+Vector2.up,.9f,Palette.Red,15);
         }
+        const float ParryEarliest=.05f, ParryLatest=.2f;
+        bool CanParryFrom(float sourceX) => parryAge>=ParryEarliest&&parryAge<=ParryLatest&&dashTime<=0&&FacesParrySource(sourceX);
+        bool FacesParrySource(float sourceX) => sourceX*face>=0;
+
         void ApplyParryUpgrades()
         {
             if(ended||mode!=ScreenMode.Battle)return;
@@ -398,12 +462,14 @@ namespace ReversalTower
             if(!rewards.TrySettle(save,spec,bossIndex,clear,bossHp,seconds,hits,parries,battleDda,out result,out wasFirstClear))return;
             ended=true;result.abandoned=abandoned;
             dda.Complete(save,spec,clear,abandoned);
-            SaveStore.CommitCompletedBattle(save,result);SaveStore.Log(result,stats,save);mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;
+            SaveStore.CommitCompletedBattle(save,result);SaveStore.Log(result,stats,save);
+            void ShowResult(){mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;}
+            if(!QueueScreenChange(ShowResult))ShowResult();
             sound.Play(clear?"boss_death":"death");
         }
-        public void ReturnLobby(){sparkTime=0;echo=null;actionTime=0;mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}
-        public void Abandon(){abandoning=true;EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}
-        void OnApplicationQuit(){if(TutorialActive)ExitTutorial();if(mode==ScreenMode.Battle&&!ended){abandoning=true;EndBattle(false);}if(save!=null)SaveStore.Save(save);}
+        public void ReturnLobby(){if(QueueScreenChange(ReturnLobby))return;sparkTime=0;echo=null;actionTime=0;mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}
+        public void Abandon(){if(ended||TransitionActive)return;abandoning=true;EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}
+        void OnApplicationQuit(){if(TutorialActive)RestoreTutorialProfile();if(mode==ScreenMode.Battle&&!ended){abandoning=true;EndBattle(false);}if(save!=null)SaveStore.Save(save);}
         void DemoInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,ref bool q,ref bool w,ref bool e,ref bool r,ref bool f,float dt)
         {
             if(AutoRunArgs.AgentProfile!=null){TestAgentInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);return;}

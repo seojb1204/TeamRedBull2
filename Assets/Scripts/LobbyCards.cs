@@ -51,6 +51,7 @@ namespace ReversalTower
                 Count(data,"fervor")*.025f+Count(data,"riposte")*.05f+Count(data,"flow")*.05f;
         }
         public static int Cost(SaveData data)=>80+Math.Min(5,Math.Max(0,data.cardPurchases))*20;
+        public static bool CanPurchase(SaveData data)=>data.gold>=Cost(data)&&Array.Exists(All,card=>Available(data,card));
         // Legacy over-cap stacks are preserved. Limits restrict NEW purchases, never existing effects.
         public static bool Available(SaveData data,UpgradeCard card)
             =>card!=null&&Count(data,card.id)<card.limit&&(card.unlock==0||
@@ -113,7 +114,6 @@ namespace ReversalTower
         public static bool Purchase(SaveData data,string id,out string error)
         {
             error=null;Normalize(data);
-            if(data.cardChosen){error="이번 인장은 이미 골랐습니다. 전투가 끝나면 다시 고를 수 있습니다.";return false;}
             if(Array.IndexOf(data.cardOffer,id)<0||Find(id)==null){error="지금 놓인 인장이 아닙니다.";return false;}
             if(!Available(data,Find(id))){error="이 인장은 아직 해금되지 않았거나 최대 강화입니다.";return false;}
             int cost=Cost(data);if(data.gold<cost){error="골드가 모자랍니다.";return false;}
@@ -121,10 +121,11 @@ namespace ReversalTower
             var candidate=UnityEngine.JsonUtility.FromJson<SaveData>(UnityEngine.JsonUtility.ToJson(data));
             var stack=candidate.cards.Find(c=>c.id==id);
             if(stack==null){stack=new CardStack{id=id};candidate.cards.Add(stack);}
-            stack.count++;candidate.cardPurchases++;candidate.gold-=cost;candidate.cardChosen=true;candidate.version=2;
+            stack.count++;candidate.cardPurchases++;candidate.gold-=cost;candidate.cardChosen=false;candidate.version=2;
+            candidate.cardOffer=new string[0];
             if(!SaveStore.Save(candidate)){error="저장하지 못해 인장을 취소했습니다. "+SaveStore.LastError;return false;}
             data.version=candidate.version;data.cards=candidate.cards;data.gold=candidate.gold;
-            data.cardPurchases=candidate.cardPurchases;data.cardChosen=true;
+            data.cardPurchases=candidate.cardPurchases;data.cardChosen=false;data.cardOffer=candidate.cardOffer;
             try{Purchased?.Invoke(id,cost,data.cardPurchases-1);}catch(Exception){}
             return true;
         }
@@ -134,8 +135,10 @@ namespace ReversalTower
         public bool showCards;
         public void OpenCards()
         {
-            if(mode!=ScreenMode.Lobby)return;
-            if(save.cardChosen){Say("이번 인장은 이미 골랐다. 전투가 끝나면 다시 고를 수 있다.");return;}
+            if(mode!=ScreenMode.Lobby||TransitionActive||CardsBlockLobbyInput)return;
+            int cost=LobbyCards.Cost(save);
+            if(save.gold<cost){Say("골드가 모자랍니다. "+cost+" G 필요");return;}
+            if(!LobbyCards.CanPurchase(save)){Say("지금 강화할 수 있는 인장이 없습니다.");return;}
             string[] previous=save.cardOffer;
             LobbyCards.EnsureOffer(save);
             if(!SaveStore.Save(save)){save.cardOffer=previous;Say("저장하지 못해 인장을 열 수 없습니다.");return;}

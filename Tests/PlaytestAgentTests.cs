@@ -13,7 +13,7 @@ public static class PlaytestAgentTests
     static string Trial(SaveData save,int boss,string profile,int seed,int round,bool enabled)
     {
         AutoRunArgs.Active=false;AutoRunArgs.DisableDda=!enabled;AutoRunArgs.AgentProfile=profile;AutoRunArgs.AgentSeed=seed;
-        var g=new TowerGame{save=save};Set(g,"sound",new Soundscape());Set(g,"demo",true);g.StartBattle(boss);
+        var g=new TowerGame{save=save};Set(g,"sound",new Soundscape());Set(g,"demo",true);g.save.tutorialOnboardingVersion=1;g.StartBattle(boss);
         Time.unscaledDeltaTime=1f/60;Input.Clear();int steps=0,stationary=0,noDamage=0,longestNoDamage=0;
         float lastX=g.player.x,lastPlayerHp=g.playerHp,lastBossHp=g.bossHp;
         while(g.mode==ScreenMode.Battle&&steps<60*120)

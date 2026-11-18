@@ -12,7 +12,7 @@ public static class ArakusChargePolishTests
     {
         var g=new TowerGame{save=new SaveData{unlockedBoss=4}};
         typeof(TowerGame).GetField("sound",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(g,new Soundscape());
-        g.StartBattle(index);
+        g.save.tutorialOnboardingVersion=1;g.StartBattle(index);
         foreach(var s in g.stats)s.level=level;
         g.BossPatterns.rageActive=rage;g.boss=new Vector2(0,0);g.player=new Vector2(9,0);
         return g;

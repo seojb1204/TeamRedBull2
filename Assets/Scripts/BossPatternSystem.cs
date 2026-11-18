@@ -556,7 +556,7 @@ namespace ReversalTower
                 {
                     Vector2 aim=(g.boss+Vector2.up*1.3f-s.pos).normalized;
                     s.vel=Vector2.Lerp(s.vel,aim*12,dt*9);
-                    if(g.BossShotOverlap(s.pos,s.radius)){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage);remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
+                    if(g.BossShotOverlap(s.pos,s.radius)){if(s.returns){shieldCaught=true;shieldOut=false;}g.DamageBoss(s.damage,1,s.pattern!="ultimate");remove=true;if(g.BattleEnded){g.shots.RemoveAt(i);return;}}
                 }
                 else if(!s.hitDone&&s.pos.x>g.player.x-.5f-s.radius&&s.pos.x<g.player.x+.5f+s.radius&&s.pos.y>g.player.y-s.radius&&s.pos.y<g.player.y+1.65f+s.radius)
                 {

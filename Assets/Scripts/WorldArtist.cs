@@ -59,7 +59,7 @@ namespace ReversalTower
             cursor=0;bool fight=g.mode==ScreenMode.Battle||g.mode==ScreenMode.Result;float time=g.realClock;
             Rect(0,5,70,40,Palette.Ink);
             Color accent=g.bossIndex==4?Palette.Purple:g.bossIndex==1?Palette.Teal:Palette.Gold;
-            bool throneRoom=fight&&(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom()));
+            bool throneRoom=fight&&(g.TutorialActive?DrawTutorialRoom():(DrawBossArena()||(g.bossIndex==0&&DrawThroneRoom())));
             if(!throneRoom)
             {
             Disc(4,7.5f,19,19,new Color(.055f,.09f,.125f));Disc(4,7.5f,14,14,new Color(.075f,.12f,.15f));
@@ -110,7 +110,7 @@ namespace ReversalTower
                 foreach(var m in g.minions)Minion(m.x,time);
                 Character(g.player,1,g.face,g.stun>0?"hit":g.dashTime>0?"dash":g.attackAnim>0?g.playerAction:Mathf.Abs(g.pvY)>1?"jump":Mathf.Abs(g.horizontalSpeed)>.3f?"run":"idle",false,time,g.hitFlash>0?Palette.Red:Palette.Teal);
                 ParryAura();
-                Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
+                if(g.TutorialActive)DrawTutorialDummy(time);else Character(g.boss,g.bossIndex==0?1.5f:g.bossIndex==3?1.45f:1.3f,g.bossFace,g.bossStagger>0?"hit":g.current!=null?(g.patternAge>g.windup?"attack":"windup"):g.bossState=="추적"?"run":"idle",true,time,g.bossFlash>0?Palette.White:accent);
                 foreach(var s in g.shots)
                 {
                     if(s.returns){if(!spriteArakus)Shield(s,time);continue;}
@@ -135,6 +135,29 @@ namespace ReversalTower
         static readonly string[] arenaNames={"arakus","phanes","adicus","aethelos","kharos"};
         // Measured walk lines in the generated 1672 x 941 originals, not guessed from a prompt.
         static readonly float[] arenaGroundRows={696f,677f,750f,716f,725f};
+        bool DrawTutorialRoom()
+        {
+            var room=ExternalAssets.Picture("Art/ArakusRoom/IronWarworks/room_far.png");
+            if(room==null)return false;
+            Shape(room,0,5,32,18,Palette.White);
+            var mid=ExternalAssets.Picture("Art/ArakusRoom/IronWarworks/room_mid.png");
+            if(mid!=null)Shape(mid,0,5,32,18,Palette.White);
+            Rect(0,-.15f,40,.3f,Palette.Stone);return true;
+        }
+        void DrawTutorialDummy(float time)
+        {
+            float x=g.boss.x;
+            Rect(x,1.1f,.22f,2.2f,new Color(.42f,.25f,.12f));
+            Rect(x,1.65f,2,.18f,new Color(.58f,.35f,.18f));
+            Disc(x,1.5f,1.1f,1.3f,new Color(.72f,.58f,.34f));
+            Disc(x,1.5f,.65f,.75f,Palette.Red);Disc(x,1.5f,.24f,.3f,Palette.Gold);
+            if(g.TutorialThreatVisible)
+            {
+                Color c=g.Tutorial.Step==TutorialStep.Dodge?Palette.Red:Palette.ParryRim;
+                Rect(g.TutorialThreatX,.06f,2.6f,.12f,c);
+                Rect(g.TutorialThreatX,1,2.6f,2,Palette.Alpha(c,.22f));
+            }
+        }
         bool DrawBossArena()
         {
             if(g.bossIndex<0||g.bossIndex>=arenaNames.Length)return false;

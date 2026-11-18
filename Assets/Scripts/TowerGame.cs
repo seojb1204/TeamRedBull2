@@ -45,6 +45,12 @@ namespace ReversalTower
         #if !HEADLESS && !DESKTOP_PREVIEW
         PixelAgentBridge pixelBridge;
 #endif
+        void RecordPixelHpChange(float before)
+        {
+#if !HEADLESS && !DESKTOP_PREVIEW
+            pixelBridge?.RecordPlayerHpChange(before,playerHp);
+#endif
+        }
         bool demo;float demoAction;string capturePath;bool captureDone;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap(){if(FindAnyObjectByType<TowerGame>()==null)new GameObject("Reversal Tower").AddComponent<TowerGame>();}
@@ -264,7 +270,7 @@ namespace ReversalTower
             actionTime-=dt;float elapsed=actionTotal-actionTime;
             float at=playerAction=="E"?.7f:playerAction=="W"?.35f:playerAction=="Q"?.2f:playerAction=="F"?.6f:playerAction=="R"?.25f:.15f;
             if(skillFired||elapsed<at)return;skillFired=true;
-            if(playerAction=="F"){playerHp=Mathf.Min(maxHp,playerHp+LobbyCards.Heal(save));healing=0;sound.Play("heal");Burst(player+Vector2.up,1,Palette.Teal,18);return;}
+            if(playerAction=="F"){float beforeHeal=playerHp;playerHp=Mathf.Min(maxHp,playerHp+LobbyCards.Heal(save));RecordPixelHpChange(beforeHeal);healing=0;sound.Play("heal");Burst(player+Vector2.up,1,Palette.Teal,18);return;}
             float attack=LobbyCards.Attack(save);
             float damage=attack*(playerAction=="E"?3:playerAction=="Q"?1.8f:playerAction=="W"?1.2f:playerAction=="R"?10:1)*LobbyCards.SkillMultiplier(save,playerAction);
             float range=playerAction=="E"?2.8f:playerAction=="Q"?2.5f:playerAction=="W"?2.9f:playerAction=="R"?8:2.1f;
@@ -275,7 +281,7 @@ namespace ReversalTower
                 int u=save.equippedUltimate;
                 if(u==0){range=6;damage*=1.2f;bossStagger=Mathf.Max(bossStagger,.8f);}
                 if(u==1){for(int i=0;i<5;i++)FireShot(player+new Vector2(0,1+i*.12f),new Vector2(face*(7+i),.3f),attack*2,true,"ultimate",true);damage=0;}
-                if(u==2){range=4;damage*=1.4f;playerHp=Mathf.Min(maxHp,playerHp+12);}
+                if(u==2){range=4;damage*=1.4f;float beforeHeal=playerHp;playerHp=Mathf.Min(maxHp,playerHp+12);RecordPixelHpChange(beforeHeal);}
                 if(u==3){range=30;damage*=1.7f;}
                 if(u==4){range=30;damage*=2;playerInv=1;}
                 Burst(player+Vector2.up,3,Palette.Gold,45);shake=4;
@@ -332,7 +338,7 @@ namespace ReversalTower
             }
             if(playerInv>0&&!(ignoreDash&&dashTime>0)){if(dashTime>0){s.opportunities++;s.dodges++;}else s.ignored++;return;}
             s.opportunities++;s.hits++;damage=Mathf.Min(damage,maxHp*.3f);s.damage+=damage;
-            playerHp=Mathf.Max(0,playerHp-damage);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=5;
+            float beforeDamage=playerHp;playerHp=Mathf.Max(0,playerHp-damage);RecordPixelHpChange(beforeDamage);hits++;playerInv=.35f;stun=.15f;hitFlash=.18f;shake=5;
             HitStop(HitStopHurt);AddImpact(player+new Vector2(0,1.1f),3,1,0);
             if(playerAction=="E"&&actionTime>.6f)skillE=7.5f;
             actionTime=0;healing=0;parryAge=99;player.x=Mathf.Clamp(player.x+Mathf.Sign(player.x-attackerX)*.45f,Left+.4f,Right-.4f);

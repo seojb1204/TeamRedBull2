@@ -65,9 +65,11 @@ class Program {
   float move=99;bool jump=true,dash=true,attack=false,parry=true,q=true,w=true,e=true,r=true,f=true;
   b.ApplyInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f);
   Check(move==0&&attack&&!jump&&!dash&&!parry&&!q&&!w&&!e&&!r&&!f,"only chosen action; physical input cleared");
-  Check(b.BeforeTick(),"second frame");b.ApplyInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f);
+  game.seconds=full?60:59.99f;Check(b.BeforeTick(),"second frame before active time limit");game.seconds=0;b.ApplyInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f);
   Check(!attack,"press action not repeated on held frames");
   Check(b.BeforeTick()&&b.BeforeTick()&&!b.BeforeTick(),"exactly four frames then freeze");
+  b.RecordPlayerHpChange(100,70);b.RecordPlayerHpChange(70,90);b.RecordPlayerHpChange(90,90);
+  bool finiteRejected=false;try{b.RecordPlayerHpChange(float.NaN,90);}catch(ArgumentException){finiteRejected=true;}Check(finiteRejected,"non-finite HP event rejected");
   game.bossHp=80;game.playerHp=90;TestRuntime.loop.MoveNext();
   state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
   Check(state.GetProperty("step").GetInt32()==1&&Math.Abs(state.GetProperty("reward").GetSingle()-.099f)<.00001,"reward transition matched to action");
@@ -80,7 +82,19 @@ class Program {
   Check(state.GetProperty("terminated").GetBoolean()&&!state.GetProperty("truncated").GetBoolean(),"terminal state emitted even mid-repeat");
   var metrics=JsonDocument.Parse(File.ReadAllText(metricsPath)).RootElement;
   Check(metrics.GetProperty("schema").GetString()=="towerPixelMetrics/1"&&metrics.GetProperty("episode").GetString()==episode&&metrics.GetProperty("bossDamage").GetSingle()==20&&metrics.GetProperty("playerDamage").GetSingle()==10&&metrics.GetProperty("hitsTaken").GetInt32()==2&&metrics.GetProperty("parries").GetInt32()==3&&metrics.GetProperty("decisions").GetInt32()==2&&metrics.GetProperty("saveRootIsolated").GetBoolean()&&metrics.GetProperty("ddaDisabled").GetBoolean()&&!state.TryGetProperty("bossDamage",out _)&&!state.TryGetProperty("playerDamage",out _)&&!state.TryGetProperty("hitsTaken",out _)&&!state.TryGetProperty("parries",out _),"terminal metrics emitted separately without policy telemetry");
+  Check(metrics.GetProperty("cumulativePlayerDamage").GetSingle()==30&&metrics.GetProperty("cumulativePlayerHealing").GetSingle()==20,"damage and healing remain separate despite net deficit 10");
+  Check(!state.TryGetProperty("cumulativePlayerDamage",out _)&&!state.TryGetProperty("cumulativePlayerHealing",out _),"event totals not policy observation");
   Check(!b.BeforeTick(),"terminal simulation stopped");TestRuntime.loop.MoveNext();Check(TestRuntime.exit==0,"normal exit after final observation grace");
+  // A new episode has independent counters and uses the same limit in ticking and capture.
+  Directory.Delete(exchange,true);game=new ReversalTower.TowerGame();b=ReversalTower.PixelAgentBridge.AttachIfRequested(game);
+  TestRuntime.loop.MoveNext();state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
+  episode=state.GetProperty("episode").GetString();Action(episode,0,0);Check(b.BeforeTick(),"boundary episode accepts action");
+  game.seconds=full?119.99f:59.99f;Check(b.BeforeTick(),"tick below limit");
+  game.seconds=full?120:60;Check(!b.BeforeTick(),"tick stops exactly at configured limit");
+  TestRuntime.loop.MoveNext();state=JsonDocument.Parse(File.ReadAllText(Path.Combine(exchange,"transition.json"))).RootElement;
+  Check(state.GetProperty("truncated").GetBoolean(),"capture terminates at same limit without wall-clock wait");
+  metrics=JsonDocument.Parse(File.ReadAllText(metricsPath)).RootElement;
+  Check(metrics.GetProperty("cumulativePlayerDamage").GetSingle()==0&&metrics.GetProperty("cumulativePlayerHealing").GetSingle()==0,"new episode counters reset");
   var watchdog=new ReversalTower.PixelAgentBridge();ReversalTower.AutoRunArgs.SecondsLimit=-4;TestRuntime.exit=-1;
   Check(!watchdog.BeforeTick()&&TestRuntime.exit==2,"independent Update watchdog fails closed");
   Console.WriteLine("BRIDGE_SHIM_CHECKS "+checks+"; NOT Unity rendering validation");

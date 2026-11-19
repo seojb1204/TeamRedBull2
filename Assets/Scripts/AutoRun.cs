@@ -31,7 +31,9 @@ namespace ReversalTower
         // Usable before TowerGame.Awake: CloudSync may initialize first.
         public static bool HasAutomationArguments(string[] args)
         {
-            foreach(var arg in args)if(arg.StartsWith("-tower",StringComparison.Ordinal))return true;
+            // Live diagnostics is ordinary play, not an automation opt-in. Keep all other
+            // -tower flags (including unknown future flags) fail-closed before Awake.
+            foreach(var arg in args)if(arg!="-towerDdaMonitor"&&arg.StartsWith("-tower",StringComparison.Ordinal))return true;
             return false;
         }
 

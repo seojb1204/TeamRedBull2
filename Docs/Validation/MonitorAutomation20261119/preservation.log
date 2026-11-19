@@ -1,0 +1,21 @@
+PASS exact baseline GameData
+PASS exact baseline DdaPanel
+PASS exact baseline DdaHistoryGraph
+PASS exact baseline GameUI
+PASS exact baseline NativeGameUI
+PASS exact baseline ActorView
+PASS exact baseline WorldArtist
+PASS exact baseline ArakusAnimationSelection
+PASS exact baseline ArakusVisuals
+PASS exact baseline Soundscape
+PASS exact baseline CloudSync
+PASS exact automation code after removing only reviewed monitor exemption
+PASS all original SaveStore code unchanged; diagnostics append only
+PASS all original GameServices code unchanged; diagnostics append only
+PASS exact boss mechanics after removing read-only hook
+PASS exact tutorial mechanics after removing diagnostic run ID
+PASS all TowerGame logic identical after exact diagnostic hook removal
+PASS publisher cannot save or decide/learn
+PASS publisher skips storage I/O read model
+PASS only six reviewed diagnostic/classification files; assets/settings untouched
+LIVE_MONITOR_PRESERVATION_PASS 20

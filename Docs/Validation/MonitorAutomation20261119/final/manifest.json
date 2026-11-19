@@ -1,0 +1,103 @@
+{
+  "sdk": {
+    "executable": "/workspace/.cloud-setup/dotnet/dotnet",
+    "version": "8.0.428",
+    "sdk_path": "/workspace/.cloud-setup/dotnet/sdk/8.0.428",
+    "reference_pack": "/workspace/.cloud-setup/dotnet/packs/Microsoft.NETCore.App.Ref/8.0.34"
+  },
+  "source_sha256": {
+    "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+    "Assets/Scripts/GameServices.cs": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+    "Assets/Scripts/SaveStore.cs": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+    "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+    "Assets/Scripts/CloudSync.cs": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+    "Tests/CloudSyncStatus/Stubs.cs": "00adda8c3305dc34fe9865a5ff2f33c0d30c45627d8132ed3f4a948cfac16ac3",
+    "Tests/MonitorAutomationTests.cs": "eb5897e63becd381cb0f068e5ac2cef285813a879ffac2ddf2cc23b6d8e19cf2",
+    "Assets/Scripts/AutoRun.cs": "872614461127573e6558d64cce764ca250f9e9e98c90c3a5b4ae88b642a017b7",
+    "Assets/Scripts/DdaPanel.cs": "f908ac8172571b73f48118c759709ce8e7949307d8006f38ad1216d4ba486381"
+  },
+  "cases": {
+    "automation": {
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "/tmp/monitor-automation-chn8zzt_/out/QA.dll",
+        "-towerDataRoot",
+        "/tmp/monitor-automation-chn8zzt_/isolated"
+      ],
+      "exit": 0,
+      "tail": [
+        "MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB"
+      ]
+    },
+    "automation-default-root": {
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "/tmp/monitor-automation-chn8zzt_/out/QA.dll",
+        "-towerNoDda"
+      ],
+      "exit": 0,
+      "tail": [
+        "MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB"
+      ]
+    },
+    "ordinary": {
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "/tmp/monitor-automation-chn8zzt_/out/QA.dll"
+      ],
+      "exit": 0,
+      "tail": [
+        "MONITOR_AUTOMATION_PASS 46 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB"
+      ]
+    },
+    "monitor": {
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "/tmp/monitor-automation-chn8zzt_/out/QA.dll",
+        "-towerDdaMonitor",
+        "/tmp/monitor-automation-chn8zzt_/monitor"
+      ],
+      "exit": 0,
+      "tail": [
+        "MONITOR_AUTOMATION_PASS 47 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB"
+      ]
+    },
+    "mixed": {
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "/tmp/monitor-automation-chn8zzt_/out/QA.dll",
+        "-towerDdaMonitor",
+        "/tmp/monitor-automation-chn8zzt_/monitor",
+        "-towerDataRoot",
+        "/tmp/monitor-automation-chn8zzt_/isolated"
+      ],
+      "exit": 0,
+      "tail": [
+        "MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB"
+      ]
+    },
+    "mixed-reversed": {
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "/tmp/monitor-automation-chn8zzt_/out/QA.dll",
+        "-towerDataRoot",
+        "/tmp/monitor-automation-chn8zzt_/isolated",
+        "-towerDdaMonitor",
+        "/tmp/monitor-automation-chn8zzt_/monitor"
+      ],
+      "exit": 0,
+      "tail": [
+        "MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB"
+      ]
+    }
+  },
+  "limits": "Actual production class/method slices; mocked Unity events/coroutines/HTTP, not Unity rendering or real network",
+  "classification_input_sha256": "872614461127573e6558d64cce764ca250f9e9e98c90c3a5b4ae88b642a017b7",
+  "baseline_ref": null,
+  "compiled_slice_sha256": {
+    "AutoRunArgs.cs": "9552856636d9dc1270e442e47a95ed4723bd3bfe18de284901177258956df329",
+    "PanelInput.cs": "d1229351e793965eec36cb4223ccefaf25989d02829db019e3a94dbbff8d7bea"
+  },
+  "ordinary_monitor_http_identical": true,
+  "sources_unchanged": true
+}

@@ -1,0 +1,49 @@
+PASS raw process classification checked before Parse
+PASS monitor alone is ordinary, mixed flags remain automation before Awake
+PASS existing/future automation retained -towerDemo
+PASS mixed monitor preserves guard -towerDemo
+PASS existing/future automation retained -towerCapture
+PASS mixed monitor preserves guard -towerCapture
+PASS existing/future automation retained -towerAutoSeconds
+PASS mixed monitor preserves guard -towerAutoSeconds
+PASS existing/future automation retained -towerDataRoot
+PASS mixed monitor preserves guard -towerDataRoot
+PASS existing/future automation retained -towerReport
+PASS mixed monitor preserves guard -towerReport
+PASS existing/future automation retained -towerFrameRate
+PASS mixed monitor preserves guard -towerFrameRate
+PASS existing/future automation retained -towerNoDda
+PASS mixed monitor preserves guard -towerNoDda
+PASS existing/future automation retained -towerLobbySmoke
+PASS mixed monitor preserves guard -towerLobbySmoke
+PASS existing/future automation retained -towerAgent
+PASS mixed monitor preserves guard -towerAgent
+PASS existing/future automation retained -towerSeed
+PASS mixed monitor preserves guard -towerSeed
+PASS existing/future automation retained -towerBoss
+PASS mixed monitor preserves guard -towerBoss
+PASS existing/future automation retained -towerPixelAgent
+PASS mixed monitor preserves guard -towerPixelAgent
+PASS existing/future automation retained -towerFutureUnknown
+PASS mixed monitor preserves guard -towerFutureUnknown
+PASS existing/future automation retained -towerDdaMonitor=bad
+PASS mixed monitor preserves guard -towerDdaMonitor=bad
+PASS exact monitor flag exemption
+PASS unflagged ordinary play
+PASS actual F8 raw guard before Parse preserves automation protection
+PASS actual F9 raw guard before Parse
+PASS CloudSync Awake ordinary config read / automation config untouched
+PASS Awake coroutine stub never makes network requests
+PASS new proficiency HTTP is OFF when config field omitted
+PASS existing players/battles/pattern_stats upload through mock HTTP
+PASS legacy upload endpoints unchanged
+PASS ordinary play receives existing global DB through mocked HTTP
+PASS OFF does not request proficiency RPC or group aggregate
+HTTP_SEQUENCE POST https://invalid.local/rest/v1/players|POST https://invalid.local/rest/v1/battles|POST https://invalid.local/rest/v1/pattern_stats|GET https://invalid.local/rest/v1/pattern_difficulty?select=boss,pattern,opportunities,players,success_rate,parry_rate,hit_rate,suggested_level
+PASS ordinary legacy DB failure remains diagnosed with or without monitor
+PASS Parse activation agrees for valid automation / monitor-only / no flags
+PASS raw guard stable after Parse
+PASS monitor does not create automation save isolation; real automation does
+PASS actual F8 input toggles only ordinary play
+PASS actual F9 input toggles only with ordinary panel open
+MONITOR_AUTOMATION_PASS 47 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB

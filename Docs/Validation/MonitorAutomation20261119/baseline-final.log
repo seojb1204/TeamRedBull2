@@ -1,0 +1,10 @@
+automation 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+automation-default-root 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+ordinary 0 ['MONITOR_AUTOMATION_PASS 46 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+monitor -6 PASS raw process classification checked before Parse
+Unhandled exception. System.Exception: monitor alone is ordinary, mixed flags remain automation before Awake
+   at MonitorAutomationTests.Check(Boolean x, String label) in /workspace/dda-monitor-guard/Tests/MonitorAutomationTests.cs:line 16
+   at MonitorAutomationTests.Main(String[] args) in /workspace/dda-monitor-guard/Tests/MonitorAutomationTests.cs:line 26
+
+mixed 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+mixed-reversed 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']

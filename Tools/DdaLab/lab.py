@@ -286,8 +286,6 @@ def main():
     if not a.dotnet and not a.monitor_only:
         p.error('.NET 8 SDK 실행 파일을 찾을 수 없습니다. 설치 후 --dotnet 전체경로를 지정하세요. 보기 전용은 --monitor-only 입니다.')
     dotnet = None if a.monitor_only else (shutil.which(a.dotnet) or str(Path(a.dotnet).resolve()))
-    if dotnet is not None and not Path(dotnet).is_file():
-        p.error('dotnet executable not found')
     lab = Lab(dotnet, a.data_dir or tempfile.mkdtemp(prefix='tower-dda-results-'))
     print('Python:', sys.version.split()[0], '| 필수 파일 확인 완료', flush=True)
     print('SDK:', json.dumps(lab.sdk, ensure_ascii=False) if lab.sdk else '모니터 전용 (.NET 불필요)', flush=True)

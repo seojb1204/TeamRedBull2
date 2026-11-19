@@ -37,7 +37,7 @@ namespace ReversalTower
             if(TutorialActive||mode==ScreenMode.Battle)return;
             if(replay&&save.tutorialOnboardingVersion<1)return;
             if(QueueScreenChange(()=>StartTutorial(replay)))return;
-            TutorialLocalStatus="실습 중 · LinUCB 학습 아님";tutorialOriginalSave=save;tutorialOriginalBoss=bossIndex;tutorialSaveError=null;tutorialCompletionCandidate=null;
+            ddaMonitorTutorialRun=Guid.NewGuid().ToString("N");TutorialLocalStatus="실습 중 · LinUCB 학습 아님";tutorialOriginalSave=save;tutorialOriginalBoss=bossIndex;tutorialSaveError=null;tutorialCompletionCandidate=null;
             // Practice uses a detached fresh profile. No real progression or equipped inherited ultimate.
             save=new SaveData();tutorial=new TutorialSession(replay);sparkTime=0;echo=null;hitStop=slowMo=0;
             bossIndex=0;spec=new BossSpec("tutorial_dummy","훈련용 허수아비","훈련","공격 예고를 살피세요","",1000,0);

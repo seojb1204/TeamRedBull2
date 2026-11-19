@@ -280,3 +280,38 @@ namespace ReversalTower
         }
     }
 }
+
+namespace ReversalTower
+{
+    // Read-only diagnostic wire format. No profile IDs, saves, queues, configuration or keys.
+    [Serializable] public sealed class DdaMonitorAttack
+    {
+        public bool hasAttack;public string pattern,patternName,source,reason;public int level;
+        public float windup,damage,cooldown,cooldownRemaining,windupScale,damageScale,cooldownScale;
+    }
+    [Serializable] public sealed class DdaMonitorPattern
+    {
+        public string id,name,source,reason;public int level,opportunities,parries,dodges,hits,ignored;
+    }
+    [Serializable] public sealed class DdaMonitorTutorial
+    {
+        public string step,group;public float score,confidence,active,elapsed,explanation,paused;
+        public int parryAttempts,parrySuccesses,dodgeAttempts,dodgeSuccesses,hits,retries,controls,mistakes;
+        public bool completed,skipped,valid,first,ultimateHit;
+    }
+    [Serializable] public sealed class DdaMonitorSelection
+    {
+        public string id,reason;public int decision,opportunities,parries,dodges,hits,ignored;public bool selected;
+        public float seconds,baseWeight,multiplier,weight,probability,success;
+    }
+    [Serializable] public sealed class DdaMonitorFrame
+    {
+        public string schema="tower.dda.live/1",origin,runtime,sessionId,runId,battleId,diagnosticSession,boss,bossName,phase,kind,capturedUtc;
+        public long sequence;public bool running=true,dda,hasAttack,clear,abandoned,historyLimitReached;
+        public float simulationSeconds;public int dropped,writeErrors;
+        public DdaMonitorAttack attack; // Explicit serializable attack-only DTO; no storage state.
+        public List<DdaMonitorPattern> patterns=new List<DdaMonitorPattern>();
+        public List<DdaMonitorSelection> selection=new List<DdaMonitorSelection>();
+        public DdaMonitorTutorial tutorial;public DdaTraceReport learning;
+    }
+}

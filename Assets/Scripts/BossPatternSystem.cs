@@ -43,6 +43,7 @@ namespace ReversalTower
         }
         public AppliedDifficulty Applied {get;private set;}
         readonly TowerGame g;
+        public string DiagnosticSession=>diagnosticSession;
         string diagnosticSession=System.Guid.NewGuid().ToString("N");
         public string DiagnosticStatus {get;private set;} = "아직 선택 기록 없음";
         public Pattern current;
@@ -461,6 +462,7 @@ namespace ReversalTower
             nextHit=windup;cooldowns[p.id]=g.seconds+baseCooldown*cooldown[level+2];
             Applied=new AppliedDifficulty{pattern=p.id,level=level,decision=patternSerial,windup=windup,damage=patternDamage,cooldown=cooldowns[p.id]-g.seconds,readyAt=cooldowns[p.id],windupScale=p.windup>0?windup/p.windup:1,damageScale=p.damage>0?patternDamage/p.damage:1,cooldownScale=(cooldowns[p.id]-g.seconds)/baseCooldown};
             SaveStore.LogApplied(diagnosticSession,g.spec.id,p.id,patternSerial,level,windup,patternDamage,Applied.cooldown,g.DdaReason(p.id));
+            g.PublishDdaMonitor("attack-applied");
             shieldCaught=leaping=struck=touched=false;poseFrame=g.spec.hasPillars?0:-1;
             if(p.kind==AttackKind.Step){behindTime=0;moveFrom=g.boss.x;moveTo=Mathf.Clamp(g.boss.x-g.bossFace*p.range,TowerGame.Left+1,TowerGame.Right-1);}
             if(p.kind==AttackKind.Rage)g.Say("아라쿠스의 분노 · 시전하는 동안 받는 피해 절반",windup);

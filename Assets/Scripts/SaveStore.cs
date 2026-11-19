@@ -337,3 +337,73 @@ namespace ReversalTower
         }
     }
 }
+
+namespace ReversalTower
+{
+    // Opt-in, bounded, background-only disk output. Immutable JSON strings cross the thread boundary.
+    // This class never reads or changes SaveStore data. Each publisher owns a fresh session directory.
+    public sealed class DdaMonitorSink : IDisposable
+    {
+        public const int MaxPacketBytes=262144,MaxQueuedEvents=32;
+        public const long MaxHistoryBytes=16*1024*1024;
+        public readonly string SessionId,DirectoryPath;
+        readonly object gate=new object();readonly System.Threading.AutoResetEvent wake=new System.Threading.AutoResetEvent(false);
+        readonly System.Collections.Generic.Queue<string> events=new System.Collections.Generic.Queue<string>();
+        readonly System.Threading.Thread worker;string pending;bool stopping;long lastHistoryWrite;
+        int dropped,writeErrors;volatile bool historyLimit;
+        public int Dropped=>System.Threading.Volatile.Read(ref dropped);
+        public int WriteErrors=>System.Threading.Volatile.Read(ref writeErrors);
+        public bool HistoryLimitReached=>historyLimit;
+        public DdaMonitorSink(string root)
+        {
+            if(string.IsNullOrWhiteSpace(root)||!Path.IsPathRooted(root))throw new ArgumentException("Explicit absolute diagnostics directory required");
+            SessionId=Guid.NewGuid().ToString("N");DirectoryPath=Path.Combine(Path.GetFullPath(root),"DdaLive",SessionId);
+            Directory.CreateDirectory(DirectoryPath);
+            worker=new System.Threading.Thread(Work){IsBackground=true,Name="DDA diagnostic writer"};worker.Start();
+        }
+        public bool Offer(string immutableJson,bool important)
+        {
+            if(string.IsNullOrEmpty(immutableJson)||Encoding.UTF8.GetByteCount(immutableJson)>MaxPacketBytes){System.Threading.Interlocked.Increment(ref dropped);return false;}
+            lock(gate)
+            {
+                if(stopping)return false;
+                if(important){if(pending!=null){pending=null;System.Threading.Interlocked.Increment(ref dropped);}if(events.Count>=MaxQueuedEvents){events.Dequeue();System.Threading.Interlocked.Increment(ref dropped);}events.Enqueue(immutableJson);}
+                else {if(pending!=null)System.Threading.Interlocked.Increment(ref dropped);pending=immutableJson;}
+            }
+            wake.Set();return true;
+        }
+        void Write(string json,bool important)
+        {
+            try
+            {
+                string temp=Path.Combine(DirectoryPath,"latest.tmp"),target=Path.Combine(DirectoryPath,"latest.json");
+                File.WriteAllText(temp,json,new UTF8Encoding(false));
+                if(File.Exists(target))File.Replace(temp,target,null);else File.Move(temp,target);
+                long now=System.Diagnostics.Stopwatch.GetTimestamp();
+                if(!important&&now-lastHistoryWrite<System.Diagnostics.Stopwatch.Frequency)return;
+                lastHistoryWrite=now;string history=Path.Combine(DirectoryPath,"events.jsonl");
+                int bytes=Encoding.UTF8.GetByteCount(json)+1;
+                if((File.Exists(history)?new FileInfo(history).Length:0)+bytes>MaxHistoryBytes){historyLimit=true;return;}
+                File.AppendAllText(history,json+"\n",new UTF8Encoding(false));
+            }catch(Exception){System.Threading.Interlocked.Increment(ref writeErrors);}
+        }
+        void Work()
+        {
+            while(true)
+            {
+                wake.WaitOne(250);string json=null;bool important=false,done;
+                lock(gate)
+                {
+                    if(events.Count>0){json=events.Dequeue();important=true;}
+                    else {json=pending;pending=null;}
+                    done=stopping&&events.Count==0&&pending==null;
+                }
+                if(json!=null)Write(json,important);
+                if(done)break;
+                lock(gate){if(events.Count>0||pending!=null)wake.Set();}
+            }
+        }
+        // Only used at shutdown/domain teardown, never as a per-frame flush.
+        public void Dispose(){lock(gate){if(stopping)return;stopping=true;}wake.Set();worker.Join(150);}
+    }
+}

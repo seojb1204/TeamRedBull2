@@ -1,0 +1,1 @@
+{"id": "edd22e6f7a9a6627381b6411", "status": "completed", "config": {"mode": "control", "profile": "balanced", "scenario": "stable", "dda": "both", "seed": 17, "rounds": 2, "boss": 0, "phase": 1, "distance": 4, "releaseCooldowns": false}, "replay": {"run": "4ed83e53585b0365ce3e8f08", "identical": true}}

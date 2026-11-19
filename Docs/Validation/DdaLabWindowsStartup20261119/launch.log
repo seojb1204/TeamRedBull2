@@ -1,0 +1,5 @@
+실행 로그: /home/agent/ReversalTower-DdaLab/launcher.log
+Python: 3.12.14 | 필수 파일 확인 완료
+SDK: {"executable": "/workspace/.cloud-setup/dotnet/dotnet", "version": "8.0.428", "sdk_path": "/workspace/.cloud-setup/dotnet/sdk/8.0.428", "reference_pack": "/workspace/.cloud-setup/dotnet/packs/Microsoft.NETCore.App.Ref/8.0.34"}
+{"id": "feb45cee0a0f38fce2aa0a88", "status": "completed", "config": {"mode": "control", "profile": "balanced", "scenario": "improving", "dda": "both", "seed": 17, "rounds": 12, "boss": 0, "phase": 1, "distance": 4, "releaseCooldowns": false}, "replay": null}
+/workspace/dda-windows-results/시작 실행기/feb45cee0a0f38fce2aa0a88

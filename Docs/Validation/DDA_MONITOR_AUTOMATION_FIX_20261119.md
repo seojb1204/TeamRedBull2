@@ -60,9 +60,9 @@
 - `Tests/test-selective-preservation.py`, `Tests/Contracts/MONITOR_AUTOMATION_SCOPE_20261119.json`: 신규 명시 계약에서만 해당 예외 허용, AutoRun 전체 hash 고정+원본 재구성 비교. 기존 기본 계약/이전 계약은 그대로 두며 새 코드에 이전 strict 계약을 적용하면 의도적으로 거부함.
 
 ```cmd
-python Tests\test-monitor-automation.py --dotnet "C:\Program Files\dotnet\dotnet.exe" --output "C:\DdaQa\새 결과"
-python Tests\test-dda-live-preservation.py
-python Tests\test-selective-preservation.py --scope-contract Tests\Contracts\MONITOR_AUTOMATION_SCOPE_20261119.json
+python -X utf8 Tests\test-monitor-automation.py --dotnet "C:\Program Files\dotnet\dotnet.exe" --output "C:\DdaQa\새 결과"
+python -X utf8 Tests\test-dda-live-preservation.py
+python -X utf8 Tests\test-selective-preservation.py --scope-contract Tests\Contracts\MONITOR_AUTOMATION_SCOPE_20261119.json
 ```
 
 ## 최종 main 통합 및 수동 확인
@@ -78,3 +78,9 @@ python Tests\test-selective-preservation.py --scope-contract Tests\Contracts\MON
 ### 전달
 
 새 수정 브랜치만 Push한다. main 직접 Push/병합/기존 후보 변경/환경 게시 없음. 최종 커밋·PR 시도 결과는 아래 추가 기록한다.
+
+
+- 제품 수정 커밋: `7ca963c`, 회귀/보존 검사: `e0337e9`, 실행 증거: `d97291e`.
+- 독립 브랜치 Push 성공: [fix/dda-monitor-automation-classification-20261119](https://github.com/seojb1204/TeamRedBull2/tree/fix/dda-monitor-automation-classification-20261119).
+- [Windows 기준de192a9 대비 비교](https://github.com/seojb1204/TeamRedBull2/compare/de192a9...fix/dda-monitor-automation-classification-20261119).
+- Windows 안정화 브랜치 대상 Draft PR 생성 시 GitHub GraphQL API `Forbidden`으로 실패했다. 생성/병합한 PR은 없다. 최종 문서 커밋만 추가 Push한다.

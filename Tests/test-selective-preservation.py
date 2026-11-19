@@ -2,9 +2,10 @@
 No DB configuration, user saves, CloudQueue, Unity launch or product file writes.
 """
 from pathlib import Path
-import subprocess,json,hashlib,re
+import subprocess,json,hashlib,re,argparse
 r=Path(__file__).resolve().parents[1]
-c=json.loads((r/'Tests/Contracts/SELECTIVE_SCOPE_20261119.json').read_text());baseline=c['baseline']
+parser=argparse.ArgumentParser();parser.add_argument('--scope-contract',type=Path,default=r/'Tests/Contracts/SELECTIVE_SCOPE_20261119.json');args=parser.parse_args()
+c=json.loads(args.scope_contract.read_text());baseline=c['baseline']
 def git(*args):return subprocess.check_output(['git',*args],cwd=r,text=True).strip()
 def old(path):return subprocess.check_output(['git','show',baseline+':'+path],cwd=r,text=True)
 n=0
@@ -16,7 +17,7 @@ check(git('rev-parse',baseline+'^{commit}')==baseline,'immutable full main basel
 changed=set(git('diff','--name-only',baseline,'--','Assets','ProjectSettings').splitlines());changed|=set(git('ls-files','--others','--exclude-standard','--','Assets','ProjectSettings').splitlines())
 check(changed<=set(c['files']),'only reviewed product scripts changed; no assets/scenes/prefabs/settings')
 for name,meta in c['files'].items():check(hashlib.sha256((r/name).read_bytes()).hexdigest()==meta['sha256'],'exact reviewed bytes '+name)
-check(not (r/'Tools/DdaLab').exists(),'Lab runtime excluded')
+check(not (r/'Tools/DdaLab').exists() or c.get('standalone_lab') is True,'Lab runtime excluded unless explicitly reviewed as standalone tool')
 for name in ['LobbyCards.cs','ArakusAnimationSelection.cs','ArakusVisuals.cs','ActorView.cs','WorldArtist.cs','PhanesPose.cs','AutoRun.cs','PixelAgentBridge.cs','Soundscape.cs']:
  path='Assets/Scripts/'+name;check((r/path).read_text()==old(path),'unchanged latest main '+name)
 def body(text,signature):

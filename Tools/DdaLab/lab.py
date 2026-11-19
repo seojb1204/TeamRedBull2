@@ -12,6 +12,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -20,6 +21,8 @@ from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0,str(HERE))
+from monitor import Monitor,MAX_EXPORT
 NAMES = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices', 'ArakusPatternTiming', 'ArakusAnimationSelection']
 DEFAULT = dict(mode='combat', profile='balanced', scenario='stable', dda='both', seed=17,
@@ -88,7 +91,7 @@ class Lab:
                 + '</ItemGroup></Project>')
             (w / 'NuGet.Config').write_text('<configuration><packageSources><clear /></packageSources></configuration>')
             env = dict(os.environ, DOTNET_CLI_HOME=str(w / 'cli'), NUGET_PACKAGES=str(w / 'packages'),
-                       DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1')
+                       DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_PROCESSOR_COUNT='1')
             dll = w / 'out/Lab.dll'
             with (folder / 'execution.log').open('w') as log:
                 if not dll.is_file() or not (w / 'build.complete').is_file():
@@ -170,6 +173,7 @@ class Lab:
 
 
 def serve(lab, port):
+    monitor=Monitor()
     token = secrets.token_urlsafe(32)
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -196,7 +200,17 @@ def serve(lab, port):
                 return self.send(403, {'error': 'Local host only'})
             url = urlsplit(self.path)
             if url.path == '/':
-                return self.send(200, (HERE / 'index.html').read_text().replace('__CSRF__', token), 'text/html; charset=utf-8')
+                return self.send(200, (HERE / 'index.html').read_text().replace('__CSRF__', token).replace('__MONITOR_ONLY__', 'true' if lab.dotnet is None else 'false'), 'text/html; charset=utf-8')
+            if url.path in ('/monitor.js','/monitor.css'):
+                name=url.path[1:]
+                return self.send(200,(HERE/name).read_text(),'text/javascript; charset=utf-8' if name.endswith('.js') else 'text/css; charset=utf-8')
+            if url.path.startswith('/api/monitor/'):
+                if self.headers.get('X-Lab-Token')!=token:return self.send(403,{'error':'Local UI token required'})
+                try:
+                    if url.path=='/api/monitor/state':return self.send(200,monitor.state(max(0,int(parse_qs(url.query).get('since',['0'])[0]))))
+                    if url.path=='/api/monitor/export':return self.send(200,monitor.export())
+                except ValueError as e:return self.send(400,{'error':str(e)})
+                return self.send(404,{'error':'Unknown monitor endpoint'})
             if url.path == '/api/jobs':
                 return self.send(200, list(lab.jobs.values()))
             if url.path == '/api/result':
@@ -214,15 +228,21 @@ def serve(lab, port):
         def do_POST(self):
             if not self.allowed() or self.headers.get('X-Lab-Token') != token:
                 return self.send(403, {'error': 'Local UI token required'})
-            if self.path != '/api/run':
+            path=urlsplit(self.path).path
+            if path not in ('/api/run','/api/monitor/connect','/api/monitor/disconnect','/api/monitor/replay','/api/monitor/browse'):
                 return self.send(404, {'error': 'Not found'})
             try:
                 length = int(self.headers.get('Content-Length', '0'))
-                if not 0 < length <= 4096:
-                    raise ValueError('Invalid body size')
-                data = json.loads(self.rfile.read(length))
+                maximum=MAX_EXPORT if path=='/api/monitor/replay' else 4096
+                if not 0 < length <= maximum:raise ValueError('Invalid body size')
+                data=json.loads(self.rfile.read(length))
+                if path=='/api/monitor/connect':return self.send(200,monitor.connect(data.get('root'),data.get('choice')))
+                if path=='/api/monitor/disconnect':monitor.disconnect();return self.send(200,monitor.state())
+                if path=='/api/monitor/replay':return self.send(200,monitor.load_replay(data))
+                if path=='/api/monitor/browse':return self.send(200,{'root':monitor.browse()})
+                if lab.dotnet is None:return self.send(503,{'error':'모니터 전용 실행 중입니다. 시뮬레이션에는 .NET 8 SDK가 필요합니다.'})
                 return self.send(202, lab.submit(data))
-            except ValueError as e:
+            except (ValueError,TypeError,AttributeError) as e:
                 return self.send(400, {'error': str(e)})
             except RuntimeError as e:
                 return self.send(409, {'error': str(e)})
@@ -235,16 +255,18 @@ def serve(lab, port):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--dotnet', default=shutil.which('dotnet'))
+    p.add_argument('--monitor-only', action='store_true', help='Observe/replay logs with Python only; disable C# experiments')
     p.add_argument('--data-dir', type=Path)
     p.add_argument('--port', type=int, default=8765)
     p.add_argument('--config', type=Path, help='Run one validated JSON config without starting UI')
     a = p.parse_args()
-    if not a.dotnet:
+    if not a.dotnet and not a.monitor_only:
         p.error('Install .NET 8 SDK or pass --dotnet PATH')
-    dotnet = shutil.which(a.dotnet) or str(Path(a.dotnet).resolve())
-    if not Path(dotnet).is_file():
+    dotnet = None if a.monitor_only else (shutil.which(a.dotnet) or str(Path(a.dotnet).resolve()))
+    if dotnet is not None and not Path(dotnet).is_file():
         p.error('dotnet executable not found')
     lab = Lab(dotnet, a.data_dir or tempfile.mkdtemp(prefix='tower-dda-results-'))
+    if a.config and a.monitor_only:p.error('--config requires the simulator/.NET SDK')
     if a.config:
         job = lab.submit(json.loads(a.config.read_text()), asynchronous=False)
         print(json.dumps(job, ensure_ascii=False))

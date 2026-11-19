@@ -93,3 +93,8 @@ python Tests\test-dda-windows-offline.py --dotnet "C:\Program Files\dotnet\dotne
 ### GitHub 전달
 
 수정 브랜치만 Push하며 main/기존 후보/기존 Lab 브랜치는 변경하지 않는다. 전달 결과는 마지막 문서 커밋에 기록한다.
+
+- 제품 도구 수정 `1ea42f6`, 누락 dotnet 경로의 한국어 preflight 정리 `40c23ce`, 검증 문서/증거 `a716bce`.
+- 수정 브랜치 Push 성공: [fix/dda-lab-windows-startup-20261119](https://github.com/seojb1204/TeamRedBull2/tree/fix/dda-lab-windows-startup-20261119).
+- [원본 Lab40570a9 대비 비교](https://github.com/seojb1204/TeamRedBull2/compare/40570a9...fix/dda-lab-windows-startup-20261119).
+- 원본 Lab 브랜치 대상 Draft PR을 시도했으나 GitHub GraphQL `Forbidden`으로 생성 실패. PR 생성/병합/환경 게시 없음.

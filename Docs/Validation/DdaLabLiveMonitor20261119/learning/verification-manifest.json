@@ -1,0 +1,31 @@
+{
+  "label": "live-monitor",
+  "source_commit": "56b68ffe327d6bd22db67d50264e70aee2061268",
+  "suite": "verification",
+  "target": "net8.0",
+  "define": "HEADLESS",
+  "sources": {
+    "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+    "Assets/Scripts/TowerGame.Tutorial.cs": "3f9056d20d7da16df034f276d41587f7eb9605751d192d508741a0391f940a2b",
+    "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+    "Assets/Scripts/TowerGame.cs": "132adc95929448e94cd931a9befbacd2390c70aefd1298472110a81edde70d2e",
+    "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "Assets/Scripts/SaveStore.cs": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+    "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+    "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+    "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+    "Assets/Scripts/BossPatternSystem.cs": "9b0e4e628db8d4596cb7b2a28ff6878f63ca8c8adcb35612a82333080b17ac35",
+    "Assets/Scripts/GameServices.cs": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+    "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+    "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+    "Tests/DdaLearningVerificationTests.cs": "944384f76baa3bf39e68ccfc5b6b0d19a69da83525abd3fd0ebd20b1be02592c"
+  },
+  "excluded": [
+    "CloudSync.cs",
+    "StreamingAssets",
+    "supabase.json",
+    "Unity Editor",
+    "real player saves/CloudQueue"
+  ],
+  "exit_code": 0
+}

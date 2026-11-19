@@ -20,7 +20,25 @@ python Tools/DdaLab/lab.py --monitor-only --data-dir ./TestResults/DdaLab
 
 브라우저에서 `http://127.0.0.1:8765`. 다른 프로세스가 쓰면 `--port 8766`. SDK 경로에 공백이 있으면 따옴표로 묶는다. 설치 후 오프라인으로 실행한다. `--data-dir`는 Lab 결과 폴더이며 **게임 save 폴더와 별도**다. 클라우드 localhost를 다른 PC에서 그대로 여는 주소로 안내하지 않는다.
 
-Windows PowerShell(학교 PC 설치 권한/실행 정책은 별도 확인):
+Windows **CMD 우선** (PowerShell 실행 정책 변경 불필요):
+
+```cmd
+Tools\DdaLab\Start-DdaLab.cmd
+Tools\DdaLab\Start-DdaLab.cmd --monitor-only
+Tools\DdaLab\Start-DdaLab.cmd --dotnet "C:\Program Files\dotnet\dotnet.exe" --port 8766
+```
+
+탐색기에서 `Tools/DdaLab/Start-DdaLab.cmd`를 더블클릭해도 된다. 시작 후 브라우저에서 위 localhost 주소를 연다. Python3.10+를 확인하고 필수 파일/SDK/참조 팩을 검사한다. CMD·프로그램 콘솔과 파일 입출력에 UTF-8을 명시했다. Git CLI가 없어도 실험은 실행되며 소스 SHA256과 Git 미수집 사유를 기록한다. 원본 저장소의 `global.json`이나 임시 폴더를 수동 수정하지 않는다.
+
+- 결과: `%LOCALAPPDATA%\ReversalTower-DdaLab\results`
+- 시작/서버 로그: `%LOCALAPPDATA%\ReversalTower-DdaLab\launcher.log` (재시작 시 append)
+- 실험별 상세 로그: 결과 폴더의 `<run id>\execution.log` 및 `job.json`
+- .NET8 SDK가 여러 개면 가장 높은 설치 버전을 선택하고 빌드별 `global.json`에 **정확한 버전/rollForward=disable**을 자동 기록한다. .NET10만 있으면 설치 안내 후 중단한다. SDK가 요구하는 로컬 참조 팩이 없으면8SDK 복구 설치를 안내하며 외부 NuGet으로 우회하지 않는다.
+- `NU1100`: 새 실행 로그의 SDK effective/참조 팩/BUILD 명령 확인. `WinError 2`: 실패한 실제 명령·cwd 확인. Git 메타데이터 실패는 실험 실패로 처리하지 않는다.
+- `PSSecurityException`: 실행 정책을 바꾸지 말고 CMD 실행기 사용.
+- Windows Python3.13/.NET10 공존/CMD 실물 실행은 이 Linux 환경에서 미검증이다. 자세한 원인·재검증 항목은 [긴급 수정 보고서](../../Docs/Validation/DDA_LAB_WINDOWS_STARTUP_20261119.md).
+
+선택적 Windows PowerShell(학교 PC 설치 권한/실행 정책은 별도 확인):
 
 ```powershell
 .\Tools\DdaLab\Start-DdaLab.ps1

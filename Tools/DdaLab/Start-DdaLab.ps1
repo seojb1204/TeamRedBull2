@@ -7,7 +7,7 @@ param(
 $ErrorActionPreference = "Stop"
 $LabScriptPath = Join-Path $PSScriptRoot "lab.py"
 if (-not $DataDirectory) { $DataDirectory = Join-Path $env:LOCALAPPDATA "ReversalTower-DdaLab" }
-$LabArguments = @($LabScriptPath, "--port", "$Port", "--data-dir", $DataDirectory)
+$LabArguments = @("-X", "utf8", $LabScriptPath, "--port", "$Port", "--data-dir", $DataDirectory)
 if ($MonitorOnly) { $LabArguments += "--monitor-only" }
 else { $LabArguments += @("--dotnet", $Dotnet) }
 Write-Host "DDA Lab: http://127.0.0.1:$Port (local only)"

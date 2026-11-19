@@ -15,6 +15,7 @@ import tempfile
 import sys
 import threading
 import time
+import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, parse_qs
 from xml.sax.saxutils import escape
@@ -23,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE))
 from monitor import Monitor,MAX_EXPORT
+from runtime import run, select_sdk, pin_sdk, git_revision, check_files
 NAMES = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices', 'ArakusPatternTiming', 'ArakusAnimationSelection']
 DEFAULT = dict(mode='combat', profile='balanced', scenario='stable', dda='both', seed=17,
@@ -51,7 +53,8 @@ def validate(data):
 
 class Lab:
     def __init__(self, dotnet, data):
-        self.dotnet = dotnet
+        self.sdk = select_sdk(dotnet) if dotnet else None
+        self.dotnet = self.sdk["executable"] if self.sdk else None
         self.data = Path(data).resolve()
         self.data.mkdir(parents=True, exist_ok=True)
         self.lock = threading.Lock()
@@ -61,7 +64,7 @@ class Lab:
         for f in self.data.glob('*/job.json'):
             if re.fullmatch(r'[0-9a-f]{24}', f.parent.name):
                 try:
-                    job = json.loads(f.read_text())
+                    job = json.loads(f.read_text(encoding='utf-8-sig'))
                     if job.get('id') == f.parent.name and job.get('status') in ('completed', 'failed'):
                         self.jobs[job['id']] = job
                 except (OSError, ValueError):
@@ -78,35 +81,45 @@ class Lab:
             folder.mkdir()
             hashes = self.hashes()
             config_path = folder / 'config.json'
-            config_path.write_text(json.dumps(config))
+            config_path.write_text(json.dumps(config), encoding='utf-8')
             # Cache only builds of the exact selected source hashes. One worker owns build/run.
-            key = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
+            key = hashlib.sha256(json.dumps(dict(sources=hashes, sdk=self.sdk, build_contract=3), sort_keys=True).encode()).hexdigest()
             w = self.data / '.build' / key
             w.mkdir(parents=True, exist_ok=True)
             project = w / 'Lab.csproj'
             project.write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType>'
-                '<TargetFramework>net8.0</TargetFramework><EnableDefaultCompileItems>false</EnableDefaultCompileItems>'
+                '<TargetFramework>net8.0</TargetFramework><UseAppHost>false</UseAppHost><EnableDefaultCompileItems>false</EnableDefaultCompileItems>'
                 '<DefineConstants>HEADLESS</DefineConstants></PropertyGroup><ItemGroup>'
                 + ''.join('<Compile Include="' + escape(str(p), {'"': '&quot;'}) + '" />' for p in self.files)
-                + '</ItemGroup></Project>')
-            (w / 'NuGet.Config').write_text('<configuration><packageSources><clear /></packageSources></configuration>')
+                + '</ItemGroup></Project>', encoding='utf-8')
+            (w / 'NuGet.Config').write_text('<configuration><packageSources><clear /></packageSources></configuration>', encoding='utf-8')
+            pin_sdk(w, self.sdk)
             env = dict(os.environ, DOTNET_CLI_HOME=str(w / 'cli'), NUGET_PACKAGES=str(w / 'packages'),
                        DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_PROCESSOR_COUNT='1')
             dll = w / 'out/Lab.dll'
-            with (folder / 'execution.log').open('w') as log:
+            with (folder / 'execution.log').open('w', encoding='utf-8') as log:
+                log.write('SDK: ' + json.dumps(self.sdk, ensure_ascii=False) + '\n')
+                log.flush()
                 if not dll.is_file() or not (w / 'build.complete').is_file():
-                    build = subprocess.run([self.dotnet, 'build', str(project), '--output', str(w / 'out'), '--verbosity', 'quiet'],
+                    version = run([self.dotnet, '--version'], cwd=w, env=env, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=30)
+                    log.write('SDK effective: ' + version.stdout + version.stderr)
+                    if version.returncode or version.stdout.strip() != self.sdk['version']:
+                        raise RuntimeError('SDK 고정 실패: ' + version.stdout + version.stderr)
+                    build_command = [self.dotnet, 'build', str(project), '--output', str(w / 'out'), '--verbosity', 'quiet']
+                    log.write('BUILD: ' + repr(build_command) + '\n'); log.flush()
+                    build = run(build_command,
                                            cwd=w, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=180)
                     if build.returncode:
-                        raise RuntimeError('C# build failed. ' + (folder / 'execution.log').read_text()[-1800:])
-                    (w / 'build.complete').write_text(key)
+                        raise RuntimeError('C# build failed. ' + (folder / 'execution.log').read_text(encoding='utf-8-sig')[-1800:])
+                    (w / 'build.complete').write_text(key, encoding='utf-8')
                 command = [self.dotnet, str(dll), str(config_path), str(folder / 'raw.json')]
-                result = subprocess.run(command, cwd=w, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=600)
+                log.write('RUN: ' + repr(command) + '\n'); log.flush()
+                result = run(command, cwd=w, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=600)
             if result.returncode:
-                raise RuntimeError(f'C# failed ({result.returncode}). See execution.log. ' + (folder / 'execution.log').read_text()[-1800:])
+                raise RuntimeError(f'C# failed ({result.returncode}). See execution.log. ' + (folder / 'execution.log').read_text(encoding='utf-8-sig')[-1800:])
             if hashes != self.hashes():
                 raise RuntimeError('Source changed during experiment; results rejected')
-            raw = json.loads((folder / 'raw.json').read_text())
+            raw = json.loads((folder / 'raw.json').read_text(encoding='utf-8-sig'))
             if not raw['battles'] or any(not b['restored'] for b in raw['battles']):
                 raise RuntimeError('Missing trials or failed save restore')
             # Fingerprint includes every result field, not run ID/time/manifest/host paths.
@@ -115,23 +128,32 @@ class Lab:
             for previous in self.jobs.values():
                 if previous['id'] != run_id and previous.get('status') == 'completed':
                     try:
-                        old = json.loads((self.data / previous['id'] / 'result.json').read_text())
+                        old = json.loads((self.data / previous['id'] / 'result.json').read_text(encoding='utf-8-sig'))
                     except (OSError, ValueError):
                         continue
                     if old['config'] == config and old['manifest']['source_sha256'] == hashes:
                         replay = dict(run=previous['id'], identical=old['manifest']['policy_sha256'] == fingerprint)
                         break
-            raw['manifest'] = dict(source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+            revision, git_warning = git_revision(ROOT)
+            if git_warning:
+                with (folder / 'execution.log').open('a', encoding='utf-8') as log:
+                    log.write(git_warning + '\n')
+            raw['manifest'] = dict(source_commit=revision, git_warning=git_warning, sdk=self.sdk,
                 source_sha256=hashes, policy_sha256=fingerprint, sources_unchanged=True, replay=replay,
                 command=command, exit_code=result.returncode, run_id=run_id, created_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))
-            (folder / 'result.json').write_text(json.dumps(raw, ensure_ascii=False, indent=2))
+            (folder / 'result.json').write_text(json.dumps(raw, ensure_ascii=False, indent=2), encoding='utf-8')
             self.csv(folder, raw)
             job.update(status='completed', replay=replay)
         except Exception as e:
-            job.update(status='failed', error=str(e))
+            job.update(status='failed', error=str(e), log=str(folder / 'execution.log'))
+            try:
+                with (folder / 'execution.log').open('a', encoding='utf-8') as log:
+                    traceback.print_exc(file=log)
+            except OSError:
+                pass
         finally:
             try:
-                (folder / 'job.json').write_text(json.dumps(job, ensure_ascii=False))
+                (folder / 'job.json').write_text(json.dumps(job, ensure_ascii=False), encoding='utf-8')
             except OSError as e:
                 job.update(status='failed', error='Could not persist result: ' + str(e))
             finally:
@@ -200,10 +222,10 @@ def serve(lab, port):
                 return self.send(403, {'error': 'Local host only'})
             url = urlsplit(self.path)
             if url.path == '/':
-                return self.send(200, (HERE / 'index.html').read_text().replace('__CSRF__', token).replace('__MONITOR_ONLY__', 'true' if lab.dotnet is None else 'false'), 'text/html; charset=utf-8')
+                return self.send(200, (HERE / 'index.html').read_text(encoding='utf-8-sig').replace('__CSRF__', token).replace('__MONITOR_ONLY__', 'true' if lab.dotnet is None else 'false'), 'text/html; charset=utf-8')
             if url.path in ('/monitor.js','/monitor.css'):
                 name=url.path[1:]
-                return self.send(200,(HERE/name).read_text(),'text/javascript; charset=utf-8' if name.endswith('.js') else 'text/css; charset=utf-8')
+                return self.send(200,(HERE/name).read_text(encoding='utf-8-sig'),'text/javascript; charset=utf-8' if name.endswith('.js') else 'text/css; charset=utf-8')
             if url.path.startswith('/api/monitor/'):
                 if self.headers.get('X-Lab-Token')!=token:return self.send(403,{'error':'Local UI token required'})
                 try:
@@ -260,15 +282,18 @@ def main():
     p.add_argument('--port', type=int, default=8765)
     p.add_argument('--config', type=Path, help='Run one validated JSON config without starting UI')
     a = p.parse_args()
+    check_files(ROOT, HERE, NAMES)
     if not a.dotnet and not a.monitor_only:
-        p.error('Install .NET 8 SDK or pass --dotnet PATH')
+        p.error('.NET 8 SDK 실행 파일을 찾을 수 없습니다. 설치 후 --dotnet 전체경로를 지정하세요. 보기 전용은 --monitor-only 입니다.')
     dotnet = None if a.monitor_only else (shutil.which(a.dotnet) or str(Path(a.dotnet).resolve()))
     if dotnet is not None and not Path(dotnet).is_file():
         p.error('dotnet executable not found')
     lab = Lab(dotnet, a.data_dir or tempfile.mkdtemp(prefix='tower-dda-results-'))
+    print('Python:', sys.version.split()[0], '| 필수 파일 확인 완료', flush=True)
+    print('SDK:', json.dumps(lab.sdk, ensure_ascii=False) if lab.sdk else '모니터 전용 (.NET 불필요)', flush=True)
     if a.config and a.monitor_only:p.error('--config requires the simulator/.NET SDK')
     if a.config:
-        job = lab.submit(json.loads(a.config.read_text()), asynchronous=False)
+        job = lab.submit(json.loads(a.config.read_text(encoding='utf-8-sig')), asynchronous=False)
         print(json.dumps(job, ensure_ascii=False))
         print(lab.data / job['id'])
         return 0 if job['status'] == 'completed' else 1
@@ -276,4 +301,14 @@ def main():
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='backslashreplace')
+    try:
+        raise SystemExit(main())
+    except KeyboardInterrupt:
+        pass
+    except Exception:
+        traceback.print_exc()
+        print('DDA Lab 시작 실패. 위 명령/경로/원인을 확인하세요. CMD 실행 로그는 %LOCALAPPDATA%\\ReversalTower-DdaLab\\launcher.log 입니다.', file=sys.stderr)
+        raise SystemExit(1)

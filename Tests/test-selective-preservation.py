@@ -19,7 +19,10 @@ check(changed<=set(c['files']),'only reviewed product scripts changed; no assets
 for name,meta in c['files'].items():check(hashlib.sha256((r/name).read_bytes()).hexdigest()==meta['sha256'],'exact reviewed bytes '+name)
 check(not (r/'Tools/DdaLab').exists() or c.get('standalone_lab') is True,'Lab runtime excluded unless explicitly reviewed as standalone tool')
 for name in ['LobbyCards.cs','ArakusAnimationSelection.cs','ArakusVisuals.cs','ActorView.cs','WorldArtist.cs','PhanesPose.cs','AutoRun.cs','PixelAgentBridge.cs','Soundscape.cs']:
- path='Assets/Scripts/'+name;check((r/path).read_text()==old(path),'unchanged latest main '+name)
+ path='Assets/Scripts/'+name;text=(r/path).read_text()
+ if name=='AutoRun.cs' and c.get('automation_monitor_exception') is True:
+  text=text.replace('            // Live diagnostics is ordinary play, not an automation opt-in. Keep all other\n            // -tower flags (including unknown future flags) fail-closed before Awake.\n','').replace('arg!="-towerDdaMonitor"&&','')
+ check(text==old(path),'unchanged latest main (only explicitly reviewed monitor exemption removed) '+name)
 def body(text,signature):
  # Match braces outside comments/strings, including verbatim string contents.
  start=text.index('{',text.index(signature));depth=0;i=start;state=None

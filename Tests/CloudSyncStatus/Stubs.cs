@@ -33,7 +33,9 @@ namespace ReversalTower{
  public static class BossPatternSystem{public const string PhanesUltimate="phanes_star";}
  public class CardStack{public string id;public int count;}
 #endif
+#if !REAL_AUTORUN
  public static class AutoRunArgs{public static bool IsAutomationProcess;}
+#endif
 #if !REAL_DDA
  public class HistoryEntry{public bool abandoned,clear,dda;public string boss,battleId;public float seconds;public int hits,parries;}
  public class PatternStats{public string id;public int level,opportunities,hits,parries,dodges,ignored;public float damage;}

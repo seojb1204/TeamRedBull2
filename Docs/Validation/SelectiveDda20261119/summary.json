@@ -1,0 +1,297 @@
+{
+  "baseline": "151b5256d8203ebd28f7b8466738f8c12d5ea973",
+  "scope": "Selective functions, no merge/cherry-pick and no Lab runtime",
+  "cross_suites": {
+    "tutorial-state": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Tests/TutorialSession/Program.cs": "83437a8feea4edd1e8103f75ebc1b137f0c35087a55d2dfc219336de989a0014"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-lwvyh02p/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS single dodge keeps expert confidence limited",
+        "PASS single lucky parry remains low confidence normal",
+        "PASS repeated observed failure can reach novice",
+        "30 PASS, 0 FAIL"
+      ]
+    },
+    "tutorial-save": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "e1a32aef7075f5654f67f31d93cfffe6120f0fee9eaddc39ae08b601168340f3",
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/TowerGame.cs": "814b02be9ca40bd3f4c38fc967824ae38b3f47832202594796d4e312cea7c2a5",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+        "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+        "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+        "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+        "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+        "Tests/TutorialPersistenceTests.cs": "2d0cea4b15c5f6a5b6c322ed4c5dd9d3e010a3bb2361b1ddfe7d8536035f9285"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-trr8nmlk/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "저장 실패: The file '/tmp/tutorial-save-ab9c024f-de75-43a3-a309-99479efca3e2/not-directory' already exists.",
+        "PASS cancel failed replay retains first assessment",
+        "PASS cancel safely returns replay lobby",
+        "7 PASS, 0 FAIL"
+      ]
+    },
+    "tutorial-dda": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "e1a32aef7075f5654f67f31d93cfffe6120f0fee9eaddc39ae08b601168340f3",
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/TowerGame.cs": "814b02be9ca40bd3f4c38fc967824ae38b3f47832202594796d4e312cea7c2a5",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+        "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+        "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+        "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+        "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+        "Tests/TutorialDdaIntegrationTests.cs": "3de60e93c824e7019045453e5e90fad2f61524aa08ab0231f08de3b46a725136"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-_wn7hghu/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "저장 실패: The file '/tmp/tower-integrated-tutorial-f3069c295d724d858d95e9bfc84ee054/blocked' already exists.",
+        "PASS failed completion remains retryable through Update",
+        "PASS same Enter used for completion retry cannot also start a boss battle",
+        "TUTORIAL_DDA_INTEGRATION_PASS 24 real session action collision save and DDA; no Unity or DB"
+      ]
+    },
+    "queue": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/CloudSync.cs": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+        "Tests/CloudSyncStatus/Stubs.cs": "1910b43046a37350d5cd23e52fef0756964d62a4f4358763f6fe4e75b548dada",
+        "Tests/CloudQueueIntegrationTests.cs": "fcd81523653d0d4a875f1decad5c575eca3b68c9df506f597b419ee270399964"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-nondq8ps/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS sparse legacy progress migrates identity without fabricated assessment",
+        "PASS sparse legacy original backup retained",
+        "PASS legacy help-seen alone cannot bypass first assessment",
+        "CLOUD_QUEUE_INTEGRATION 24 PASS / 0 FAIL; real ownership resolver, mocked HTTP, no production data"
+      ]
+    },
+    "adaptation": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "e1a32aef7075f5654f67f31d93cfffe6120f0fee9eaddc39ae08b601168340f3",
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/TowerGame.cs": "814b02be9ca40bd3f4c38fc967824ae38b3f47832202594796d4e312cea7c2a5",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+        "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+        "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+        "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+        "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+        "Tests/AdaptationColdStartTests.cs": "7cdbe4c2c29b27490fb29fcebe00fc77ac9bd4d36950f06f45603cd08fb30cd4"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-vqp9lqu5/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS active clear time changes actual score",
+        "PASS reading and pause increase elapsed but never lower score",
+        "PASS perfect but sparse tutorial evidence cannot certify expert",
+        "ADAPTATION_COLDSTART_PASS 155"
+      ]
+    },
+    "proficiency-http": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/CloudSync.cs": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+        "Tests/CloudSyncStatus/Stubs.cs": "1910b43046a37350d5cd23e52fef0756964d62a4f4358763f6fe4e75b548dada",
+        "Tests/ProficiencyHttpTests.cs": "724dde6a8bb8eb31dfaa56d8aae7784e2096b299855f7ea8519c5021f8461fad"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-iyzn8r4i/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS actual reset creates fresh profile without reassigning pending telemetry",
+        "PASS actual restore recovers original UUID and first assessment",
+        "PASS restored profile retains original capability and immutable queued owner",
+        "PROFICIENCY_HTTP_PASS 28"
+      ]
+    },
+    "selective": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "e1a32aef7075f5654f67f31d93cfffe6120f0fee9eaddc39ae08b601168340f3",
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/TowerGame.cs": "814b02be9ca40bd3f4c38fc967824ae38b3f47832202594796d4e312cea7c2a5",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+        "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+        "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+        "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+        "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+        "Tests/SelectiveIntegrationTests.cs": "c4afc234adce6c067db6a08f03549165a8b45eee38e1c33501283cbcc3df14fb"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-f6e3icst/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS transition enters intended boss",
+        "PASS snapshot preserves main Phanes special timing and actual damage",
+        "PASS main inherited Phanes R retains five friendly stars",
+        "SELECTIVE_INTEGRATION_PASS 38"
+      ]
+    }
+  },
+  "counts": {
+    "headless": 739,
+    "ultimate": 37,
+    "learning": 248,
+    "frequency": 185,
+    "robustness": 31,
+    "phanes": 3188,
+    "history": 47,
+    "panel": 205,
+    "profiles": 31,
+    "cold_receive": 23,
+    "preservation": 45
+  },
+  "inherited_failures": {
+    "ArakusAnimationTests": "walk follows distance instead of wall clock",
+    "ArakusSizeTests": "cleave actual hit boundary 1 3.9899998 0",
+    "ArakusChargePolishTests": "windup pose"
+  },
+  "baseline_comparison": "Same failures with exact main source plus exact settings-method projection and isPlaying shim; see baseline/manifest.json",
+  "limits": [
+    "No Unity API compile/Game View or Windows test",
+    "No actual DB/config/keys/user saves/CloudQueue",
+    "No Lab or 2040-battle rerun",
+    "Event/collision E2E is controlled, not a natural battle or human calibration"
+  ],
+  "product_sha256": {
+    "Assets/Scripts/BossPatternSystem.cs": {
+      "sha256": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/CloudSync.cs": {
+      "sha256": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/DdaHistoryGraph.cs": {
+      "sha256": "c17ee4117dd439485869088b76719f95d0d60b74ebebf2f2bc488f13b7cf1b52",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/DdaPanel.cs": {
+      "sha256": "f908ac8172571b73f48118c759709ce8e7949307d8006f38ad1216d4ba486381",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/GameData.cs": {
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/GameServices.cs": {
+      "sha256": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/GameUI.cs": {
+      "sha256": "ef8cb54c9d84ee355cd8f4d25d275977a77bfb5bd7d6c722eeaf892de040a326",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/NativeGameUI.cs": {
+      "sha256": "c5267431355a994a01d3887efc07542b8ed88bf8f16f66297ba4090f8a6bfa21",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/SaveStore.cs": {
+      "sha256": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/TowerGame.Tutorial.cs": {
+      "sha256": "e1a32aef7075f5654f67f31d93cfffe6120f0fee9eaddc39ae08b601168340f3",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/TowerGame.cs": {
+      "sha256": "814b02be9ca40bd3f4c38fc967824ae38b3f47832202594796d4e312cea7c2a5",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    },
+    "Assets/Scripts/TutorialSession.cs": {
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "reason": "Reviewed DDA prior, protected telemetry, actual applied diagnostics, tutorial clocks/UI or core settings boundary; no balance/art changes"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-selective/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-dda-tests-yyzfs80b/Tests.csproj]
+/workspace/dda-selective/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/tower-dda-tests-yyzfs80b/Tests.csproj]
+PASS equal-weight assigned average excludes Step/Rage and includes unexecuted attacks
+PASS record is detached from mutable battle statistics
+PASS no attack patterns produces no graph value, not an invented neutral point
+PASS out-of-range assigned level is rejected, not clamped
+PASS missing assignment is rejected
+PASS duplicate pattern IDs are rejected
+PASS nonfinite stored average rejected
+PASS new and legacy users have no fabricated history
+PASS normal victory is recorded
+PASS completed sequence is independent per boss and excludes abandon
+PASS abandoned audit rows retained outside completed graph
+PASS same record ID cannot increment sequence twice
+PASS restart restores records and counters
+PASS Fixed and normal defeat survive JSON round trip
+PASS graph queries cannot mutate persisted history
+PASS sidecar leaves existing progress.json unchanged
+PASS corrupt primary recovers valid backup with visible warning
+PASS recovery preserves corrupt evidence and resumes without inventing lost records
+PASS recovered history persists on restart
+PASS two corrupt files are not overwritten with an empty history
+PASS future history version is read-only
+PASS disk failure retains one pending record and exposes error
+PASS retrying pending ID does not duplicate sequence
+PASS retry succeeds after disk prerequisite is repaired
+PASS pending record is saved once
+PASS empty graph has no delta
+PASS one point has no line or invented delta
+PASS delta uses the two actual consecutive adaptive averages
+PASS Fixed battle breaks adaptive lines and delta
+PASS other boss has no fabricated points
+PASS retention keeps 200 completed and 50 abandoned without resetting counter
+PASS graph shows the latest 20 real completed battle numbers
+PASS counter continues after pruning and restart
+PASS real EndBattle event records the actual assigned level even when never executed
+PASS repeated settlement and repeated result event record once
+PASS normal death event records defeat
+PASS abandon and quit are audited but excluded from learning graph sequence
+PASS Fixed event is stored distinctly with its actual neutral levels
+PASS observer honors a changed SaveStore.Root
+PASS capture failure is visible and cannot prevent other event subscribers
+PASS observer preserves chosen levels in battle 1
+PASS observer preserves chosen levels in battle 2
+PASS observer preserves chosen levels in battle 3
+PASS observer preserves chosen levels in battle 4
+PASS observer preserves chosen levels in battle 5
+PASS observer preserves chosen levels in battle 6
+PASS recording and repeated graph queries leave A/b, memories and learning counters identical to baseline
+DDA_HISTORY_TESTS_PASSED 47 assertions; Unity rendering and real DB are not exercised.

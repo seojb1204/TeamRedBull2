@@ -1,0 +1,6 @@
+/workspace/dda-selective-results/main-baseline/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.csproj]
+/workspace/dda-selective-results/main-baseline/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.csproj]
+Unhandled exception. System.Exception: windup pose
+   at ArakusChargePolishTests.Check(Boolean value, String name) in /workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.cs:line 9
+   at ArakusChargePolishTests.Rush(Int32 level, Boolean rage, Single dt) in /workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.cs:line 30
+   at ArakusChargePolishTests.Main() in /workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.cs:line 73

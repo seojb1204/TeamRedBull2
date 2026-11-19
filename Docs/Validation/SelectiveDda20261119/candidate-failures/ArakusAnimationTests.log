@@ -1,0 +1,5 @@
+/tmp/arakus-size-2b_e8b8a/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-size-2b_e8b8a/ArakusAnimationTests.csproj]
+/tmp/arakus-size-2b_e8b8a/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-size-2b_e8b8a/ArakusAnimationTests.csproj]
+Unhandled exception. System.Exception: walk follows distance instead of wall clock
+   at ArakusAnimationTests.Check(Boolean b, String s) in /tmp/arakus-size-2b_e8b8a/ArakusAnimationTests.cs:line 5
+   at ArakusAnimationTests.Main() in /tmp/arakus-size-2b_e8b8a/ArakusAnimationTests.cs:line 10

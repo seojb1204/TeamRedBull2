@@ -1,0 +1,44 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-selective/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-_wn7hghu/QA.csproj]
+/workspace/dda-selective/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/tower-cross-qa-_wn7hghu/QA.csproj]
+PASS practice detaches real profile
+PASS profile switch refused during tutorial battle
+PASS actual session reaches ultimate without invented assessment DTO
+PASS practice does not save progression train DDA or emit cloud battle events
+PASS actual R activation alone does not finish tutorial
+PASS actual empowered dummy collision commits tutorial and returns lobby
+PASS actual completed first assessment preserved
+PASS completion preserves identity and DDA excludes tutorial battle
+PASS first result safely persisted
+PASS actual first expert assessment is eligible cold-start evidence
+PASS actual first normal assessment uses product vocabulary
+PASS product balanced spelling is not silently accepted as normal
+PASS replay skip cannot overwrite initial result
+PASS skip cannot become proficiency evidence
+PASS successful reassessment remains separate from first result
+PASS interrupted reassessment preserves disk and initial assessment
+PASS sufficient whole statistics retain priority over tutorial for the covered pattern
+PASS first real boss emits one normal event and restorable checkpoint
+PASS post-tutorial new profile reset works
+PASS new UUID starts fresh onboarding without inherited skill evidence
+PASS completed profile restore succeeds
+PASS restore preserves original UUID first result and separate replay evidence
+저장 실패: The file '/tmp/tower-integrated-tutorial-f3069c295d724d858d95e9bfc84ee054/blocked' already exists.
+PASS failed completion remains retryable through Update
+PASS same Enter used for completion retry cannot also start a boss battle
+TUTORIAL_DDA_INTEGRATION_PASS 24 real session action collision save and DDA; no Unity or DB

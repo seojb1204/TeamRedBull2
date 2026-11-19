@@ -1,0 +1,6 @@
+/tmp/arakus-size-2b_e8b8a/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-size-2b_e8b8a/ArakusSizeTests.csproj]
+/tmp/arakus-size-2b_e8b8a/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-size-2b_e8b8a/ArakusSizeTests.csproj]
+System.Exception: cleave actual hit boundary 1 3.9899998 0
+   at ArakusSizeTests.Check(Boolean ok, String name) in /tmp/arakus-size-2b_e8b8a/ArakusSizeTests.cs:line 4
+   at ArakusSizeTests.Enemy(String id, Int32 face, Single distance, Single y, Boolean parry, Boolean dash, Boolean expectHit, Int32 level, Boolean rage) in /tmp/arakus-size-2b_e8b8a/ArakusSizeTests.cs:line 14
+   at ArakusSizeTests.Main() in /tmp/arakus-size-2b_e8b8a/ArakusSizeTests.cs:line 43

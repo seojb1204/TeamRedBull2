@@ -140,3 +140,14 @@ Unity6000.4.0f1·Game View·실제 키 입력·오디오·Windows 빌드는 이�
 다음 우선순위: Unity actual compile/UI/보스·저장 흐름 확인 → 아라쿠스 baseline FAIL 판정 → 검증한 단일 commit 동결. DDA Lab은 별도 작업으로 분리했고 신규 개발을 임의로 시작하지 않는다.
 
 제품/테스트 commit: `6bd9292cb513a1312c4e37483d58fa16c10f876e`. 실행은 commit 전 동일 소스에서 했으므로 일부 manifest의 commit 필드는 기준151b525를 가리키며, 실행 소스 SHA256과 exact scope로 실제 후보 바이트를 기록했다. commit 후 보존 검사45개도 다시 통과했다.
+
+### 전달 결과
+
+- 제품·필수 테스트: `6bd9292cb513a1312c4e37483d58fa16c10f876e`.
+- 검증 보고서/실제 로그: `aa847c3`.
+- `integration/dda-selective-20261119` 원격 Push 성공.
+- Draft PR 생성은 `Post https://api.github.com/graphql: Forbidden`으로 실패. PR 번호가 생성됐다고 보고하지 않는다.
+- [main 대비 비교](https://github.com/seojb1204/TeamRedBull2/compare/main...integration/dda-selective-20261119).
+- [준비한 PR 본문](SELECTIVE_DDA_20261119_PR.md).
+
+최신 main 기반 자체 commit만 추가했으며24e6a2c/166fe3f/7b43148의 전체 이력을 merge/cherry-pick하지 않았다. DDA Lab은 제외되어 있다. main 병합·환경 게시·운영 DB 적용은 하지 않았다.

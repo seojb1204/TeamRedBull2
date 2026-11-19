@@ -44,7 +44,7 @@ namespace UnityEngine
     public class Camera:Object {public static Camera main;public bool orthographic;public float orthographicSize;public Transform transform=new Transform();public string tag;public Color backgroundColor;public GameObject gameObject=new GameObject();}
     public class AudioListener:Object {public static float volume;}
     public enum RuntimePlatform{WindowsPlayer,WindowsEditor,LinuxPlayer,OSXPlayer}
-    public static class Application {public static int targetFrameRate;public static string unityVersion="headless-shim";public static RuntimePlatform platform=RuntimePlatform.WindowsPlayer;public static bool isBatchMode=true;public static void Quit(int code=0){}public static string persistentDataPath=Path.GetFullPath("work/headless-save");public static string streamingAssetsPath=>Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Assets");}
+    public static class Application {public static int targetFrameRate;public static string unityVersion="headless-shim";public static RuntimePlatform platform=RuntimePlatform.WindowsPlayer;public static bool isBatchMode=true,isPlaying=false;public static void Quit(int code=0){}public static string persistentDataPath=Path.GetFullPath("work/headless-save");public static string streamingAssetsPath=>Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Assets");}
     public static class QualitySettings {public static int vSyncCount;}
     public static class Time {public static float unscaledDeltaTime=1f/60;}
     public static class Screen {public static int width=1600,height=900;}

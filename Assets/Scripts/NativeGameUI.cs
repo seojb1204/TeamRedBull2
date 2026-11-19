@@ -55,7 +55,7 @@ namespace ReversalTower
         bool cardsWereOpen;
         int cardsReleasedFrame=-1;
         public bool CardOutroBlocksInput => isActiveAndEnabled&&game&&game.mode==ScreenMode.Lobby&&(outro>=0||cardsReleasedFrame==Time.frameCount);
-        public bool BlocksLobbyInput => game&&game.mode==ScreenMode.Lobby&&(game.showCards||CardOutroBlocksInput);
+        public bool BlocksLobbyInput =>game&&(game.TutorialSummaryBlocksMenu||game.mode==ScreenMode.Lobby&&(game.showCards||CardOutroBlocksInput));
 
         void ApplyLobbyInputState()
         {

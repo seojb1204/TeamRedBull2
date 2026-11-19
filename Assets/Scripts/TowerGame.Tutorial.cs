@@ -6,6 +6,10 @@ namespace ReversalTower
     public sealed partial class TowerGame
     {
         TutorialSession tutorial;
+        // Resolve from the current profile: reset/restore must never show another profile's cached assessment.
+        public TutorialAssessment LastTutorialAssessment=>save?.tutorialReplayAssessment??save?.tutorialAssessment;
+        string tutorialLocalStatus;
+        public string TutorialLocalStatus {get=>tutorialLocalStatus??(save?.tutorialAssessment!=null?"로컬 평가 복원됨":"미저장");private set=>tutorialLocalStatus=value;}
         SaveData tutorialOriginalSave;
         int tutorialOriginalBoss;
         string tutorialSaveError;
@@ -33,7 +37,7 @@ namespace ReversalTower
             if(TutorialActive||mode==ScreenMode.Battle)return;
             if(replay&&save.tutorialOnboardingVersion<1)return;
             if(QueueScreenChange(()=>StartTutorial(replay)))return;
-            tutorialOriginalSave=save;tutorialOriginalBoss=bossIndex;tutorialSaveError=null;tutorialCompletionCandidate=null;
+            TutorialLocalStatus="실습 중 · LinUCB 학습 아님";tutorialOriginalSave=save;tutorialOriginalBoss=bossIndex;tutorialSaveError=null;tutorialCompletionCandidate=null;
             // Practice uses a detached fresh profile. No real progression or equipped inherited ultimate.
             save=new SaveData();tutorial=new TutorialSession(replay);sparkTime=0;echo=null;hitStop=slowMo=0;
             bossIndex=0;spec=new BossSpec("tutorial_dummy","훈련용 허수아비","훈련","공격 예고를 살피세요","",1000,0);
@@ -49,6 +53,7 @@ namespace ReversalTower
         void TutorialBeforeUpdate(float dt)
         {
             if(!TutorialActive)return;
+            tutorial.Tick(dt,paused||showSettings||showHelp,tutorialDemoParry||tutorial.AwaitingThreatFeedback);
             if(tutorial.Finished)
             {
                 if(Input.GetKeyDown(KeyCode.Return))FinishTutorial();
@@ -72,7 +77,14 @@ namespace ReversalTower
                 }
             }
             if(!tutorial.Explaining)RecordTutorialControlInputs();
-            if(!tutorialDemoParry&&!tutorial.AwaitingThreatFeedback)tutorial.Tick(dt,paused);
+        }
+        bool TutorialDebugConsumesMouse()
+        {
+#if !HEADLESS && !DESKTOP_PREVIEW
+            return DdaPanelConsumesMouse();
+#else
+            return false;
+#endif
         }
         void RecordTutorialControlInputs()
         {
@@ -82,7 +94,7 @@ namespace ReversalTower
             if(Input.GetKeyDown(KeyCode.E))pressed.Add(TutorialAction.E);
             if(Input.GetKeyDown(KeyCode.R))pressed.Add(TutorialAction.Ultimate);
             if(Input.GetKeyDown(KeyCode.F))pressed.Add(TutorialAction.Potion);
-            if(Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||Input.GetMouseButtonDown(0))pressed.Add(TutorialAction.Attack);
+            if(Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||Input.GetMouseButtonDown(0)&&!TutorialDebugConsumesMouse())pressed.Add(TutorialAction.Attack);
             if(Input.GetKeyDown(KeyCode.Space))pressed.Add(TutorialAction.Jump);
             if(Input.GetKeyDown(KeyCode.LeftShift)||Input.GetKeyDown(KeyCode.RightShift))pressed.Add(TutorialAction.Dash);
             if(Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.D)||Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.RightArrow))pressed.Add(TutorialAction.Move);
@@ -97,7 +109,7 @@ namespace ReversalTower
                 case TutorialStep.E:return Input.GetKeyDown(KeyCode.E);
                 case TutorialStep.Move:return Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.RightArrow);
                 case TutorialStep.Jump:return Input.GetKeyDown(KeyCode.Space);
-                case TutorialStep.Attack:return Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||Input.GetMouseButtonDown(0);
+                case TutorialStep.Attack:return Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.Z)||Input.GetMouseButtonDown(0)&&!TutorialDebugConsumesMouse();
                 case TutorialStep.Dash:return Input.GetKeyDown(KeyCode.LeftShift)||Input.GetKeyDown(KeyCode.RightShift);
                 case TutorialStep.Potion:return Input.GetKeyDown(KeyCode.F);
                 case TutorialStep.Ultimate:return Input.GetKeyDown(KeyCode.R);
@@ -245,7 +257,7 @@ namespace ReversalTower
         {
             if(tutorial==null)return;
             if(QueueScreenChange(ExitTutorial))return;
-            bool replay=tutorial.Replay;RestoreTutorialProfile();mode=replay?ScreenMode.Lobby:ScreenMode.Title;
+            bool replay=tutorial.Replay;RestoreTutorialProfile();TutorialLocalStatus="실습 중단 · 기존 평가 보존";mode=replay?ScreenMode.Lobby:ScreenMode.Title;
         }
         void FinishTutorial()
         {
@@ -261,8 +273,8 @@ namespace ReversalTower
                     else {tutorialCompletionCandidate.tutorialAssessment=tutorial.Assessment;tutorialCompletionCandidate.tutorialOnboardingVersion=1;tutorialCompletionCandidate.tutorialSeen=true;}
                 }
                 if(!SaveStore.Save(tutorialCompletionCandidate))
-                { tutorialSaveError="저장 공간과 파일 접근 권한을 확인한 뒤 다시 시도하세요.";return; }
-                var committed=tutorialCompletionCandidate;RestoreTutorialProfile();save=committed;
+                { TutorialLocalStatus="로컬 저장 실패 · 재시도 대기";tutorialSaveError="저장 공간과 파일 접근 권한을 확인한 뒤 다시 시도하세요.";return; }
+                var committed=tutorialCompletionCandidate;RestoreTutorialProfile();save=committed;TutorialLocalStatus="로컬 저장 완료";
                 // Already committed: avoid ReturnLobby's redundant second save.
                 void ShowLobby(){mode=ScreenMode.Lobby;showHelp=showSettings=showHistory=showCards=false;potions=3;}
                 if(!QueueScreenChange(ShowLobby))ShowLobby();

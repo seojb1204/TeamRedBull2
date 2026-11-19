@@ -19,9 +19,9 @@ namespace ReversalTower
     /// </summary>
     public sealed class CloudSync : MonoBehaviour
     {
-        [Serializable] sealed class Config { public string url; public string anonKey; }
+        [Serializable] sealed class Config { public string url; public string anonKey; public bool proficiencySync; }
         [Serializable] sealed class Pending { public string id; public string player; public string battle; public string stats; public string card; }
-        [Serializable] sealed class DifficultyRow { public string boss; public string pattern; public int opportunities; public int players; public float success_rate; public float parry_rate; public float hit_rate; public int suggested_level; }
+        [Serializable] sealed class DifficultyRow { public string boss; public string pattern; public string group_name; public int opportunities; public int players; public float success_rate; public float parry_rate; public float hit_rate; public int suggested_level; }
         [Serializable] sealed class DifficultyList { public DifficultyRow[] items; }
 
         const string RegisteredKey = "CloudPlayerRegistered/";
@@ -45,22 +45,26 @@ namespace ReversalTower
         {
             // Boot order is unspecified: inspect command line, not AutoRunArgs.Active.
             if(AutoRunArgs.IsAutomationProcess)
-            {CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
+            {CommunityStats.MarkUnavailable(true);CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
             config = LoadConfig();
-            if (config == null) { CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
-            playerId = SaveStore.Load().cloudPlayerId;
+            if (config == null) { CommunityStats.MarkUnavailable(false);CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
+            var profile=SaveStore.Load();playerId=profile.cloudPlayerId;SaveStore.QueueAssessments(profile);
             queueDir = Path.Combine(Application.persistentDataPath, "CloudQueue");
             Directory.CreateDirectory(queueDir);
             SaveStore.BattleLogged += OnBattle;
             LobbyCards.Purchased += OnCard;
+            SaveStore.ProficiencyQueued+=OnProficiencyQueued;
             CommunityStats.Status = "DB 연결 중…";
             StartCoroutine(SyncAll());
         }
+
+        void OnProficiencyQueued(){if(config!=null&&config.proficiencySync&&!sending)StartCoroutine(SyncAll());}
 
         void OnDestroy()
         {
             SaveStore.BattleLogged -= OnBattle;
             LobbyCards.Purchased -= OnCard;
+            SaveStore.ProficiencyQueued-=OnProficiencyQueued;
         }
 
         static Config LoadConfig()
@@ -138,7 +142,12 @@ namespace ReversalTower
         {
             if (sending) yield break;
             sending = true;
+            bool finished=false;
+            try
+            {
+            if(config.proficiencySync)yield return SyncProficiency();
             bool ok = true;
+            bool rejectedOwner=false;
             string[] files = Directory.GetFiles(queueDir, "*.json");
             Array.Sort(files, StringComparer.Ordinal);
             foreach (string file in files)
@@ -147,7 +156,7 @@ namespace ReversalTower
                 try { p = JsonUtility.FromJson<Pending>(File.ReadAllText(file)); } catch (Exception) { }
                 // Never discard corrupt or unattributed uploads. Never relabel them with the active profile.
                 string owner=p==null?null:SaveStore.ResolveUploadOwner(p.player,p.battle,p.card);
-                if(owner==null){ok=false;Debug.LogWarning("DB 대기열 신원 검증 실패: 원본 보존");continue;}
+                if(owner==null){ok=false;rejectedOwner=true;Debug.LogWarning("DB 대기열 신원 검증 실패: 원본 보존");continue;}
                 string registration=RegisteredKey+owner;
                 if(PlayerPrefs.GetInt(registration,0)==0)
                 {
@@ -163,12 +172,15 @@ namespace ReversalTower
             }
             bool fetched=false;
             yield return FetchDifficulty(r=>fetched=r);
+            if(config.proficiencySync)yield return FetchGroups();
             int left = Directory.GetFiles(queueDir, "*.json").Length;
-            CommunityStats.Status = !ok
+            CommunityStats.Status = !ok||rejectedOwner
                 ? "DB 전송 실패 · 대기 " + left + "건 · 통계 " + (fetched?"수신됨":"수신 실패 (이전 캐시)")
                 : !fetched ? "DB 전송 처리 완료 · 통계 수신 실패 (이전 캐시 " + CommunityStats.Count + "개)"
-                : "DB 동기화됨 " + (lastSync.HasValue ? lastSync.Value.ToString("HH:mm") : "") + " · 패턴 통계 " + CommunityStats.Count + "개";
-            sending = false;
+                : "DB 동기화됨 " + (lastSync.HasValue ? lastSync.Value.ToString("HH:mm") : "") + " · 패턴 통계 " + CommunityStats.Count + "개"+(left>0?" · 대기 "+left+"건":"");
+            finished=true;
+            }
+            finally { sending = false;if(!finished)CommunityStats.Status="DB 동기화 중단 · 메모리 통계 "+CommunityStats.Count+"개 유지"; }
         }
 
         IEnumerator Post(string table, string json, Action<bool> done)
@@ -190,12 +202,15 @@ namespace ReversalTower
 
         IEnumerator FetchDifficulty(Action<bool> done)
         {
+            CommunityStats.BeginReceive();
+            try
+            {
             string url = config.url + "/rest/v1/pattern_difficulty?select=boss,pattern,opportunities,players,success_rate,parry_rate,hit_rate,suggested_level";
             using (var req = UnityWebRequest.Get(url))
             {
                 Headers(req);
                 yield return req.SendWebRequest();
-                if (req.result != UnityWebRequest.Result.Success) { Debug.LogWarning("DB 통계 받기 실패 (" + req.responseCode + "): " + req.error); done(false); yield break; }
+                if (req.result != UnityWebRequest.Result.Success) { CommunityStats.ReceiveFailed();Debug.LogWarning("DB 통계 받기 실패 (" + req.responseCode + "): " + req.error); done(false); yield break; }
                 try
                 {
                     var list = JsonUtility.FromJson<DifficultyList>("{\"items\":" + req.downloadHandler.text + "}");
@@ -203,13 +218,60 @@ namespace ReversalTower
                     var entries = new List<CommunityStats.Entry>();
                     if (list != null && list.items != null)
                         foreach (var r in list.items)
+                        {
+                            if(r==null||string.IsNullOrEmpty(r.boss)||string.IsNullOrEmpty(r.pattern))throw new FormatException("Invalid statistics row");
                             entries.Add(new CommunityStats.Entry { boss = r.boss, pattern = r.pattern, opportunities = r.opportunities, players = r.players,
                                 successRate = r.success_rate, parryRate = r.parry_rate, hitRate = r.hit_rate, suggestedLevel = r.suggested_level });
+                        }
                     CommunityStats.Replace(entries);
+                    CommunityStats.MarkReceived();
                     lastSync = DateTime.Now;
                     done(true);
                 }
-                catch (Exception e) { Debug.LogWarning("DB 통계 해석 실패: " + e.Message); done(false); }
+                catch (Exception e) { CommunityStats.ReceiveFailed();Debug.LogWarning("DB 통계 해석 실패: " + e.Message); done(false); }
+            }
+            }
+            finally { CommunityStats.EndReceive(); }
+        }
+
+        IEnumerator FetchGroups()
+        {
+            CommunityStats.GroupReceiving();
+            try {
+            using(var req=UnityWebRequest.Get(config.url+"/rest/v1/pattern_difficulty_by_proficiency?select=boss,pattern,group_name,opportunities,players,success_rate,parry_rate,hit_rate,suggested_level"))
+            {
+                Headers(req);yield return req.SendWebRequest();
+                if(req.result!=UnityWebRequest.Result.Success){CommunityStats.GroupFailed();yield break;}
+                try
+                {
+                    var parsed=JsonUtility.FromJson<DifficultyList>("{\"items\":"+req.downloadHandler.text+"}");if(parsed==null||parsed.items==null)throw new FormatException();
+                    var entries=new List<CommunityStats.Entry>();foreach(var r in parsed.items){if(r==null)throw new FormatException();entries.Add(new CommunityStats.Entry{boss=r.boss,pattern=r.pattern,group=r.group_name,opportunities=r.opportunities,players=r.players,successRate=r.success_rate,parryRate=r.parry_rate,hitRate=r.hit_rate,suggestedLevel=r.suggested_level});}
+                    CommunityStats.ReplaceGroups(entries,true);
+                }catch{CommunityStats.GroupFailed();}
+            }
+            } finally { CommunityStats.GroupEndReceive(); }
+        }
+        IEnumerator SyncProficiency()
+        {
+            if(!Directory.Exists(SaveStore.ProficiencyQueueRoot))yield break;
+            var files=new List<string>(Directory.GetFiles(SaveStore.ProficiencyQueueRoot,"*.json"));
+            // Assessment must be accepted before battles referencing it. No queue file is relabelled.
+            files.Sort((a,b)=>{try{return string.CompareOrdinal(SaveStore.ProficiencyKind(a),SaveStore.ProficiencyKind(b));}catch{return string.CompareOrdinal(a,b);}});
+            foreach(var file in files)
+            {
+                SaveStore.ProficiencyEnvelope e=null;string secret=null;
+                try{e=SaveStore.ReadProficiency(file,out secret);}catch{SaveStore.SetProficiencyState(playerId,"보호 큐/원본 키 확인 실패 · 파일 보존");continue;}
+                SaveStore.SetProficiencyState(e.profile,"보호 전송 중 · "+e.kind);
+                var body=new StringBuilder("{");Field(body,"p_secret",secret);Field(body,"p_kind",e.kind);Field(body,"p_profile",e.profile);Field(body,"p_event",e.eventId);
+                Raw(body,"p_assessment",string.IsNullOrEmpty(e.assessmentId)?"null":"\""+e.assessmentId+"\"");Raw(body,"p_payload",e.payload,true);body.Append('}');
+                using(var req=new UnityWebRequest(config.url+"/rest/v1/rpc/submit_proficiency","POST"))
+                {
+                    req.uploadHandler=new UploadHandlerRaw(Encoding.UTF8.GetBytes(body.ToString()));req.downloadHandler=new DownloadHandlerBuffer();Headers(req);req.SetRequestHeader("Content-Type","application/json");
+                    yield return req.SendWebRequest();
+                    if(req.result!=UnityWebRequest.Result.Success||req.downloadHandler.text.Trim()!="true"){SaveStore.SetProficiencyState(e.profile,"보호 전송 실패 HTTP "+req.responseCode+" · 큐 보존");continue;}
+                    // Unlike legacy blind 409 handling, only RPC success acknowledges immutable protected data.
+                    try{SaveStore.AcknowledgeProficiency(file,e);}catch{SaveStore.SetProficiencyState(e.profile,"서버 수락 후 로컬 확인 실패 · 멱등 재시도 대기");}
+                }
             }
         }
 

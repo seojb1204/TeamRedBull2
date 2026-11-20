@@ -73,18 +73,8 @@ if (Invoke-RepoGit -Arguments @('status', '--porcelain')) {
     throw 'Unity 빌드가 소스·설정 파일을 변경했습니다. 배포 전에 변경을 확인하세요.'
 }
 
-# 사전에 지정한 게임 실행 구성요소만 ZIP에 포함합니다.
-$includeNames = @(
-    'ReversalTower.exe', 'ReversalTower_Data',
-    'UnityPlayer.dll', 'MonoBleedingEdge',
-    'UnityCrashHandler64.exe', 'WinPixEventRuntime.dll', 'GameAssembly.dll'
-)
-$includes = @(
-    foreach ($name in $includeNames) {
-        $path = Join-Path $windowsDir $name
-        if (Test-Path -LiteralPath $path) { $path }
-    }
-)
+# Validate all required dependencies before selecting release contents.
+$includes = @(& (Join-Path $repoRoot 'Get-WindowsReleaseFiles.ps1') -WindowsDir $windowsDir)
 $buildsDir = Join-Path $repoRoot 'Builds'
 New-Item -ItemType Directory -Path $buildsDir -Force | Out-Null
 $zipName = 'ReversalTower-' + $Tag + '-Windows-x64.zip'

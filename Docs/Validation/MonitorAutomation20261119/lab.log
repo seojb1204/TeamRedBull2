@@ -1,0 +1,47 @@
+PASS {'mode': 'control', 'scenario': 'improving', 'rounds': 6}
+PASS DDA OFF never trains
+PASS actual Complete updates A on evidence
+PASS paired synthetic inputs identical across DDA groups
+PASS isolated model and next assignment restore
+PASS {'mode': 'control', 'scenario': 'improving', 'rounds': 6}
+PASS full raw policy result same seed identical
+PASS {'mode': 'control', 'scenario': 'improving', 'rounds': 6, 'seed': 42}
+PASS different seed changes actual observations
+PASS {'mode': 'control', 'scenario': 'declining', 'rounds': 6, 'boss': 1}
+PASS declining profile schedule
+PASS {'mode': 'control', 'scenario': 'repeated_failures', 'rounds': 4, 'boss': 2}
+PASS repeated failure is explicitly synthetic
+PASS {'mode': 'combat', 'profile': 'expert', 'rounds': 1, 'boss': 0}
+PASS real Update combat boss 0
+PASS natural selector evidence captured 0
+PASS actual starts include weighted and forced patterns 0
+PASS {'mode': 'combat', 'profile': 'expert', 'rounds': 1, 'boss': 0}
+PASS combat replay exact
+PASS {'mode': 'combat', 'profile': 'novice', 'rounds': 1, 'boss': 1}
+PASS real Update combat boss 1
+PASS natural selector evidence captured 1
+PASS actual starts include weighted and forced patterns 1
+PASS {'mode': 'combat', 'profile': 'expert', 'rounds': 1, 'boss': 2}
+PASS real Update combat boss 2
+PASS natural selector evidence captured 2
+PASS actual starts include weighted and forced patterns 2
+PASS {'mode': 'combat', 'profile': 'novice', 'rounds': 1, 'boss': 3}
+PASS real Update combat boss 3
+PASS natural selector evidence captured 3
+PASS actual starts include weighted and forced patterns 3
+PASS {'mode': 'combat', 'profile': 'expert', 'rounds': 1, 'boss': 4}
+PASS real Update combat boss 4
+PASS natural selector evidence captured 4
+PASS actual starts include weighted and forced patterns 4
+PASS {'mode': 'selection', 'rounds': 1, 'phase': 2, 'distance': 4, 'releaseCooldowns': True}
+PASS selection probes never train injected evidence
+PASS actual weighted selector boost observed
+PASS controlled selection conditions recorded
+PASS saved run history restored
+PASS reject invalid config {'rounds': 0}
+PASS reject invalid config {'seed': True}
+PASS reject invalid config {'mode': 'fake'}
+PASS reject invalid config {'distance': nan}
+PASS reject invalid config {'path': '/tmp/anything'}
+PASS reject invalid config {'rounds': 101}
+DDA_LAB_PASS 46 checks

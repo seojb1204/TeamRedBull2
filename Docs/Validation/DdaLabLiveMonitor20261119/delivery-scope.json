@@ -1,0 +1,9 @@
+{
+  "base": "3342884db5f30526d399baae6bf806ee70572b24",
+  "main_checked": "151b5256d8203ebd28f7b8466738f8c12d5ea973",
+  "headless_only": true,
+  "unity_tested": false,
+  "windows_tested": false,
+  "production_db_accessed": false,
+  "source_verification_entries": 91
+}

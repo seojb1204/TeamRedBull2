@@ -31,7 +31,7 @@ public static class PlaytestAgentTests
     static void CombatEvidenceRegression()
     {
         AutoRunArgs.Active=false;AutoRunArgs.AgentProfile="balanced";AutoRunArgs.DisableDda=true;
-        var g=new TowerGame{save=new SaveData{tutorialSeen=true}};Set(g,"sound",new Soundscape());g.StartBattle(0);
+        var g=new TowerGame{save=new SaveData{tutorialSeen=true,tutorialOnboardingVersion=1}};Set(g,"sound",new Soundscape());g.StartBattle(0);
         string pattern=g.stats[0].id;
         float start=g.playerHp;
         g.PlayerHit(10,false,pattern,g.player.x+1);

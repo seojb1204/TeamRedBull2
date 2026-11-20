@@ -31,9 +31,9 @@ namespace ReversalTower
         bool DdaPanelConsumesMouse()
         {
             if(AutoRunArgs.IsAutomationProcess)return false;
-            if (!(ddaPanelLoaded ? showDdaPanel : PlayerPrefs.GetInt(DdaPanelPref, 0) == 1) ||
+            if (!ddaPanelLoaded || !showDdaPanel ||
                 (mode != ScreenMode.Battle && mode != ScreenMode.Result) || save == null || spec == null ||
-                stats == null || stats.Count == 0) return false;
+                !TutorialActive&&(stats == null || stats.Count == 0)) return false;
             float scale = DdaPanelScale();
             var mouse = Input.mousePosition;
             var point = new Vector2(mouse.x / scale, (Screen.height - mouse.y) / scale);
@@ -57,7 +57,7 @@ namespace ReversalTower
             public void Dispose() { GUI.EndScrollView(); GUI.matrix = previous; }
         }
 
-        DdaPanelScope BeginDdaHistoryPanel(float contentWidth, float tableHeight)
+        DdaPanelScope BeginDdaHistoryPanel(float contentWidth, float tableHeight,bool tutorialMode=false)
         {
             var previous = GUI.matrix;
             float gameScale = Mathf.Min(Screen.width / 1600f, Screen.height / 900f);
@@ -65,9 +65,9 @@ namespace ReversalTower
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1));
             float sw = Screen.width / scale, sh = Screen.height / scale;
             float letterbox = (Screen.height - 900 * gameScale) * .5f;
-            float defaultY = Mathf.Max(8, (letterbox + 166 * gameScale + 4) / scale);
+            float defaultY = Mathf.Max(8, (letterbox + (tutorialMode?470:166) * gameScale + 4) / scale);
             float bottom = Mathf.Min(sh - 8, (letterbox + 752 * gameScale) / scale);
-            float contentHeight = tableHeight + (ddaHistoryExpanded ? DdaGraphHeight : 0);
+            float contentHeight = tableHeight + (!tutorialMode&&ddaHistoryExpanded ? DdaGraphHeight : 0);
             ddaPanelWindow.Resolve(sw, sh, contentWidth + 20,
                 Mathf.Min(contentHeight + 54, Mathf.Max(60, bottom - defaultY)), defaultY);
             HandleDdaPanelResize();
@@ -80,7 +80,7 @@ namespace ReversalTower
             // or parrying merely to fold this developer overlay; the wheel can still scroll it.
             float foldWidth = Mathf.Min(142, width - 12);
             Text(x + width - foldWidth - 24, y + 7, foldWidth, 24,
-                ddaHistoryExpanded ? "F9 그래프 접기 ▲" : "F9 그래프 펼치기 ▼", 13, Palette.Gold, TextAnchor.UpperRight);
+                tutorialMode?(ddaHistoryExpanded?"F9 관측 접기 ▲":"F9 관측 펼치기 ▼"):(ddaHistoryExpanded ? "F9 그래프 접기 ▲" : "F9 그래프 펼치기 ▼"), 13, Palette.Gold, TextAnchor.UpperRight);
             DrawDdaResizeHandles();
             // Expand the graph with the viewport; retain the table's minimum width and scroll
             // for the wider result columns. Reserve scrollbar/resize-handle gutters.

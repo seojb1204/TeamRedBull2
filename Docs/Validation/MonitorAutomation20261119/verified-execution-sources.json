@@ -1,0 +1,460 @@
+{
+  "entries": [
+    {
+      "suite": "tutorial-state",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-state",
+      "file": "Tests/TutorialSession/Program.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/GameData.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/GameServices.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Tests/UnityShim.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Tests/TutorialPersistenceTests.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/GameData.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/GameServices.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Tests/UnityShim.cs",
+      "matches": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Tests/TutorialDdaIntegrationTests.cs",
+      "matches": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/GameData.cs",
+      "matches": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/GameServices.cs",
+      "matches": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "matches": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/CloudSync.cs",
+      "matches": true
+    },
+    {
+      "suite": "queue",
+      "file": "Tests/CloudSyncStatus/Stubs.cs",
+      "matches": true
+    },
+    {
+      "suite": "queue",
+      "file": "Tests/CloudQueueIntegrationTests.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/GameData.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/GameServices.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Tests/UnityShim.cs",
+      "matches": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Tests/AdaptationColdStartTests.cs",
+      "matches": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/GameData.cs",
+      "matches": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/GameServices.cs",
+      "matches": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "matches": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/CloudSync.cs",
+      "matches": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Tests/CloudSyncStatus/Stubs.cs",
+      "matches": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Tests/ProficiencyHttpTests.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/GameData.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/GameServices.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Tests/UnityShim.cs",
+      "matches": true
+    },
+    {
+      "suite": "selective",
+      "file": "Tests/SelectiveIntegrationTests.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/GameData.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/GameServices.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Tests/UnityShim.cs",
+      "matches": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Tests/DdaMonitorTests.cs",
+      "matches": true
+    }
+  ],
+  "note": "Manifest commit is previous HEAD; source SHA256 captures tested edits."
+}

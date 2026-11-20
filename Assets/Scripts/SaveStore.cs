@@ -60,9 +60,22 @@ namespace ReversalTower
                 }
                 File.WriteAllText(temp,JsonUtility.ToJson(data,true),Encoding.UTF8);
                 if(File.Exists(SavePath))File.Replace(temp,SavePath,SavePath+".bak");else File.Move(temp,SavePath);
-                ActivePlayerId=data.cloudPlayerId;LastError=null;return true;
+                ActivePlayerId=data.cloudPlayerId;LastError=null;QueueAssessments(data);return true;
             }
             catch(Exception e){LastError="저장 실패: "+e.Message;Debug.LogError(LastError);return false;}
+        }
+        public static void LogLearning(string battleId,DdaTraceReport trace)
+        {
+            if(!Uuid(battleId)||trace==null)return;
+            try{string dir=Path.Combine(Root,"DdaLearning");Directory.CreateDirectory(dir);File.WriteAllText(Path.Combine(dir,battleId+".json"),JsonUtility.ToJson(trace,true));}catch(Exception){Debug.LogWarning("DDA 진단 로그 저장 실패 (전투/학습 유지)");}
+        }
+        public static void LogApplied(string session,string boss,string pattern,int decision,int level,float windup,float damage,float cooldown,string reason)
+        {
+            try{string dir=Path.Combine(Root,"DdaApplied");Directory.CreateDirectory(dir);string file=Path.Combine(dir,session+".csv");if(File.Exists(file)&&new FileInfo(file).Length>16*1024*1024)return;
+                var ci=System.Globalization.CultureInfo.InvariantCulture;
+                if(!File.Exists(file))File.WriteAllText(file,"boss,pattern,decision,assignedLevel,windup,damage,cooldown,reason\n");
+                File.AppendAllText(file,string.Join(",",new[]{Csv(boss),Csv(pattern),decision.ToString(ci),level.ToString(ci),windup.ToString("R",ci),damage.ToString("R",ci),cooldown.ToString("R",ci),Csv(reason)})+"\n");
+            }catch(Exception){Debug.LogWarning("적용 난이도 로그 저장 실패 (전투 유지)");}
         }
         // 전투 기록이 남을 때마다 알림 (CloudSync가 DB로 보냄). 저장 실패와 무관하게 호출된다.
         // Local-only diagnostic stream. No CloudSync hook, no player identity, no existing-file deletion.
@@ -156,17 +169,35 @@ namespace ReversalTower
             if(!Uuid(id))throw new InvalidDataException("Invalid snapshot ID");
             return Path.Combine(ArchiveRoot,"snapshots",id+".json");
         }
+        // 복원 지점·백업은 최근 것만 남긴다. 판마다 세이브 전체가 쌓이면 디스크와 기록 창이 끝없이 무거워진다.
+        // 전투 기록 자체(progress.json의 history)는 지우지 않으므로, 오래된 판은 "복원 데이터 없음"으로만 바뀐다.
+        public const int MaxSnapshots=50, MaxBackups=10;
         static void WriteNew(string path,object data)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             string temp=path+".tmp-"+Guid.NewGuid().ToString("N");
-            File.WriteAllText(temp,JsonUtility.ToJson(data,true),Encoding.UTF8);
+            // 보관 파일은 사람이 읽을 일이 거의 없어 한 줄로 저장한다 (들여쓰기 저장 대비 수 배 작다)
+            File.WriteAllText(temp,JsonUtility.ToJson(data,false),Encoding.UTF8);
             File.Move(temp,path); // Immutable: never replace a previous archive.
+        }
+        // 가장 최근 keep개만 남기고 오래된 보관 파일을 지운다. 실패해도 저장·복원 흐름은 막지 않는다.
+        static void Prune(string dir,int keep)
+        {
+            try
+            {
+                if(!Directory.Exists(dir))return;
+                var files=new DirectoryInfo(dir).GetFiles("*.json");
+                if(files.Length<=keep)return;
+                Array.Sort(files,(a,b)=>{int c=b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc);return c!=0?c:string.CompareOrdinal(b.Name,a.Name);});
+                for(int i=keep;i<files.Length;i++)try{files[i].Delete();}catch{}
+            }
+            catch(Exception e){Debug.LogWarning("보관 파일 정리 실패 (진행에는 영향 없음): "+e.Message);}
         }
         static void Backup(SaveData data)
         {
             var copy=Clone(data);EnsureIdentity(copy,false);
             WriteNew(Path.Combine(ArchiveRoot,"backups",Guid.NewGuid()+".json"),copy);
+            Prune(Path.Combine(ArchiveRoot,"backups"),MaxBackups);
         }
         // Called only after rewards/learning are settled. The committed save is the source of truth.
         public static bool CommitCompletedBattle(SaveData data,HistoryEntry battle)
@@ -185,6 +216,7 @@ namespace ReversalTower
                 committed.history=new System.Collections.Generic.List<HistoryEntry>();
                 WriteNew(SnapshotPath(id),new Snapshot{id=id,createdAtUtc=DateTime.UtcNow.ToString("o"),battle=h,state=committed});
                 battle.snapshotId=id; // Archive remains discoverable even if this convenience reference is not saved.
+                Prune(Path.Combine(ArchiveRoot,"snapshots"),MaxSnapshots);
                 LastError=null;return true;
             }
             catch(Exception e){LastError="진행 저장 완료, 복원 지점 생성 실패: "+e.Message;Debug.LogWarning(LastError);return false;}
@@ -232,5 +264,165 @@ namespace ReversalTower
             catch(Exception e){LastError="프로필 변경 실패 (기존 진행 유지): "+e.Message;Debug.LogWarning(LastError);return false;}
             finally{ProfileOperationInProgress=false;}
         }
+    }
+}
+
+namespace ReversalTower
+{
+    // Separate protected telemetry outbox. Existing CloudQueue and progress/archive formats are untouched.
+    public static partial class SaveStore
+    {
+        [Serializable] public sealed class ProficiencyEnvelope {public string kind,profile,eventId,assessmentId,ownerKey,payload;}
+        public static event Action ProficiencyQueued;
+        static readonly System.Collections.Generic.Dictionary<string,string> proficiencyStates=new System.Collections.Generic.Dictionary<string,string>();
+        public static string ProficiencyQueueRoot=>Path.Combine(Root,"ProficiencyOutbox");
+        public static string ProficiencyStatus=>ProficiencyState(ActivePlayerId);
+        public static string ProficiencyState(string profile)
+        {
+            if(!Uuid(profile))return "평가 프로필 미준비";
+            string id=new Guid(profile).ToString();string state;if(proficiencyStates.TryGetValue(id,out state))return state;
+            int count=Directory.Exists(ProficiencyQueueRoot)?Directory.GetFiles(ProficiencyQueueRoot,id+"_*.json").Length:0;
+            return count>0?"보호 전송 로컬 대기 "+count+"건 · migration/설정 필요":"보호 전송 기록 없음";
+        }
+        public static void SetProficiencyState(string profile,string state){if(Uuid(profile))proficiencyStates[new Guid(profile).ToString()]=state;}
+        static string KeyPath(string profile)=>Path.Combine(Root,"ProficiencyKeys",new Guid(profile)+".key");
+        static string HashText(string text){using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(text))).Replace("-","").ToLowerInvariant();}
+        static string EventId(string text){using(var sha=System.Security.Cryptography.SHA256.Create()){var bytes=sha.ComputeHash(Encoding.UTF8.GetBytes(text));var id=new byte[16];Array.Copy(bytes,id,16);return new Guid(id).ToString();}}
+        public static string AssessmentEventId(string profile,TutorialAssessment a)
+        {
+            DateTimeOffset stamp;if(!Uuid(profile)||a==null||!DateTimeOffset.TryParse(a.completedAtUtc,out stamp)||(!a.completed&&!a.skipped))return null;
+            return EventId(new Guid(profile)+"|"+(a.isFirstAssessment?"initial":"replay")+"|"+stamp.ToUniversalTime().ToString("o"));
+        }
+        [Serializable] sealed class AssessmentPayload {public TutorialAssessment assessment;}
+        [Serializable] sealed class BattlePayload {public HistoryEntry battle;public System.Collections.Generic.List<PatternStats> samples;}
+        [System.Runtime.InteropServices.DllImport("libc",SetLastError=true)] static extern int chmod(string path,uint mode);
+        static void PrivatePath(string path,uint mode){if(Environment.OSVersion.Platform==PlatformID.Unix&&chmod(path,mode)!=0)throw new IOException("Cannot protect local telemetry key permissions");}
+        static string Capability(string profile,bool create)
+        {
+            string path=KeyPath(profile);
+            if(!File.Exists(path))
+            {
+                if(!create||File.Exists(path+".owner"))throw new IOException("Original profile capability unavailable; pending telemetry retained");
+                Directory.CreateDirectory(Path.GetDirectoryName(path));PrivatePath(Path.GetDirectoryName(path),448);
+                var bytes=new byte[32];using(var rng=System.Security.Cryptography.RandomNumberGenerator.Create())rng.GetBytes(bytes);
+                string secret=BitConverter.ToString(bytes).Replace("-","").ToLowerInvariant();
+                using(var stream=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.None)){var raw=Encoding.UTF8.GetBytes(secret);stream.Write(raw,0,raw.Length);}
+                PrivatePath(path,384);File.WriteAllText(path+".owner",HashText(secret));
+            }
+            if(new FileInfo(path).Length>128)throw new IOException("Invalid capability size");
+            string value=File.ReadAllText(path);if(value.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(value,"^[0-9a-f]{64}$"))throw new IOException("Invalid profile capability; no replacement generated");return value;
+        }
+        static void QueueProtected(string kind,SaveData data,string id,string assessment,string payload)
+        {
+            if(data==null||!Uuid(data.cloudPlayerId)||!Uuid(id))return;
+            string profile=new Guid(data.cloudPlayerId).ToString();
+            try
+            {
+                string receipt=Path.Combine(Root,"ProficiencyReceipts",profile+"_"+id+".ok");if(File.Exists(receipt))return;
+                Directory.CreateDirectory(ProficiencyQueueRoot);string path=Path.Combine(ProficiencyQueueRoot,profile+"_"+id+".json");if(File.Exists(path))return;
+                string secret=Capability(profile,true);
+                WriteNew(path,new ProficiencyEnvelope{kind=kind,profile=profile,eventId=id,assessmentId=assessment,ownerKey=HashText(secret),payload=payload});
+                SetProficiencyState(profile,"로컬 보호 전송 대기 · "+kind);try{ProficiencyQueued?.Invoke();}catch{SetProficiencyState(profile,"로컬 대기 · 동기화 시작 실패");}
+            }
+            catch(Exception){SetProficiencyState(profile,"보호 전송 큐 저장 실패 · 진행/평가는 이미 로컬 저장됨");}
+        }
+        public static void QueueAssessments(SaveData data)
+        {
+            if(data==null)return;
+            try{foreach(var a in new[]{data.tutorialAssessment,data.tutorialReplayAssessment})
+            {string id=AssessmentEventId(data.cloudPlayerId,a);if(id!=null)QueueProtected("assessment",data,id,null,JsonUtility.ToJson(new AssessmentPayload{assessment=a}));}}
+            catch{SetProficiencyState(data.cloudPlayerId,"평가 큐 직렬화 실패 · 로컬 저장은 유지");}
+        }
+        public static void QueueProficiencyBattle(SaveData data,HistoryEntry battle,System.Collections.Generic.List<PatternStats> samples)
+        {
+            if(data==null||data.tutorialAssessment==null||battle==null||battle.abandoned||!Uuid(battle.battleId))return;
+            try{QueueAssessments(data);
+            string assessment=InitialDifficulty.ValidAssessment(data.tutorialAssessment)?AssessmentEventId(data.cloudPlayerId,data.tutorialAssessment):null;
+            QueueProtected("battle",data,battle.battleId,assessment,JsonUtility.ToJson(new BattlePayload{battle=battle,samples=samples}));}
+            catch{SetProficiencyState(data.cloudPlayerId,"전투 보호 큐 생성 실패 · 진행 저장은 유지");}
+        }
+        public static string ProficiencyKind(string file){if(new FileInfo(file).Length>1024*1024)throw new InvalidDataException();return JsonUtility.FromJson<ProficiencyEnvelope>(File.ReadAllText(file)).kind;}
+        public static ProficiencyEnvelope ReadProficiency(string file,out string secret)
+        {
+            secret=null;if(new FileInfo(file).Length>1024*1024)throw new InvalidDataException("Telemetry envelope too large");
+            var e=JsonUtility.FromJson<ProficiencyEnvelope>(File.ReadAllText(file));
+            if(e==null||!Uuid(e.profile)||!Uuid(e.eventId)||(e.kind!="assessment"&&e.kind!="battle")||string.IsNullOrEmpty(e.payload))throw new InvalidDataException("Invalid protected telemetry");
+            secret=Capability(e.profile,false);if(HashText(secret)!=e.ownerKey)throw new InvalidDataException("Profile capability owner mismatch");return e;
+        }
+        public static void AcknowledgeProficiency(string file,ProficiencyEnvelope e)
+        {
+            string dir=Path.Combine(Root,"ProficiencyReceipts");Directory.CreateDirectory(dir);string receipt=Path.Combine(dir,new Guid(e.profile)+"_"+e.eventId+".ok");
+            if(!File.Exists(receipt))File.WriteAllText(receipt,"accepted");File.Delete(file);SetProficiencyState(e.profile,"보호 전송 성공 · 원시 데이터는 공개 조회 불가");
+        }
+    }
+}
+
+namespace ReversalTower
+{
+    // Opt-in, bounded, background-only disk output. Immutable JSON strings cross the thread boundary.
+    // This class never reads or changes SaveStore data. Each publisher owns a fresh session directory.
+    public sealed class DdaMonitorSink : IDisposable
+    {
+        public const int MaxPacketBytes=262144,MaxQueuedEvents=32;
+        public const long MaxHistoryBytes=16*1024*1024;
+        public readonly string SessionId,DirectoryPath;
+        readonly object gate=new object();readonly System.Threading.AutoResetEvent wake=new System.Threading.AutoResetEvent(false);
+        readonly System.Collections.Generic.Queue<string> events=new System.Collections.Generic.Queue<string>();
+        readonly System.Threading.Thread worker;string pending;bool stopping;long lastHistoryWrite;
+        int dropped,writeErrors;volatile bool historyLimit;
+        public int Dropped=>System.Threading.Volatile.Read(ref dropped);
+        public int WriteErrors=>System.Threading.Volatile.Read(ref writeErrors);
+        public bool HistoryLimitReached=>historyLimit;
+        public DdaMonitorSink(string root)
+        {
+            if(string.IsNullOrWhiteSpace(root)||!Path.IsPathRooted(root))throw new ArgumentException("Explicit absolute diagnostics directory required");
+            SessionId=Guid.NewGuid().ToString("N");DirectoryPath=Path.Combine(Path.GetFullPath(root),"DdaLive",SessionId);
+            Directory.CreateDirectory(DirectoryPath);
+            worker=new System.Threading.Thread(Work){IsBackground=true,Name="DDA diagnostic writer"};worker.Start();
+        }
+        public bool Offer(string immutableJson,bool important)
+        {
+            if(string.IsNullOrEmpty(immutableJson)||Encoding.UTF8.GetByteCount(immutableJson)>MaxPacketBytes){System.Threading.Interlocked.Increment(ref dropped);return false;}
+            lock(gate)
+            {
+                if(stopping)return false;
+                if(important){if(pending!=null){pending=null;System.Threading.Interlocked.Increment(ref dropped);}if(events.Count>=MaxQueuedEvents){events.Dequeue();System.Threading.Interlocked.Increment(ref dropped);}events.Enqueue(immutableJson);}
+                else {if(pending!=null)System.Threading.Interlocked.Increment(ref dropped);pending=immutableJson;}
+            }
+            wake.Set();return true;
+        }
+        void Write(string json,bool important)
+        {
+            try
+            {
+                string temp=Path.Combine(DirectoryPath,"latest.tmp"),target=Path.Combine(DirectoryPath,"latest.json");
+                File.WriteAllText(temp,json,new UTF8Encoding(false));
+                if(File.Exists(target))File.Replace(temp,target,null);else File.Move(temp,target);
+                long now=System.Diagnostics.Stopwatch.GetTimestamp();
+                if(!important&&now-lastHistoryWrite<System.Diagnostics.Stopwatch.Frequency)return;
+                lastHistoryWrite=now;string history=Path.Combine(DirectoryPath,"events.jsonl");
+                int bytes=Encoding.UTF8.GetByteCount(json)+1;
+                if((File.Exists(history)?new FileInfo(history).Length:0)+bytes>MaxHistoryBytes){historyLimit=true;return;}
+                File.AppendAllText(history,json+"\n",new UTF8Encoding(false));
+            }catch(Exception){System.Threading.Interlocked.Increment(ref writeErrors);}
+        }
+        void Work()
+        {
+            while(true)
+            {
+                wake.WaitOne(250);string json=null;bool important=false,done;
+                lock(gate)
+                {
+                    if(events.Count>0){json=events.Dequeue();important=true;}
+                    else {json=pending;pending=null;}
+                    done=stopping&&events.Count==0&&pending==null;
+                }
+                if(json!=null)Write(json,important);
+                if(done)break;
+                lock(gate){if(events.Count>0||pending!=null)wake.Set();}
+            }
+        }
+        // Only used at shutdown/domain teardown, never as a per-frame flush.
+        public void Dispose(){lock(gate){if(stopping)return;stopping=true;}wake.Set();worker.Join(150);}
     }
 }

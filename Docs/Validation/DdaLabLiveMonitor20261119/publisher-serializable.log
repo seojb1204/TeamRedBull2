@@ -1,0 +1,1 @@
+monitor 0 ['PASS history stops at 16MiB without deleting records', 'PASS important event cannot be overwritten by an older coalesced snapshot', 'PASS background I/O failure recorded without game exception', 'DDA_MONITOR_PASS 34 HEADLESS; fixture output /tmp/dda-monitor-test-d1e1c6c8ba0c4900beee87dce4e1cebd/diagnostics']

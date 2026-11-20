@@ -48,8 +48,9 @@ public static class HeadlessTests
                 // DDA 패널의 '다음 판' 미리보기: 몇 번 불러도 같은 답이고 학습하지 않는다
                 var previewSave=new SaveData();var arakus=Catalog.Bosses[0];double[] context;string reason;
                 int first=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
+                string beforePreview=JsonUtility.ToJson(previewSave.Learning("arakus"));
                 int again=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
-                Check(first==again&&previewSave.Learning("arakus").battles==0&&reason=="첫 만남 · 기본 난이도","DDA next-battle preview does not learn");
+                Check(first==again&&previewSave.Learning("arakus").battles==0&&reason=="첫 만남 · 기본 난이도 · 유효 통계/평가 없음"&&beforePreview==JsonUtility.ToJson(previewSave.Learning("arakus")),"DDA next-battle preview does not learn");
                 var learned=previewSave.Learning("arakus");learned.battles=5;var memory=learned.Pattern("cleave");memory.level=2;memory.observations=3;memory.success=1;
                 int capped=DdaBattleSession.Decide(previewSave,arakus,arakus.patterns[0],true,out context,out reason);
                 Check(capped==2&&reason.Contains("이미 가장 어려움"),"DDA reason says when the hardest level is already reached");
@@ -144,10 +145,12 @@ public static class HeadlessTests
         loaded.cardOffer=new[]{"blade","vitality","remedy"};string error;
         Check(LobbyCards.Purchase(loaded,"blade",out error),"Offered card purchase succeeds");
         Check(loaded.gold==920&&loaded.cardPurchases==1&&LobbyCards.Count(loaded,"blade")==1,"Purchase deducts once and adds one permanent stack");
-        int beforeGold=loaded.gold;Check(!LobbyCards.Purchase(loaded,"vitality",out error)&&loaded.gold==beforeGold,"Double selection blocked without consuming gold");
-        loaded=SaveStore.Load();Check(loaded.cardChosen&&LobbyCards.Count(loaded,"blade")==1&&loaded.gold==920,"Chosen state and permanent effect survive restart");
+        // main's PR51 commit 5c51ba3 intentionally clears each purchased offer and permits
+        // another purchase after reopening. Product LobbyCards.cs is unchanged in this candidate.
+        int beforeGold=loaded.gold;Check(!LobbyCards.Purchase(loaded,"vitality",out error)&&loaded.gold==beforeGold,"Stale cleared offer cannot consume gold");
+        loaded=SaveStore.Load();Check(!loaded.cardChosen&&loaded.cardOffer.Length==0&&LobbyCards.Count(loaded,"blade")==1&&loaded.gold==920,"PR51 purchase persists exact gold and stack while clearing the old offer");
         Start();game.save=loaded;game.mode=ScreenMode.Lobby;game.showHelp=false;
-        game.OpenCards();Check(!game.showCards,"Completed lobby cannot open another selection");
+        game.OpenCards();Check(game.showCards&&game.save.cardOffer.Length==3&&game.save.gold==920&&LobbyCards.Count(game.save,"blade")==1,"PR51 reopens three-card offer without charging or granting another stack");
         game.save.tutorialOnboardingVersion=1;game.StartBattle(0);Check(!game.showCards&&game.maxHp==130,"Battle entry hides cards and uses accumulated health");
         Call("EndBattle",false);Check(!game.save.cardChosen&&game.save.cardOffer.Length==0,"Battle settlement unlocks next lobby offer");
         Check(LobbyCards.Count(game.save,"blade")==1,"Death preserves permanent cards");

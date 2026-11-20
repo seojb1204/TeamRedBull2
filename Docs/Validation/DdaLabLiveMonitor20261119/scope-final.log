@@ -1,0 +1,46 @@
+PASS immutable full main baseline
+PASS only reviewed product scripts changed; no assets/scenes/prefabs/settings
+PASS exact reviewed bytes Assets/Scripts/BossPatternSystem.cs
+PASS exact reviewed bytes Assets/Scripts/CloudSync.cs
+PASS exact reviewed bytes Assets/Scripts/DdaHistoryGraph.cs
+PASS exact reviewed bytes Assets/Scripts/DdaPanel.cs
+PASS exact reviewed bytes Assets/Scripts/GameData.cs
+PASS exact reviewed bytes Assets/Scripts/GameServices.cs
+PASS exact reviewed bytes Assets/Scripts/GameUI.cs
+PASS exact reviewed bytes Assets/Scripts/NativeGameUI.cs
+PASS exact reviewed bytes Assets/Scripts/SaveStore.cs
+PASS exact reviewed bytes Assets/Scripts/TowerGame.Tutorial.cs
+PASS exact reviewed bytes Assets/Scripts/TowerGame.cs
+PASS exact reviewed bytes Assets/Scripts/TutorialSession.cs
+PASS Lab runtime excluded unless explicitly reviewed as standalone tool
+PASS unchanged latest main LobbyCards.cs
+PASS unchanged latest main ArakusAnimationSelection.cs
+PASS unchanged latest main ArakusVisuals.cs
+PASS unchanged latest main ActorView.cs
+PASS unchanged latest main WorldArtist.cs
+PASS unchanged latest main PhanesPose.cs
+PASS unchanged latest main AutoRun.cs
+PASS unchanged latest main PixelAgentBridge.cs
+PASS unchanged latest main Soundscape.cs
+PASS main method unchanged TowerGame.cs void BeginAction(
+PASS main method unchanged TowerGame.cs void TickAction(
+PASS main method unchanged TowerGame.cs void HandleEscape(
+PASS main method unchanged TowerGame.cs bool QueueScreenChange(
+PASS main method unchanged TowerGame.cs void TickTransition(
+PASS main method unchanged TowerGame.Tutorial.cs void TickTutorialOpponent(
+PASS main method unchanged TowerGame.Tutorial.cs void TutorialActionStarted(
+PASS main method unchanged TowerGame.Tutorial.cs void RestoreTutorialProfile(
+PASS main method unchanged TutorialSession.cs void ResolveThreat(
+PASS main method unchanged TutorialSession.cs void CompleteThreatFeedback(
+PASS main method unchanged BossPatternSystem.cs void ExecutePattern(
+PASS main method unchanged BossPatternSystem.cs void FirePhanesStars(
+PASS main method unchanged GameData.cs double Reward(
+PASS main method unchanged GameData.cs void Update(
+PASS main method unchanged GameData.cs double Value(
+PASS main method unchanged SaveStore.cs string ResolveUploadOwner(
+PASS main method unchanged SaveStore.cs bool CommitCompletedBattle(
+PASS exact real main settings-save logic retained
+PASS existing tutorial scoring formula unchanged
+PASS new telemetry defaults OFF
+PASS HTTP catalog-only constant matches real Phanes constant
+SELECTIVE_PRESERVATION_PASS 45

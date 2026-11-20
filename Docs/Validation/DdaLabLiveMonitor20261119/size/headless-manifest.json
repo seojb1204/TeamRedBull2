@@ -1,0 +1,32 @@
+{
+  "base_commit": "56b68ffe327d6bd22db67d50264e70aee2061268",
+  "source_sha256": {
+    "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+    "Assets/Scripts/TowerGame.Tutorial.cs": "3f9056d20d7da16df034f276d41587f7eb9605751d192d508741a0391f940a2b",
+    "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+    "Assets/Scripts/TowerGame.cs": "132adc95929448e94cd931a9befbacd2390c70aefd1298472110a81edde70d2e",
+    "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "Assets/Scripts/SaveStore.cs": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+    "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+    "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+    "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+    "Assets/Scripts/BossPatternSystem.cs": "9b0e4e628db8d4596cb7b2a28ff6878f63ca8c8adcb35612a82333080b17ac35",
+    "Assets/Scripts/GameServices.cs": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+    "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+    "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+    "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+    "Tests/HeadlessTests.cs": "5a7e0e239e905a8d4cfc1c326a89253e78fa71a761d482318a1c373f73c3c71d",
+    "Tests/ArakusAnimationTests.cs": "1249f871dd8099d8593b7a869ddd6552f4d5552ddd5a1befce65a5593ca8e010",
+    "Tests/ArakusSizeTests.cs": "7ccfe537319bfe303153a40dfdae6afdcc65f39109ddf631e874a5d1077ff3c6"
+  },
+  "tests": {
+    "HeadlessTests": 0,
+    "ArakusAnimationTests": 134,
+    "ArakusSizeTests": 1
+  },
+  "limits": [
+    "HEADLESS UnityShim, not Unity API compilation/rendering",
+    "No actual editor transforms or graphics/Windows build",
+    "No real DB or existing saves"
+  ]
+}

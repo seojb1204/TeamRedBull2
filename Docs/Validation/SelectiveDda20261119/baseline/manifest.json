@@ -1,0 +1,56 @@
+{
+  "base": "151b5256d8203ebd28f7b8466738f8c12d5ea973",
+  "projection": "Exact original main sources plus current isPlaying shim and exact unmodified GameUI SettingsProfile/CloseSettings partial to resolve HEADLESS boundary; no original source edits.",
+  "sources": {
+    "TutorialSession.cs": "a965999bdcc85214f08756759ab087cd2c4c1e2407b7e5aa7d6725a2a77b3c05",
+    "TowerGame.Tutorial.cs": "fe44499fb7a655bfb225e2efd8cf9fd62c82572c03191ef349473359f26a55f2",
+    "GameData.cs": "fb8bee2d2cf33036d39744bf8a82279ff195511edb47952bcc256e312dff3eeb",
+    "TowerGame.cs": "4e75346a62772a435fb9073b1ce65f436e6db1f75e94caf1bed38a0a2ded0482",
+    "BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "SaveStore.cs": "79d6bdcd5474b7bb4d513b35d102e8d5a486b6f3a37c671e0edbb70b7cf748bb",
+    "LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+    "AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+    "LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+    "BossPatternSystem.cs": "5357343877d311767ef41cbf4736f72622751026c23be25b05eccb7d5cf67cc5",
+    "GameServices.cs": "7dcd5985c0ca68f859961bbf3e34f8b00583b5ffd551b8e07b5bf5b29a7fa904",
+    "ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+    "ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+    "UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+    "MainSettingsProjection.cs": "1e104d9bc5291b71f6d4dce3152f75e975bb55fec91ee13e40c6fd90f253b14e"
+  },
+  "tests": {
+    "ArakusAnimationTests": {
+      "exit": 134,
+      "tail": [
+        "--------------------------------------------------------------------------------------",
+        "/workspace/dda-selective-results/main-baseline/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/workspace/dda-selective-results/main-baseline/ArakusAnimationTests.csproj]",
+        "/workspace/dda-selective-results/main-baseline/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/workspace/dda-selective-results/main-baseline/ArakusAnimationTests.csproj]",
+        "Unhandled exception. System.Exception: walk follows distance instead of wall clock",
+        "   at ArakusAnimationTests.Check(Boolean b, String s) in /workspace/dda-selective-results/main-baseline/ArakusAnimationTests.cs:line 5",
+        "   at ArakusAnimationTests.Main() in /workspace/dda-selective-results/main-baseline/ArakusAnimationTests.cs:line 10"
+      ]
+    },
+    "ArakusSizeTests": {
+      "exit": 1,
+      "tail": [
+        "/workspace/dda-selective-results/main-baseline/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/workspace/dda-selective-results/main-baseline/ArakusSizeTests.csproj]",
+        "/workspace/dda-selective-results/main-baseline/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/workspace/dda-selective-results/main-baseline/ArakusSizeTests.csproj]",
+        "System.Exception: cleave actual hit boundary 1 3.9899998 0",
+        "   at ArakusSizeTests.Check(Boolean ok, String name) in /workspace/dda-selective-results/main-baseline/ArakusSizeTests.cs:line 4",
+        "   at ArakusSizeTests.Enemy(String id, Int32 face, Single distance, Single y, Boolean parry, Boolean dash, Boolean expectHit, Int32 level, Boolean rage) in /workspace/dda-selective-results/main-baseline/ArakusSizeTests.cs:line 14",
+        "   at ArakusSizeTests.Main() in /workspace/dda-selective-results/main-baseline/ArakusSizeTests.cs:line 43"
+      ]
+    },
+    "ArakusChargePolishTests": {
+      "exit": 134,
+      "tail": [
+        "/workspace/dda-selective-results/main-baseline/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.csproj]",
+        "/workspace/dda-selective-results/main-baseline/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.csproj]",
+        "Unhandled exception. System.Exception: windup pose",
+        "   at ArakusChargePolishTests.Check(Boolean value, String name) in /workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.cs:line 9",
+        "   at ArakusChargePolishTests.Rush(Int32 level, Boolean rage, Single dt) in /workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.cs:line 30",
+        "   at ArakusChargePolishTests.Main() in /workspace/dda-selective-results/main-baseline/ArakusChargePolishTests.cs:line 73"
+      ]
+    }
+  }
+}

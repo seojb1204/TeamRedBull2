@@ -1,0 +1,192 @@
+{
+  "commit": "151b5256d8203ebd28f7b8466738f8c12d5ea973",
+  "suites": {
+    "tutorial-state": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Tests/TutorialSession/Program.cs": "83437a8feea4edd1e8103f75ebc1b137f0c35087a55d2dfc219336de989a0014"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-3tofno41/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS single dodge keeps expert confidence limited",
+        "PASS single lucky parry remains low confidence normal",
+        "PASS repeated observed failure can reach novice",
+        "30 PASS, 0 FAIL"
+      ]
+    },
+    "tutorial-save": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "0d689079dde4d415245835b5a0919741cc96aca438bea564bba1e6de0d5bb027",
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/TowerGame.cs": "7d9628ffbe0b0efffc5a09dfb56147e8394d5e486c5cf0390e246062ed086cbf",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+        "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+        "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+        "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+        "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+        "Tests/TutorialPersistenceTests.cs": "2d0cea4b15c5f6a5b6c322ed4c5dd9d3e010a3bb2361b1ddfe7d8536035f9285"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-nk9p166y/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "\uc800\uc7a5 \uc2e4\ud328: The file '/tmp/tutorial-save-57e8dde8-cf17-473e-af5e-8bb668ba85ca/not-directory' already exists.",
+        "PASS cancel failed replay retains first assessment",
+        "PASS cancel safely returns replay lobby",
+        "7 PASS, 0 FAIL"
+      ]
+    },
+    "tutorial-dda": {
+      "exit": 134,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "0d689079dde4d415245835b5a0919741cc96aca438bea564bba1e6de0d5bb027",
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/TowerGame.cs": "7d9628ffbe0b0efffc5a09dfb56147e8394d5e486c5cf0390e246062ed086cbf",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+        "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+        "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+        "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+        "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+        "Tests/TutorialDdaIntegrationTests.cs": "c15207e491961f13b2f34b0682232dd1fa475d57ab44359034a3199d857b72b9",
+        "Tests/Contracts/TutorialAssessmentLabAdapter.cs": "4928389e50abaa9b7ba45e8bddb610be96ddbb3bf33d7f839bcdfc029616a4b0"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-2e6c3r77/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS failed completion remains retryable through Update",
+        "Unhandled exception. System.Exception: same Enter used for completion retry cannot also start a boss battle",
+        "   at TutorialDdaIntegrationTests.Check(Boolean ok, String name) in /workspace/dda-selective/Tests/TutorialDdaIntegrationTests.cs:line 10",
+        "   at TutorialDdaIntegrationTests.Main() in /workspace/dda-selective/Tests/TutorialDdaIntegrationTests.cs:line 74"
+      ]
+    },
+    "queue": {
+      "exit": 1,
+      "source_sha256": {
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/CloudSync.cs": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+        "Tests/CloudSyncStatus/Stubs.cs": "5def1668f58c3d5ea3970aa77034a1638b8836f0037fd36b20e3a4f35c5d8229",
+        "Tests/CloudQueueIntegrationTests.cs": "fcd81523653d0d4a875f1decad5c575eca3b68c9df506f597b419ee270399964"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-c3h6_o04/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "/workspace/dda-selective/Assets/Scripts/CloudSync.cs(24,110): warning CS0649: Field 'CloudSync.DifficultyRow.group_name' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-c3h6_o04/QA.csproj]",
+        "/workspace/dda-selective/Assets/Scripts/CloudSync.cs(24,181): warning CS0649: Field 'CloudSync.DifficultyRow.success_rate' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-c3h6_o04/QA.csproj]",
+        "",
+        "The build failed. Fix the build errors and run again."
+      ]
+    },
+    "adaptation": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/TowerGame.Tutorial.cs": "0d689079dde4d415245835b5a0919741cc96aca438bea564bba1e6de0d5bb027",
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/TowerGame.cs": "7d9628ffbe0b0efffc5a09dfb56147e8394d5e486c5cf0390e246062ed086cbf",
+        "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+        "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+        "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+        "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+        "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+        "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+        "Tests/AdaptationColdStartTests.cs": "7cdbe4c2c29b27490fb29fcebe00fc77ac9bd4d36950f06f45603cd08fb30cd4"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-2k6mevfx/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS active clear time changes actual score",
+        "PASS reading and pause increase elapsed but never lower score",
+        "PASS perfect but sparse tutorial evidence cannot certify expert",
+        "ADAPTATION_COLDSTART_PASS 155"
+      ]
+    },
+    "proficiency-http": {
+      "exit": 1,
+      "source_sha256": {
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+        "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/CloudSync.cs": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+        "Tests/CloudSyncStatus/Stubs.cs": "5def1668f58c3d5ea3970aa77034a1638b8836f0037fd36b20e3a4f35c5d8229",
+        "Tests/ProficiencyHttpTests.cs": "724dde6a8bb8eb31dfaa56d8aae7784e2096b299855f7ea8519c5021f8461fad"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-9ut_kn_t/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "/workspace/dda-selective/Assets/Scripts/CloudSync.cs(22,79): warning CS0649: Field 'CloudSync.Config.anonKey' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-9ut_kn_t/QA.csproj]",
+        "/workspace/dda-selective/Assets/Scripts/CloudSync.cs(24,254): warning CS0649: Field 'CloudSync.DifficultyRow.suggested_level' is never assigned to, and will always have its default value 0 [/tmp/tower-cross-qa-9ut_kn_t/QA.csproj]",
+        "",
+        "The build failed. Fix the build errors and run again."
+      ]
+    }
+  },
+  "limits": [
+    "HEADLESS or mocked Unity/HTTP, not Unity API/runtime or real network",
+    "No production DB, credentials, personal saves/queues",
+    "Tutorial groups are not calibrated human skill probabilities"
+  ]
+}

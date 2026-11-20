@@ -1,0 +1,53 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-selective/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-dda-tests-35gbf8x4/Tests.csproj]
+/workspace/dda-selective/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/tower-dda-tests-35gbf8x4/Tests.csproj]
+PASS more than thirty battles retain legacy history
+PASS two thousand summaries save without pruning
+PASS two thousand summaries reload intact
+PASS boot components share fresh identity
+PASS legacy queue embedded owner
+PASS queue identity mismatch refused
+PASS unattributed queue not assigned active ID
+PASS mixed queue owner refused
+PASS post battle commit and snapshot
+PASS snapshot valid
+PASS snapshot exact progression
+PASS snapshot payload nonrecursive
+PASS DDA learning preserved
+PASS active battle reset refused
+PASS reset succeeds
+PASS new identity
+PASS fresh progress learning tutorial
+PASS audio retained
+PASS history retained
+PASS restore succeeds
+PASS restored identity and progress
+PASS later timeline retained after rewind
+PASS restart persistence
+프로필 변경 실패 (기존 진행 유지): Invalid snapshot ID
+PASS invalid snapshot path rejected
+PASS legacy not fabricated
+PASS abandon no snapshot
+프로필 변경 실패 (기존 진행 유지): The file '/tmp/tower-profile-b3fa4f14-88ff-4fc5-a981-52876e3fe322/ProfileArchive/backups' already exists.
+PASS backup failure refuses switch
+PASS backup failure preserves committed save
+PASS failure releases guard
+저장 실패: Access to the path '/tmp/tower-profile-b3fa4f14-88ff-4fc5-a981-52876e3fe322/progress.json.tmp' is denied.
+PASS save failure no snapshot
+PASS save failure preserves old file
+RESULT 31 PASS / 0 FAIL

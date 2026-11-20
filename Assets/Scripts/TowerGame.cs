@@ -47,6 +47,7 @@ namespace ReversalTower
         public List<PatternStats> stats => dda.Stats;
         public Dictionary<string,double[]> contexts => dda.Contexts;
         internal bool battleDda => dda.Enabled;
+        internal string DdaReason(string id)=>dda.Reasons.ContainsKey(id)?dda.Reasons[id]:"특수/미배정";
         Soundscape sound;WorldArtist artist;Camera cam;
 #if !HEADLESS && !DESKTOP_PREVIEW
         public ScenePresentation scenePresentation;
@@ -64,10 +65,22 @@ namespace ReversalTower
         bool demo;float demoAction;string capturePath;bool captureDone;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap(){if(FindAnyObjectByType<TowerGame>()==null)new GameObject("Reversal Tower").AddComponent<TowerGame>();}
+        public DdaLiveSnapshot DdaSnapshot(bool includeStorageStatus=true)
+        {
+            var applied=BossPatterns.Applied;bool active=mode==ScreenMode.Battle&&current!=null&&applied!=null&&applied.pattern==current.id;
+            return new DdaLiveSnapshot{tutorial=TutorialActive,assessment=TutorialActive?tutorial.Preview():save==null?null:save.tutorialAssessment,
+                localStatus=TutorialLocalStatus,uploadStatus=includeStorageStatus?SaveStore.ProficiencyStatus:"미수집",dbStatus=CommunityStats.ReceiveSummary,
+                weights=TutorialActive?tutorial.WeightSummary:"",evidence=TutorialActive?tutorial.EvidenceSummary:"",
+                hasAttack=active,pattern=active?current.id:"",patternName=active?current.name:"",level=active?applied.level:0,
+                reason=active?DdaReason(current.id):"대기 중",source=active&&dda.Sources.ContainsKey(current.id)?dda.Sources[current.id]:"",
+                windup=active?windup:0,damage=active?BossPatterns.patternDamage:0,cooldown=active?applied.cooldown:0,cooldownRemaining=active?Mathf.Max(0,applied.readyAt-seconds):0,
+                windupScale=active?applied.windupScale:1,damageScale=active?applied.damageScale:1,cooldownScale=active?applied.cooldownScale:1};
+        }
         void Awake()
         {
             // 저장을 읽기 전에 파싱해야 테스트 데이터 격리가 의미를 가진다.
             AutoRunArgs.Parse();
+            StartDdaMonitorFromArguments();
             // vSync 가 켜져 있으면 Unity 는 targetFrameRate 를 무시한다. 둘을 같이 지정하면
             // 의도가 모호해지므로 기본은 vSync 에 맡기고, 측정할 때만 고정 프레임을 쓴다.
             if(AutoRunArgs.ForcedFrameRate>0){QualitySettings.vSyncCount=0;Application.targetFrameRate=AutoRunArgs.ForcedFrameRate;}
@@ -114,8 +127,9 @@ namespace ReversalTower
             if(!TutorialActive&&!AutoRunArgs.Active)DevKeys();
 #endif
             TickTransition(raw);
-            if(!TransitionActive)TutorialBeforeUpdate(raw);
-            if(!TransitionActive&&!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
+            bool wasTutorial=TutorialActive;
+            if(!TransitionActive)TutorialBeforeUpdate(Time.unscaledDeltaTime);
+            if(!TransitionActive&&!wasTutorial&&!TutorialActive&&!AutoRunArgs.Active)HandleScreenInput(Input.GetKeyDown(KeyCode.F1),Input.GetKeyDown(KeyCode.Escape),Input.GetKeyDown(KeyCode.Return),
                 Input.GetKeyDown(KeyCode.LeftArrow)||Input.GetKeyDown(KeyCode.A),Input.GetKeyDown(KeyCode.RightArrow)||Input.GetKeyDown(KeyCode.D),Input.GetKeyDown(KeyCode.C));
             // 역경직 동안에는 전투 시간을 0으로 흘린다 (입력은 계속 읽어서 그 사이 누른 키를 놓치지 않음)
             float battleDt=raw;bool fighting=!TransitionActive&&!ended&&!TutorialExplaining&&mode==ScreenMode.Battle&&!paused&&!showHelp&&!showSettings;
@@ -136,6 +150,7 @@ namespace ReversalTower
             if(pixelBridge==null)
 #endif
             AutoRunTick(Time.unscaledDeltaTime);
+            TickDdaMonitor();
         }
         void LateUpdate()
         {
@@ -197,6 +212,12 @@ namespace ReversalTower
         {
             if(!QueueScreenChange(ShowEnding))mode=ScreenMode.Ending;
         }
+        SaveData SettingsProfile=>tutorialOriginalSave??save;
+        void CloseSettings()
+        {
+            if(SettingsProfile!=null)SaveStore.Save(SettingsProfile);
+            showSettings=false;
+        }
         void HandleEscape()
         {
             if(showHelp)showHelp=false;
@@ -222,6 +243,9 @@ namespace ReversalTower
         bool CardsBlockLobbyInput => showCards||CardOutroBlocksInput;
         void HandleScreenInput(bool helpDown,bool escapeDown,bool enterDown,bool leftDown,bool rightDown,bool cardsDown)
         {
+#if !HEADLESS && !DESKTOP_PREVIEW
+            if(TutorialSummaryBlocksMenu)return;
+#endif
             // Keep a card-close event from activating the lobby later in this same input batch.
             bool cardsBlocked=CardsBlockLobbyInput,animating=CardOutroBlocksInput;
             if(helpDown&&!animating)showHelp=!showHelp;
@@ -235,19 +259,34 @@ namespace ReversalTower
                 LobbyKeys(leftDown,rightDown,cardsDown,enterDown);
             if(mode==ScreenMode.Result&&enterDown&&!showSettings&&!showHelp)ReturnLobby();
         }
+        // Presentation policy does not rewrite earned progression or remove later bosses.
+#if HEADLESS
+        public bool PresentationBossLock{get;set;}=false; // Full-catalog research suites opt out; release-policy tests enable it.
+#else
+        public bool PresentationBossLock{get;set;}=true;
+#endif
+        public bool IsPresentationLocked(int index)=>PresentationBossLock&&index>=2;
+        public bool CanEnterBoss(int index)=>save!=null&&index>=0&&index<Catalog.Bosses.Length&&index<=save.unlockedBoss&&!IsPresentationLocked(index);
+        public void QuitGame()
+        {
+            // Tutorial practice has a detached profile: never save it over real progress.
+            var profile=SettingsProfile;
+            if(profile!=null&&!SaveStore.Save(profile)){Say("저장하지 못했습니다. 다시 시도해 주세요.",5);return;}
+            Application.Quit();
+        }
         void LobbyKeys(bool leftDown,bool rightDown,bool cardsDown,bool enterDown)
         {
             if(CardsBlockLobbyInput)return;
             if(leftDown)bossIndex=Mathf.Max(0,bossIndex-1);
-            if(rightDown)bossIndex=Mathf.Min(save.unlockedBoss,bossIndex+1);
+            if(rightDown&&CanEnterBoss(bossIndex+1))bossIndex++;
             if(cardsDown)OpenCards();
             if(enterDown&&!CardsBlockLobbyInput)StartBattle(bossIndex);
         }
         public void StartBattle(int index)
         {
             if(TutorialActive)return;
+            if(!CanEnterBoss(index))return;
             if(RequiresTutorial&&!AutoRunArgs.Active){StartTutorial(false);return;}
-            if(index<0||index>save.unlockedBoss)return;
             if(QueueScreenChange(()=>StartBattle(index)))return;
             bossIndex=index;spec=Catalog.Bosses[index];mode=ScreenMode.Battle;paused=false;showHelp=false;showSettings=false;showHistory=false;showCards=false;ended=false;
 #if !HEADLESS && !DESKTOP_PREVIEW
@@ -498,14 +537,15 @@ namespace ReversalTower
             if(!rewards.TrySettle(save,spec,bossIndex,clear,bossHp,seconds,hits,parries,battleDda,out result,out wasFirstClear))return;
             ended=true;result.abandoned=abandoned;
             dda.Complete(save,spec,clear,abandoned);
-            SaveStore.CommitCompletedBattle(save,result);SaveStore.Log(result,stats,save);
+            bool committed=SaveStore.CommitCompletedBattle(save,result);if(committed)SaveStore.QueueProficiencyBattle(save,result,stats);SaveStore.LogLearning(result.battleId,dda.Trace);SaveStore.Log(result,stats,save);
             void ShowResult(){mode=ScreenMode.Result;paused=false;flash=clear?.5f:.2f;}
             if(!QueueScreenChange(ShowResult))ShowResult();
+            PublishDdaMonitor("battle-ended");
             sound.Play(clear?"boss_death":"death");
         }
         public void ReturnLobby(){if(QueueScreenChange(ReturnLobby))return;sparkTime=0;echo=null;actionTime=0;mode=ScreenMode.Lobby;paused=false;showHelp=showSettings=showHistory=showCards=false;current=null;barrier=false;potions=3;hazards.Clear();shots.Clear();minions.Clear();SaveStore.Save(save);}
         public void Abandon(){if(ended||TransitionActive)return;abandoning=true;EndBattle(false);Say("전투를 포기했다. 기록과 골드는 남았다.");}
-        void OnApplicationQuit(){if(TutorialActive)RestoreTutorialProfile();if(mode==ScreenMode.Battle&&!ended){abandoning=true;EndBattle(false);}if(save!=null)SaveStore.Save(save);}
+        void OnApplicationQuit(){if(TutorialActive)RestoreTutorialProfile();if(mode==ScreenMode.Battle&&!ended){abandoning=true;EndBattle(false);}if(save!=null)SaveStore.Save(save);StopDdaMonitor();}
         void DemoInput(ref float move,ref bool jump,ref bool dash,ref bool attack,ref bool parry,ref bool q,ref bool w,ref bool e,ref bool r,ref bool f,float dt)
         {
             if(AutoRunArgs.AgentProfile!=null){TestAgentInput(ref move,ref jump,ref dash,ref attack,ref parry,ref q,ref w,ref e,ref r,ref f,dt);return;}
@@ -520,5 +560,81 @@ namespace ReversalTower
         public sealed class Mote{public Vector2 pos,velocity;public float life,size;public Color color;}
         // 충돌 불꽃 한 개. kind 0 = 일반 타격, 1 = 강한 타격, 2 = 패링 충돌, 3 = 플레이어 피격
         public sealed class Impact{public Vector2 pos;public float age,life,size,angle;public int kind;}
+
+        DdaMonitorSink ddaMonitor;
+        long ddaMonitorSequence,ddaMonitorNext;
+        string ddaMonitorTutorialRun;
+        internal void StartDdaMonitor(string absoluteDirectory)
+        {
+            if(ddaMonitor!=null)return;
+            try{ddaMonitor=new DdaMonitorSink(absoluteDirectory);}catch(Exception){Debug.LogWarning("DDA 외부 진단 시작 실패 · 게임은 계속됩니다");}
+        }
+        void StartDdaMonitorFromArguments()
+        {
+            var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,"-towerDdaMonitor");
+            if(i<0)return;
+            if(i+1>=args.Length){Debug.LogWarning("DDA 진단 경로 없음 · 기본 OFF 유지");return;}
+            StartDdaMonitor(args[i+1]);
+        }
+        void TickDdaMonitor()
+        {
+            if(ddaMonitor==null)return;
+            long now=System.Diagnostics.Stopwatch.GetTimestamp();if(now<ddaMonitorNext)return;
+            ddaMonitorNext=now+System.Diagnostics.Stopwatch.Frequency/5;
+            PublishDdaMonitor("snapshot");
+        }
+        internal void PublishDdaMonitor(string kind)
+        {
+            if(ddaMonitor==null)return;
+            try
+            {
+                bool battle=!TutorialActive&&spec!=null&&(mode==ScreenMode.Battle||mode==ScreenMode.Result);
+                var view=DdaSnapshot(false);
+#if HEADLESS
+                const string origin="headless-fixture";
+#elif UNITY_EDITOR
+                const string origin="unity-editor";
+#else
+                const string origin="unity-player";
+#endif
+#if HEADLESS
+                const string runtime="HEADLESS UnityShim";
+#else
+                string runtime=Application.platform.ToString()+" / Unity "+Application.unityVersion;
+#endif
+                var frame=new DdaMonitorFrame{origin=origin,runtime=runtime,
+                    sessionId=ddaMonitor.SessionId,runId=TutorialActive?(ddaMonitorTutorialRun??(ddaMonitorTutorialRun=Guid.NewGuid().ToString("N"))):battle?BossPatterns.DiagnosticSession:"",
+                    diagnosticSession=battle?BossPatterns.DiagnosticSession:"",battleId=battle&&ended&&result!=null?result.battleId:"",
+                    boss=spec==null?"":spec.id,bossName=spec==null?"":spec.name,phase=TutorialActive?"tutorial":battle&&ended?"result":mode.ToString().ToLowerInvariant(),
+                    kind=kind,capturedUtc=DateTime.UtcNow.ToString("o"),sequence=++ddaMonitorSequence,running=kind!="game-stopped",dda=battle?battleDda:save!=null&&save.dda,
+                    simulationSeconds=battle?seconds:0,hasAttack=battle&&!ended&&view.hasAttack,dropped=ddaMonitor.Dropped,writeErrors=ddaMonitor.WriteErrors,historyLimitReached=ddaMonitor.HistoryLimitReached};
+                if(frame.hasAttack)frame.attack=new DdaMonitorAttack{hasAttack=true,pattern=view.pattern,patternName=view.patternName,level=view.level,windup=view.windup,damage=view.damage,cooldown=view.cooldown,
+                    cooldownRemaining=view.cooldownRemaining,windupScale=view.windupScale,damageScale=view.damageScale,cooldownScale=view.cooldownScale,source=view.source,reason=view.reason};
+                if(battle)foreach(var st in stats)
+                {
+                    if(frame.patterns.Count>=64)break;var p=Array.Find(spec.patterns,x=>x.id==st.id);string source,reason;dda.Sources.TryGetValue(st.id,out source);dda.Reasons.TryGetValue(st.id,out reason);
+                    frame.patterns.Add(new DdaMonitorPattern{id=st.id,name=p==null?st.id:p.name,level=st.level,opportunities=st.opportunities,parries=st.parries,dodges=st.dodges,hits=st.hits,ignored=st.ignored,source=source,reason=reason});
+                }
+                if(battle)
+                {
+                    int decision=0;foreach(var e in BossPatterns.SelectionLog)decision=Math.Max(decision,e.decision);
+                    foreach(var e in BossPatterns.SelectionLog)if(e.decision==decision&&frame.selection.Count<64)frame.selection.Add(new DdaMonitorSelection{id=e.id,reason=e.reason,decision=e.decision,selected=e.selected,seconds=e.seconds,baseWeight=e.baseWeight,multiplier=e.multiplier,weight=e.weight,probability=e.probability,success=e.success,opportunities=e.opportunities,parries=e.parries,dodges=e.dodges,hits=e.hits,ignored=e.ignored});
+                }
+                var a=TutorialActive?view.assessment:LastTutorialAssessment;
+                if(a!=null)frame.tutorial=new DdaMonitorTutorial{step=TutorialActive?Tutorial.Step.ToString():"complete",group=a.group,score=a.score,confidence=a.confidence,
+                    active=a.activeDurationSeconds,elapsed=a.elapsedDurationSeconds,explanation=a.explanationSeconds,paused=a.pausedSeconds,parryAttempts=a.parryAttempts,parrySuccesses=a.parrySuccesses,dodgeAttempts=a.dodgeAttempts,dodgeSuccesses=a.dodgeSuccesses,
+                    hits=a.damageHits,retries=a.retryCount,controls=a.skillActionsCompleted,mistakes=a.inputMistakes,completed=a.completed,skipped=a.skipped,valid=a.valid,first=a.isFirstAssessment,ultimateHit=a.ultimateExecutionSuccess};
+                if(battle&&ended&&result!=null){frame.clear=result.clear;frame.abandoned=result.abandoned;frame.learning=dda.Trace;}
+                // Serialize on the game thread; background code sees only immutable strings.
+                ddaMonitor.Offer(JsonUtility.ToJson(frame),kind!="snapshot");
+            }catch(Exception){Debug.LogWarning("DDA 외부 진단 표본 누락 · 전투/학습 유지");}
+        }
+        void StopDdaMonitor()
+        {
+            if(ddaMonitor==null)return;
+            try{PublishDdaMonitor("game-stopped");ddaMonitor.Dispose();}catch(Exception){}finally{ddaMonitor=null;}
+        }
+        void OnDestroy(){StopDdaMonitor();}
+
     }
 }

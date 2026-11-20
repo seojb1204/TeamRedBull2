@@ -1,0 +1,21 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-selective-results/main-baseline/SaveStore.cs(140,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/workspace/dda-selective-results/main-baseline/ArakusAnimationTests.csproj]
+/workspace/dda-selective-results/main-baseline/TowerGame.Tutorial.cs(11,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/workspace/dda-selective-results/main-baseline/ArakusAnimationTests.csproj]
+Unhandled exception. System.Exception: walk follows distance instead of wall clock
+   at ArakusAnimationTests.Check(Boolean b, String s) in /workspace/dda-selective-results/main-baseline/ArakusAnimationTests.cs:line 5
+   at ArakusAnimationTests.Main() in /workspace/dda-selective-results/main-baseline/ArakusAnimationTests.cs:line 10

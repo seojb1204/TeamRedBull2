@@ -1,0 +1,6 @@
+automation 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+automation-default-root 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+ordinary 0 ['MONITOR_AUTOMATION_PASS 46 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+monitor 0 ['MONITOR_AUTOMATION_PASS 47 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+mixed 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']
+mixed-reversed 0 ['MONITOR_AUTOMATION_PASS 43 actual classification/F8/F9/CloudSync, mocked Unity/HTTP; no production DB']

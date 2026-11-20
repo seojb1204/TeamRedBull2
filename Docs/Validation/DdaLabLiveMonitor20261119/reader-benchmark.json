@@ -1,0 +1,8 @@
+{
+  "scope": "Actual C# HEADLESS fixture reader + bounded state, not Unity frame effect",
+  "samples": 100,
+  "p50_ms": 2.995959000145376,
+  "p95_ms": 3.5853520003001904,
+  "max_ms": 3.7662459999410203,
+  "frames": 11
+}

@@ -223,12 +223,14 @@ namespace ReversalTower
             for(int level=Math.Max(-2,current-1);level<=Math.Min(2,current+1);level++)
             {
                 // Mild prior supports cold start; actual outcomes update LinUCB matrices.
-                double prior=-.12*Math.Abs((success-.7)-level*.1);
-                double score=Value(level+2,context)+prior-.012*Math.Abs(level-current);
+                double score=CandidateScore(context,level,current,success);
                 if(score>value){value=score;best=level;}
             }
             return best;
         }
+        // Same score used by the chooser and diagnostic traces; no alternative simulator policy.
+        public double CandidateScore(double[] context,int level,int current,float success)
+            =>Value(level+2,context)-.12*Math.Abs((success-.7)-level*.1)-.012*Math.Abs(level-current);
         public static bool ValidContext(double[] x)
         {if(x==null||x.Length!=D)return false;foreach(double v in x)if(!Finite(v)||Math.Abs(v)>1)return false;return true;}
         public void Update(int level,double[] x,double reward)

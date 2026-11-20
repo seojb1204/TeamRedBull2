@@ -1,0 +1,3 @@
+/tmp/arakus-size-g_cf311p/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/arakus-size-g_cf311p/UltimateSystemTests.csproj]
+/tmp/arakus-size-g_cf311p/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/arakus-size-g_cf311p/UltimateSystemTests.csproj]
+PASS 37

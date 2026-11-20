@@ -1,0 +1,551 @@
+{
+  "note": "Execution manifests capture working-tree bytes; their git commit field predates the commit of tested edits. SHA256 is the tested-source authority.",
+  "files": [
+    {
+      "suite": "tutorial-state",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-state",
+      "file": "Tests/TutorialSession/Program.cs",
+      "sha256": "83437a8feea4edd1e8103f75ebc1b137f0c35087a55d2dfc219336de989a0014",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "sha256": "3f9056d20d7da16df034f276d41587f7eb9605751d192d508741a0391f940a2b",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/GameData.cs",
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "sha256": "132adc95929448e94cd931a9befbacd2390c70aefd1298472110a81edde70d2e",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "sha256": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "sha256": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "sha256": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "sha256": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "sha256": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "sha256": "9b0e4e628db8d4596cb7b2a28ff6878f63ca8c8adcb35612a82333080b17ac35",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/GameServices.cs",
+      "sha256": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "sha256": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "sha256": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Tests/UnityShim.cs",
+      "sha256": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-save",
+      "file": "Tests/TutorialPersistenceTests.cs",
+      "sha256": "2d0cea4b15c5f6a5b6c322ed4c5dd9d3e010a3bb2361b1ddfe7d8536035f9285",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "sha256": "3f9056d20d7da16df034f276d41587f7eb9605751d192d508741a0391f940a2b",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/GameData.cs",
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "sha256": "132adc95929448e94cd931a9befbacd2390c70aefd1298472110a81edde70d2e",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "sha256": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "sha256": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "sha256": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "sha256": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "sha256": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "sha256": "9b0e4e628db8d4596cb7b2a28ff6878f63ca8c8adcb35612a82333080b17ac35",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/GameServices.cs",
+      "sha256": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "sha256": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "sha256": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Tests/UnityShim.cs",
+      "sha256": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+      "matches_execution": true
+    },
+    {
+      "suite": "tutorial-dda",
+      "file": "Tests/TutorialDdaIntegrationTests.cs",
+      "sha256": "3de60e93c824e7019045453e5e90fad2f61524aa08ab0231f08de3b46a725136",
+      "matches_execution": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/GameData.cs",
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "matches_execution": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/GameServices.cs",
+      "sha256": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+      "matches_execution": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "sha256": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+      "matches_execution": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "queue",
+      "file": "Assets/Scripts/CloudSync.cs",
+      "sha256": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+      "matches_execution": true
+    },
+    {
+      "suite": "queue",
+      "file": "Tests/CloudSyncStatus/Stubs.cs",
+      "sha256": "1910b43046a37350d5cd23e52fef0756964d62a4f4358763f6fe4e75b548dada",
+      "matches_execution": true
+    },
+    {
+      "suite": "queue",
+      "file": "Tests/CloudQueueIntegrationTests.cs",
+      "sha256": "fcd81523653d0d4a875f1decad5c575eca3b68c9df506f597b419ee270399964",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "sha256": "3f9056d20d7da16df034f276d41587f7eb9605751d192d508741a0391f940a2b",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/GameData.cs",
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "sha256": "132adc95929448e94cd931a9befbacd2390c70aefd1298472110a81edde70d2e",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "sha256": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "sha256": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "sha256": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "sha256": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "sha256": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "sha256": "9b0e4e628db8d4596cb7b2a28ff6878f63ca8c8adcb35612a82333080b17ac35",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/GameServices.cs",
+      "sha256": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "sha256": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "sha256": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Tests/UnityShim.cs",
+      "sha256": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+      "matches_execution": true
+    },
+    {
+      "suite": "adaptation",
+      "file": "Tests/AdaptationColdStartTests.cs",
+      "sha256": "7cdbe4c2c29b27490fb29fcebe00fc77ac9bd4d36950f06f45603cd08fb30cd4",
+      "matches_execution": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/GameData.cs",
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "matches_execution": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/GameServices.cs",
+      "sha256": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+      "matches_execution": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "sha256": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+      "matches_execution": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Assets/Scripts/CloudSync.cs",
+      "sha256": "7724d07df1d126acc4bfc70c10d132c59445bede64cf7856b9c06924856f1b54",
+      "matches_execution": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Tests/CloudSyncStatus/Stubs.cs",
+      "sha256": "1910b43046a37350d5cd23e52fef0756964d62a4f4358763f6fe4e75b548dada",
+      "matches_execution": true
+    },
+    {
+      "suite": "proficiency-http",
+      "file": "Tests/ProficiencyHttpTests.cs",
+      "sha256": "724dde6a8bb8eb31dfaa56d8aae7784e2096b299855f7ea8519c5021f8461fad",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "sha256": "3f9056d20d7da16df034f276d41587f7eb9605751d192d508741a0391f940a2b",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/GameData.cs",
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "sha256": "132adc95929448e94cd931a9befbacd2390c70aefd1298472110a81edde70d2e",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "sha256": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "sha256": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "sha256": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "sha256": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "sha256": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "sha256": "9b0e4e628db8d4596cb7b2a28ff6878f63ca8c8adcb35612a82333080b17ac35",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/GameServices.cs",
+      "sha256": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "sha256": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "sha256": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Tests/UnityShim.cs",
+      "sha256": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+      "matches_execution": true
+    },
+    {
+      "suite": "selective",
+      "file": "Tests/SelectiveIntegrationTests.cs",
+      "sha256": "c4afc234adce6c067db6a08f03549165a8b45eee38e1c33501283cbcc3df14fb",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/TutorialSession.cs",
+      "sha256": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/TowerGame.Tutorial.cs",
+      "sha256": "3f9056d20d7da16df034f276d41587f7eb9605751d192d508741a0391f940a2b",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/GameData.cs",
+      "sha256": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/TowerGame.cs",
+      "sha256": "132adc95929448e94cd931a9befbacd2390c70aefd1298472110a81edde70d2e",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/BossCombat.cs",
+      "sha256": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/SaveStore.cs",
+      "sha256": "7e89d65912a8336650593b995855245cdac83214420e9872f71884f5000ea777",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/LobbyCards.cs",
+      "sha256": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/AutoRun.cs",
+      "sha256": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/LobbySmoke.cs",
+      "sha256": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/BossPatternSystem.cs",
+      "sha256": "9b0e4e628db8d4596cb7b2a28ff6878f63ca8c8adcb35612a82333080b17ac35",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/GameServices.cs",
+      "sha256": "a4e9b21d721ca8a932b4167742ee13fedb76020078416ab4d0b861aaffaf9ec0",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/ArakusPatternTiming.cs",
+      "sha256": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Assets/Scripts/ArakusAnimationSelection.cs",
+      "sha256": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Tests/UnityShim.cs",
+      "sha256": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+      "matches_execution": true
+    },
+    {
+      "suite": "monitor",
+      "file": "Tests/DdaMonitorTests.cs",
+      "sha256": "5e5a02a511c4512e116dfbf095de7b44052119edd34d288b4f973dbdef56e86a",
+      "matches_execution": true
+    }
+  ]
+}

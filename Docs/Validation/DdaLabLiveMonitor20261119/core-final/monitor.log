@@ -1,0 +1,54 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.428
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+/workspace/dda-live-lab/Assets/Scripts/SaveStore.cs(153,64): warning CS0649: Field 'SaveStore.UploadOwner.player_id' is never assigned to, and will always have its default value null [/tmp/tower-cross-qa-q8dtpbhk/QA.csproj]
+/workspace/dda-live-lab/Assets/Scripts/TowerGame.Tutorial.cs(15,16): warning CS0414: The field 'TowerGame.tutorialSaveError' is assigned but its value is never used [/tmp/tower-cross-qa-q8dtpbhk/QA.csproj]
+PASS Unity JSON DTO explicitly serializable DdaMonitorFrame
+PASS Unity JSON DTO explicitly serializable DdaMonitorAttack
+PASS Unity JSON DTO explicitly serializable DdaMonitorPattern
+PASS Unity JSON DTO explicitly serializable DdaMonitorTutorial
+PASS Unity JSON DTO explicitly serializable DdaMonitorSelection
+PASS diagnostic output defaults OFF
+PASS headless output never claims to be actual Unity
+PASS explicit publisher session and battle run identities
+PASS actual enabled assignment table exported
+PASS publisher equals actual F8 attack source
+PASS snapshot publisher skips storage-status directory scan
+PASS diagnostic capture does not update model or save
+PASS actual parry observations exported
+PASS finished attack is not presented as current
+PASS actual weighted decision evidence exported
+PASS settlement exports result and clears current attack
+PASS actual learning trace and persistent battle ID linked
+PASS profile identity excluded from wire payload
+PASS actual tutorial preview and separated clocks exported
+PASS tutorial never exported as boss learning
+PASS tutorial has a separate run identity
+PASS abandoned battle learning exclusion is visible
+PASS OFF battle remains fixed zero in monitor
+PASS OFF settlement still does not train
+PASS graceful shutdown heartbeat is explicit
+DDA 외부 진단 시작 실패 · 게임은 계속됩니다
+PASS failed opt-in never changes save state
+PASS game continues after diagnostic setup failure
+PASS important event queue is bounded at 32
+PASS oversized diagnostic packets rejected
+PASS bounded history fixture ready
+PASS latest updates after archive fills
+PASS history stops at 16MiB without deleting records
+PASS important event cannot be overwritten by an older coalesced snapshot
+PASS background I/O failure recorded without game exception
+DDA_MONITOR_PASS 34 HEADLESS; fixture output /tmp/dda-monitor-test-124694f52b6b49f990849edd4368af7b/diagnostics

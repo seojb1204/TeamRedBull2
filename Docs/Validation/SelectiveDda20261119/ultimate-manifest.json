@@ -1,0 +1,30 @@
+{
+  "base_commit": "151b5256d8203ebd28f7b8466738f8c12d5ea973",
+  "source_sha256": {
+    "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+    "Assets/Scripts/TowerGame.Tutorial.cs": "e1a32aef7075f5654f67f31d93cfffe6120f0fee9eaddc39ae08b601168340f3",
+    "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+    "Assets/Scripts/TowerGame.cs": "814b02be9ca40bd3f4c38fc967824ae38b3f47832202594796d4e312cea7c2a5",
+    "Assets/Scripts/BossCombat.cs": "618391df547fdd0110b41dc47be537ac3529306565f5608d38910060bcf3b91d",
+    "Assets/Scripts/SaveStore.cs": "5c5fe7a4a9219c0fd2487d2f4d207c52990a998b46591bd89e8a7cd978fff6e3",
+    "Assets/Scripts/LobbyCards.cs": "981ca9664e5293b994b761cd1764f4230254af3e045a159b65dbc84777bb07e8",
+    "Assets/Scripts/AutoRun.cs": "64e8b63fd4316043a41e2c54289ee151ab1c9b374e8c21c0cfc2d4b8844aab1a",
+    "Assets/Scripts/LobbySmoke.cs": "ca9e2a28067e0609134a61d2b259a2e7a01ab4a27647c9c2521633b0e1fc146f",
+    "Assets/Scripts/BossPatternSystem.cs": "1ec93436b32f8a2e23fa916f7a3acca545c220900a9b8c20db46766cf6fb200d",
+    "Assets/Scripts/GameServices.cs": "2dd547f8175067a3c500d94c5f117de3401e2ca865a0b12ed644bef9ee0ae335",
+    "Assets/Scripts/ArakusAnimationSelection.cs": "d501c6f583f08c7cd1bb88111715dbe1f91d44054f9120a1660cee82fbb109ca",
+    "Assets/Scripts/ArakusPatternTiming.cs": "68fb7db948b8ac254921ec768bfcf66eba858b58b7f867e0c3ce85dbcc456f67",
+    "Tests/UnityShim.cs": "df831c543692de1b67e073aa33966ba53389e3aa21d4703706dad79132feb867",
+    "Tests/HeadlessTests.cs": "5a7e0e239e905a8d4cfc1c326a89253e78fa71a761d482318a1c373f73c3c71d",
+    "Tests/UltimateSystemTests.cs": "76bd6fef882438b2d10fe9fcb6bf9a8d3599769eb44e2e480a3a0c5d12fc005a"
+  },
+  "tests": {
+    "HeadlessTests": 0,
+    "UltimateSystemTests": 0
+  },
+  "limits": [
+    "HEADLESS UnityShim, not Unity API compilation/rendering",
+    "No actual editor transforms or graphics/Windows build",
+    "No real DB or existing saves"
+  ]
+}

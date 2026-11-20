@@ -319,17 +319,22 @@ namespace ReversalTower
         void HistoryUI()
         {
             Modal(260,110,1080,690,"탑이 기억하는 전투");
-            if(archivedHistory==null||realClock>=archivedHistoryRefresh)
+            // 보관 파일을 전부 읽는 무거운 작업이라 창을 새로 열 때(또는 복원·초기화 직후)만 읽는다.
+            // 예전처럼 2초마다 읽으면 기록이 쌓일수록 창을 열어 둔 동안 주기적으로 끊긴다.
+            // 창이 열려 있으면 이 함수가 매 프레임 불리므로, 0.25초 이상 끊겼다면 닫혔다가 다시 열린 것이다.
+            if(archivedHistory==null||realClock-archivedHistoryRefresh>.25f)
             {
                 archivedHistory=SaveStore.AllHistory(save);validSnapshots.Clear();
-                foreach(var entry in archivedHistory)if(SaveStore.HasSnapshot(entry.snapshotId))validSnapshots.Add(entry.snapshotId);
-                archivedHistoryRefresh=realClock+2;
+                foreach(var entry in archivedHistory)if(entry.snapshotId!=null&&SaveStore.HasSnapshot(entry.snapshotId))validSnapshots.Add(entry.snapshotId);
             }
+            archivedHistoryRefresh=realClock;
             var entries=archivedHistory;
             Text(300,192,1000,35,"보관된 전투 · 복원은 로컬 진행만 변경하며 서버 기록은 유지됩니다",17,muted);
             historyScroll=GUI.BeginScrollView(new Rect(294,245,1012,450),historyScroll,new Rect(0,0,980,Mathf.Max(430,entries.Count*90)));
             if(entries.Count==0)Text(15,80,940,80,"첫 번째 문을 열면 여기에 남는다.",22,muted,TextAnchor.UpperCenter);
-            for(int i=0;i<entries.Count;i++)
+            // 화면(높이 450 = 5줄)에 보이는 줄만 그린다. 기록이 수백 개여도 매 프레임 그리는 양은 같다.
+            int firstRow=Mathf.Max(0,Mathf.FloorToInt(historyScroll.y/90f)-1),lastRow=Mathf.Min(entries.Count,firstRow+8);
+            for(int i=firstRow;i<lastRow;i++)
             {
                 var h=entries[i];float y=i*90;Fill(new Rect(0,y,975,57),new Color(.07f,.10f,.14f));var b=Array.Find(Catalog.Bosses,p=>p.id==h.boss);
                 Text(16,y+9,205,35,b==null?h.boss:b.name,20,h.clear?Palette.Gold:Palette.White);Text(240,y+12,160,30,h.clear?"★ 넘음":"쓰러짐",16,h.clear?Palette.Teal:muted);

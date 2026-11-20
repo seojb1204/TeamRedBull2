@@ -201,7 +201,14 @@ namespace ReversalTower
         {
             if(showHelp)showHelp=false;
             else if(showHistory)showHistory=false;
-            else if(showSettings)CloseSettings();
+            else if(showSettings)
+            {
+#if !HEADLESS
+                CloseSettings();
+#else
+                showSettings=false;   // 로직 검사에는 GameUI.cs(설정 저장 UI)가 포함되지 않는다
+#endif
+            }
             else if(showCards)showCards=false;
             else if(mode==ScreenMode.Battle&&!ended)paused=!paused;
             else if(mode==ScreenMode.Lobby||mode==ScreenMode.Title)showSettings=true;

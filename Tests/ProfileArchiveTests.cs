@@ -63,6 +63,20 @@ class ProfileArchiveTests
    var failure=new HistoryEntry{boss="arakus"};a.history.Add(failure);
    Check(!SaveStore.CommitCompletedBattle(a,failure)&&string.IsNullOrEmpty(failure.snapshotId),"save failure no snapshot");
    Check(File.ReadAllText(SaveStore.SavePath)==before,"save failure preserves old file");
+   // 복원 지점·백업은 개수 제한, 전투 기록 요약은 전부 유지
+   string bounded=Path.Combine(root,"bounded-archive");SaveStore.UseIsolatedRoot(bounded);
+   var many=SaveStore.Load();var commits=new System.Collections.Generic.List<HistoryEntry>();
+   for(int i=0;i<SaveStore.MaxSnapshots+10;i++)
+   {var e=new HistoryEntry{boss="arakus",date="2026-11-20 "+i.ToString("D4"),clear=true};many.history.Insert(0,e);SaveStore.CommitCompletedBattle(many,e);commits.Add(e);}
+   string snapDir=Path.Combine(bounded,"ProfileArchive","snapshots");
+   Check(Directory.GetFiles(snapDir,"*.json").Length==SaveStore.MaxSnapshots,"restore points capped at "+SaveStore.MaxSnapshots);
+   Check(SaveStore.HasSnapshot(commits[commits.Count-1].snapshotId)&&!SaveStore.HasSnapshot(commits[0].snapshotId),"oldest restore point pruned, newest kept");
+   Check(SaveStore.AllHistory(many).Count==commits.Count,"battle summaries outlive pruned restore points");
+   Check(!File.ReadAllText(Directory.GetFiles(snapDir,"*.json")[0]).Contains("\n"),"restore points stored compactly");
+   for(int i=0;i<SaveStore.MaxBackups+3;i++){SaveData switched;Check(SaveStore.TryResetProfile(many,false,out switched),"reset "+i);many=switched;}
+   Check(Directory.GetFiles(Path.Combine(bounded,"ProfileArchive","backups"),"*.json").Length==SaveStore.MaxBackups,"backups capped at "+SaveStore.MaxBackups);
+   Check(SaveStore.AllHistory(many).Count==commits.Count&&SaveStore.Load().history.Count==commits.Count,"history survives repeated resets with capped backups");
+   SaveStore.UseIsolatedRoot(root);
    Console.WriteLine("RESULT "+passed+" PASS / "+failed+" FAIL");return failed==0?0:1;
   }
   finally{SaveStore.UseIsolatedRoot(null);Directory.Delete(root,true);}

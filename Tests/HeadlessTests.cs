@@ -145,9 +145,10 @@ public static class HeadlessTests
         Check(LobbyCards.Purchase(loaded,"blade",out error),"Offered card purchase succeeds");
         Check(loaded.gold==920&&loaded.cardPurchases==1&&LobbyCards.Count(loaded,"blade")==1,"Purchase deducts once and adds one permanent stack");
         int beforeGold=loaded.gold;Check(!LobbyCards.Purchase(loaded,"vitality",out error)&&loaded.gold==beforeGold,"Double selection blocked without consuming gold");
-        loaded=SaveStore.Load();Check(loaded.cardChosen&&LobbyCards.Count(loaded,"blade")==1&&loaded.gold==920,"Chosen state and permanent effect survive restart");
+        loaded=SaveStore.Load();Check(!loaded.cardChosen&&loaded.cardOffer.Length==0&&LobbyCards.Count(loaded,"blade")==1&&loaded.gold==920,"Purchased card, spent gold and consumed offer survive restart");
         Start();game.save=loaded;game.mode=ScreenMode.Lobby;game.showHelp=false;
-        game.OpenCards();Check(!game.showCards,"Completed lobby cannot open another selection");
+        // #51 연속 구매: 골드가 남아 있으면 같은 로비에서 새 인장 3장을 다시 뽑아 연다
+        game.OpenCards();Check(game.showCards&&game.save.cardOffer.Length==3,"Continuous purchase reopens a fresh offer while gold remains");
         game.save.tutorialOnboardingVersion=1;game.StartBattle(0);Check(!game.showCards&&game.maxHp==130,"Battle entry hides cards and uses accumulated health");
         Call("EndBattle",false);Check(!game.save.cardChosen&&game.save.cardOffer.Length==0,"Battle settlement unlocks next lobby offer");
         Check(LobbyCards.Count(game.save,"blade")==1,"Death preserves permanent cards");

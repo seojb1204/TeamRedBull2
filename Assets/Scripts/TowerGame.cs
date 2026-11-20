@@ -259,19 +259,34 @@ namespace ReversalTower
                 LobbyKeys(leftDown,rightDown,cardsDown,enterDown);
             if(mode==ScreenMode.Result&&enterDown&&!showSettings&&!showHelp)ReturnLobby();
         }
+        // Presentation policy does not rewrite earned progression or remove later bosses.
+#if HEADLESS
+        public bool PresentationBossLock{get;set;}=false; // Full-catalog research suites opt out; release-policy tests enable it.
+#else
+        public bool PresentationBossLock{get;set;}=true;
+#endif
+        public bool IsPresentationLocked(int index)=>PresentationBossLock&&index>=2;
+        public bool CanEnterBoss(int index)=>save!=null&&index>=0&&index<Catalog.Bosses.Length&&index<=save.unlockedBoss&&!IsPresentationLocked(index);
+        public void QuitGame()
+        {
+            // Tutorial practice has a detached profile: never save it over real progress.
+            var profile=SettingsProfile;
+            if(profile!=null&&!SaveStore.Save(profile)){Say("저장하지 못했습니다. 다시 시도해 주세요.",5);return;}
+            Application.Quit();
+        }
         void LobbyKeys(bool leftDown,bool rightDown,bool cardsDown,bool enterDown)
         {
             if(CardsBlockLobbyInput)return;
             if(leftDown)bossIndex=Mathf.Max(0,bossIndex-1);
-            if(rightDown)bossIndex=Mathf.Min(save.unlockedBoss,bossIndex+1);
+            if(rightDown&&CanEnterBoss(bossIndex+1))bossIndex++;
             if(cardsDown)OpenCards();
             if(enterDown&&!CardsBlockLobbyInput)StartBattle(bossIndex);
         }
         public void StartBattle(int index)
         {
             if(TutorialActive)return;
+            if(!CanEnterBoss(index))return;
             if(RequiresTutorial&&!AutoRunArgs.Active){StartTutorial(false);return;}
-            if(index<0||index>save.unlockedBoss)return;
             if(QueueScreenChange(()=>StartBattle(index)))return;
             bossIndex=index;spec=Catalog.Bosses[index];mode=ScreenMode.Battle;paused=false;showHelp=false;showSettings=false;showHistory=false;showCards=false;ended=false;
 #if !HEADLESS && !DESKTOP_PREVIEW

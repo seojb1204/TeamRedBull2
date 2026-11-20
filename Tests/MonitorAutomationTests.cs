@@ -6,7 +6,11 @@ namespace UnityEngine {
  public class Event{public static Event current;public EventType type;public KeyCode keyCode;public bool used;public void Use(){used=true;}}
 }
 namespace ReversalTower {
+ public enum ScreenMode{Title,Lobby,Battle,Result,Ending}
  public partial class TowerGame {
+  public ScreenMode mode=ScreenMode.Title;ScreenMode ddaPanelMode;
+  void EndDdaPanelResize(){}
+  public void Refresh(){Event.current=null;DdaPanelInput();}
   const string DdaPanelPref="DdaPanelVisible";bool ddaPanelLoaded,showDdaPanel,ddaHistoryExpanded=true;
   void ResetDdaPanelWindow(){} public bool Panel=>showDdaPanel;public bool Graph=>ddaHistoryExpanded;
   public void Press(KeyCode key){Event.current=new Event{type=EventType.KeyDown,keyCode=key};DdaPanelInput();}
@@ -30,6 +34,8 @@ class MonitorAutomationTests {
  }
  if(args.Contains("-towerDdaMonitor")&&!automatic)Check(!AutoRunArgs.HasAutomationArguments(new[]{"game","-towerDdaMonitor",root}),"exact monitor flag exemption");
  Check(!AutoRunArgs.HasAutomationArguments(new[]{"game"}),"unflagged ordinary play");
+ PlayerPrefs.SetInt("DdaPanelVisible",1);var restarted=new TowerGame();restarted.Refresh();Check(!restarted.Panel,"restart ignores stale visible PlayerPrefs");
+ if(!automatic){restarted.mode=ScreenMode.Battle;restarted.Press(KeyCode.F8);Check(restarted.Panel,"F8 opens battle panel");restarted.mode=ScreenMode.Lobby;restarted.Refresh();Check(!restarted.Panel,"return to lobby closes combat panel");restarted.Press(KeyCode.F8);Check(restarted.Panel,"explicit F8 still permits menu tutorial summary");restarted.mode=ScreenMode.Title;restarted.Refresh();Check(!restarted.Panel,"title transition closes panel");}
  var early=new TowerGame();early.Press(KeyCode.F8);Check(early.Panel==!automatic,"actual F8 raw guard before Parse preserves automation protection");bool earlyGraph=early.Graph;early.Press(KeyCode.F9);Check(early.Graph==(automatic?earlyGraph:!earlyGraph),"actual F9 raw guard before Parse");if(!automatic)early.Press(KeyCode.F8);
  var cloud=new CloudSync();
  File.WriteAllText(Path.Combine(Application.streamingAssetsPath,"supabase.json"),"{\"url\":\"https://invalid.local\",\"anonKey\":\"mock-only\"}");

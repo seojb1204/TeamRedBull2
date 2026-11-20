@@ -4,31 +4,32 @@ using UnityEngine;
 
 namespace ReversalTower
 {
-    // DDA 확인 패널. F8로 켜고 끄며, 켠 상태는 다음 실행에도 기억한다(PlayerPrefs).
+    // DDA 확인 패널. F8로 켜고 끄며, 재실행과 메뉴 복귀 시 기본적으로 닫는다.
     // 플레이어에게는 DDA 보정값을 보여 주지 않는 것이 기본이라 꺼진 채로 시작한다. 개발 확인과 발표 시연용이다.
     //  - 전투 중: 패턴별 이번 판 레벨, 이번 판 회피·패링 기록(실시간), 지금까지 기억하는 성공률
     //  - 결과 화면: 위 내용 + 이번 판까지 학습한 뒤 '다음 판'에 고를 레벨과 그 이유
     public sealed partial class TowerGame
     {
-        const string DdaPanelPref = "DdaPanelVisible";
         bool ddaPanelLoaded, showDdaPanel;
+        ScreenMode ddaPanelMode;
         readonly DdaPreviewStamp ddaPreviewStamp=new DdaPreviewStamp();
         readonly Dictionary<string,int> ddaNextLevel = new Dictionary<string,int>();
         readonly Dictionary<string,string> ddaNextReason = new Dictionary<string,string>();
 
-        public bool TutorialSummaryBlocksMenu=>showDdaPanel&&!TutorialActive&&LastTutorialAssessment!=null&&(mode==ScreenMode.Lobby||mode==ScreenMode.Title);
+        public bool TutorialSummaryBlocksMenu=>showDdaPanel&&ddaPanelLoaded&&ddaPanelMode==mode&&!TutorialActive&&LastTutorialAssessment!=null&&(mode==ScreenMode.Lobby||mode==ScreenMode.Title);
 
         void DdaPanelInput()
         {
             if(AutoRunArgs.IsAutomationProcess){ddaPanelLoaded=true;showDdaPanel=false;return;}
-            if (!ddaPanelLoaded) { showDdaPanel = PlayerPrefs.GetInt(DdaPanelPref, 0) == 1; ddaPanelLoaded = true; }
+            // Visibility belongs to this session, never to a previous process.
+            if(!ddaPanelLoaded){showDdaPanel=false;ddaPanelLoaded=true;ddaPanelMode=mode;}
+            if(ddaPanelMode!=mode){if(mode==ScreenMode.Lobby||mode==ScreenMode.Title){showDdaPanel=false;EndDdaPanelResize();}ddaPanelMode=mode;}
             Event e = Event.current;
             if (e != null && e.type == EventType.KeyDown && e.keyCode == KeyCode.F8)
             {
                 ResetDdaPanelWindow();
                 showDdaPanel = !showDdaPanel;
-                PlayerPrefs.SetInt(DdaPanelPref, showDdaPanel ? 1 : 0);
-                PlayerPrefs.Save();
+                // F8 remains available for explicitly requested tutorial summaries.
                 e.Use();
             }
             if (showDdaPanel && e != null && e.type == EventType.KeyDown && e.keyCode == KeyCode.F9)

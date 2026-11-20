@@ -274,9 +274,10 @@ namespace ReversalTower
                 }
                 if(!SaveStore.Save(tutorialCompletionCandidate))
                 { TutorialLocalStatus="로컬 저장 실패 · 재시도 대기";tutorialSaveError="저장 공간과 파일 접근 권한을 확인한 뒤 다시 시도하세요.";return; }
-                var committed=tutorialCompletionCandidate;RestoreTutorialProfile();save=committed;TutorialLocalStatus="로컬 저장 완료";
-                // Already committed: avoid ReturnLobby's redundant second save.
-                void ShowLobby(){mode=ScreenMode.Lobby;showHelp=showSettings=showHistory=showCards=false;potions=3;}
+                var committed=tutorialCompletionCandidate;
+                // Keep the dummy and training room until the fade reaches black.
+                // Restore profile, boss and screen atomically at that midpoint.
+                void ShowLobby(){RestoreTutorialProfile();save=committed;TutorialLocalStatus="로컬 저장 완료";mode=ScreenMode.Lobby;showHelp=showSettings=showHistory=showCards=false;potions=3;}
                 if(!QueueScreenChange(ShowLobby))ShowLobby();
             }
             catch(Exception e){tutorialSaveError="저장 처리 실패. 기존 진행도는 보존되어 있습니다.";Debug.LogWarning("Tutorial completion: "+e.Message);}

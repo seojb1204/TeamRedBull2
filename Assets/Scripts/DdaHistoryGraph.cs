@@ -31,7 +31,7 @@ namespace ReversalTower
         bool DdaPanelConsumesMouse()
         {
             if(AutoRunArgs.IsAutomationProcess)return false;
-            if (!(ddaPanelLoaded ? showDdaPanel : PlayerPrefs.GetInt(DdaPanelPref, 0) == 1) ||
+            if (!ddaPanelLoaded || !showDdaPanel ||
                 (mode != ScreenMode.Battle && mode != ScreenMode.Result) || save == null || spec == null ||
                 !TutorialActive&&(stats == null || stats.Count == 0)) return false;
             float scale = DdaPanelScale();

@@ -67,6 +67,7 @@ namespace ReversalTower
 
         void DrawGameUi()
         {
+            if(!showHistory)archivedHistory=null;
             EnsureStyles();float scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
             GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1600*scale)/2,(Screen.height-900*scale)/2,0),Quaternion.identity,new Vector3(scale,scale,1));
 #if !HEADLESS && !DESKTOP_PREVIEW
@@ -118,7 +119,7 @@ namespace ReversalTower
             if(Button(103,577,360,62,save.history.Count>0?"탑으로 돌아가기   →":"탑에 들어가기   →",true)){StartGame();}
             if(Button(103,655,170,45,"조작 안내"))showHelp=true;
             if(Button(287,655,176,45,"설정"))showSettings=true;
-            Text(103,730,530,32,"검과 패링으로 오르는 다섯 개의 문",16,muted);
+            if(Button(103,716,360,45,"게임 종료"))QuitGame();
             Text(1040,168,450,40,"01 — THE BROKEN OATH",15,Palette.Gold,TextAnchor.UpperRight);
             Footer("ENTER  입장    ·    A / D  이동    ·    J  공격    ·    K  패링");
         }
@@ -130,12 +131,12 @@ namespace ReversalTower
             Text(80,176,340,24,"CHAMBERS  /  도전할 보스",14,Palette.Gold);
             for(int i=0;i<5;i++)
             {
-                float y=219+i*73;bool locked=i>save.unlockedBoss,selected=i==bossIndex;
+                float y=219+i*73;bool locked=!CanEnterBoss(i),selected=i==bossIndex;
                 Fill(new Rect(78,y,390,61),selected?new Color(.15f,.20f,.23f,.96f):panel);
                 if(selected)Fill(new Rect(78,y,3,61),Palette.Gold);
                 Text(95,y+15,45,34,(i+1).ToString("00"),21,locked?muted:Palette.Gold);
                 Text(150,y+8,200,34,Catalog.Bosses[i].name,23,locked?muted:Palette.White);
-                Text(150,y+39,260,22,locked?"이전 보스를 처치하면 개방":save.cleared[i]?"계승 완료 · 다시 도전 가능":i==4?"히든 보스 · 심연의 문":"미완의 맹세",12,muted);
+                Text(150,y+39,260,22,IsPresentationLocked(i)?"준비 중":locked?"이전 보스를 처치하면 개방":save.cleared[i]?"계승 완료 · 다시 도전 가능":i==4?"히든 보스 · 심연의 문":"미완의 맹세",12,muted);
                 if(!locked&&GUI.Button(new Rect(78,y,390,61),GUIContent.none,GUIStyle.none))bossIndex=i;
             }
             var b=Catalog.Bosses[bossIndex];
@@ -252,7 +253,7 @@ namespace ReversalTower
         }
         void PauseUI()
         {
-            Modal(535,215,530,466,"잠시 검을 내려놓고");Text(568,282,460,40,"전투는 멈춰 있습니다.",18,muted);
+            Modal(535,215,530,540,"잠시 검을 내려놓고");Text(568,282,460,40,"전투는 멈춰 있습니다.",18,muted);
             if(Button(568,344,464,56,"전투 계속하기",true))paused=false;
             if(Button(568,419,222,48,"조작 안내"))showHelp=true;if(Button(810,419,222,48,"설정"))showSettings=true;
             if(TutorialActive)
@@ -264,6 +265,7 @@ namespace ReversalTower
                 if(Button(568,490,464,50,"전투 중단 후 회랑으로"))Abandon();
                 Text(568,562,464,64,"중단한 전투도 실패 기록과 보상이 남습니다.\nESC로 전투에 복귀할 수 있습니다.",15,muted);
             }
+            if(Button(568,650,464,50,"게임 종료"))QuitGame();
         }
         void HelpUI()
         {
@@ -277,7 +279,6 @@ namespace ReversalTower
         // DDA 기록 초기화: 실수로 누르지 않게 4초 안에 한 번 더 눌러야 지운다. 전투 중에는 막는다(진행 중인 판이 지운 기록에 학습되지 않게).
         float ddaResetArmedUntil=-1,ddaResetDoneUntil=-1;
         bool profileResetConfirm;string restoreConfirmId;
-        float archivedHistoryRefresh=-1;
         System.Collections.Generic.List<HistoryEntry> archivedHistory;
         System.Collections.Generic.HashSet<string> validSnapshots=new System.Collections.Generic.HashSet<string>();
         void ApplyProfile(SaveData replacement,bool reset)
@@ -316,17 +317,21 @@ namespace ReversalTower
         void HistoryUI()
         {
             Modal(260,110,1080,690,"탑이 기억하는 전투");
-            if(archivedHistory==null||realClock>=archivedHistoryRefresh)
+            // 보관 파일을 전부 읽는 무거운 작업이라 창을 새로 열 때(또는 복원·초기화 직후)만 읽는다.
+            // 예전처럼 2초마다 읽으면 기록이 쌓일수록 창을 열어 둔 동안 주기적으로 끊긴다.
+            // 닫힌 화면을 그릴 때 캐시를 무효화하므로 프레임 시간에 의존하지 않는다.
+            if(archivedHistory==null)
             {
                 archivedHistory=SaveStore.AllHistory(save);validSnapshots.Clear();
-                foreach(var entry in archivedHistory)if(SaveStore.HasSnapshot(entry.snapshotId))validSnapshots.Add(entry.snapshotId);
-                archivedHistoryRefresh=realClock+2;
+                foreach(var entry in archivedHistory)if(entry.snapshotId!=null&&SaveStore.HasSnapshot(entry.snapshotId))validSnapshots.Add(entry.snapshotId);
             }
             var entries=archivedHistory;
             Text(300,192,1000,35,"보관된 전투 · 복원은 로컬 진행만 변경하며 서버 기록은 유지됩니다",17,muted);
             historyScroll=GUI.BeginScrollView(new Rect(294,245,1012,450),historyScroll,new Rect(0,0,980,Mathf.Max(430,entries.Count*90)));
             if(entries.Count==0)Text(15,80,940,80,"첫 번째 문을 열면 여기에 남는다.",22,muted,TextAnchor.UpperCenter);
-            for(int i=0;i<entries.Count;i++)
+            // 화면(높이 450 = 5줄)에 보이는 줄만 그린다. 기록이 수백 개여도 매 프레임 그리는 양은 같다.
+            int firstRow=Mathf.Max(0,Mathf.FloorToInt(historyScroll.y/90f)-1),lastRow=Mathf.Min(entries.Count,firstRow+8);
+            for(int i=firstRow;i<lastRow;i++)
             {
                 var h=entries[i];float y=i*90;Fill(new Rect(0,y,975,57),new Color(.07f,.10f,.14f));var b=Array.Find(Catalog.Bosses,p=>p.id==h.boss);
                 Text(16,y+9,205,35,b==null?h.boss:b.name,20,h.clear?Palette.Gold:Palette.White);Text(240,y+12,160,30,h.clear?"★ 넘음":"쓰러짐",16,h.clear?Palette.Teal:muted);

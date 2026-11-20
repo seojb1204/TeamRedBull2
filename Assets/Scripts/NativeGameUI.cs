@@ -120,6 +120,7 @@ namespace ReversalTower
             if(enter){UiKit.Place(enter,100,420,380,64);UiKit.Skin(enter,UiKit.Primary);titleEnterLabel=UiKit.Caption(enter,"탑에 들어가기",UiKit.Body,UiKit.Ink,"Enter");}
             Small(titlePage,"조작 안내",100,500,182,52);
             Small(titlePage,"설정",298,500,182,52);
+            MakeButton(t,"Quit Game",100,568,380,52,UiKit.Button,"게임 종료",UiKit.Body,Palette.White,game.QuitGame);
             UiKit.Label(t,"Credit",104,836,600,30,UiKit.Body,UiKit.Muted).text="팀 레드불";
         }
 
@@ -274,7 +275,8 @@ namespace ReversalTower
             Small(pausePage,"설정",540,396,520,56);
             var quit=Grab<Button>(pausePage,"전투 중단");
             if(quit){UiKit.Place(quit,540,468,520,56);UiKit.Skin(quit,UiKit.Button);UiKit.Caption(quit,"포기하고 회랑으로",UiKit.Body,Palette.White);}
-            UiKit.Label(t,"Note",540,544,520,90,UiKit.Body,UiKit.Muted).text="포기해도 이번 전투의 기록과 골드는 남는다.";
+            MakeButton(t,"Quit Game",540,540,520,52,UiKit.Button,"게임 종료",UiKit.Body,Palette.White,game.QuitGame);
+            UiKit.Label(t,"Note",540,606,520,48,UiKit.Body,UiKit.Muted).text="종료하면 진행 중인 전투는 이어서 할 수 없습니다.";
         }
 
         void BuildResult()
@@ -376,13 +378,13 @@ namespace ReversalTower
 
             for(int i=0;i<bossButtons.Length;i++)
             {
-                bool locked=i>save.unlockedBoss,selected=i==game.bossIndex,cleared=Cleared(save,i);
+                bool locked=!game.CanEnterBoss(i),selected=i==game.bossIndex,cleared=Cleared(save,i);
                 bossButtons[i].interactable=!locked;
                 Swap(bossButtons[i].image,selected?UiKit.Selected:UiKit.Button);
                 Set(bossNames[i],Catalog.Bosses[i].name);
                 Tint(bossNames[i],locked?UiKit.Muted:Palette.White);
                 Tint(bossNumbers[i],locked?UiKit.Muted:Palette.Gold);
-                Set(bossStates[i],locked?"잠긴 문":cleared?"★ 넘은 문":i==4?"숨겨진 문":"열린 문");
+                Set(bossStates[i],game.IsPresentationLocked(i)?"준비 중":locked?"잠긴 문":cleared?"★ 넘은 문":i==4?"숨겨진 문":"열린 문");
                 Tint(bossStates[i],cleared?Palette.Teal:UiKit.Muted);
             }
 
@@ -635,7 +637,7 @@ namespace ReversalTower
             return new Rect((a.x-(Screen.width-1600*scale)/2)/scale,(Screen.height-b.y-(Screen.height-900*scale)/2)/scale,(b.x-a.x)/scale,(b.y-a.y)/scale);
         }
         public void EnterLobby(){if(!BlocksLobbyInput)game.StartGame();}
-        public void SelectBoss(int index){if(!BlocksLobbyInput&&index>=0&&index<=game.save.unlockedBoss)game.bossIndex=index;}
+        public void SelectBoss(int index){if(!BlocksLobbyInput&&game.CanEnterBoss(index))game.bossIndex=index;}
         public void EnterBattle(){if(!BlocksLobbyInput)game.StartBattle(game.bossIndex);}
         public void OpenCards(){if(BlocksLobbyInput)return;game.OpenCards();ApplyLobbyInputState();}
         public void ChooseCard(int index)

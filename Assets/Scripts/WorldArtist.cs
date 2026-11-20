@@ -199,7 +199,19 @@ namespace ReversalTower
             Disc(x,1.5f,.65f,.75f,Palette.Red);Disc(x,1.5f,.24f,.3f,Palette.Gold);
             if(g.TutorialThreatVisible)
             {
-                Color c=g.Tutorial.Step==TutorialStep.Dodge?Palette.Red:Palette.ParryRim;
+                bool dodge=g.Tutorial.Step==TutorialStep.Dodge;
+                Color c=dodge?Palette.Red:Palette.ParryRim;
+                if(!dodge)
+                {
+                    // Match boss tells: blue light on the attacking body, not the target floor.
+                    float pulse=.8f+.2f*Mathf.Sin(time*22),flash=g.TutorialTimingSignal?1f:.35f;
+                    GlowShape(disk,x,1.5f,1.35f,1.55f,Palette.Alpha(Palette.ParryRim,.42f*pulse));
+                    GlowShape(disk,x,1.5f,1.1f,1.3f,Palette.Alpha(Palette.ParryCore,.28f+.35f*flash));
+                    GlowShape(box,x,1.1f,.25f,2.2f,Palette.Alpha(Palette.ParryRim,.5f*pulse));
+                    GlowShape(box,x,1.65f,2,.20f,Palette.Alpha(Palette.ParryRim,.6f*pulse),swing);
+                    if(g.TutorialTimingSignal)Glint(x,1.65f,1,.35f);
+                    return;
+                }
                 Rect(g.TutorialThreatX,.06f,2.6f,.12f,c);
                 Rect(g.TutorialThreatX,1,2.6f,2,Palette.Alpha(c,.22f));
                 Rect(g.TutorialThreatX,.17f,2.6f*g.TutorialThreatProgress,.09f,c);

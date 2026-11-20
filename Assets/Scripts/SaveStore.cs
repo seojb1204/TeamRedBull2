@@ -169,17 +169,35 @@ namespace ReversalTower
             if(!Uuid(id))throw new InvalidDataException("Invalid snapshot ID");
             return Path.Combine(ArchiveRoot,"snapshots",id+".json");
         }
+        // 복원 지점·백업은 최근 것만 남긴다. 판마다 세이브 전체가 쌓이면 디스크와 기록 창이 끝없이 무거워진다.
+        // 전투 기록 자체(progress.json의 history)는 지우지 않으므로, 오래된 판은 "복원 데이터 없음"으로만 바뀐다.
+        public const int MaxSnapshots=50, MaxBackups=10;
         static void WriteNew(string path,object data)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             string temp=path+".tmp-"+Guid.NewGuid().ToString("N");
-            File.WriteAllText(temp,JsonUtility.ToJson(data,true),Encoding.UTF8);
+            // 보관 파일은 사람이 읽을 일이 거의 없어 한 줄로 저장한다 (들여쓰기 저장 대비 수 배 작다)
+            File.WriteAllText(temp,JsonUtility.ToJson(data,false),Encoding.UTF8);
             File.Move(temp,path); // Immutable: never replace a previous archive.
+        }
+        // 가장 최근 keep개만 남기고 오래된 보관 파일을 지운다. 실패해도 저장·복원 흐름은 막지 않는다.
+        static void Prune(string dir,int keep)
+        {
+            try
+            {
+                if(!Directory.Exists(dir))return;
+                var files=new DirectoryInfo(dir).GetFiles("*.json");
+                if(files.Length<=keep)return;
+                Array.Sort(files,(a,b)=>{int c=b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc);return c!=0?c:string.CompareOrdinal(b.Name,a.Name);});
+                for(int i=keep;i<files.Length;i++)try{files[i].Delete();}catch{}
+            }
+            catch(Exception e){Debug.LogWarning("보관 파일 정리 실패 (진행에는 영향 없음): "+e.Message);}
         }
         static void Backup(SaveData data)
         {
             var copy=Clone(data);EnsureIdentity(copy,false);
             WriteNew(Path.Combine(ArchiveRoot,"backups",Guid.NewGuid()+".json"),copy);
+            Prune(Path.Combine(ArchiveRoot,"backups"),MaxBackups);
         }
         // Called only after rewards/learning are settled. The committed save is the source of truth.
         public static bool CommitCompletedBattle(SaveData data,HistoryEntry battle)
@@ -198,6 +216,7 @@ namespace ReversalTower
                 committed.history=new System.Collections.Generic.List<HistoryEntry>();
                 WriteNew(SnapshotPath(id),new Snapshot{id=id,createdAtUtc=DateTime.UtcNow.ToString("o"),battle=h,state=committed});
                 battle.snapshotId=id; // Archive remains discoverable even if this convenience reference is not saved.
+                Prune(Path.Combine(ArchiveRoot,"snapshots"),MaxSnapshots);
                 LastError=null;return true;
             }
             catch(Exception e){LastError="진행 저장 완료, 복원 지점 생성 실패: "+e.Message;Debug.LogWarning(LastError);return false;}

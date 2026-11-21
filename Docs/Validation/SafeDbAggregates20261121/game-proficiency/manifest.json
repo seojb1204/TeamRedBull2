@@ -1,0 +1,37 @@
+{
+  "commit": "d9847ffd38361b91d3f1c8512d5924ee440f884d",
+  "suites": {
+    "proficiency-http": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/GameServices.cs": "46b39bc114745ead4c8a968cf8546b98e2fb0e6ec096eaa4be1e76c789dc3955",
+        "Assets/Scripts/SaveStore.cs": "0f54b79094493c64c9e8242e3ff8a1bb216d10a08004dd673d76e5b49994ca08",
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/CloudSync.cs": "0fde7c72c0fd1520f23c7d4d91787670c393d4736f1db7c075306e012b945cd9",
+        "Tests/CloudSyncStatus/Stubs.cs": "00adda8c3305dc34fe9865a5ff2f33c0d30c45627d8132ed3f4a948cfac16ac3",
+        "Tests/ProficiencyHttpTests.cs": "724dde6a8bb8eb31dfaa56d8aae7784e2096b299855f7ea8519c5021f8461fad"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-kdu2h4m9/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS actual reset creates fresh profile without reassigning pending telemetry",
+        "PASS actual restore recovers original UUID and first assessment",
+        "PASS restored profile retains original capability and immutable queued owner",
+        "PROFICIENCY_HTTP_PASS 28"
+      ]
+    }
+  },
+  "limits": [
+    "HEADLESS or mocked Unity/HTTP, not Unity API/runtime or real network",
+    "No production DB, credentials, personal saves/queues",
+    "Tutorial groups are not calibrated human skill probabilities"
+  ]
+}

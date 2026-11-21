@@ -1,0 +1,9 @@
+{
+  "Docs/DB/migrations/20261121_exhibit_summary.sql": "472057fd87248696ebfadb07642f6971c614982a1ae1e3ec0cd48065de4d5ee1",
+  "Tools/DdaLab/database.py": "af3229310a9108de9470e03944964791833da10b9ead70a97c145955c51737f3",
+  "Tools/DdaLab/database.js": "76514eea670bc19a929f484bc60aa482dfdc412b77cb9013f4d230dc0d56fb2f",
+  "Tools/DdaLab/index.html": "294eada540401c85bf766b01faa1893ab051fab645a879315dbf6467c3071593",
+  "Tests/test-safe-db-postgres.py": "454c5183dd9fb7c193cde0cd0262973c4760ec15f386f2fc6912a51177837abd",
+  "Tests/test-safe-db.py": "b05fd38d66408e63eaba4fff619bd4f71060b7845fae48c0cad05a753055f501",
+  "Tests/test-safe-db-ui.py": "2505138f446649356d63742e05637fee48a4e2b9b40c8ad8c522ebb6badb7ad6"
+}

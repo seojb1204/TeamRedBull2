@@ -20,10 +20,11 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, parse_qs
 from xml.sax.saxutils import escape
 
-ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1] if HERE.parent.name=='Tools' else HERE.parent
 sys.path.insert(0,str(HERE))
 from monitor import Monitor,MAX_EXPORT
+from database import Database
 from runtime import run, select_sdk, pin_sdk, git_revision, check_files
 NAMES = ['TutorialSession', 'TowerGame.Tutorial', 'GameData', 'TowerGame', 'BossCombat', 'SaveStore', 'LobbyCards', 'AutoRun',
          'LobbySmoke', 'BossPatternSystem', 'GameServices', 'ArakusPatternTiming', 'ArakusAnimationSelection']
@@ -52,9 +53,11 @@ def validate(data):
 
 
 class Lab:
-    def __init__(self, dotnet, data):
-        self.sdk = select_sdk(dotnet) if dotnet else None
-        self.dotnet = self.sdk["executable"] if self.sdk else None
+    def __init__(self, dotnet, data, prebuilt=None):
+        self.prebuilt = Path(prebuilt).resolve() if prebuilt else None
+        self.engine_manifest = json.loads(self.prebuilt.with_name("engine.json").read_text(encoding="utf-8")) if prebuilt else None
+        self.sdk = select_sdk(dotnet) if dotnet and not prebuilt else None
+        self.dotnet = self.sdk["executable"] if self.sdk else str(self.prebuilt) if prebuilt else None
         self.data = Path(data).resolve()
         self.data.mkdir(parents=True, exist_ok=True)
         self.lock = threading.Lock()
@@ -72,6 +75,8 @@ class Lab:
         self.files = [ROOT / 'Assets/Scripts' / (n + '.cs') for n in NAMES] + [ROOT / 'Tests/UnityShim.cs', HERE / 'Experiment.cs']
 
     def hashes(self):
+        if self.prebuilt:
+            return self.engine_manifest["source_sha256"]
         return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in self.files}
 
     def execute(self, config, run_id):
@@ -82,39 +87,47 @@ class Lab:
             hashes = self.hashes()
             config_path = folder / 'config.json'
             config_path.write_text(json.dumps(config), encoding='utf-8')
-            # Cache only builds of the exact selected source hashes. One worker owns build/run.
-            key = hashlib.sha256(json.dumps(dict(sources=hashes, sdk=self.sdk, build_contract=3), sort_keys=True).encode()).hexdigest()
-            w = self.data / '.build' / key
-            w.mkdir(parents=True, exist_ok=True)
-            project = w / 'Lab.csproj'
-            project.write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType>'
-                '<TargetFramework>net8.0</TargetFramework><UseAppHost>false</UseAppHost><EnableDefaultCompileItems>false</EnableDefaultCompileItems>'
-                '<DefineConstants>HEADLESS</DefineConstants></PropertyGroup><ItemGroup>'
-                + ''.join('<Compile Include="' + escape(str(p), {'"': '&quot;'}) + '" />' for p in self.files)
-                + '</ItemGroup></Project>', encoding='utf-8')
-            (w / 'NuGet.Config').write_text('<configuration><packageSources><clear /></packageSources></configuration>', encoding='utf-8')
-            pin_sdk(w, self.sdk)
-            env = dict(os.environ, DOTNET_CLI_HOME=str(w / 'cli'), NUGET_PACKAGES=str(w / 'packages'),
-                       DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_PROCESSOR_COUNT='1')
-            dll = w / 'out/Lab.dll'
-            with (folder / 'execution.log').open('w', encoding='utf-8') as log:
-                log.write('SDK: ' + json.dumps(self.sdk, ensure_ascii=False) + '\n')
-                log.flush()
-                if not dll.is_file() or not (w / 'build.complete').is_file():
-                    version = run([self.dotnet, '--version'], cwd=w, env=env, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=30)
-                    log.write('SDK effective: ' + version.stdout + version.stderr)
-                    if version.returncode or version.stdout.strip() != self.sdk['version']:
-                        raise RuntimeError('SDK 고정 실패: ' + version.stdout + version.stderr)
-                    build_command = [self.dotnet, 'build', str(project), '--output', str(w / 'out'), '--verbosity', 'quiet']
-                    log.write('BUILD: ' + repr(build_command) + '\n'); log.flush()
-                    build = run(build_command,
-                                           cwd=w, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=180)
-                    if build.returncode:
-                        raise RuntimeError('C# build failed. ' + (folder / 'execution.log').read_text(encoding='utf-8-sig')[-1800:])
-                    (w / 'build.complete').write_text(key, encoding='utf-8')
-                command = [self.dotnet, str(dll), str(config_path), str(folder / 'raw.json')]
-                log.write('RUN: ' + repr(command) + '\n'); log.flush()
-                result = run(command, cwd=w, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=600)
+            if self.prebuilt:
+                if hashlib.sha256(self.prebuilt.read_bytes()).hexdigest()!=self.engine_manifest['exe_sha256']:
+                    raise RuntimeError('사전 빌드 C# 엔진 hash 불일치')
+                command=[str(self.prebuilt),str(config_path),str(folder/'raw.json')]
+                with (folder/'execution.log').open('w',encoding='utf-8') as log:
+                    log.write('PREBUILT actual C#: '+repr(command)+'\n');log.flush()
+                    result=run(command,cwd=self.prebuilt.parent,env=dict(os.environ,DOTNET_PROCESSOR_COUNT='1'),stdout=log,stderr=subprocess.STDOUT,timeout=600)
+            else:
+                # Cache only builds of the exact selected source hashes. One worker owns build/run.
+                key = hashlib.sha256(json.dumps(dict(sources=hashes, sdk=self.sdk, build_contract=3), sort_keys=True).encode()).hexdigest()
+                w = self.data / '.build' / key
+                w.mkdir(parents=True, exist_ok=True)
+                project = w / 'Lab.csproj'
+                project.write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType>'
+                    '<TargetFramework>net8.0</TargetFramework><UseAppHost>false</UseAppHost><EnableDefaultCompileItems>false</EnableDefaultCompileItems>'
+                    '<DefineConstants>HEADLESS</DefineConstants></PropertyGroup><ItemGroup>'
+                    + ''.join('<Compile Include="' + escape(str(p), {'"': '&quot;'}) + '" />' for p in self.files)
+                    + '</ItemGroup></Project>', encoding='utf-8')
+                (w / 'NuGet.Config').write_text('<configuration><packageSources><clear /></packageSources></configuration>', encoding='utf-8')
+                pin_sdk(w, self.sdk)
+                env = dict(os.environ, DOTNET_CLI_HOME=str(w / 'cli'), NUGET_PACKAGES=str(w / 'packages'),
+                           DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_PROCESSOR_COUNT='1')
+                dll = w / 'out/Lab.dll'
+                with (folder / 'execution.log').open('w', encoding='utf-8') as log:
+                    log.write('SDK: ' + json.dumps(self.sdk, ensure_ascii=False) + '\n')
+                    log.flush()
+                    if not dll.is_file() or not (w / 'build.complete').is_file():
+                        version = run([self.dotnet, '--version'], cwd=w, env=env, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=30)
+                        log.write('SDK effective: ' + version.stdout + version.stderr)
+                        if version.returncode or version.stdout.strip() != self.sdk['version']:
+                            raise RuntimeError('SDK 고정 실패: ' + version.stdout + version.stderr)
+                        build_command = [self.dotnet, 'build', str(project), '--output', str(w / 'out'), '--verbosity', 'quiet']
+                        log.write('BUILD: ' + repr(build_command) + '\n'); log.flush()
+                        build = run(build_command,
+                                               cwd=w, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=180)
+                        if build.returncode:
+                            raise RuntimeError('C# build failed. ' + (folder / 'execution.log').read_text(encoding='utf-8-sig')[-1800:])
+                        (w / 'build.complete').write_text(key, encoding='utf-8')
+                    command = [self.dotnet, str(dll), str(config_path), str(folder / 'raw.json')]
+                    log.write('RUN: ' + repr(command) + '\n'); log.flush()
+                    result = run(command, cwd=w, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=600)
             if result.returncode:
                 raise RuntimeError(f'C# failed ({result.returncode}). See execution.log. ' + (folder / 'execution.log').read_text(encoding='utf-8-sig')[-1800:])
             if hashes != self.hashes():
@@ -134,7 +147,7 @@ class Lab:
                     if old['config'] == config and old['manifest']['source_sha256'] == hashes:
                         replay = dict(run=previous['id'], identical=old['manifest']['policy_sha256'] == fingerprint)
                         break
-            revision, git_warning = git_revision(ROOT)
+            revision, git_warning = (self.engine_manifest.get('sourceCommit'), '사전 빌드 엔진의 소스 hash/commit 사용 · Git 불필요') if self.prebuilt else git_revision(ROOT)
             if git_warning:
                 with (folder / 'execution.log').open('a', encoding='utf-8') as log:
                     log.write(git_warning + '\n')
@@ -194,8 +207,12 @@ class Lab:
         return self.jobs[run_id]
 
 
-def serve(lab, port):
+def serve(lab, port, auto_monitor_root=None, ready_file=None, db_config=None):
     monitor=Monitor()
+    if auto_monitor_root:
+        monitor.connect(str(Path(auto_monitor_root).resolve()))
+    database=Database(db_config or ROOT/'Assets/StreamingAssets/supabase.json')
+    if db_config:database.refresh()
     token = secrets.token_urlsafe(32)
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -222,10 +239,13 @@ def serve(lab, port):
                 return self.send(403, {'error': 'Local host only'})
             url = urlsplit(self.path)
             if url.path == '/':
-                return self.send(200, (HERE / 'index.html').read_text(encoding='utf-8-sig').replace('__CSRF__', token).replace('__MONITOR_ONLY__', 'true' if lab.dotnet is None else 'false'), 'text/html; charset=utf-8')
-            if url.path in ('/monitor.js','/monitor.css'):
+                return self.send(200, (HERE / 'index.html').read_text(encoding='utf-8-sig').replace('__CSRF__', token).replace('__MONITOR_ONLY__', 'true' if lab.dotnet is None else 'false').replace('__AUTO_MONITOR__','true' if auto_monitor_root else 'false'), 'text/html; charset=utf-8')
+            if url.path in ('/monitor.js','/monitor.css','/database.js'):
                 name=url.path[1:]
                 return self.send(200,(HERE/name).read_text(encoding='utf-8-sig'),'text/javascript; charset=utf-8' if name.endswith('.js') else 'text/css; charset=utf-8')
+            if url.path=='/api/database/state':
+                if self.headers.get('X-Lab-Token')!=token:return self.send(403,{'error':'Local UI token required'})
+                return self.send(200,database.state())
             if url.path.startswith('/api/monitor/'):
                 if self.headers.get('X-Lab-Token')!=token:return self.send(403,{'error':'Local UI token required'})
                 try:
@@ -251,13 +271,14 @@ def serve(lab, port):
             if not self.allowed() or self.headers.get('X-Lab-Token') != token:
                 return self.send(403, {'error': 'Local UI token required'})
             path=urlsplit(self.path).path
-            if path not in ('/api/run','/api/monitor/connect','/api/monitor/disconnect','/api/monitor/replay','/api/monitor/browse'):
+            if path not in ('/api/run','/api/monitor/connect','/api/monitor/disconnect','/api/monitor/replay','/api/monitor/browse','/api/database/refresh'):
                 return self.send(404, {'error': 'Not found'})
             try:
                 length = int(self.headers.get('Content-Length', '0'))
                 maximum=MAX_EXPORT if path=='/api/monitor/replay' else 4096
                 if not 0 < length <= maximum:raise ValueError('Invalid body size')
                 data=json.loads(self.rfile.read(length))
+                if path=='/api/database/refresh':database.refresh();return self.send(202,database.state())
                 if path=='/api/monitor/connect':return self.send(200,monitor.connect(data.get('root'),data.get('choice')))
                 if path=='/api/monitor/disconnect':monitor.disconnect();return self.send(200,monitor.state())
                 if path=='/api/monitor/replay':return self.send(200,monitor.load_replay(data))
@@ -269,6 +290,8 @@ def serve(lab, port):
             except RuntimeError as e:
                 return self.send(409, {'error': str(e)})
     server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
+    if ready_file:
+        Path(ready_file).write_text(json.dumps({'url':f'http://127.0.0.1:{server.server_port}','pid':os.getpid()}),encoding='utf-8')
     print(f'DDA Lab: http://127.0.0.1:{server.server_port} (local only)', flush=True)
     print('Results:', lab.data, flush=True)
     server.serve_forever()
@@ -276,26 +299,30 @@ def serve(lab, port):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--prebuilt',type=Path,help='Packaged actual C# engine; no SDK required')
+    p.add_argument('--auto-monitor-root',type=Path)
+    p.add_argument('--ready-file',type=Path)
+    p.add_argument('--db-config',type=Path)
     p.add_argument('--dotnet', default=shutil.which('dotnet'))
     p.add_argument('--monitor-only', action='store_true', help='Observe/replay logs with Python only; disable C# experiments')
     p.add_argument('--data-dir', type=Path)
     p.add_argument('--port', type=int, default=8765)
     p.add_argument('--config', type=Path, help='Run one validated JSON config without starting UI')
     a = p.parse_args()
-    check_files(ROOT, HERE, NAMES)
-    if not a.dotnet and not a.monitor_only:
+    if not a.prebuilt:check_files(ROOT, HERE, NAMES)
+    if not a.dotnet and not a.monitor_only and not a.prebuilt:
         p.error('.NET 8 SDK 실행 파일을 찾을 수 없습니다. 설치 후 --dotnet 전체경로를 지정하세요. 보기 전용은 --monitor-only 입니다.')
-    dotnet = None if a.monitor_only else (shutil.which(a.dotnet) or str(Path(a.dotnet).resolve()))
-    lab = Lab(dotnet, a.data_dir or tempfile.mkdtemp(prefix='tower-dda-results-'))
+    dotnet = None if a.monitor_only or a.prebuilt else (shutil.which(a.dotnet) or str(Path(a.dotnet).resolve()))
+    lab = Lab(dotnet, a.data_dir or tempfile.mkdtemp(prefix='tower-dda-results-'),prebuilt=a.prebuilt)
     print('Python:', sys.version.split()[0], '| 필수 파일 확인 완료', flush=True)
-    print('SDK:', json.dumps(lab.sdk, ensure_ascii=False) if lab.sdk else '모니터 전용 (.NET 불필요)', flush=True)
+    print('SDK/Engine:', '사전 빌드 실제 C# · SDK 불필요' if lab.prebuilt else json.dumps(lab.sdk, ensure_ascii=False) if lab.sdk else '모니터 전용 (.NET 불필요)', flush=True)
     if a.config and a.monitor_only:p.error('--config requires the simulator/.NET SDK')
     if a.config:
         job = lab.submit(json.loads(a.config.read_text(encoding='utf-8-sig')), asynchronous=False)
         print(json.dumps(job, ensure_ascii=False))
         print(lab.data / job['id'])
         return 0 if job['status'] == 'completed' else 1
-    serve(lab, a.port)
+    serve(lab, a.port,a.auto_monitor_root,a.ready_file,a.db_config)
 
 
 if __name__ == '__main__':

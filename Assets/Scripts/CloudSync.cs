@@ -45,9 +45,10 @@ namespace ReversalTower
         {
             // Boot order is unspecified: inspect command line, not AutoRunArgs.Active.
             if(AutoRunArgs.IsAutomationProcess)
-            {CommunityStats.MarkUnavailable(true);CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
+            {DdaCloudDiagnostics.Configuration("자동검증: 네트워크 꺼짐");CommunityStats.MarkUnavailable(true);CommunityStats.Status="자동검증: 네트워크 꺼짐";return;}
             config = LoadConfig();
-            if (config == null) { CommunityStats.MarkUnavailable(false);CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
+            if (config == null) { DdaCloudDiagnostics.Configuration("설정 없음/유효하지 않음");CommunityStats.MarkUnavailable(false);CommunityStats.Status = "DB 설정 없음 (supabase.json)"; return; }
+            DdaCloudDiagnostics.Configuration("클라이언트 설정 확인 · 전송 성공은 별도",config.proficiencySync);
             var profile=SaveStore.Load();playerId=profile.cloudPlayerId;SaveStore.QueueAssessments(profile);
             queueDir = Path.Combine(Application.persistentDataPath, "CloudQueue");
             Directory.CreateDirectory(queueDir);
@@ -149,7 +150,7 @@ namespace ReversalTower
             bool ok = true;
             bool rejectedOwner=false;
             string[] files = Directory.GetFiles(queueDir, "*.json");
-            Array.Sort(files, StringComparer.Ordinal);
+            Array.Sort(files, StringComparer.Ordinal);DdaCloudDiagnostics.Pending(files.Length);
             foreach (string file in files)
             {
                 Pending p = null;
@@ -173,7 +174,7 @@ namespace ReversalTower
             bool fetched=false;
             yield return FetchDifficulty(r=>fetched=r);
             if(config.proficiencySync)yield return FetchGroups();
-            int left = Directory.GetFiles(queueDir, "*.json").Length;
+            int left = Directory.GetFiles(queueDir, "*.json").Length;DdaCloudDiagnostics.Pending(left,config.proficiencySync&&Directory.Exists(SaveStore.ProficiencyQueueRoot)?Directory.GetFiles(SaveStore.ProficiencyQueueRoot,"*.json").Length:-1);
             CommunityStats.Status = !ok||rejectedOwner
                 ? "DB 전송 실패 · 대기 " + left + "건 · 통계 " + (fetched?"수신됨":"수신 실패 (이전 캐시)")
                 : !fetched ? "DB 전송 처리 완료 · 통계 수신 실패 (이전 캐시 " + CommunityStats.Count + "개)"
@@ -196,6 +197,7 @@ namespace ReversalTower
                 // 201 = 저장됨, 409 = 이미 같은 ID가 있음(재전송) → 둘 다 성공으로 본다
                 bool ok = req.result == UnityWebRequest.Result.Success || req.responseCode == 409;
                 if (!ok) Debug.LogWarning("DB " + table + " 전송 실패 (" + req.responseCode + "): " + req.error + " " + req.downloadHandler.text);
+                DdaCloudDiagnostics.Sent(table,ok,req.responseCode);
                 done(ok);
             }
         }
@@ -268,6 +270,7 @@ namespace ReversalTower
                 {
                     req.uploadHandler=new UploadHandlerRaw(Encoding.UTF8.GetBytes(body.ToString()));req.downloadHandler=new DownloadHandlerBuffer();Headers(req);req.SetRequestHeader("Content-Type","application/json");
                     yield return req.SendWebRequest();
+                    DdaCloudDiagnostics.Sent(e.kind,req.result==UnityWebRequest.Result.Success&&req.downloadHandler.text.Trim()=="true",req.responseCode);
                     if(req.result!=UnityWebRequest.Result.Success||req.downloadHandler.text.Trim()!="true"){SaveStore.SetProficiencyState(e.profile,"보호 전송 실패 HTTP "+req.responseCode+" · 큐 보존");continue;}
                     // Unlike legacy blind 409 handling, only RPC success acknowledges immutable protected data.
                     try{SaveStore.AcknowledgeProficiency(file,e);}catch{SaveStore.SetProficiencyState(e.profile,"서버 수락 후 로컬 확인 실패 · 멱등 재시도 대기");}

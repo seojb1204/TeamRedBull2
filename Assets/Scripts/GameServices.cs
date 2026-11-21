@@ -312,6 +312,34 @@ namespace ReversalTower
         public DdaMonitorAttack attack; // Explicit serializable attack-only DTO; no storage state.
         public List<DdaMonitorPattern> patterns=new List<DdaMonitorPattern>();
         public List<DdaMonitorSelection> selection=new List<DdaMonitorSelection>();
-        public DdaMonitorTutorial tutorial;public DdaTraceReport learning;
+        public DdaMonitorTutorial tutorial;public DdaTraceReport learning;public DdaCloudStatus cloud;
+    }
+}
+
+namespace ReversalTower
+{
+    // Diagnostic projection only: no URLs, keys, profile IDs, payloads or queue paths.
+    [Serializable] public sealed class DdaCloudStatus
+    {
+        public string configuration="미확인",legacyBattle="미전송",legacyPattern="미전송",assessment="미전송",proficiencyBattle="미전송",proficiencySamples="미전송";
+        public string lastSuccessfulSendUtc="",lastError="";public bool proficiencyEnabled;public int pendingLegacy=-1,pendingProtected=-1;
+    }
+    public static class DdaCloudDiagnostics
+    {
+        static readonly DdaCloudStatus state=new DdaCloudStatus();
+        public static void Configuration(string value,bool proficiency=false){state.configuration=value;state.proficiencyEnabled=proficiency;}
+        public static void Pending(int legacy,int protectedCount=-1){state.pendingLegacy=legacy;if(protectedCount>=0)state.pendingProtected=protectedCount;}
+        public static void Sent(string kind,bool accepted,long code)
+        {
+            string value=accepted?(code==409?"기존 ID 충돌 · 기존 업로드 정책상 처리됨(새 INSERT 아님)":"서버 수락 HTTP "+code):"전송 실패 HTTP "+code;
+            if(kind=="battles")state.legacyBattle=value;if(kind=="pattern_stats")state.legacyPattern=value;
+            if(kind=="assessment")state.assessment=value;
+            if(kind=="battle"){state.proficiencyBattle=value;state.proficiencySamples=value+" · 동일 RPC 처리 결과, 샘플별 INSERT 직접 확인 아님";}
+            if(accepted&&code!=409)state.lastSuccessfulSendUtc=DateTime.UtcNow.ToString("o");
+            if(!accepted)state.lastError=kind+" HTTP "+code;
+        }
+        public static DdaCloudStatus Snapshot()=>new DdaCloudStatus{configuration=state.configuration,proficiencyEnabled=state.proficiencyEnabled,
+            legacyBattle=state.legacyBattle,legacyPattern=state.legacyPattern,assessment=state.assessment,proficiencyBattle=state.proficiencyBattle,proficiencySamples=state.proficiencySamples,
+            pendingLegacy=state.pendingLegacy,pendingProtected=state.pendingProtected,lastSuccessfulSendUtc=state.lastSuccessfulSendUtc,lastError=state.lastError};
     }
 }

@@ -1,5 +1,8 @@
 # 역전의 탑 — DDA Lab & 게임 진단 모니터
 
+Windows 발표용 자체 포함 패키징/원클릭 실행/DB 분석은 [EXHIBIT.md](EXHIBIT.md)를 참고하세요. 기존 아래 개발자 실행 방식은 유지됩니다.
+
+
 독립 Python/브라우저 프로그램이다. **시뮬레이션은 현재 checkout의 실제 C#**, 모니터는 게임이 기록한 로컬 진단만 읽는다. LinUCB를 Python/JavaScript로 재구현하지 않는다. Unity·Supabase 로그인이나 인터넷 연결은 필요하지 않다.
 
 기준 게임: `integration/dda-selective-20261119@3342884`. 11/18 Lab 도구만 복원했으며 과거 게임 파일은 덮지 않았다. 이 브랜치는 독립 도구/진단 후보이고 main 배포본이 아니다. [검증 보고서](../../Docs/Validation/DDA_LAB_LIVE_MONITOR_20261119.md).

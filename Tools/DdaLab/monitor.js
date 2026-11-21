@@ -17,11 +17,11 @@ function acceptState(next){
  while(ends.size>60)ends.delete(ends.keys().next().value);
  since=Math.max(0,...samples.keys());state=next;render();
 }
-function sourceBadge(){const s=mode==='simulation'?'SIMULATION · 가상 입력 / 실제 C#':(state?.status??'DISCONNECTED');value('source-badge',s)}
-function tab(next){mode=next;el('simulation-view').classList.toggle('hidden',next!=='simulation');el('live-view').classList.toggle('hidden',next!=='monitor');for(const name of ['simulation','monitor']){const b=el(name==='simulation'?'tab-simulation':'tab-monitor');b.classList.toggle('active',next===name);b.setAttribute('aria-selected',String(next===name))}sourceBadge();if(next==='monitor')poll()}
-el('tab-simulation').onclick=()=>tab('simulation');el('tab-monitor').onclick=()=>tab('monitor');
+function sourceBadge(){const s=mode==='simulation'?'SIMULATION · 가상 입력 / 실제 C#':mode==='database'?'DB SELECT · 실제 기록 / 발표용 가상 데이터 구분':(state?.status??'DISCONNECTED');value('source-badge',s)}
+function tab(next){mode=next;el('simulation-view').classList.toggle('hidden',next!=='simulation');el('live-view').classList.toggle('hidden',next!=='monitor');el('database-view').classList.toggle('hidden',next!=='database');for(const name of ['simulation','monitor','database']){const b=el('tab-'+name);b.classList.toggle('active',next===name);b.setAttribute('aria-selected',String(next===name))}sourceBadge();if(next==='monitor')poll()}
+el('tab-simulation').onclick=()=>tab('simulation');el('tab-monitor').onclick=()=>tab('monitor');el('tab-database').onclick=()=>tab('database');
 async function poll(){if(working||mode!=='monitor')return;working=true;try{const next=await api('/api/monitor/state?since='+since);if(networkError){message('서버 연결 복구');networkError=false}acceptState(next)}catch(e){networkError=true;if(state){state.status='DISCONNECTED';state.source='대시보드 서버 연결 없음';render()}message(e.message,true)}finally{working=false}}
-setInterval(poll,1000);if(window.MONITOR_ONLY){tab('monitor');el('run').disabled=true}
+setInterval(poll,1000);if(window.MONITOR_ONLY||window.AUTO_MONITOR)tab('monitor');if(window.MONITOR_ONLY)el('run').disabled=true
 async function connect(choice=null){try{reset();acceptState(await api('/api/monitor/connect',{root:el('monitor-root').value,choice}));message(state.source)}catch(e){message(e.message,true)}}
 el('monitor-connect').onclick=()=>connect();el('monitor-session').onchange=()=>connect(el('monitor-session').value||null);
 el('monitor-disconnect').onclick=async()=>{try{reset();acceptState(await api('/api/monitor/disconnect',{}));message('연결을 해제했습니다.')}catch(e){message(e.message,true)}};

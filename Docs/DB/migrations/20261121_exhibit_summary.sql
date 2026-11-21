@@ -112,14 +112,15 @@ select jsonb_build_object(
 $summary$;
 -- PostgreSQL 17 requires the migration owner to be able to SET ROLE to the new function owner.
 -- Temporarily grant only SET (not INHERIT/ADMIN), then revoke within the same transaction.
+-- Privileges and COMMENT must be set while postgres still owns this function.
+revoke all on function public.exhibit_dda_summary_v1() from public,anon,authenticated;
+grant execute on function public.exhibit_dda_summary_v1() to anon,authenticated;
+comment on function public.exhibit_dda_summary_v1() is 'Fixed read-only cohort aggregates; no IDs/raw JSON/keys, >=3 owners, pattern >=20 neutral opportunities. Existing raw privileges and writes remain blocked.';
 grant dda_exhibit_reader to postgres with admin false, inherit false, set true;
 -- CREATE needed only during ownership transfer; never retained by function owner.
 grant create on schema public to dda_exhibit_reader;
 alter function public.exhibit_dda_summary_v1() owner to dda_exhibit_reader;
 revoke create on schema public from dda_exhibit_reader;
 revoke dda_exhibit_reader from postgres;
-revoke all on function public.exhibit_dda_summary_v1() from public,anon,authenticated;
-grant execute on function public.exhibit_dda_summary_v1() to anon,authenticated;
-comment on function public.exhibit_dda_summary_v1() is 'Fixed read-only cohort aggregates; no IDs/raw JSON/keys, >=3 owners, pattern >=20 neutral opportunities. Existing raw privileges and writes remain blocked.';
 notify pgrst,'reload schema';
 commit;

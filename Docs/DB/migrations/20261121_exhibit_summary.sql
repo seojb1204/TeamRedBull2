@@ -110,10 +110,14 @@ select jsonb_build_object(
  'patterns',coalesce((select jsonb_agg(jsonb_build_object('source',source,'group',group_name,'boss',boss,'pattern',pattern,'players',players,'opportunities',opportunities,'successRate',round(success_rate,3),'parryRate',round(parry_rate,3),'hitRate',round(hit_rate,3),'eligible',true,'suggestedLevel',case when success_rate<.45 then -1 when success_rate>.85 then 1 else 0 end) order by source,group_name,boss,pattern) from pattern_stats),'[]'::jsonb)
 );
 $summary$;
+-- PostgreSQL 17 requires the migration owner to be able to SET ROLE to the new function owner.
+-- Temporarily grant only SET (not INHERIT/ADMIN), then revoke within the same transaction.
+grant dda_exhibit_reader to postgres with admin false, inherit false, set true;
 -- CREATE needed only during ownership transfer; never retained by function owner.
 grant create on schema public to dda_exhibit_reader;
 alter function public.exhibit_dda_summary_v1() owner to dda_exhibit_reader;
 revoke create on schema public from dda_exhibit_reader;
+revoke dda_exhibit_reader from postgres;
 revoke all on function public.exhibit_dda_summary_v1() from public,anon,authenticated;
 grant execute on function public.exhibit_dda_summary_v1() to anon,authenticated;
 comment on function public.exhibit_dda_summary_v1() is 'Fixed read-only cohort aggregates; no IDs/raw JSON/keys, >=3 owners, pattern >=20 neutral opportunities. Existing raw privileges and writes remain blocked.';

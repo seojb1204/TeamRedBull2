@@ -48,6 +48,10 @@ def frame(raw):
  out.update(schema=SCHEMA,sessionId=sid,runId=run,sequence=seq,capturedUtc=capture,origin=origin)
  out.update({k:raw.get(k) is True for k in ['running','dda','hasAttack','clear','abandoned','historyLimitReached']})
  out.update({k:max(0,integer(raw.get(k))) for k in ['dropped','writeErrors']});out['simulationSeconds']=number(raw.get('simulationSeconds'))
+ c=raw.get('cloud');out['cloud']=None
+ if isinstance(c,dict):
+  out['cloud']={k:text(c.get(k),180) for k in ['configuration','legacyBattle','legacyPattern','assessment','proficiencyBattle','proficiencySamples','lastSuccessfulSendUtc','lastError']}
+  out['cloud'].update(proficiencyEnabled=c.get('proficiencyEnabled') is True,pendingLegacy=integer(c.get('pendingLegacy'),-1),pendingProtected=integer(c.get('pendingProtected'),-1))
  out['patterns']=[]
  for p in raw.get('patterns',[])[:64] if isinstance(raw.get('patterns'),list) else []:
   if not isinstance(p,dict):continue

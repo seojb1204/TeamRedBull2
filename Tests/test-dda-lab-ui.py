@@ -6,7 +6,7 @@ p=argparse.ArgumentParser();p.add_argument("--url",default="http://127.0.0.1:876
 with sync_playwright() as p:
  browser=p.chromium.launch(executable_path=a.chromium,headless=True,args=['--no-sandbox'])
  page=browser.new_page(viewport={'width':1440,'height':1100});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
- page.goto(a.url);page.select_option('#mode','control');page.select_option('#scenario','sparse');assert '관측 1회' in page.locator('#hint').inner_text();page.select_option('#mode','control');page.select_option('#scenario','declining');page.fill('#rounds','3');page.click('#run');page.wait_for_function("document.querySelector('#status').textContent.includes('실험 완료')",timeout=120000)
+ page.goto(a.url);page.click('#tab-simulation');page.select_option('#mode','control');page.select_option('#scenario','sparse');assert '관측 1회' in page.locator('#hint').inner_text();page.select_option('#mode','control');page.select_option('#scenario','declining');page.fill('#rounds','3');page.click('#run');page.wait_for_function("document.querySelector('#status').textContent.includes('실험 완료')",timeout=120000)
  assert page.locator('#count').inner_text()=='6'
  assert page.locator('#levels polyline').count()==2
  page.click('#replay');page.wait_for_function("document.querySelector('#status').textContent.includes('산출물 동일')",timeout=120000)

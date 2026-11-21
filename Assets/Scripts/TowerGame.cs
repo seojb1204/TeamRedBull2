@@ -602,7 +602,7 @@ namespace ReversalTower
 #else
                 string runtime=Application.platform.ToString()+" / Unity "+Application.unityVersion;
 #endif
-                var frame=new DdaMonitorFrame{origin=origin,runtime=runtime,
+                var frame=new DdaMonitorFrame{origin=origin,runtime=runtime,cloud=DdaCloudDiagnostics.Snapshot(),
                     sessionId=ddaMonitor.SessionId,runId=TutorialActive?(ddaMonitorTutorialRun??(ddaMonitorTutorialRun=Guid.NewGuid().ToString("N"))):battle?BossPatterns.DiagnosticSession:"",
                     diagnosticSession=battle?BossPatterns.DiagnosticSession:"",battleId=battle&&ended&&result!=null?result.battleId:"",
                     boss=spec==null?"":spec.id,bossName=spec==null?"":spec.name,phase=TutorialActive?"tutorial":battle&&ended?"result":mode.ToString().ToLowerInvariant(),

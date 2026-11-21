@@ -4,7 +4,7 @@ Every result is logged; exit status and source hashes are retained. No runtime s
 import argparse,hashlib,json,os,subprocess,tempfile
 from pathlib import Path
 from xml.sax.saxutils import escape
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--dotnet',required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--suite',choices=['all','tutorial-state','tutorial-save','tutorial-dda','queue','adaptation','proficiency-http','selective','monitor'],default='all');a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--dotnet',required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--suite',choices=['all','tutorial-state','tutorial-save','tutorial-dda','queue','adaptation','proficiency-http','selective','monitor','exhibit-telemetry'],default='all');a=p.parse_args()
 r=Path(__file__).resolve().parents[1];out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
 base=['TutorialSession','TowerGame.Tutorial','GameData','TowerGame','BossCombat','SaveStore','LobbyCards','AutoRun','LobbySmoke','BossPatternSystem','GameServices','ArakusPatternTiming','ArakusAnimationSelection']
 suites={
@@ -16,6 +16,7 @@ suites['adaptation']=([r/'Assets/Scripts'/(n+'.cs') for n in base]+[r/'Tests/Uni
 suites['proficiency-http']=([r/'Assets/Scripts'/(n+'.cs') for n in ['GameData','GameServices','SaveStore','TutorialSession','CloudSync']]+[r/'Tests/CloudSyncStatus/Stubs.cs',r/'Tests/ProficiencyHttpTests.cs'],'ProficiencyHttpTests','REAL_DDA;REAL_SAVE')
 suites['selective']=([r/'Assets/Scripts'/(n+'.cs') for n in base]+[r/'Tests/UnityShim.cs',r/'Tests/SelectiveIntegrationTests.cs'],'SelectiveIntegrationTests','HEADLESS')
 suites['monitor']=([r/'Assets/Scripts'/(n+'.cs') for n in base]+[r/'Tests/UnityShim.cs',r/'Tests/DdaMonitorTests.cs'],'DdaMonitorTests','HEADLESS')
+suites['exhibit-telemetry']=([r/'Assets/Scripts'/(n+'.cs') for n in ['GameData','GameServices','SaveStore','TutorialSession','CloudSync']]+[r/'Tests/CloudSyncStatus/Stubs.cs',r/'Tests/ExhibitTelemetryTests.cs'],'ExhibitTelemetryTests','REAL_DDA;REAL_SAVE')
 results={}
 for name,(files,start,symbols) in suites.items():
  if a.suite not in ('all',name):continue

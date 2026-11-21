@@ -1,0 +1,35 @@
+PASS migration preserves every existing raw row
+PASS existing mixed aggregate view definition unchanged
+PASS existing protected INSERT RPC body unchanged
+PASS all raw-table RLS stays ON
+PASS raw SELECT denied anon/proficiency_assessments
+PASS raw SELECT denied anon/proficiency_battles
+PASS raw SELECT denied anon/proficiency_pattern_samples
+PASS raw INSERT denied anon
+PASS caller cannot assume private reader role anon
+PASS raw SELECT denied authenticated/proficiency_assessments
+PASS raw SELECT denied authenticated/proficiency_battles
+PASS raw SELECT denied authenticated/proficiency_pattern_samples
+PASS raw INSERT denied authenticated
+PASS caller cannot assume private reader role authenticated
+PASS public RPC returns fixed nine cohort/group rows
+PASS cohort counts reflect actual isolated rows, joins and fixed vocabulary
+PASS source totals withheld when a component group is suppressed
+PASS small real group exposes neither exact count nor averages
+PASS three profiles of one owner never meet k=3
+PASS all released patterns satisfy owner and opportunity thresholds
+PASS low-confidence and non-neutral samples excluded from pattern recommendations
+PASS exact same-cohort three-key joins and weighted rates
+PASS no identity/raw JSON/untrusted labels in output
+PASS authenticated and anon receive same safe snapshot
+PASS caller-selected filters rejected: zero-argument signature only
+PASS function owner has no login/superuser/bypass/inherited/admin powers
+PASS reader grants SELECT only, not table writes
+PASS reader cannot create public objects or call protected write RPC
+PASS temporary shadow table/search_path cannot change definer source
+PASS existing capability-bound assessment INSERT succeeds
+PASS existing INSERT retry remains idempotent
+PASS unsafe pre-existing reader privileges abort deployment
+PASS failed unsafe deployment leaves all data intact
+PASS migration rerun is idempotent and preserves rows
+SAFE_DB_POSTGRES_PASS 34

@@ -1,0 +1,246 @@
+{
+  "bosses": [
+    {
+      "boss": "arakus",
+      "group": "expert",
+      "source": "demo",
+      "battles": 4,
+      "seconds": 30.0
+    },
+    {
+      "boss": "arakus",
+      "group": "normal",
+      "source": "demo",
+      "battles": 4,
+      "seconds": 30.0
+    },
+    {
+      "boss": "arakus",
+      "group": "novice",
+      "source": "demo",
+      "battles": 4,
+      "seconds": 30.0
+    },
+    {
+      "boss": "arakus",
+      "group": "expert",
+      "source": "real",
+      "battles": 3,
+      "seconds": 30.0
+    },
+    {
+      "boss": "arakus",
+      "group": "normal",
+      "source": "real",
+      "battles": 3,
+      "seconds": 30.0
+    }
+  ],
+  "cohort": "demo_exhibit_20261121",
+  "counts": {
+    "demo": {
+      "battles": 12,
+      "players": 13,
+      "samples": 11,
+      "assessments": 13
+    },
+    "real": null,
+    "other_demo": null
+  },
+  "groups": [
+    {
+      "hits": 2.0,
+      "group": "expert",
+      "score": 0.7,
+      "source": "demo",
+      "players": 4,
+      "released": true,
+      "dodgeRate": 0.5,
+      "parryRate": 0.5,
+      "validFirst": 4,
+      "activeSeconds": 60.0,
+      "elapsedSeconds": 80.0
+    },
+    {
+      "hits": 2.0,
+      "group": "normal",
+      "score": 0.7,
+      "source": "demo",
+      "players": 5,
+      "released": true,
+      "dodgeRate": 0.5,
+      "parryRate": 0.5,
+      "validFirst": 5,
+      "activeSeconds": 60.0,
+      "elapsedSeconds": 80.0
+    },
+    {
+      "hits": 2.0,
+      "group": "novice",
+      "score": 0.7,
+      "source": "demo",
+      "players": 4,
+      "released": true,
+      "dodgeRate": 0.5,
+      "parryRate": 0.5,
+      "validFirst": 4,
+      "activeSeconds": 60.0,
+      "elapsedSeconds": 80.0
+    },
+    {
+      "hits": null,
+      "group": "expert",
+      "score": null,
+      "source": "other_demo",
+      "players": null,
+      "released": false,
+      "dodgeRate": null,
+      "parryRate": null,
+      "validFirst": null,
+      "activeSeconds": null,
+      "elapsedSeconds": null
+    },
+    {
+      "hits": null,
+      "group": "normal",
+      "score": null,
+      "source": "other_demo",
+      "players": null,
+      "released": false,
+      "dodgeRate": null,
+      "parryRate": null,
+      "validFirst": null,
+      "activeSeconds": null,
+      "elapsedSeconds": null
+    },
+    {
+      "hits": null,
+      "group": "novice",
+      "score": null,
+      "source": "other_demo",
+      "players": null,
+      "released": false,
+      "dodgeRate": null,
+      "parryRate": null,
+      "validFirst": null,
+      "activeSeconds": null,
+      "elapsedSeconds": null
+    },
+    {
+      "hits": 2.0,
+      "group": "expert",
+      "score": 0.7,
+      "source": "real",
+      "players": 3,
+      "released": true,
+      "dodgeRate": 0.5,
+      "parryRate": 0.5,
+      "validFirst": 3,
+      "activeSeconds": 60.0,
+      "elapsedSeconds": 80.0
+    },
+    {
+      "hits": 2.0,
+      "group": "normal",
+      "score": 0.7,
+      "source": "real",
+      "players": 3,
+      "released": true,
+      "dodgeRate": 0.5,
+      "parryRate": 0.5,
+      "validFirst": 3,
+      "activeSeconds": 60.0,
+      "elapsedSeconds": 80.0
+    },
+    {
+      "hits": null,
+      "group": "novice",
+      "score": null,
+      "source": "real",
+      "players": null,
+      "released": false,
+      "dodgeRate": null,
+      "parryRate": null,
+      "validFirst": null,
+      "activeSeconds": null,
+      "elapsedSeconds": null
+    }
+  ],
+  "policy": {
+    "totals": "null unless all three groups released; never infer suppressed cells",
+    "privacy": "fixed cohorts and vocabulary, no filters; small-cell suppression, not differential privacy",
+    "minOwners": 3,
+    "groupPopulation": "valid completed first assessment, active_seconds>0",
+    "patternPopulation": "same-source linked samples, confidence>=0.5, observed parry/dodge, level=0",
+    "minPatternOpportunities": 20
+  },
+  "source": "server aggregate RPC",
+  "patterns": [
+    {
+      "boss": "arakus",
+      "group": "expert",
+      "source": "demo",
+      "hitRate": 0.2,
+      "pattern": "cleave",
+      "players": 3,
+      "eligible": true,
+      "parryRate": 0.5,
+      "successRate": 0.8,
+      "opportunities": 30,
+      "suggestedLevel": 0
+    },
+    {
+      "boss": "arakus",
+      "group": "normal",
+      "source": "demo",
+      "hitRate": 0.2,
+      "pattern": "cleave",
+      "players": 3,
+      "eligible": true,
+      "parryRate": 0.5,
+      "successRate": 0.8,
+      "opportunities": 30,
+      "suggestedLevel": 0
+    },
+    {
+      "boss": "arakus",
+      "group": "novice",
+      "source": "demo",
+      "hitRate": 0.2,
+      "pattern": "cleave",
+      "players": 3,
+      "eligible": true,
+      "parryRate": 0.5,
+      "successRate": 0.8,
+      "opportunities": 30,
+      "suggestedLevel": 0
+    },
+    {
+      "boss": "arakus",
+      "group": "expert",
+      "source": "real",
+      "hitRate": 0.2,
+      "pattern": "cleave",
+      "players": 3,
+      "eligible": true,
+      "parryRate": 0.5,
+      "successRate": 0.8,
+      "opportunities": 30,
+      "suggestedLevel": 0
+    },
+    {
+      "boss": "arakus",
+      "group": "normal",
+      "source": "real",
+      "hitRate": 0.2,
+      "pattern": "cleave",
+      "players": 3,
+      "eligible": true,
+      "parryRate": 0.5,
+      "successRate": 0.8,
+      "opportunities": 30,
+      "suggestedLevel": 0
+    }
+  ],
+  "schemaVersion": 1
+}

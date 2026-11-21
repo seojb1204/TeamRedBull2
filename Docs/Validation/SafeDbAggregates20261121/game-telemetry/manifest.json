@@ -1,0 +1,37 @@
+{
+  "commit": "d9847ffd38361b91d3f1c8512d5924ee440f884d",
+  "suites": {
+    "exhibit-telemetry": {
+      "exit": 0,
+      "source_sha256": {
+        "Assets/Scripts/GameData.cs": "3203728ef1413de870f132da4611e292c7628fb935a868c9123fc3365d6eea33",
+        "Assets/Scripts/GameServices.cs": "46b39bc114745ead4c8a968cf8546b98e2fb0e6ec096eaa4be1e76c789dc3955",
+        "Assets/Scripts/SaveStore.cs": "0f54b79094493c64c9e8242e3ff8a1bb216d10a08004dd673d76e5b49994ca08",
+        "Assets/Scripts/TutorialSession.cs": "172dfecb7695c31a06776f194a9cb0abdc6a80d40a4e9c6d1d5fc8a332319d25",
+        "Assets/Scripts/CloudSync.cs": "0fde7c72c0fd1520f23c7d4d91787670c393d4736f1db7c075306e012b945cd9",
+        "Tests/CloudSyncStatus/Stubs.cs": "00adda8c3305dc34fe9865a5ff2f33c0d30c45627d8132ed3f4a948cfac16ac3",
+        "Tests/ExhibitTelemetryTests.cs": "4671c9b990b20088fd8f821e06de0615afce440dc7597e1e474bcde8e079ee5c"
+      },
+      "sources_unchanged": true,
+      "command": [
+        "/workspace/.cloud-setup/dotnet/dotnet",
+        "run",
+        "--project",
+        "/tmp/tower-cross-qa-67b3leeo/QA.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "tail": [
+        "PASS actual acceptance records UTC",
+        "PASS legacy409 processing not a fresh INSERT timestamp",
+        "PASS diagnostic wire excludes IDs URLs keys and payload",
+        "EXHIBIT_TELEMETRY_PASS 13"
+      ]
+    }
+  },
+  "limits": [
+    "HEADLESS or mocked Unity/HTTP, not Unity API/runtime or real network",
+    "No production DB, credentials, personal saves/queues",
+    "Tutorial groups are not calibrated human skill probabilities"
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "method": "GET",
+    "path": "/rest/v1/rpc/exhibit_dda_summary_v1"
+  },
+  {
+    "method": "GET",
+    "path": "/rest/v1/pattern_difficulty_by_proficiency"
+  },
+  {
+    "method": "GET",
+    "path": "/rest/v1/pattern_difficulty_by_proficiency"
+  },
+  {
+    "method": "GET",
+    "path": "/rest/v1/rpc/exhibit_dda_summary_v1"
+  },
+  {
+    "method": "GET",
+    "path": "/rest/v1/pattern_difficulty_by_proficiency"
+  },
+  {
+    "method": "GET",
+    "path": "/rest/v1/pattern_difficulty_by_proficiency"
+  }
+]

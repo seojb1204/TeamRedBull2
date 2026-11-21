@@ -1,0 +1,35 @@
+[
+  {
+    "boss": "arakus",
+    "pattern": "cleave",
+    "players": 7,
+    "hit_rate": 0.2,
+    "group_name": "expert",
+    "parry_rate": 0.5,
+    "success_rate": 0.8,
+    "opportunities": 90,
+    "suggested_level": 0
+  },
+  {
+    "boss": "arakus",
+    "pattern": "cleave",
+    "players": 7,
+    "hit_rate": 0.2,
+    "group_name": "normal",
+    "parry_rate": 0.5,
+    "success_rate": 0.8,
+    "opportunities": 70,
+    "suggested_level": 0
+  },
+  {
+    "boss": "arakus",
+    "pattern": "cleave",
+    "players": 5,
+    "hit_rate": 0.2,
+    "group_name": "novice",
+    "parry_rate": 0.5,
+    "success_rate": 0.8,
+    "opportunities": 50,
+    "suggested_level": 0
+  }
+]

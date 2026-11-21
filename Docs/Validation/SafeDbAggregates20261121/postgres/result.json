@@ -1,0 +1,8 @@
+{
+  "passed": 34,
+  "postgresImage": "postgres:16-alpine",
+  "network": "none",
+  "productionDbAccess": false,
+  "rawWrites": "only throwaway container fixtures and original-RPC regression",
+  "migrationSha256": "472057fd87248696ebfadb07642f6971c614982a1ae1e3ec0cd48065de4d5ee1"
+}

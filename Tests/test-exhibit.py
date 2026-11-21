@@ -38,7 +38,7 @@ class Exhibit(unittest.TestCase):
   class Opener:
    def open(self,request,timeout):
     calls.append(request);offset=int(parse_qs(urlsplit(request.full_url).query)['offset'][0]);return Response([{'boss':'x'}] if offset<2 else [])
-  with patch.object(db,'build_opener',return_value=Opener()):rows=db.fetch_table({'url':'https://example.supabase.co','anonKey':'sb_publishable_fixture'},'battles')
+  with patch.object(db,'build_opener',return_value=Opener()):rows=db.fetch_table({'url':'https://example.supabase.co','anonKey':'sb_publishable_fixture'},'pattern_difficulty_by_proficiency')
   self.assertEqual(len(rows),2);self.assertEqual(len(calls),3);self.assertTrue(all(r.get_method()=='GET' for r in calls))
  def test_admin_key_and_ssrf_rejected(self):
   with tempfile.TemporaryDirectory() as tmp:
@@ -51,11 +51,8 @@ class Exhibit(unittest.TestCase):
  def test_incomplete_select_never_fabricates_counts(self):
   with tempfile.TemporaryDirectory() as tmp:
    p=Path(tmp)/'config.json';p.write_text(json.dumps({'url':'https://example.supabase.co','anonKey':'sb_publishable_fixture'}),encoding='utf-8')
-   def fetch(c,t):
-    if t=='proficiency_assessments':raise ValueError('HTTP 403')
-    return []
-   with patch.object(db,'fetch_table',side_effect=fetch):
-    x=db.Database(p);x._read();self.assertIsNone(x.state()['analysis']['counts']);self.assertEqual(x.state()['tables']['proficiency_assessments']['status'],'실패')
+   with patch.object(db,'fetch_summary',side_effect=ValueError('HTTP 404 aggregate RPC missing')),patch.object(db,'fetch_table',return_value=[]) as view:
+    x=db.Database(p);x._read();self.assertIsNone(x.state()['analysis']['counts']);self.assertEqual(x.state()['tables'][db.RPC]['status'],'실패');view.assert_called_once_with(db.public_config(p),'pattern_difficulty_by_proficiency')
  def test_new_run_paths_and_flags(self):
   with tempfile.TemporaryDirectory(prefix='한글 공백 ') as tmp:
    r=Path(tmp);a=paths(r,r);b=paths(r,r);self.assertNotEqual(a['live'],b['live']);lab,game=commands(a);self.assertIn('--port',lab);self.assertEqual(lab[lab.index('--port')+1],'0');self.assertEqual(game[1],'-towerDdaMonitor');self.assertTrue(a['live'].is_dir());self.assertIn('--prebuilt',lab)

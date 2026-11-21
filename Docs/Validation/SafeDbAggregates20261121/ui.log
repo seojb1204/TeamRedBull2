@@ -1,0 +1,3 @@
+DDA Lab: http://127.0.0.1:39313 (local only)
+Results: /workspace/safe-db-results/ui/experiments
+SAFE_DB_UI_PASS actual isolated SQL output, source groups/privacy, no raw GET, missing-RPC fallback, actual C# experiment, HEADLESS monitor preserved; NOT production Supabase/Unity

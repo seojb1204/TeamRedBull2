@@ -1,0 +1,8 @@
+.............진단/오류 로그: /tmp/tmpi5p3e3zv/local/ReversalTowerExhibit/2b1b5cb1074ba371/runs/29359b07446c40918fab1ed13b9d33e0
+Lab 실행 실패. 게임은 계속 실행됩니다: viewer fixture
+게임 종료 후에도 DB/기록 화면은 유지됩니다. 모두 종료하려면 이 창에서 Ctrl+C.
+..
+----------------------------------------------------------------------
+Ran 15 tests in 0.013s
+
+OK
